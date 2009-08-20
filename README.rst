@@ -1,0 +1,25 @@
+Extensions for Python docutils (>= 0.5)
+
+TODO: CSS stylesheet
+
+dotmpe extensions
+-----------------
+
+.. margin:: left
+
+   Margin contents left-side.
+
+.. margin:: right
+   :class: my-doc
+   
+   Margin contents right-side.
+
+.. margin:: left
+
+   More contents left-side.
+
+.. margin:: foo
+
+   Margin contents foo-side.
+
+
