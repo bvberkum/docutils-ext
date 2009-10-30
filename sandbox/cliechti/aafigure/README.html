@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<title>aafigure README</title>
+<style type="text/css">
+
+/*
+:Author: David Goodger (goodger@python.org)
+:Id: $Id: html4css1.css 5196 2007-06-03 20:25:28Z wiemann $
+:Copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+
+See http://docutils.sf.net/docs/howto/html-stylesheets.html for how to
+customize this style sheet.
+*/
+
+/* used to remove borders from tables and images */
+.borderless, table.borderless td, table.borderless th {
+  border: 0 }
+
+table.borderless td, table.borderless th {
+  /* Override padding for "table.docutils td" with "! important".
+     The right padding separates the table cells. */
+  padding: 0 0.5em 0 0 ! important }
+
+.first {
+  /* Override more specific margin styles with "! important". */
+  margin-top: 0 ! important }
+
+.last, .with-subtitle {
+  margin-bottom: 0 ! important }
+
+.hidden {
+  display: none }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+blockquote.epigraph {
+  margin: 2em 5em ; }
+
+dl.docutils dd {
+  margin-bottom: 0.5em }
+
+/* Uncomment (and remove this text!) to get bold-faced definition list terms
+dl.docutils dt {
+  font-weight: bold }
+*/
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+/* Uncomment (and remove this text!) to get reduced vertical space in
+   compound paragraphs.
+div.compound .compound-first, div.compound .compound-middle {
+  margin-bottom: 0.5em }
+
+div.compound .compound-last, div.compound .compound-middle {
+  margin-top: 0.5em }
+*/
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+div.footer, div.header {
+  clear: both;
+  font-size: smaller }
+
+div.line-block {
+  display: block ;
+  margin-top: 1em ;
+  margin-bottom: 1em }
+
+div.line-block div.line-block {
+  margin-top: 0 ;
+  margin-bottom: 0 ;
+  margin-left: 1.5em }
+
+div.sidebar {
+  margin: 0 0 0.5em 1em ;
+  border: medium outset ;
+  padding: 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
+h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
+  margin-top: 0.4em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+hr.docutils {
+  width: 75% }
+
+img.align-left {
+  clear: left }
+
+img.align-right {
+  clear: right }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+span.section-subtitle {
+  /* font-size relative to parent (h1..h6 element) */
+  font-size: 80% }
+
+table.citation {
+  border-left: solid 1px gray;
+  margin-left: 1px }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.docutils {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.footnote {
+  border-left: solid 1px black;
+  margin-left: 1px }
+
+table.docutils td, table.docutils th,
+table.docinfo td, table.docinfo th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+table.docutils th.field-name, table.docinfo th.docinfo-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap ;
+  padding-left: 0 }
+
+h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
+h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
+  font-size: 100% }
+
+ul.auto-toc {
+  list-style-type: none }
+
+</style>
+</head>
+<body>
+<div class="document" id="aafigure-readme">
+<h1 class="title">aafigure README</h1>
+
+<div class="section" id="overview">
+<h1>Overview</h1>
+<p>The idea is to parse ASCII art images, embedded in reST documents and output
+an image. This would mean that simple illustrations could be embedded as
+ASCII art in the reST source and still look nice when converted to e.g. HTML</p>
+</div>
+<div class="section" id="implementation">
+<h1>Implementation</h1>
+<p>Files:</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">aafigure.py</span></tt></dt>
+<dd>ASCII art parser. This is the main module.</dd>
+<dt><tt class="docutils literal"><span class="pre">aafigure_directive.py</span></tt></dt>
+<dd>Implmements the <tt class="docutils literal"><span class="pre">aafigure</span></tt> Docutils directive that takes these
+ASCII art figures and generates a drawing.</dd>
+<dt><tt class="docutils literal"><span class="pre">aa.py</span></tt></dt>
+<dd>ASCII art output backend. Intended for tests, not for the end user.</dd>
+<dt><tt class="docutils literal"><span class="pre">pil.py</span></tt></dt>
+<dd>Bitmap output backend. Using PIL, it can write PNG, JPEG and more formats.</dd>
+<dt><tt class="docutils literal"><span class="pre">rst2html.py</span></tt></dt>
+<dd>Patched version that adds the <tt class="docutils literal"><span class="pre">aafigure</span></tt> Docutils directive.</dd>
+<dt><tt class="docutils literal"><span class="pre">svg.py</span></tt></dt>
+<dd>SVG output backend.</dd>
+</dl>
+<p>The <tt class="docutils literal"><span class="pre">aafigure</span></tt> module contains code to parse ASCII art figures and create
+a list of of shapes. The different output modules can walk trough a list of
+shapes and write image files.</p>
+</div>
+<div class="section" id="usage">
+<h1>Usage</h1>
+<pre class="literal-block">
+./rst2html.py README.txt &gt;README.html
+</pre>
+<p>This results in the <tt class="docutils literal"><span class="pre">README.html</span></tt> file and a <tt class="docutils literal"><span class="pre">.svg</span></tt> file for each
+<tt class="docutils literal"><span class="pre">aafigure</span></tt>.</p>
+<p>Display the resulting <tt class="docutils literal"><span class="pre">README.html</span></tt> file in a SVG capable browser. It has
+been tested with Firefox 1.5.</p>
+</div>
+<div class="section" id="short-introduction">
+<h1>Short introduction</h1>
+<p>This code in a reST document that is processed with the enhanced <tt class="docutils literal"><span class="pre">rst2html.py</span></tt>
+looks like this:</p>
+<pre class="literal-block">
+.. aafigure::
+
+    --&gt;
+</pre>
+<p>Which results in an image like this:</p>
+<object type="image/svg+xml" data="aafigure-0.svg" width="48" height="24"></object><p>The <tt class="docutils literal"><span class="pre">aafigure</span></tt> directive has the following options:</p>
+<ul>
+<li><p class="first"><tt class="docutils literal"><span class="pre">:scale:</span> <span class="pre">&lt;float&gt;</span></tt>   enlarge or shrink image</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">:line_width:</span> <span class="pre">&lt;float&gt;</span></tt>   change line with (svg only currently)</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">:line_format:</span> <span class="pre">&lt;str&gt;</span></tt> choose backend/output format: 'svg', 'png', all
+bitmap formats that PIL supports can be used but only few make sense. Line
+drawings have a good compression and better quality when saved as PNG
+rather than a JPEG. The best quality will be achieved with SVG, tough not
+all browsers support this vector image format at this time.</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">:foreground:</span> <span class="pre">&lt;str&gt;</span></tt>   foreground color in the form <tt class="docutils literal"><span class="pre">#rgb</span></tt> or <tt class="docutils literal"><span class="pre">#rrggbb</span></tt></p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">:background:</span> <span class="pre">&lt;str&gt;</span></tt>   background color in the form <tt class="docutils literal"><span class="pre">#rgb</span></tt> or <tt class="docutils literal"><span class="pre">#rrggbb</span></tt>
+(<em>not</em> for SVG output)</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">:fill:</span> <span class="pre">&lt;str&gt;</span></tt>   fill color in the form <tt class="docutils literal"><span class="pre">#rgb</span></tt> or <tt class="docutils literal"><span class="pre">#rrggbb</span></tt></p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">:name:</span> <span class="pre">&lt;str&gt;</span></tt>   use this as filename instead of the automatic generated
+name</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">:aspect:</span> <span class="pre">&lt;float&gt;</span></tt>  change aspect ratio. Effectively it is the width of the
+image that is multiplied by this factor. The default setting <tt class="docutils literal"><span class="pre">1</span></tt> is useful
+when shapes must have the same look when drawn horizontaly or verticaly.
+However, <tt class="docutils literal"><span class="pre">:aspect:</span> <span class="pre">0.5</span></tt> looks more like the original ASCII and even smaller
+factors may be useful for timing diagrams and such. But there is a risk that
+text is cropped or is draw over an object beside it.</p>
+<p>The stretching is done before drawing arrows or circles, so that they are
+still good looking.</p>
+</li>
+</ul>
+<div class="section" id="lines">
+<h2>Lines</h2>
+<p>The <tt class="docutils literal"><span class="pre">-</span></tt> and <tt class="docutils literal"><span class="pre">|</span></tt> are normaly used for lines. <tt class="docutils literal"><span class="pre">_</span></tt> can also be used. It is a
+slightly longer line than the <tt class="docutils literal"><span class="pre">-</span></tt> and it's is drawn a bit lower. <tt class="docutils literal"><span class="pre">=</span></tt> gives
+a thicker line. The later two line types can only be drawn horizontaly.</p>
+<pre class="literal-block">
+---- |         ___
+     | --  ___|     ===
+</pre>
+<object type="image/svg+xml" data="aafigure-1.svg" width="288" height="36"></object><p>It is also possible to draw diagonal lines. Their use is somewhat restricted
+tough. Not all cases work as expected.</p>
+<object type="image/svg+xml" data="aafigure-2.svg" width="732" height="120"></object><p>And drawing longer diagonal lines with different angles looks ugly...</p>
+<object type="image/svg+xml" data="aafigure-3.svg" width="108" height="60"></object></div>
+<div class="section" id="arrows">
+<h2>Arrows</h2>
+<p>Arrow styles are:</p>
+<pre class="literal-block">
+---&gt;   | | | | | |
+---&lt;   | | | | | |
+---o   ^ V v o O #
+---O
+---#
+</pre>
+<object type="image/svg+xml" data="aafigure-4.svg" width="228" height="72"></object></div>
+<div class="section" id="boxes">
+<h2>Boxes</h2>
+<p>Boxes are automaticaly draw when the edges are made with <tt class="docutils literal"><span class="pre">+</span></tt>, filled
+boxes are made with <tt class="docutils literal"><span class="pre">X</span></tt> (must be at least two units high or wide).
+It is also possibe to make rounded edges in two ways:</p>
+<pre class="literal-block">
++-----+   XXX  /--\     --   |
+|     |   XXX  |  |    /    /
++-----+   XXX  \--/   |   --
+</pre>
+<object type="image/svg+xml" data="aafigure-5.svg" width="372" height="48"></object></div>
+<div class="section" id="fills">
+<h2>Fills</h2>
+<p>Upper case characters generate shapes with borders, lower case without border.
+Fills must be at least two characters wide or high. (This reduces the chance
+that it is detected as Fill instead of a string)</p>
+<object type="image/svg+xml" data="aafigure-6.svg" width="624" height="168"></object><p>Complex shapes can be filled:</p>
+<object type="image/svg+xml" data="aafigure-7.svg" width="348" height="48"></object></div>
+<div class="section" id="text">
+<h2>Text</h2>
+<p>The images may contain text too. There are different styles to enter text:</p>
+<p><em>direct</em></p>
+<p>Bby default are repeated characters detected as fill:</p>
+<pre class="literal-block">
+Hello World  dd d
+                d
+</pre>
+<object type="image/svg+xml" data="aafigure-8.svg" width="216" height="36"></object><p><em>quoted</em></p>
+<p>Text between quotes has piority over any graphical meaning:</p>
+<pre class="literal-block">
+&quot;Hello World&quot;  dd d
+                  d
+</pre>
+<object type="image/svg+xml" data="aafigure-9.svg" width="240" height="36"></object><p><tt class="docutils literal"><span class="pre">&quot;</span></tt>, <tt class="docutils literal"><span class="pre">'</span></tt> and <tt class="docutils literal"><span class="pre">\`</span></tt> are all valid quotation marks. The quotes are not
+visible in the resulting image. This not only disables fills (see below), it
+also treats <tt class="docutils literal"><span class="pre">-</span></tt>, <tt class="docutils literal"><span class="pre">|</span></tt> etc as text.</p>
+<p><em>textual option</em></p>
+<p>The <tt class="docutils literal"><span class="pre">:textual:</span></tt> option disables horizontal fill detection. Fills are only
+detected when they are verticaly at least 2 charcacters high:</p>
+<pre class="literal-block">
+Hello World  dd d
+                d
+</pre>
+<object type="image/svg+xml" data="aafigure-10.svg" width="216" height="36"></object></div>
+<div class="section" id="other">
+<h2>Other</h2>
+<pre class="literal-block">
+* { }
+</pre>
+<object type="image/svg+xml" data="aafigure-11.svg" width="72" height="24"></object></div>
+</div>
+<div class="section" id="todo">
+<h1>TODO</h1>
+<ul>
+<li><p class="first">Symbol detection: scan for predefined shapes in the ASCII image
+and output them as symbol from a library</p>
+</li>
+<li><p class="first">Symbol libraries for UML, flowchart, electronic schematics, ...</p>
+</li>
+<li><p class="first">The way the image is embedded is a hack (inserting a tag trough a raw node...)</p>
+</li>
+<li><p class="first">Search for ways to bring in color. Ideas:</p>
+<blockquote>
+<ul>
+<li><p class="first">have an :option: to set color tags. Shapes that touch such a tag
+inhertit it's color. The tag would be visible in the ASCII source tough:</p>
+<pre class="literal-block">
+.. aafigure::
+    :colortag: 1:red, 2:blue
+
+    1---&gt;  ---&gt;2
+</pre>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">:color:</span> <span class="pre">x,y,color</span></tt> but counting coordinates is no so fun</p>
+</li>
+</ul>
+<p>drawback: both are complex to implement, searching for shapes that belong
+together. it's also not always wanted that e.g. when a line touches a
+box, both have the same color</p>
+</blockquote>
+</li>
+<li><p class="first">aafigure probably needs arguments like <tt class="docutils literal"><span class="pre">font-family</span></tt>, ...</p>
+</li>
+<li><p class="first">Punctuation not included in strings (now a bit improved but if it has a
+graphical meaning , then that is chooses, even if it makes no sense),
+underlines in strings are tricky to detect...</p>
+</li>
+<li><p class="first">Dotted lines? <tt class="docutils literal"><span class="pre">...</span></tt></p>
+</li>
+<li><p class="first">Group shapes that belong to an object, so that it's easier to import and
+change the graphics in a vector drawing program.</p>
+</li>
+<li><p class="first">Path optimizer, it happens that many small lines are output where a long
+line could be used.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="license">
+<h1>License</h1>
+<p>BSD</p>
+</div>
+<div class="section" id="tests">
+<h1>Tests</h1>
+<p>To compare input and output, look at the sources of this <a class="reference external" href="README.txt">file</a>.</p>
+<div class="section" id="simple-tests">
+<h2>Simple tests</h2>
+<p>Different arrow types:</p>
+<object type="image/svg+xml" data="aafigure-12.svg" width="240" height="48"></object><p>Boxes and shapes:</p>
+<object type="image/svg+xml" data="aafigure-13.svg" width="216" height="48"></object><object type="image/svg+xml" data="aafigure-14.svg" width="312" height="96"></object></div>
+<div class="section" id="flow-chart">
+<h2>Flow chart</h2>
+<object type="image/svg+xml" data="aafigure-15.svg" width="288" height="312"></object></div>
+<div class="section" id="uml">
+<h2>UML</h2>
+<p>No not realy, yet. But you get the idea.</p>
+<object type="image/svg+xml" data="aafigure-16.svg" width="364" height="201"></object><object type="image/svg+xml" data="aafigure-17.svg" width="460" height="134"></object><object type="image/svg+xml" data="aafigure-18.svg" width="708" height="120"></object></div>
+<div class="section" id="electronics">
+<h2>Electronics</h2>
+<p>It would be cool if it could display simple schematics.</p>
+<object type="image/svg+xml" data="aafigure-19.svg" width="444" height="96"></object><!-- - Resistor should not be filled -> can be solved by symbol detection -->
+<ul class="simple">
+<li>Capacitor not good, would prefer <tt class="docutils literal"><span class="pre">--||--</span></tt>  -&gt; symbol detection</li>
+</ul>
+<object type="image/svg+xml" data="aafigure-20.svg" width="552" height="132"></object><ul class="simple">
+<li>Diodes OK</li>
+<li>Caps not optimal. Too far appart in image, not very good recognisable in
+ASCII. Space cannot be removed as the two <tt class="docutils literal"><span class="pre">+</span></tt> signs would be connected
+otherwise. The schematic below uses an other style.</li>
+<li>Arrows in transistor symbols can not be drawn</li>
+</ul>
+<p>Here is a complete circuit with different parts:</p>
+<object type="image/svg+xml" data="aafigure-21.svg" width="758" height="326"></object></div>
+<div class="section" id="timing-diagrams">
+<h2>Timing diagrams</h2>
+<object type="image/svg+xml" data="aafigure-22.svg" width="264" height="84"></object><p>Here is one with descriptions:</p>
+<object type="image/svg+xml" data="aafigure-23.svg" width="552" height="216"></object></div>
+<div class="section" id="statistical-diagrams">
+<h2>Statistical diagrams</h2>
+<p><a class="reference external" href="http://en.wikipedia.org/wiki/Benfords_law">Benfords</a> distribution of the sizes of files on my harddrive:</p>
+<object type="image/svg+xml" data="benford.svg" width="604" height="180"></object><p>Just some bars:</p>
+<object type="image/svg+xml" data="aafigure-24.svg" width="252" height="96"></object></div>
+<div class="section" id="schedules">
+<h2>Schedules</h2>
+<object type="image/svg+xml" data="aafigure-25.svg" width="648" height="84"></object></div>
+</div>
+</div>
+</body>
+</html>

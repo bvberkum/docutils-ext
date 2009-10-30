@@ -16,7 +16,7 @@ class HTMLTranslator(html4css1.HTMLTranslator):
     def visit_left_margin(self, node):
         self.context.append(len(self.body))
 
-    def depart_left_margin(self, node):        
+    def depart_left_margin(self, node):
         start = self.context.pop()
         margin = [self.starttag(node, 'div', CLASS='margin left')]
         margin.extend(self.body[start:])
@@ -25,11 +25,11 @@ class HTMLTranslator(html4css1.HTMLTranslator):
             self.body_prefix[:1] + margin + self.body_prefix[1:]
         self.left_margin.extend(margin)
         del self.body[start:]
-        
+
     def visit_right_margin(self, node):
         self.context.append(len(self.body))
 
-    def depart_right_margin(self, node):        
+    def depart_right_margin(self, node):
         start = self.context.pop()
         margin = [self.starttag(node, 'div', CLASS='margin right')]
         margin.extend(self.body[start:])
