@@ -3,10 +3,12 @@ python-docutils extension.
 
 Copyleft 2009  Berend van Berkum <dev@dotmpe.com>
 This file has been placed in the Public Domain.
+
+This file adds two nodes types to the docutils document tree
+and a directive to parse these nodes from reStructuredText.
 """
 from docutils import nodes
-from docutils.parsers.rst import Directive
-from docutils.parsers.rst import directives
+from docutils.parsers.rst import Directive, directives
 
 
 class left_margin(nodes.Decorative, nodes.Element): pass
@@ -44,12 +46,13 @@ class decoration(nodes.decoration):
 nodes.decoration = decoration
 
 
+# Directives for registration with docutils' rSt parser
 class Margin(Directive):
 
     """
     A decorative element for contents in the side margins of a page.
     Like the header and footer decorative elements, this allows page
-    contents beside the documents body.
+    contents beside the documents' body.
 
     A page can have two margings, left and right, multiple occurrences are
     merged in order.

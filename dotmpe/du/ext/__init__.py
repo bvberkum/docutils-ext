@@ -1,19 +1,31 @@
 """
-Extensions for docutils reStructuredText
+Extensions for docutils reStructuredText.
+
+Upon import registers:
+
+- Margin directive with rSt parser.
+
+TODO:
+- 'dotmpe-htdocs' writer alias for XHTML output with margin support.
+- 'rst' writer alias for reStructuredText output. 
 """
 from docutils.parsers.rst import directives
 
 
-"Add left_margin/right_margin directives"
-from dotmpe.du.ext.margin import Margin
-
+"Register left_margin/right_margin directives"
+from dotmpe.du.ext.node.margin import Margin
 directives.register_directive('margin', Margin)
 
-#"Add margin support, override html writer"
-#import dotmpe.du.ext.xhtmlwriter
-#import docutils.writers
-#docutils.writers._writer_aliases['html'] = \
-#        'dotmpe.du.ext.xhtmlwriter'
-#docutils.writers._writer_aliases['dotmpe-htdocs'] = \
-#        'dotmpe.du.ext.xhtmlwriter'
-#
+
+#"Override standard html writer, add margin support"
+#docutils.writers._writer_aliases['html'] = 'dotmpe.du.ext.writer.xhtml'
+
+# XXX: docutils.{reader,parser,writer}s.get_*_class 
+# cannot load modules from other packages
+#docutils.writers._writer_aliases.update({
+#    'dotmpe-htdocs': 'dotmpe.du.ext.writer.xhtml'})
+#docutils.writers._writer_aliases.update({
+#    'dotmpe-rst': 'dotmpe.du.ext.writer.rst',
+#    'rst': 'dotmpe-rst' })
+
+
