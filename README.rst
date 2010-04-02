@@ -1,6 +1,5 @@
 Extensions for Python docutils (>= 0.5)
 
-TODO: CSS stylesheet
 
 dotmpe extensions
 -----------------
