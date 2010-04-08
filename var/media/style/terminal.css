@@ -1,0 +1,53 @@
+#interpreter_input, 
+#interpreter_inputarea {
+	width:auto;
+    display:inline;
+}
+#interpreter_form {
+	width:auto;
+    border: 1px solid #CCCCCC;
+}
+/*#interpreter_form, */
+#interpreter_form .code,
+#interpreter_form .data,
+#interpreter_form .error,
+#interpreter_form .textbox {
+/*    font-family: Monaco, "Lucida console", Courier !important;*/
+	font-family: "Bitstream Vera Sans Mono", monospace;
+}
+#interpreter_history {
+	display:block;
+	float:left;
+	width:2.5em;		
+	color: #f57900;
+}
+#interpreter_form > * {
+    margin: 0.2em 0.3em; }
+#interpreter_area {
+    margin-top: .3em;
+}
+#interpreter_output span {
+    white-space: -moz-pre-wrap; /* Mozilla */
+    white-space: -o-pre-wrap; /* Opera 7 */
+    white-space: pre-wrap; /* CSS 2.1 */
+    white-space: pre-line; /* CSS 3 (and 2.1 as well, actually) */
+    word-wrap: break-word; /* IE */
+    wrap-option: emergency; /* CSS 3 */
+}
+.textbox {
+	border:none;
+    margin-top: .3em;
+    border-top: 1px solid #CCCCCC !important; 
+}
+.textbox:focus { background-color: #FFFEE3; }
+.code { color: blue; }
+.data { color: black; }
+.error { color: red; }
+.banner { color: green; font-size:.8em; }
+.invisible { display: none; }
+
+
+pre, object[type^="application/xhtml"] {
+	width:98%; max-height:21em;	min-height:4em;
+	overflow:auto;
+}

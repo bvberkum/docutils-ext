@@ -26,6 +26,7 @@ directives.register_directive('margin', Margin)
 #docutils.writers._writer_aliases['html'] = 'dotmpe.du.ext.writer.xhtml'
 
 # XXX: docutils.{reader,parser,writer}s.get_*_class
+import docutils
 # cannot load modules from other packages
 #docutils.writers._writer_aliases.update({
 #    'dotmpe-htdocs': 'dotmpe.du.ext.writer.xhtml'})

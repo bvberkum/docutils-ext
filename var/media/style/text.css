@@ -1,0 +1,4 @@
+.document p, .line { 
+	margin:.2em 0 .5em 0; text-align:justify; }
+.document p.first:first-letter { font-size:2em; font-family:serif; }
+

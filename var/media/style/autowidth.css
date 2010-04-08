@@ -1,0 +1,23 @@
+#footer, div.footer,
+#header, div.header,
+#contents, div.document,
+#debug {
+	width: auto !important; }
+form {
+	width: auto; }
+/*p { border: 1px solid red; }	*/
+.contents input[type=text],
+#contents input[type=text],
+textarea {
+	width: 98%; }
+pre, img, div.figure {
+	width:auto !important; max-width:none !important; min-width:none !important; }
+pre {
+	width:auto;
+	margin-left: auto;
+	margin-right: auto; }
+.epigraph {
+	max-width: 29em;
+	margin-left: auto;
+	margin-right: auto;
+}

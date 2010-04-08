@@ -93,6 +93,12 @@ class RstTranslator(nodes.NodeVisitor): # {{{
         title = node.astext()
         self.body.append('\n' + "".rjust(len(title), self.title_markers[self.depth]) + '\n')
 
+    def visit_subtitle(self, node):
+        pass
+    def depart_subtitle(self, node):
+        title = node.astext()
+        self.body.append("".rjust(len(title), self.title_markers[self.depth]) + '\n')
+
     def visit_section(self, node):
         self.depth += 1
     def depart_section(self, node):

@@ -1,0 +1,32 @@
+body {
+	margin:0;
+	background-color:whitesmoke;	   
+}
+h1 {
+	margin:0.5em 0.8em;
+	padding:0;
+	font-size:2em;
+}
+p {
+	margin:0.3em;
+}
+.player {
+	margin:0;
+	padding:1em;
+	background:black;
+	color:silver;
+}
+.screen {
+}
+.status {
+	width:33em;
+	margin:0 auto;
+	border:0.1em solid #444;
+	padding:0.5em 1em;
+}
+.controls {
+}
+input[type="button"] {
+margin:0.4em;
+padding:0.1em 0.3em;
+}

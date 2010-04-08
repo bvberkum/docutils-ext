@@ -1,7 +1,9 @@
-import docutils
+import docutils.core
 import unittest
-import dotmpe.du.ext
+
 import init
+import dotmpe.du.ext
+from dotmpe.du.ext.writer.rst import Writer
 
 
 class RstWriter(unittest.TestCase):
@@ -15,7 +17,13 @@ class RstWriter(unittest.TestCase):
 	def test_1(self):
 		for doc in init.TEST_DOC:
 			rst = open(doc).read()
-			parts = docutils.core.publish_parts(source=rst, writer_name='dotmpe-rst')
-			print parts
+			result = docutils.core.publish_parts(source=rst, 
+					writer_name='pseudoxml')['whole']#writer_name='dotmpe-rst')
+			print result
+			result = docutils.core.publish_parts(source=rst, 
+					writer=Writer())['whole']#writer_name='dotmpe-rst')
+
+			print result
+			print rst == result
 
 
