@@ -1,0 +1,301 @@
+* {
+/*
+ color:dimgray;
+    font-family: Monaco, "lucida console", Courier;
+	padding:0;margin:0;
+    font-weight:normal;
+ */
+	text-decoration:none;
+	width:auto !important;
+	height:auto !important;
+}
+
+*[class]:before,
+*[id]:before {
+	content: "#"attr(id)"."attr(class);
+	font-size: 0.7em;
+	color: #777;
+	font-weight:bold;
+	border: 1px solid #eee;
+}
+
+body {
+	background:darkgrey;
+}
+body:before {
+	content:"BODY#"attr(id)"."attr(class);
+/*	color:lightslateblue;*/
+}
+h1:before {
+	content: "H1. ";
+}
+h1[id]:before
+h1[class]:before {
+	content: "H1#"attr(id)"."attr(class);
+}
+h2:before {
+	content: "H2. ";
+}
+h2[id]:before
+h2[class]:before {
+	content: "H2#"attr(id)"."attr(class);
+}
+h3:before {
+	content: "H3. ";
+}
+h3[id]:before
+h3[class]:before {
+	content: "H3#"attr(id)"."attr(class);
+}
+h4:before {
+	content: "H4. ";
+}
+h4[id]:before
+h4[class]:before {
+	content: "H4#"attr(id)"."attr(class);
+}
+h5:before {
+	content: "H5. ";
+}
+h5[id]:before
+h5[class]:before {
+	content: "H5#"attr(id)"."attr(class);
+}
+h6:before {
+	content: "H6. ";
+}
+h6[id]:before
+h6[class]:before {
+	content: "H6#"attr(id)"."attr(class);
+}
+blockquote {
+	border:1px solid lightseagreen;
+}
+blockquote:before {
+	content: "BLOCKQUOTE. ";
+}
+blockquote[id]:before,
+blockquote[class]:before {
+	content: "BLOCKQUOTE#"attr(id)"."attr(class);
+}
+pre {
+/*	background: LemonChiffon;*/
+	border:1px solid Khaki;
+	white-space:pre;
+}
+pre:before {
+	content: "PRE. ";
+}
+pre[id]:before
+pre[class]:before {
+	content: "PRE#"attr(id)"."attr(class);
+}
+cite:before {
+	content: "CITE. ";
+}
+cite[id]:before,
+cite[class]:before {
+	content: "CITE#"attr(id)"."attr(class);
+}
+abbr:before {
+	content: "ABBR. ";
+}
+abbr[id]:before,
+abbr[class]:before {
+	content: "ABBR#"attr(id)"."attr(class);
+}
+del:before {
+	content: "DEL. ";
+}
+del[id]:before,
+del[class]:before {
+	content: "DEL#"attr(id)"."attr(class);
+}
+ins:before {
+	content: "INS. ";
+}
+ins[id]:before,
+ins[class]:before {
+	content: "INS#"attr(id)"."attr(class);
+}
+a:before {
+	content: "A. ";
+}
+a[id]:before,
+a[class]:before {
+	content: "A#"attr(id)"."attr(class);
+}
+p:before {
+	content: "P. ";
+}
+p[id]:before,
+p[class]:before {
+	content: "P#"attr(id)"."attr(class);
+}
+span:before {
+	content: "SPAN. ";
+}
+span[id]:before,
+span[class]:before {
+	content: "SPAN#"attr(id)"."attr(class);
+}
+b:before {
+	content: "B. ";
+}
+b[id]:before,
+b[class]:before {
+	content: "B#"attr(id)"."attr(class);
+}
+strong:before {
+	content: "STRONG. ";
+}
+strong[id]:before,
+strong[class]:before {
+	content: "STRONG#"attr(id)"."attr(class);
+}
+em:before {
+	content: "EM. ";
+}
+em[id]:before,
+em[class]:before {
+	content: "EM#"attr(id)"."attr(class);
+}
+u:before {
+	content: "U. ";
+}
+u[id]:before,
+u[class]:before {
+	content: "U#"attr(id)"."attr(class);
+}
+i:before {
+	content: "I. ";
+}
+i[id]:before,
+i[class]:before {
+	content: "I#"attr(id)"."attr(class);
+}
+ul,li,ol {
+	border:1px solid purple;
+/*	background: LavenderBlush;*/
+	padding:0.2em;
+	padding-left:1em;
+	margin:0.2em;
+	list-style:none;
+}
+ul:before {
+	content: "UL. ";
+}
+ul[id]:before,
+ul[class]:before {
+	content: "UL#"attr(id)"."attr(class);
+}
+ol:before {
+	content: "OL. ";
+}
+ol[id]:before,
+ol[class]:before {
+	content: "OL#"attr(id)"."attr(class);
+}
+li:before {
+	content: "LI. ";
+}
+li[id]:before,
+li[class]:before {
+	content: "LI#"attr(id)"."attr(class);
+}
+
+div {
+/*	background: ghostwhite;*/
+	border:1px solid lavender;
+}
+div:before {
+	content: "DIV. ";
+}
+div[id]:before,
+div[class]:before {
+	content: "DIV#"attr(id)"."attr(class);
+}
+
+table,th,tr,td {
+	padding:0.2em;
+}
+table {
+	border:1px solid #7bcdb2;
+}
+td {
+	background:#a5f9dc;
+	margin:0.5em;
+}
+table:after {
+	content: "TABLE";
+}
+table[id]:after,
+table[class]:after {
+	content: "TABLE#"attr(id)"."attr(class);
+}
+hr:before {
+	content: "HR. ";
+}
+hr[id]:before,
+hr[class]:before {
+	content: "HR#"attr(id)"."attr(class);
+}
+th:before {
+	content: "TH. ";
+}
+th[id]:before,
+th[class]:before {
+	content: "TH#"attr(id)"."attr(class);
+}
+col:before {
+	content: "COL. ";
+}
+col[id]:before,
+col[class]:before {
+	content: "COL#"attr(id)"."attr(class);
+}
+tr:before {
+	content: "TR. ";
+}
+tr[id]:before,
+tr[class]:before {
+	content: "TR#"attr(id)"."attr(class);
+}
+td:before {
+	content: "TD. ";
+}
+td[id]:before,
+td[class]:before {
+	content: "TD#"attr(id)"."attr(class);
+}
+
+noscript:before {
+	content: "NOSCRIPT. ";
+}
+noscript[id]:before,
+noscript[class]:before {
+	content: "NOSCRIPT#"attr(id)"."attr(class);
+}
+
+form:before {
+	content: "FORM. ";
+}
+form[id]:before,
+form[class]:before {
+	content: "FORM#"attr(id)"."attr(class);
+}
+input:before {
+	content: "INPUT. ";
+}
+input[id]:before,
+input[class]:before {
+	content: "INPUT#"attr(id)"."attr(class);
+}
+label:before {
+	content: "LABEL. ";
+}
+label[id]:before,
+label[class]:before {
+	content: "LABEL#"attr(id)"."attr(class);
+}
+

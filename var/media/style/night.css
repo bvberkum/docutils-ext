@@ -1,0 +1,66 @@
+html {
+	background-color:black;/*#555753 !important; */ }
+
+:root {
+	background-color:black; }
+body {
+	background-color:black; }
+
+* {
+	color white;
+}
+#contents, p {
+	background: black; color:white;
+}
+
+div#contents, div.document, div#debug, pre, img, .figure img, table {
+	background: black;
+	border-color: #00780C !important; }
+div#contents *, div.document *, div#debug *, pre {
+	color:#00DE17 !important; }
+div#debug, div#sidebar, .sidebar, .system-message  {
+	background: black;
+	border-color: #785C15 !important; }
+div#debug *, div#sidebar *, .sidebar *, .system-message  {
+	font-weight: bold;
+	color: #C49723 !important; }
+div#header, div.header {
+	background: black;
+	border-color: #00780C !important; }
+div#footer, div.footer {
+	background: black;
+	border-color: #00780C !important; }
+div#header *, div.header *,
+div#footer *, div.footer * {
+	font-weight: bold;
+	color: #00a912;
+}
+blockquote, blockquote p{
+	background: #00780C;
+	border-color: #00DE17 !important; }
+.admonition {
+	border-color: #00DE17 !important; }
+.docinfo {
+	background-color: #00780C; }
+
+td {
+	border-color: #00780C !important; }
+hr {
+	background: #00780C !important; }
+
+
+input[type=text], textarea {
+    border: .1em #c49723 solid;
+    color: white;
+	background-color: #785C15; }
+
+a, a:link, a * {
+	font-weight: bold !important;
+	color: #c49723 !important; }
+a:visited {
+	color: #785C15 !important; }
+a[href]:hover {
+	border-color: #C49723 !important; }
+a:hover {
+	border-color: #C49723 !important; }
+

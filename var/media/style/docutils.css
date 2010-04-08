@@ -1,0 +1,40 @@
+/* old */
+document, docinfo, title, header, footer, subtitle, rubric,
+paragraph, section, topic, system_message {
+    display: block; }
+document {
+    padding:.5em 1em;
+    margin.3em .8em;
+    background-color: #d3d7cf;
+    color: #555753;
+}
+section {
+    padding: 1em;
+    border: 1px solid #eeeeec; }
+paragraph {
+    margin: 0.5em 0;
+    border: 1px solid #d3d7cf; }
+title {
+    font-size: 1.5em;
+    font-variant: small-caps;
+}
+rubric {
+    padding:.1em .8em;
+    border-left: .3em solid #eeeeec; }
+docinfo {
+    background-color: #d3d7cf;
+    font-size:0.85em; }
+field_name {
+    padding:.1em .8em;
+    border-left: .3em solid #babdb6/*888a85*/;
+    width: 12em;
+    float: left;
+    font-variant: small-caps;
+    font-weight: bold; }
+field_name:after {
+    content: ':'; }
+system_message {
+    border: .1em solid #cc0000; /*#ed2929*/;
+    border-width: .3em .1em 0 .1em; }
+
+

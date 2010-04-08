@@ -1,0 +1,23 @@
+/*
+.Special { color: #ff40ff; }
+.Statement { color: #ffff00; }
+.PreProc { color: #ff40ff; }
+.Constant { color: #ff6060; }
+pre { color: #000000; background-color: #ffffff; }
+body { color: #000000; background-color: #ffffff; }
+.lnr { color: #ffff00; }
+.Comment { color: #8080ff; }
+*/
+
+/* Desert */
+.Todo { color: #ff4500; background-color: #eeee00; }
+.Special { color: #ffdead; }
+.PreProc { color: #cd5c5c; }
+.Statement { color: #f0e68c; font-weight: bold; }
+.Constant { color: #ffa0a0; }
+pre { color: #ffffff; background-color: #333333; }
+body { color: #ffffff; background-color: #333333; }
+.lnr { color: #ffff00; }
+.Comment { color: #87ceeb; }
+.Identifier { color: #98fb98; }
+

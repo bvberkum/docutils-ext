@@ -1,0 +1,105 @@
+/**
+ * Body: 9/11pt, 0 before and 5pt after
+ *
+ * Title: 36/44pt 0,22pt
+ * Head: 14/14pt 36,10pt
+ * Sub head: 10/12pt 8,4pt
+ *
+ */
+
+body {
+	font-size: 100%;
+	background-color: #aaa;
+}
+
+.document {
+	font-family: "Minion Web";
+	text-align: justify;
+	background-color: white;
+	font-size: 9pt;
+	line-height: 11pt;
+	width: 36em;
+	letter-spacing: normal;
+/*	height: 58em;
+	max-height:58em; FIXME: can't have height while not paging */ 
+	overflow: hidden;
+	padding: 6.47em 8em 12.94em 4em;
+}
+.document * {
+	margin: 0 0 5pt 0;
+}
+.document h1.title {
+	font-size: 36pt;
+	line-height: 44pt;
+	margin: 0 0 22pt 0;
+	letter-spacing: inherit;
+	font-variant: normal;
+	font-style: normal;
+}
+.document h1, /* XXX: When docutils promotes doc title, second level becomes h1? */
+.document h2.head {
+	font-size: 14pt;
+	line-height: 14pt;
+	font-variant: small-caps;
+	letter-spacing: 0.03em;
+	margin: 36pt 0 10pt 0;
+}
+.document h3,
+.document h3.subhead {
+	font-size: 10pt;
+	line-height: 12pt;
+	margin: 8pt 0 4pt 0;
+	font-style: italic;
+}
+.document p {
+	margin: 0 0 5pt 0;
+	text-indent: 12pt;
+	margin: 0;
+}
+.document blockquote.epigraph {
+	font-style: italic;
+}
+.document .figure {
+	text-align: center;
+}
+.document .docinfo {
+	margin: 0 auto;
+}
+.document .docinfo-name,
+.document .field-name {
+	text-align: right; 
+	width: 11em; 
+}
+
+.document .admonition p.admonition-title {
+}
+
+.document .section {
+}
+
+.document ul,
+.document ol {
+	margin: 10pt 0 10pt 0;
+	padding: 0;
+}
+.document li {
+	margin: 0 0 0 0;
+	padding: 0;
+}
+.document li p {
+	margin: 0 0 0 5pt;
+	padding: 0;
+}
+
+.document pre,
+.document .literal-block {
+	font-family: monospace;
+	text-align: left;
+	font-size: 9pt;
+	line-height: 10pt;
+/*	height: 58em;
+	max-height:58em; FIXME: can't have height while not paging */ 
+/*	width: 36em; */
+	padding: 0;
+	margin: 0 0 10pt 0pt;
+}
