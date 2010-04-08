@@ -39,6 +39,7 @@ class RstTranslator(nodes.NodeVisitor): # {{{
     indent = '   '
     title_markers = []
     level = 0
+    depth = 0
 
     title = ''
     docinfo = {}
@@ -62,7 +63,10 @@ class RstTranslator(nodes.NodeVisitor): # {{{
         self.level = 0 # count indented blocks
         self.indent = '   '
         self.depth = 0 # count section nesting 
-        self.title_markers = ['=', '-', '~', '^', '+']
+        self.title_markers = ['=', '-', '~', '^', '+', "'"]
+        self.docinfo = {}
+        self.body = []
+        self.references = []
 
     def astext(self):
         return "".join(self.body)
@@ -97,7 +101,8 @@ class RstTranslator(nodes.NodeVisitor): # {{{
         pass
     def depart_subtitle(self, node):
         title = node.astext()
-        self.body.append("".rjust(len(title), self.title_markers[self.depth]) + '\n')
+        self.body.append('\n' + "".rjust(len(title),
+        	self.title_markers[self.depth+1]) + '\n')
 
     def visit_section(self, node):
         self.depth += 1
