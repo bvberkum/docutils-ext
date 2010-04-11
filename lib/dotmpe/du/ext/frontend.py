@@ -11,13 +11,14 @@ dates = '2009',
 
 default_description =  "Gate - Host-wide hypertext (%s) [%s]" % ( version, ', '.join(dates))
 
+default_resolver = ''
 default_reader = 'standalone' #gate'
 default_parser = 'rst'
 default_writer = 'html4css1'
 
 default_spec = (
-        'Paperlib main',
-        "Settings used in constructing the docutils publisher.",
+        'Publisher',
+        "Settings used in constructing the publisher.",
           (
            ('Reader',
             ['--reader'],
@@ -72,6 +73,7 @@ def get_option_parser(components,
 
 
 def publish(usage=None, description=default_description, argv=[],
+		resolver_name=default_resolver,
         reader_name=default_reader, parser_name=default_parser,
         writer_name=default_writer, enable_exit_status=None):
 
@@ -81,9 +83,10 @@ def publish(usage=None, description=default_description, argv=[],
 
     # XXX: source and destinations have no exposed settings
     components = [
-            comp.get_reader(reader_name),
-            comp.get_parser(parser_name),\
-            comp.get_writer(writer_name)]
+#    		resolvers.get_resolver_class(resolver_name),
+            readers.get_reader_class(reader_name),
+            parsers.get_parser(parser_name),\
+            writers.get_writer(writer_name)]
 
     option_parser = get_option_parser(components, usage=usage,
             description=description)
@@ -148,8 +151,7 @@ def publish(usage=None, description=default_description, argv=[],
 
 default_usage = '%prog [options] [<source> [<destination>]]'
 
-def main(argv=[], usage=default_usage, description=default_description,
-        adapter=None):
+def main(argv=[], usage=default_usage, description=default_description):
 
     "Run the publisher."
 
@@ -162,22 +164,10 @@ def main(argv=[], usage=default_usage, description=default_description,
 
     settings = option_parser.parse_args(argv)
 
-    src_ref = settings._source
-    dest_ref = settings._destination
-
-    # Get adapter and initialize source and destination
-
-    if not adapter:
-        adapter = content.Host.factory(os.getcwd())
-
-    source = adapter.find(src_ref)
-    destination = adapter.find(dest_ref)
-
-    print source, destination
+	publish
 
     # Publish from source to destination
 
-    p
 
 
 def publish_programatically(src_ref='README.rst', src_class=content.DUDocTree,
