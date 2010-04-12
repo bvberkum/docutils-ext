@@ -1,3 +1,15 @@
+"""
+It may be helpful to set publisher settings from with a document.
+
+Especially the codec for a file may be scraped from the text before the
+publisher has started. 
+
+But only for transforms and the actual writing, settings my be overriden by a
+transform. That is what the SpecInfo transform does.
+
+Right now it takes settings from the first or last field-list, but that will
+change.
+"""
 from docutils import transforms, nodes
 
 
@@ -102,12 +114,12 @@ class SpecInfo(transforms.Transform):
 
     def first_and_last_field_list(self):
         "Returns one or two-part tuple. "
+        "FIXME: This is very wastefull, searching the entire doc."
+        "Perhaps better require field in decorator or before first paragraph.."
         doc = self.document
 
-        field_lists = []
-        for index in range(0, len(doc)):
-            if isinstance(doc[index], nodes.field_list):
-                field_lists.append(doc[index])
+        # field_lists may not be in root and frontmatter has not run yet
+        field_lists = doc.traverse(nodes.field_list)
         
         if len(field_lists) == 1:
             return (field_lists[0],)

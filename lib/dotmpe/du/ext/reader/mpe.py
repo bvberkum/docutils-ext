@@ -27,7 +27,8 @@ class Reader(spec.Reader):
             generate.Timestamp.settings_spec +
             generate.CCLicenseLink.settings_spec +
             generate.SourceLink.settings_spec +
-            clean.StripSubstitutionDefs.settings_spec,
+            clean.StripSubstitutionDefs.settings_spec +
+            clean.StripAnonymousTargets.settings_spec,
     )
     config_section = 'Template reader'
     config_section_dependencies = ('readers',)
@@ -59,6 +60,7 @@ class Reader(spec.Reader):
             misc.Transitions,               # 830
             references.DanglingReferences,  # 850
             clean.StripSubstitutionDefs,    # 900
+            clean.StripAnonymousTargets,    # 900
         ]
 
 

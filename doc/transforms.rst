@@ -1,6 +1,5 @@
 Transforms
 ----------
-:generator: xfoooooo
 
 include.Include 
     Insert pieces of raw, unparsed content into the tree.
@@ -45,6 +44,8 @@ generate.PathBreadcrumb         mpe (r)                       200
 generate.Generated              mpe (r)                       200
 generate.CCLicenseLink          mpe (r)                       200
 generate.SourceLink             mpe (r)                       200
+clean.StripAnonymousTargets     mpe (r)                       900
+clean.StripSubstitutionDefs     mpe (r)                       900
 ==============================  ============================  ========
 
 

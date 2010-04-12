@@ -1,7 +1,3 @@
-:generator: Foo!
-:language: en
-:cc-license: by-sa-nc
-
 - Would be nice to have all errors in (XHTML) output accumulated into
   system-messages section, instead of embedded whereever they appear. 
 

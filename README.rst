@@ -43,10 +43,10 @@ transforms with implementations that provide their own flexible
 settings spec.
 
 .. include:: doc/transforms.rst
-   :start-line: 0
-   :end-line: 15
+   :start-line: 3
+   :end-line: 18
 
-.. start/end line requires rev >= 6185
+.. start/end line requires du rev >= 6185
 
 Read more about them in `Transforms <doc/transforms>`__.
 
