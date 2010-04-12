@@ -1,5 +1,5 @@
 """
-It may be helpful to set publisher settings from with a document.
+It may be helpful to set publisher settings from within a document.
 
 Especially the codec for a file may be scraped from the text before the
 publisher has started. 

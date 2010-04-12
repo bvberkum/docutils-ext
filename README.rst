@@ -2,14 +2,10 @@ Extensions for Python docutils (>= 0.5)
 
 Development targets:
   - Directives for left- and right-margin decoration.
-  - A ``html4css1`` writer with margin support.
-  - Some additional transforms with exposed settings.  
-  - Testing experimental rst writer
-  - an experimental publisher for a web-service to enable rSt content on 
-    non-Python hosts. 
-
-    .. Perhaps data extraction and cross-referencing in the future.
-       integration with nabu
+  - An ``html4css1`` writer with margin support.
+  - Testing experimental rst writer, see test/
+  - Some additional transforms with exposed settings are used in 
+    ``dotmpe.du.ext.reader.mpe``.
 
 
 dotmpe extensions
