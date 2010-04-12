@@ -1,40 +1,59 @@
 Extensions for Python docutils (>= 0.5)
 
-- left- and right-margin directive
-- XHTML wirter with margin support   
-- testing experimental rst writer
-- an experimental publisher for a web-service to enable rSt content on 
-  non-Python hosts. 
-  Perhaps data extraction and cross-referencing in the future.
+Development targets:
+  - Directives for left- and right-margin decoration.
+  - A ``html4css1`` writer with margin support.
+  - Some additional transforms with exposed settings.  
+  - Testing experimental rst writer
+  - an experimental publisher for a web-service to enable rSt content on 
+    non-Python hosts. 
+    .. Perhaps data extraction and cross-referencing in the future.
+       integration with nabu
 
-  .. integration with nabu
 
 dotmpe extensions
 -----------------
-The following new directives:
 
-.. margin:: left
+Directives
+''''''''''
+Left- and right-margin are decoration blocks like the page header and footer.
+There is at most one of each per page.
+::
 
-   Margin contents left-side.
+  .. margin:: left
+  
+     Margin contents left-side.
+  
+  .. margin:: right
+     :class: my-doc
+     
+     Margin contents right-side.
+  
+  .. margin:: left
+  
+     More contents left-side.
 
-.. margin:: right
-   :class: my-doc
-   
-   Margin contents right-side.
 
-.. margin:: left
+Transforms
+''''''''''
+Docutils includes setting specs for some of its transforms into core and
+frontend. The ``dotmpe.du.ext.reader.mpe`` Reader replaces some of these 
+transforms with implementations that provide their own flexible 
+settings spec.
 
-   More contents left-side.
-
-.. Just to illustrate the relation in output, the header and footer:
-
-.. footer::
-
-   footer
-
-.. header::
-
-   header
+include.Include 
+	Insert pieces of raw, unparsed content into the tree.
+template.TemplateSubstitutions
+	A variant on docutil's references.Substitutions. Formats a substitution
+	value for a set of substitution references.
+generate.PathBreadcrumb
+	A substitution that inserts a 'breadcrumb'. A list of links generated from a
+	path. The the source content path is used by default, and inserted into the
+	header if the substitution reference is not present.
+generate.Generated
+	A more flexible way of including a timestamp based on substitution.
+generate.SourceLink
+	A more flexible way of including a sourcelink based on substitution.
 
 
 Overview
@@ -50,8 +69,13 @@ utils. Active development based on the ideas below.
 
 The aims being listed above. 
 
+
 Docutils publishing
 -------------------
+.. note::
+
+   This is a short overview of the docutils publisher.
+
 The Docutils publisher reads stream data from source, parses this to a raw tree, 
 transforms it into some document structure and finally writes that structure to
 an output format.
@@ -60,7 +84,8 @@ All components in the publication chain (source, reader, parser, writer, destina
 may contribute transforms and reference resolvers. 
 
 Transforms are mainly used by parser and reader to structure and index the
-document from its raw text-based data. 
+document from its raw text-based data. Transforms are loaded and applied after 
+reading and parsing has completed.
 
 Source and destination are Input and Output components that work on encoded 
 character streams. 
@@ -76,6 +101,7 @@ It handles the main components, Reader, Parser and Writer and the publication
 cycle from source to destination using settings and transforms. 
 The settings are loaded from config, CLI and may be programmatically
 defined. Available settings are defined by the different components.
+
 
 Remote publisher
 ----------------
@@ -106,7 +132,8 @@ That means:
   bound/specify a host.
 
 The source can be an absolute or relative reference, depending
-on the chosen resolver. 
+on the chosen resolver, it probably should always be converted to a global
+reference, possibly with id?
 Destination may need to be dereferenced in a similar way.
 
 Also, publishing from one host to another requires rewriting of references. 
@@ -117,6 +144,7 @@ Back `in 2004 there was a great post`__ on the mailing list about handling of
 references in docutils. 
 
 .. __: http://thread.gmane.org/gmane.text.docutils.devel/2060/focus=2066
+
 
 Host publisher
 --------------

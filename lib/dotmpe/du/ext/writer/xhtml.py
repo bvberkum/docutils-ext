@@ -3,6 +3,7 @@
 Copyleft 2009  Berend van Berkum <dev@dotmpe.com>
 This file has been placed in the Public Domain.
 """
+from docutils import nodes
 from docutils.writers import html4css1
 
 

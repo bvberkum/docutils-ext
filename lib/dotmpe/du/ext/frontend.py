@@ -164,8 +164,6 @@ def main(argv=[], usage=default_usage, description=default_description):
 
     settings = option_parser.parse_args(argv)
 
-	publish
-
     # Publish from source to destination
 
 

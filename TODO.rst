@@ -4,3 +4,10 @@
   Looks better and makes more sense typographically-wise, a link at the origin
   location would suffice.
 
+  |example-block|
+
+  `example ref </example/path>`_
+
+
+.. |example-block| replace:: Replace text.
+
