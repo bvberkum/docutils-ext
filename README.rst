@@ -7,6 +7,7 @@ Development targets:
   - Testing experimental rst writer
   - an experimental publisher for a web-service to enable rSt content on 
     non-Python hosts. 
+
     .. Perhaps data extraction and cross-referencing in the future.
        integration with nabu
 
@@ -41,20 +42,13 @@ frontend. The ``dotmpe.du.ext.reader.mpe`` Reader replaces some of these
 transforms with implementations that provide their own flexible 
 settings spec.
 
-include.Include 
-	Insert pieces of raw, unparsed content into the tree.
-template.TemplateSubstitutions
-	A variant on docutil's references.Substitutions. Formats a substitution
-	value for a set of substitution references.
-generate.PathBreadcrumb
-	A substitution that inserts a 'breadcrumb'. A list of links generated from a
-	path. The the source content path is used by default, and inserted into the
-	header if the substitution reference is not present.
-generate.Generated
-	A more flexible way of including a timestamp based on substitution.
-generate.SourceLink
-	A more flexible way of including a sourcelink based on substitution.
+.. include:: doc/transforms.rst
+   :start-line: 0
+   :end-line: 15
 
+.. start/end line requires rev >= 6185
+
+Read more about them in `Transforms <doc/transforms>`__.
 
 Overview
 --------
@@ -67,7 +61,7 @@ it up sometime.
 Frontend and pub contain an experimental adapted version of the Du publisher and core
 utils. Active development based on the ideas below. 
 
-The aims being listed above. 
+Working functionality is listed above in `dotmpe extensions`_. 
 
 
 Docutils publishing

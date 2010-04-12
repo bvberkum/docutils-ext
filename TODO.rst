@@ -1,13 +1,12 @@
+:generator: Foo!
+:language: en
+:cc-license: by-sa-nc
+
 - Would be nice to have all errors in (XHTML) output accumulated into
   system-messages section, instead of embedded whereever they appear. 
 
-  Looks better and makes more sense typographically-wise, a link at the origin
-  location would suffice.
+  Looks better and makes more sense typographically-wise, a linked marker at 
+  the origin location would suffice.
 
-  |example-block|
-
-  `example ref </example/path>`_
-
-
-.. |example-block| replace:: Replace text.
+  universal.Messages, used in writer component, already does something related?
 

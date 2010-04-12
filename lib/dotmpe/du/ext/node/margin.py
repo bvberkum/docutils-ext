@@ -1,4 +1,4 @@
-"""reStructuredText left/right margin directives,
+"""reStructuredText left/right margin directive, and doctree nodes.
 python-docutils extension.
 
 Copyleft 2009  Berend van Berkum <dev@dotmpe.com>

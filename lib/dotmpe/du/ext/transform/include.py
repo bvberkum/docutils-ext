@@ -1,18 +1,24 @@
-"""
-Include chunks of data to the document.
+""":created: 2010-04-11
+:author: B. van Berkum
 
-May be used to include external raw xml, latex or html data in the document
+Include chunks of data into the document.
+
+Use to include external raw xml, latex or html data in the document
 at publication time. 
 """
+import re
+from docutils import nodes
 from docutils.transforms import Transform
 
 
 class Include(Transform):
 
     """
-    This is a helper class for transforms that need to insert at certain
+    This is a helper baseclass for transforms that need to insert at certain
     locations. It can be used on itself to insert raw nodes too.
     """
+
+    # TODO: incomplete xpath parsing, works only for header/footer
 
     settings_spec = (
             (
@@ -23,40 +29,64 @@ class Include(Transform):
                 'Data may be raw string prefixed by ``type:``. '
                 'Use a second ``file:`` prefix to read raw data from filename. ',
                 ['--include'], 
-                {'action':'append', 'default':[], 'metavar':'PATH[IDX],DATA'}
+                {'action':'append', 'default':[], 'metavar':'XPATH,IDX,DATA'}
             ),
             )
 
-    default_priority = 50
-    "Way in front of any other transform on the tree. "
+    default_priority = 180
+    "Before actual substitution. "
+
+    datav_re = r'^(latex|html|xml):(file:)?(.*)$'
 
     def apply(self):
+        # validate options
         inserts = [i.split(',') for i in self.document.settings.include]
-
-        decoration = self.document.get_decoration()
-        for p, data in inserts:
-            # parse path
-            path, index = self.parse_xpath(p)
-            if hasattr(decoration, 'get_'+path):
-                loc = getattr(decoration, 'get_'+path)()
+        for i in range(0, len(inserts)):
+            if len(inserts[i]) != 3:
+                raise ""
             else:
-                loc = self.find_location(path)
-            # process data
-            # insert
-            loc.insert(index, data)
+                inserts[i][1] = int( inserts[i][1] )
 
-    xpath_re = r'([a-z][a-z0-9_])([([0-9]+)])?'
+        # insert each value
+        for xpath, index, data in inserts:
+
+            loc = self.find_location(xpath)
+
+            # process data
+            m = re.compile(self.datav_re).match(data)
+            if not m:
+                raise "Unable to read: %s" % data
+
+            datatype, isfile, data = m.groups()
+            assert not isfile
+#            if isfile:
+#                assert document.settings.include
+#                data = open(data).read()
+
+            # insert
+            loc.insert(index, nodes.raw('', data, format=datatype))
+
+
+    xpath_re = r'([a-z]?[a-z0-9_]+)(?:\[([0-9]+)\])'
 
     def parse_xpath(self, path):
-        match = re.compile(xpath_re).match
+        match = re.compile(self.xpath_re).match
         parts = path.split('/')
+        path = []
         for p in parts:
-            print match(p)
-        return 'header', 0            
+            g = match(p).groups()
+            path.append((g[0], int(g[1])))
+        return path            
 
     def find_location(self, path):
-        pass
+        decoration = self.document.get_decoration()
+        if hasattr(decoration, 'get_'+path):
+            return getattr(decoration, 'get_'+path)()
+        else:
+            # use xpath to retrieve parent node
+            #path = self.parse_xpath(xpath)
+            #name, index = path.pop()
+            #loc = self.find_location(path)
+            pass
 
-    def parse_xml(self, xml):
-        pass
 

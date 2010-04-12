@@ -13,16 +13,14 @@ from docutils.transforms.references import Substitutions
 from dotmpe.du.ext.transform import include
 
 
-"This should run before references.Substitutions (220). "
-"200 places them after template.TemplateSubstitutions "
-"and before the earliest transform (misc.ClassAttribute at 210). "
+# This should run before references.Substitutions (220). "
+# 200 places them after template.TemplateSubstitutions "
+# and before the earliest transform (misc.ClassAttribute at 210). "
 
 class PathBreadcrumb(include.Include):
 
     "Insert a substitution definition into the document tree, "
     "and a substitution reference if needed. "
-
-    default_priority = 200
 
     settings_spec = (
             (
@@ -38,20 +36,22 @@ class PathBreadcrumb(include.Include):
             ),(
                 'Generate breadcrumb from path (default: document source path)', 
                 ['--breadcrumb-path'], 
-                {'metavar': 'PATH'}
+                {'metavar': '<PATH>'}
             ),(
                 'Insert breadcrumb substitution reference if it is not there at ' 
                 'given location (default: %default). ', 
                 ['--breadcrumb-location'], 
-                {'default':'header', 'metavar':'DECORATOR_OR_XPATH'}
+                {'default':'header', 'metavar':'<DECORATOR_OR_XPATH>'}
             ),(
                 'Rename the substitution reference to use for the breadcrumb. '
                 '(default: %default) '
                 'This may can cause --breadcrumb-location to be ignored if the '
                 'document already has the substitution reference. ', 
                 ['--breadcrumb-substitution-reference'], 
-                {'default':'breadcrumb', 'metavar':'REFNAME'}
+                {'default':'breadcrumb', 'metavar':'<REFNAME>'}
             ))
+
+    default_priority = 200
 
     def apply(self):
         if not self.document.settings.breadcrumb:
@@ -120,9 +120,105 @@ class PathBreadcrumb(include.Include):
 
         return breadcrumb
 
+
+def validate_cc_license(setting, value, option_parser, 
+        config_parser=None, config_section=None):
+    l = CCLicenseLink.licenses
+    for v in value.split('-'):
+        if v not in l:
+            option_parser.error("Illegal license %s in %s" % (v, value))
+        else:
+            l = l[v]
+    return value            
+
+class CCLicenseLink(include.Include):
+
+    licenses = {
+        'pd': (),
+        'by': {
+            'sa': (),
+            'nd': (),
+            'nc': {
+                'nd': (),
+                'sa': ()
+            }
+        }
+    }
+
+    settings_spec = ((
+           'Embed Creative Commons License link. ',
+           ['--cc'],
+           {'action':'store_true', 'dest':'cc_embed'}
+       ),(
+           'Explicitly disallow Creative Commons License link. ',
+           ['--no-cc'],
+           {'action':'store_false', 'dest':'cc_embed'}
+       ),(
+           'Link format for Creative Commons License. ',
+           ['--cc-link'],
+           {'default': 'http://creativecommons.org/licenses/%s/3.0', 
+            'metavar':'<URL>'}
+       ),(
+           'Creative Commons License. Licenses may be combined, separate by "-". '
+           '(default: %default). ',
+           ['--cc-license'],
+           {'default': 'pd', 'choices':['pd','sa','nc','nd','by'], 
+               'validator': validate_cc_license, 'metavar': '<LICENSE>' }
+       ),(
+           'Insert cc-license substitution reference if it is not there at ' 
+           'given location (default: %default). ', 
+           ['--cc-license-location'], 
+           {'default':'footer', 'metavar':'<DECORATOR_OR_XPATH>'}
+       ),(
+           'Rename the substitution reference to use for the cc-license. '
+           '(default: %default) '
+           'This may can cause --cc-license-location to be ignored if the '
+           'document already has the substitution reference. ', 
+           ['--cc-license-substitution-reference'], 
+           {'default':'cc-license', 'metavar':'<REFNAME>'}
+       ))
+
+    default_priority = 200
+
+    def apply(self):
+        settings = self.document.settings
+        if not settings.cc_embed:
+            return
+
+        subrefname = nodes.fully_normalize_name(
+                settings.cc_license_substitution_reference)
+        subrefid = nodes.make_id(subrefname)
+        subrefpath = nodes.fully_normalize_name(
+                settings.cc_license_location)
+
+        subreflist = self.document.traverse(nodes.substitution_reference)
+        if subrefname not in subreflist:
+            subrefloc = self.find_location(subrefpath)
+
+            # append sub. ref. at location
+            subrefnode = nodes.substitution_reference(None, None,
+                    refname=subrefname)
+            subrefloc.append(subrefnode)
+            self.document.note_substitution_ref(subrefnode, subrefname)
+
+        license = self.generate_cc_license()
+        # append sub. def. to document
+        subdefnode = nodes.substitution_definition(names=subrefname)
+        subdefnode.append(license)
+        self.document.append(subdefnode)
+        self.document.note_substitution_def(subdefnode, subrefname)
+
+    def generate_cc_license(self):
+        license = self.document.settings.cc_license
+        descr = license.replace('-', ' ')#.title()
+        href = self.document.settings.cc_link % license
+
+        return nodes.paragraph('', '', nodes.reference('', descr, refuri=href))
+
+
 # TODO:
 
-class Generated(include.Include):
+class Timestamp(include.Include):
 
     """
     Alternative decorator to handle the following front-end options:
@@ -142,6 +238,13 @@ class Generated(include.Include):
     "Run much earlier than the original header/footer generator at 820. "
     "This overrides substitutions so run before 220. "
 
+    def apply(self):
+        settings = self.document.settings
+        #print 'timestamp', settings.datestamp
+
+    def generate_timestamp(self):
+        pass
+
 
 class SourceLink(include.Include):
     
@@ -149,6 +252,6 @@ class SourceLink(include.Include):
             )
 
     default_priority = 200
-    "Run much earlier than the original header/footer generator at 820. "
-    "This overrides substitutions so run before 220. "
+
+    def apply(self): pass
 
