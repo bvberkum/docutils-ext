@@ -2,10 +2,11 @@
 It may be helpful to set publisher settings from within a document.
 
 Especially the codec for a file may be scraped from the text before the
-publisher has started. 
+publisher has started. Nabu does this for the document's ID. I myself use some
+fields the establish what reader to use.
 
-But only for transforms and the actual writing, settings my be overriden by a
-transform. That is what the SpecInfo transform does.
+But settings my be overriden by a transform only for later and the actual writing.
+That is what the SpecInfo transform does.
 
 Right now it takes settings from the first or last field-list, but that will
 change.
@@ -65,8 +66,8 @@ class SpecInfo(transforms.Transform):
             settings.strip_specinfo = True
 
         # parse spec-names option
-        spec_names = self._parse_names('spec_names')
-        strip_spec_names = self._parse_names('strip_spec_names')
+        self._parse_names('spec_names')
+        self._parse_names('strip_spec_names')
 
         # get spec-info from first or last field-list
         document = self.document
@@ -77,7 +78,10 @@ class SpecInfo(transforms.Transform):
             for r in self.extract_spec(list):
                 if isinstance(r, nodes.field):
                     nodelist.append(r) # keep field
-            list[:] = nodelist
+            if not nodelist:
+                list.parent.remove(list)
+            else:    
+                list[:] = nodelist
 
     def extract_spec(self, field_list):
         "Extract and strip settings from field_list according to settings. "
@@ -90,12 +94,6 @@ class SpecInfo(transforms.Transform):
             normedname = nodes.fully_normalize_name(name)
             normedid = normedname.replace('-', '_') # BVB:?
 
-            # TODO: unset uptions are ignored for now
-            if not getattr(settings, normedid, ''):
-                #assert normedid not in settings.spec_names
-                yield field
-                continue
-
             if normedname in settings.strip_spec_names:
                 pass#del field_list[i]
 
@@ -103,7 +101,12 @@ class SpecInfo(transforms.Transform):
                 pass#del field_list[i]
 
             else:
+                #assert normedid not in settings.spec_names
                 yield field
+
+            if not getattr(settings, normedid, ''):
+            # TODO: unset uptions are ignored for now
+                continue
            
             if match_any or normedname in settings.spec_names:
                 tp = type(getattr(settings, normedid))
