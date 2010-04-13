@@ -18,8 +18,6 @@ class Include(Transform):
     locations. It can be used on itself to insert raw nodes too.
     """
 
-    # TODO: incomplete xpath parsing, works only for header/footer
-
     settings_spec = (
             (
                 'Provide unparsed, raw content to insert at location. '
@@ -64,6 +62,8 @@ class Include(Transform):
 #                data = open(data).read()
 
             # insert
+            if index < 0:
+                index = len(loc)+index+1
             loc.insert(index, nodes.raw('', data, format=datatype))
 
 
@@ -82,11 +82,25 @@ class Include(Transform):
         decoration = self.document.get_decoration()
         if hasattr(decoration, 'get_'+path):
             return getattr(decoration, 'get_'+path)()
+
         else:
             # use xpath to retrieve parent node
-            #path = self.parse_xpath(xpath)
-            #name, index = path.pop()
-            #loc = self.find_location(path)
-            pass
+            parts = self.parse_xpath(path)
+
+            doc = self.document
+            if parts[0][0] == 'document':
+                parts.pop(0)
+
+            while parts:
+                name, index = parts.pop(0)
+                for e in doc:
+                    if isinstance(e, getattr(nodes, name)):
+                        if index == 0:
+                            doc = e
+                            break
+                        index -= 1
+
+            assert not parts, 'illegal path %s' % path                            
+            return doc
 
 
