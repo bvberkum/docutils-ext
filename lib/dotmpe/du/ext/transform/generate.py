@@ -6,7 +6,7 @@ Transforms generate and insert content at publication time.
 The breadcrumb is a navigational aid output somewhere usually before the
 content.
 """
-import os
+import os, urlparse
 from docutils import nodes
 from docutils.transforms import Transform
 from docutils.transforms.references import Substitutions
@@ -100,6 +100,7 @@ class PathBreadcrumb(include.Include):
 
         breadcrumb = nodes.enumerated_list()
 
+        s,h,path,para,q,f = urlparse.urlparse(path)
         dir, name = os.path.split(path)
         dirs = dir.split(sep) or []
        
@@ -107,8 +108,13 @@ class PathBreadcrumb(include.Include):
         while dirs:
             dn = dirs.pop(0)
             _p.append(dn)
+            href = sep.join(_p)
+            if not href:
+                continue
+            elif href != sep:
+                href += sep
             ref = nodes.reference('', nodes.Text("%s%s" % (dn, sep)), 
-                refuri=sep.join(_p)+sep)
+                refuri=href)
             p = nodes.paragraph('', '', ref)
             item = nodes.list_item()
             item.append(p)

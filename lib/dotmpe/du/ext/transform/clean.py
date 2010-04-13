@@ -50,6 +50,6 @@ class StripAnonymousTargets(transforms.Transform):
 
         trgts = doc.traverse(nodes.target)
         for t in trgts:
-            if t['anonymous']:
+            if 'anonymous' in t.attributes and t['anonymous']:
                 t.parent.remove(t)
 
