@@ -3,7 +3,10 @@ import sys
 from docutils import Component, core, SettingsSpec
 from docutils.frontend import OptionParser
 
-from gate import content, comp
+
+# old code for what would be an interface for du to run an HTTP server
+# main interface might be reused for Builder 
+#from gate import content, comp
 
 
 version = '0.1'
@@ -72,82 +75,6 @@ def get_option_parser(components,
     return option_parser
 
 
-def publish(usage=None, description=default_description, argv=[],
-		resolver_name=default_resolver,
-        reader_name=default_reader, parser_name=default_parser,
-        writer_name=default_writer, enable_exit_status=None):
-
-    """
-    Run DU Publisher with Gate extensions.
-    """
-
-    # XXX: source and destinations have no exposed settings
-    components = [
-#    		resolvers.get_resolver_class(resolver_name),
-            readers.get_reader_class(reader_name),
-            parsers.get_parser(parser_name),\
-            writers.get_writer(writer_name)]
-
-    option_parser = get_option_parser(components, usage=usage,
-            description=description)
-
-    # Pre-parse argv, override programmatic reader/parser/writer
-    settings = None
-    if argv:
-        settings = option_parser.parse_args(argv)
-
-        #settings._source, settings._destination
-
-        #srcref = ref.resolve_local(settings._source, pwd)
-        #or
-        #ref.resolve_http()
-
-
-        #src_descr = content.get_descriptor(FileSystem, srcref, *opts)
-
-        #FileSystem.get_descriptor(srcref)
-        #Host.get_descriptor(srcref)
-        #Gate.get_descriptor(srcref)
-
-
-    if settings:
-        # Reload components
-        reset = False
-        if reader_name != settings.reader_name:
-            reader_name = settings.reader_name
-            components[0] = gate.get_reader(reader_name)
-            reset = True
-        if parser_name != settings.parser_name:
-            parser_name = settings.parser_name
-            components[1] = gate.get_parser(parser_name)
-            reset = True
-        if writer_name != settings.writer_name:
-            writer_name = settings.writer_name
-            components[2] = gate.get_writer(writer_name)
-            reset = True
-        if reset:
-            settings = None
-
-    if not settings:
-        # Re-parse argv based on new component config
-        option_parser = get_option_parser(components, usage=usage,
-                description=description)
-        settings = option_parser.parse_args(argv)
-
-    if not settings.source_id:
-        option_parser.error('Too few arguments, specify at least a source using '
-                '"-" or locator. See --help.')
-
-    # init DU Publisher
-    reader_class, parser_class, writer_class = components
-    parser = parser_class()
-    publisher = core.Publisher(reader_class(parser), parser, writer_class())
-    publisher.settings = settings
-
-#    store = Paperstore.load()
-
-    output = publisher.publish(enable_exit_status=enable_exit_status)
-
 
 default_usage = '%prog [options] [<source> [<destination>]]'
 
@@ -168,11 +95,11 @@ def main(argv=[], usage=default_usage, description=default_description):
 
 
 
-def publish_programatically(src_ref='README.rst', src_class=content.DUDocTree,
-        src_adapter=None,
-        dest_ref='README.html', dest_class=content.DUDocTree, dest_adapter=None):
-    """
-    """
+#def publish_programatically(src_ref='README.rst', src_class=content.DUDocTree,
+#        src_adapter=None,
+#        dest_ref='README.html', dest_class=content.DUDocTree, dest_adapter=None):
+#    """
+#    """
 
 
 

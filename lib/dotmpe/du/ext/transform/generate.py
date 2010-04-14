@@ -1,7 +1,7 @@
 """:created: 2010-04-11
 :author: B. van Berkum
 
-Transforms generate and insert content at publication time.
+These transforms generate and insert content at publication time.
 
 The breadcrumb is a navigational aid output somewhere usually before the
 content.
@@ -34,11 +34,11 @@ class PathBreadcrumb(include.Include):
                 ['--no-breadcrumb'], 
                 {'dest':'breadcrumb','action':'store_false'}
             ),(
-                'Generate breadcrumb from path (default: document source path)', 
+                'Generate breadcrumb from path (default: document source path). ', 
                 ['--breadcrumb-path'], 
                 {'metavar': '<PATH>'}
             ),(
-                'Insert breadcrumb substitution reference if it is not there at ' 
+                'Insert breadcrumb substitution reference if it is not there, at ' 
                 'given location (default: %default). ', 
                 ['--breadcrumb-location'], 
                 {'default':'header', 'metavar':'<DECORATOR_OR_XPATH>'}
@@ -82,12 +82,7 @@ class PathBreadcrumb(include.Include):
 
     def find_breadcrumb_location(self):
         subloc = self.document.settings.breadcrumb_location
-        decoration = self.document.get_decoration()
-        if hasattr(decoration, 'get_'+subloc):
-            loc = getattr(decoration, 'get_'+subloc)()
-        else:
-            loc = self.find_location(subloc)
-        return loc
+        return self.find_location(subloc)
 
     def generate_breadcrumb(self):
         "Generate ordered and linked 'breadcrumb' path list. "
@@ -98,31 +93,25 @@ class PathBreadcrumb(include.Include):
         if not path:
             path = self.document['source']
 
-        breadcrumb = nodes.enumerated_list()
+        breadcrumb = nodes.enumerated_list(classes=['breadcrumb'])
 
         s,h,path,para,q,f = urlparse.urlparse(path)
-        dir, name = os.path.split(path)
-        dirs = dir.split(sep) or []
+        dirs = path.split(sep) or []
        
         _p = []
         while dirs:
             dn = dirs.pop(0)
             _p.append(dn)
-            href = sep.join(_p)
-            if not href:
-                continue
-            elif href != sep:
-                href += sep
-            ref = nodes.reference('', nodes.Text("%s%s" % (dn, sep)), 
-                refuri=href)
+            if dirs:
+                href = sep.join(_p) or sep
+                dn += sep
+                ref = nodes.reference('', nodes.Text(dn), refuri=href)
+            else:
+                ref = nodes.Text(dn)
             p = nodes.paragraph('', '', ref)
             item = nodes.list_item()
             item.append(p)
             breadcrumb.append(item)
-        p = nodes.paragraph('', '', nodes.Text(name))
-        item = nodes.list_item()
-        item.append(p)
-        breadcrumb.append(item)
 
         return breadcrumb
 
@@ -215,7 +204,7 @@ class CCLicenseLink(include.Include):
         self.document.note_substitution_def(subdefnode, subrefname)
 
     def generate_cc_license(self):
-        license = self.document.settings.cc_license
+        license = self.document.settings.cc_license.replace(' ', '-')
         descr = license.replace('-', ' ')#.title()
         href = self.document.settings.cc_link % license
 

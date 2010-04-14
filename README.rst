@@ -6,6 +6,8 @@ Development targets:
   - Testing experimental rst writer, see test/
   - Some additional transforms with exposed settings are used in 
     ``dotmpe.du.ext.reader.mpe``.
+  - ``dotmpe.du.builder`` has some packages with specific Reader/Parser/Writer
+  	component configurations.
 
 
 dotmpe extensions
@@ -51,14 +53,17 @@ Overview
 Source code sits in package ``dotmpe`` in the ``lib`` directory.
 
 There is my own attempt at an rst writer, and in test/init.py the writer from
-Stefan's docutils branch is included. Not under active devel but i hope to pick
-it up sometime.
+Stefan's docutils branch is included. Not under active development but i hope to pick
+it up.
 
-Frontend and pub contain an experimental adapted version of the Du publisher and core
-utils. Active development based on the ideas below. 
+Before that happens I'm cleaning up code from some other docutils related projects.
+dotmpe.du.builder is shaping up nicely to be a collection of publishers for
+running in an server-environment. Maybe these can wrap some Nabu stuff
+(data-mining) later. Front-end development active in `Blue Lines`__.
 
 Working functionality is listed above in `dotmpe extensions`_. 
 
+.. __: http://blue-lines.appspot.com/
 
 Docutils publishing
 -------------------
