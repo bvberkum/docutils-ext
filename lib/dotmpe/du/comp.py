@@ -43,7 +43,7 @@ builders = {
 
 def get_builder_class(builder_name, 
         klass='Builder', 
-        mod_name='dotmpe.du.builder'):
+        mod_name='dotmpe.du.builder', restrict=[]):
 
     if builder_name not in builders:
         mod_name += '.'+builder_name
