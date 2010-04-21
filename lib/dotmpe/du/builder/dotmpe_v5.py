@@ -13,7 +13,7 @@ class Builder(builder.Builder):
             'stylesheet_path':'/media/style/default.css',
             'javascript_paths': [],
             'breadcrumb': True,
-            'generator': True,
+            'generator': False,
             'date': True,
             'input_encoding': 'utf-8',
             'output_encoding': 'utf-8',

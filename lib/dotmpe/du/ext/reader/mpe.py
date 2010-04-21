@@ -1,6 +1,5 @@
 from docutils import Component
-from docutils.transforms import universal
-from docutils.transforms import frontmatter, references, misc
+from docutils.transforms import universal, frontmatter, references, misc
 
 from dotmpe.du.ext.reader import spec
 from dotmpe.du.ext.transform import template, generate, include, specinfo, clean
@@ -11,6 +10,7 @@ from dotmpe.du.ext.transform import template, generate, include, specinfo, clean
 #MyPHPTemplate.format = ""
 
 
+# TODO: regroup in builder
 class Reader(spec.Reader):
 
     reader_settings_spec = (

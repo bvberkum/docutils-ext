@@ -34,7 +34,8 @@ class PathBreadcrumb(include.Include):
                 ['--no-breadcrumb'], 
                 {'dest':'breadcrumb','action':'store_false'}
             ),(
-                'Generate breadcrumb from path (default: document source path). ', 
+                'Generate breadcrumb from path (default: document source path). ',
+#                'NOTE: if it is not absolute, a "/" is prefixed to it.', 
                 ['--breadcrumb-path'], 
                 {'metavar': '<PATH>'}
             ),(
@@ -95,6 +96,7 @@ class PathBreadcrumb(include.Include):
 
         breadcrumb = nodes.enumerated_list(classes=['breadcrumb'])
 
+        # TODO: much more customization, what about domain, etc?
         s,h,path,para,q,f = urlparse.urlparse(path)
         dirs = path.split(sep) or []
        
@@ -104,6 +106,9 @@ class PathBreadcrumb(include.Include):
             _p.append(dn)
             if dirs:
                 href = sep.join(_p) or sep
+                # XXX: fix the path to be absolute
+                if not href.startswith(sep):
+                    href = sep+href
                 dn += sep
                 ref = nodes.reference('', nodes.Text(dn), refuri=href)
             else:
