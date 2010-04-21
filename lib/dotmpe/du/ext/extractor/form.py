@@ -1,7 +1,7 @@
 """
 Extractors and utilities to retrieve and validate user-data from a document.
 """
-from docutils import nodes
+from docutils import nodes, DataError
 from nabu import extract
 from dotmpe.du import util
 
@@ -45,27 +45,54 @@ class FormExtractor(extract.Extractor):
 
     default_priority = 500
 
-    option_spec = {}
+    options_spec = {}
 
-    def validate(frmextr, settings):
-        "Hook for additional sanity check. "
-        return settings
+    validate = None
+#    def validate(frmextr, settings):
+#        "Hook for additional sanity check. "
+#        return settings
 
     def apply(self, unid=None, storage=None, **kwds):
         v = FieldListVisitor(self.document)
         v.apply()
-        settings = {}
-        try:
-            settings = util.extract_extension_options(v.field_list, self.option_spec)
-            if not settings:
-                return
-            if self.validate:
-                settings = self.validate(settings)
-        except Exception, e:
-            self.document.reporter.error("Error processing form: %s" % e)
+        settings = self.extract_fields(v.field_list)
         #storage.clear(unid)
         storage.store(unid, settings)
         
+    def extract_fields(self, fields):
+        settings = {}
+        errors = []
+
+        settings = util.extract_extension_options(fields, self.options_spec,
+                raise_fail=False, errors=errors)
+
+        for field, error in errors:
+            sysmsg = self.document.reporter.error(
+                    #"Error processing value.\n"+
+                    str(error))
+            if field:
+                if len(field[1]):
+                    field[1].clear()
+                field[1].append(sysmsg)
+                    
+            else:
+                # XXX:BVB: gather later by universal.Messages
+                self.document.append(sysmsg)
+
+        if not settings:
+            return
+
+        # XXX: could rather defer sanity check to storage, which accepts
+        # instance variables.
+        if self.validate:
+            try:
+                return self.validate(settings)
+            except (AssertionError, DataError), e:
+                sysmsg = self.document.reporter.error(
+                        str(e))
+                self.document.append(sysmsg)
+
+        return settings
 
 # Storage API and simple implementation
 
