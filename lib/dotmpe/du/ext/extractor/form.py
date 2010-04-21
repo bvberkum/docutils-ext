@@ -1,6 +1,9 @@
+"""
+Extractors and utilities to retrieve and validate user-data from a document.
+"""
 from docutils import nodes
 from nabu import extract
-from docutils.utils import extract_extension_options
+from dotmpe.du import util
 
 
 class FieldListVisitor(nodes.SparseNodeVisitor):
@@ -44,21 +47,45 @@ class FormExtractor(extract.Extractor):
 
     option_spec = {}
 
+    def validate(frmextr, settings):
+        "Hook for additional sanity check. "
+        return settings
+
     def apply(self, unid=None, storage=None, **kwds):
         v = FieldListVisitor(self.document)
         v.apply()
+        settings = {}
         try:
-            settings = extract_extension_options(v.field_list, self.option_spec)
-            #self.validate(settings)
+            settings = util.extract_extension_options(v.field_list, self.option_spec)
+            if not settings:
+                return
+            if self.validate:
+                settings = self.validate(settings)
         except Exception, e:
             self.document.reporter.error("Error processing form: %s" % e)
+        #storage.clear(unid)
+        storage.store(unid, settings)
+        
 
-    def validate(self, settings):
-        # no-op, override for further sanity checks
-        return settings
+# Storage API and simple implementation
+
+class FormStorage(extract.ExtractorStorage):
+    def store(self, source_id, settings):
+        raise NotImplemented
+
+    def clear(self, source_id):
+        raise NotImplemented
+
+    def reset_schema(self, source_id):
+        raise NotImplemented
 
 
-class FormStorage(extract.Storage):
-    def store(self, unid, settings):
-        pass
+class SimpleFormStorage(FormStorage):
+    "This only keeps the settings on the instance. "
+
+    def __init__(self):
+        self.document_settings = {}
+
+    def store(self, source_id, settings):
+        self.document_settings[source_id] = settings
 

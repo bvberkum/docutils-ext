@@ -1,6 +1,58 @@
 import re
+from docutils import utils
 #from docutils.nodes import fully_normalize_name, make_id
 from dotmpe.du.ext.transform import include
+from docutils.parsers.rst import directives
+
+
+def yesno(argument):
+    """
+    Argument parser/validator.
+    """
+    return directives.choice(argument, ('yes', 'no'))
+
+def cs_list(argument):
+    """
+    Argument validator, parses comma-separated list.
+    May contain empty values.
+    """
+    return [a.strip() for a in argument.split(',')]
+
+def ss_list(argument):
+    """
+    Argument validator, parses white-space separated arguments.
+    Cannot contain empty values.
+    """
+    argument = re.sub('\s ]+', ' ', argument.strip())
+    return argument.split(' ')
+
+
+def extract_extension_options(fields, option_spec):
+    """
+    Inspired by ``docutils.utils.extract_extension_options``, this processes a
+    field list or list of field nodes and parses the field values according
+    to option_spec. In contrast with the DU utility, it allows more complex
+    field names and bodies as is the case in e.g. processed references or lists.
+    """
+    option_list = extract_options(fields)
+    option_dict = utils.assemble_option_dict(option_list, option_spec)
+    return option_dict
+
+def extract_options(field_list):
+    """
+    Return a list of option (name, value) pairs from field names & bodies.
+    This is a more lenient version of ``docutils.utils.extract_options``.
+    """
+    option_list = []
+    for field in field_list:
+        name = re.sub('[^\w]+', '-', field[0].astext())
+        body = field[1]
+        if len(body) == 0:
+            data = None
+        else:
+            data = body[0][0].astext()
+        option_list.append((name, data))
+    return option_list
 
 
 def addClass(classnames):
@@ -29,8 +81,7 @@ def extract_field(source, field, strip=False):
     assert not strip, "TODO"        
 
 def extract_modeline(source, strip=False):
-    pass
-
+    pass # TODO: extract_modeline
 
 def read_buildline(source, strip=False, 
         default_module='standalone',

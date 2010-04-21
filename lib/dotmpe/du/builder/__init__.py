@@ -1,10 +1,15 @@
 """
-Builders are preconfigured sets of Reader, Parser and Writer components.
+Builders are preconfigured sets of Reader, Parser, Extractor and Writer components.
+
+The goal is to have a component interface for multiple input and output formats,
+perhaps to experiment with content-negotiation later. For now this is an
+abstract class that outlines the API.
 """
 import logging
 import StringIO
 import docutils.core
 import nabu
+import nabu.server
 import dotmpe
 from dotmpe.du import comp
 
@@ -17,46 +22,47 @@ class Builder:
     Reader = comp.get_reader_class('standalone')
     Parser = comp.get_parser_class('restructuredtext')
     "Both Reader and Parser Component classes are described here. "
-    "The writer is accessed difrectly by name for now. "
+    "The writer is accessed directly by name for now. "
 
     settings_overrides = {
-        # within a server, do not read local files:
-        'file_insertion_enabled': False,
-        'embed_stylesheet': False,
-        '_disable_config': True,
-        # if your builder uses the html4css1 writer it needs this file:
-        #'template': 'template.txt'
-        'strip_comments': 1,
-        'stylesheet_path':'/media/style/default.css',
-#            'template': os.path.join(conf.ROOT, 'du-template.txt'),
-        'strip_substitution_definitions': True,
-        'strip_anonymous_targets': True,
-        'spec_names': ['cc-license','generator','timestamp','source-link'],
-        'strip_spec_names': ['cc-license','generator','timestamp','source-link'],
-    }
+            # Within a server, we often would not want to read local files:
+            'file_insertion_enabled': False,
+            'embed_stylesheet': False,
+            '_disable_config': True,
+            # If your builder uses the html4css1 writer it needs this file:
+            #'template': 'template.txt'
+        }
+
     """
     All overrides, for Reader, Parser, Transforms and Writer settings are put here.
-    Perhaps they should be at the components class.
+    They could have been the components class for clarity, but this serves too.
     """
 
     extractors = (
             #(transform, storage),
-            )
+        )
     """
-    Transforms that are run during process, and receive unid, storage and pickle
-    receiver at apply.     
+    Transforms that are run during process. They receive source_id, storage and
+    pickle-receiver arguments at apply.
     """
 
     def initialize(self):
+        """
+        Prepare builder. This collect all settings overrides for this instance 
+        its class inheritance chain. Each subclass can define overrides.
+        """
+        self.settings_overrides = get_overrides(self.__class__)
         self.docpickled = None
         self.build_warnings = u''
         self.process_messages = u''
         self.writer_parts = {}
-        # collect overrides for instance from inheritance chain:
-        self.settings_overrides = get_overrides(self.__class__)
 
     def build(self, source, source_id='<build>', settings_overrides={}):
-        "Build document from source. "
+        """
+        Build document from source, returns the document.
+        During build, reported messages are kept and afterward made available
+        through `builder.build_warnings`. 
+        """
         warnings = StringIO.StringIO()
         overrides = self.settings_overrides
         overrides.update( {
@@ -71,6 +77,14 @@ class Builder:
         return self.publisher.document
 
     def process(self, document, source_id, settings_overrides={}):
+        """
+        If there are extractors for this builder, apply them to the document. 
+        The source_id should be used by the extractor stores to refer to the
+        current document.
+
+        After processing the document is returned, and `builder.docpicked` or
+        `builder.process_messages` are made available.
+        """
         if not self.extractors:
             self.docpickled = None
             return document
@@ -79,8 +93,8 @@ class Builder:
         pickles = []
         pickle_receiver = nabu.server.SimpleAccumulator(pickles)
 
-        # Transform the document tree.
-        # Note: we apply the transforms before storing the document tree.
+        # Run extractor transforms on the document tree.
+        # XXX: Altered trees should be pickled again.
         report_level = settings_overrides.get('report_level', 1)
         self.process_messages = nabu.process.transform_doctree(
             source_id, document, 
@@ -95,6 +109,9 @@ class Builder:
 
     def render(self, source, source_id='<render>', writer_name='html4css1',
             parts=['whole'], settings_overrides={}):
+        """
+        XXX: Simple interface to writer component..
+        """
         writer_name = writer_name or self.default_writer
         writer = comp.get_writer_class(writer_name)()
         output, pub = self.__publish(source, source_id, writer,
@@ -103,6 +120,9 @@ class Builder:
         return ''.join([self.parts.get(part) for part in parts])
 
     def render_fragment(self, source, source_id='<render_fragment>', settings_overrides={}):
+        """
+        XXX: HTML only, return body fragment (without body container).
+        """
         return self.render(source, source_id, writer_name='html4css1',
                 parts=['html_title', 'body'],
                 settings_overrides=settings_overrides)
@@ -114,10 +134,10 @@ class Builder:
      'docinfo', 'html_head', 'head_prefix', 'body_prefix', 'footer',
      'body_pre_docinfo', 'whole']
 
+#        # TODO: move this to XHTML writer
 #        script = ''
 #        for path in settings_overrides['javascript_paths']:
 #            script += "<script type=\"application/javascript\" src=\"%s\"></script>" % path
-#        # TODO: move this to XHTML writer if possible
 #        parts['head'] += script
 #        #import pprint
 #        #print pprint.pformat(parts.keys())
