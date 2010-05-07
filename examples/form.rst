@@ -1,5 +1,8 @@
 Example Form
-------------
+""""""""""""
+
+Supported
+'''''''''
 
 .. Plain lists
 
@@ -62,9 +65,32 @@ Example Form
 :my colour:             red
 
 
+Unsupported
+''''''''''''
+
+.. option lists
+
+--opt-str opt-arg
+    opt-descr
+
+--opt, -o
+    testing
+
+
+term
+    definition
+term
+    term
+        definition
+    term
+        definition
+
+----
+
 .. intentional build error:
 
 x
 xx
  x
 
+ 

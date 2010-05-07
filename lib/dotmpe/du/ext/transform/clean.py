@@ -7,7 +7,8 @@ class StripSubstitutionDefs(transforms.Transform):
     Strip substitutions definitions from the doc-tree.
     """
 
-    settings_spec = ((
+    settings_spec = (
+        (    
             'Strip substitution definitions. ',
             ['--strip-substitution-definitions'], 
             {'default':False, 'action':'store_true'} 

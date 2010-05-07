@@ -27,7 +27,7 @@ def get_parser_class(parser_name, klass='Parser'):
 
 writers = {
     'xhtml': xhtml,
-    'dotmpe-xhtml': xhtml,
+    'dotmpe-html': xhtml,
 }
 
 def get_writer_class(writer_name, klass='Writer'):
@@ -45,13 +45,22 @@ def get_builder_class(builder_name,
         klass='Builder', 
         mod_name='dotmpe.du.builder', restrict=[]):
 
+    global builders
+    assert builder_name
+
     if builder_name not in builders:
         mod_name += '.'+builder_name
+        import logging
+        logging.info('get_builder_class %s %s', mod_name, klass)
         module = \
                 __import__(mod_name, fromlist=[builder_name], level=0)
+        logging.info(module)
         # BVB: dont think this is needed anymore                
         if module.__name__ != mod_name:
             raise ImportError, mod_name
+        logging.info(('get_builder_class',builders, builder_name, 
+            mod_name,
+            getattr(module, klass)))
         builders[builder_name] = module
     return getattr(builders[builder_name], klass)
                 

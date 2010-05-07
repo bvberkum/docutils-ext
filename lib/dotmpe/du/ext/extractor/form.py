@@ -1,36 +1,17 @@
 """
-Extractors and utilities to retrieve and validate user-data from a document.
+Extractors and util to retrieve and validate user-data from a document.
+
+TODO: this does not validate against documents original settings_spec yet.
 """
 from docutils import nodes, DataError
 from nabu import extract
+from dotmpe.du import extractor
 from dotmpe.du import util
+#from dotmpe.du.ext.transform import user
 
 
-class FieldListVisitor(nodes.SparseNodeVisitor):
 
-    """
-    Nabu has a FieldListVisitor but that returns dictionaries.
-
-    This simply gathers all fields into a list, which should be fine as its
-    treated as iterable.
-    """
-
-    def __init__(self, *args, **kwds):
-        nodes.SparseNodeVisitor.__init__(self, *args, **kwds)
-
-    def apply(self):
-        self.initialize()
-        self.document.walkabout(self)
-
-    def initialize(self):
-        self.field_list = []
-
-    def visit_field(self, node):
-        assert len(node.children) == 2
-        self.field_list.append(node)
-
-
-class FormExtractor(extract.Extractor):
+class FormExtractor(extract.Extractor):#, user.UserSettings):
 
     """
     Treat certain or all field lists from document as form-fields.
@@ -39,26 +20,30 @@ class FormExtractor(extract.Extractor):
 
     Does not alter the tree.
 
-    This is like the UserSpec transform's, except that it is designed to operate
-    as Extractor?
+    This is like the UserSettings transform's, with a wrapper to operate
+    as Extractor.
     """
 
     default_priority = 500
 
+    settings_spec = (
+        )
+    "TODO: settings for extractors. "
+
     options_spec = {}
+    # XXX: see comments elsewhere, this will/should change..
 
     validate = None
-#    def validate(frmextr, settings):
-#        "Hook for additional sanity check. "
-#        return settings
+    "Hook for additional sanity check. "
 
     def apply(self, unid=None, storage=None, **kwds):
-        v = FieldListVisitor(self.document)
+        v = util.FieldListVisitor(self.document)
         v.apply()
         settings = self.extract_fields(v.field_list)
-        #storage.clear(unid)
+        storage.clear(unid)
         storage.store(unid, settings)
-        
+       
+    # TODO: merge FormExtractor.extract_fields with UserSettings..       
     def extract_fields(self, fields):
         settings = {}
         errors = []
@@ -83,7 +68,7 @@ class FormExtractor(extract.Extractor):
             return
 
         # XXX: could rather defer sanity check to storage, which accepts
-        # instance variables.
+        # instance variables..
         if self.validate:
             try:
                 return self.validate(settings)
@@ -94,25 +79,21 @@ class FormExtractor(extract.Extractor):
 
         return settings
 
-# Storage API and simple implementation
 
-class FormStorage(extract.ExtractorStorage):
+class FormStorage(extractor.TransientStorage):
+    "Special storage for form values. "
+    "This keeps the form dict for each document. "
+
+    def __init__(self):
+        self.form_settings = {}
+
     def store(self, source_id, settings):
-        raise NotImplemented
+        self.form_settings[source_id] = settings
 
     def clear(self, source_id):
-        raise NotImplemented
+        self.form_settings[source_id] = {}
 
     def reset_schema(self, source_id):
         raise NotImplemented
 
-
-class SimpleFormStorage(FormStorage):
-    "This only keeps the settings on the instance. "
-
-    def __init__(self):
-        self.document_settings = {}
-
-    def store(self, source_id, settings):
-        self.document_settings[source_id] = settings
 

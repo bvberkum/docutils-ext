@@ -1,4 +1,5 @@
 import itertools
+from dotmpe.du import util
 from dotmpe.du.ext.transform import include
 
 
@@ -18,7 +19,7 @@ class TemplateSubstitutions(include.Include):
         ('Substitute only named fields. Multiple allowed. '
          'Defaults to all fields defined by --template-definition(s).', 
             ['--template-fields'], {'metavar':'FIELD',
-                'action':'append','default':[]}),
+                'action':'append','default':[], 'validator':util.cs_list}),
 
         # ('Output format for template var. ', 
         #    ['--template-language'], {'choices':['php']}),

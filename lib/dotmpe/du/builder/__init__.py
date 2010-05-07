@@ -2,8 +2,8 @@
 Builders are preconfigured sets of Reader, Parser, Extractor and Writer components.
 
 The goal is to have a component interface for multiple input and output formats,
-perhaps to experiment with content-negotiation later. For now this is an
-abstract class that outlines the API.
+perhaps to experiment with content-negotiation later. But for now this serves as
+a convenient wrapper.
 """
 import logging
 import StringIO
@@ -76,7 +76,7 @@ class Builder:
         self.build_warnings = warnings.getvalue().decode('UTF-8')
         return self.publisher.document
 
-    def process(self, document, source_id, settings_overrides={}):
+    def process(self, document, source_id='<process>', settings_overrides={}):
         """
         If there are extractors for this builder, apply them to the document. 
         The source_id should be used by the extractor stores to refer to the
@@ -112,7 +112,7 @@ class Builder:
         """
         XXX: Simple interface to writer component..
         """
-        writer_name = writer_name or self.default_writer
+        #writer_name = writer_name or self.default_writer
         writer = comp.get_writer_class(writer_name)()
         output, pub = self.__publish(source, source_id, writer,
                 settings_overrides)

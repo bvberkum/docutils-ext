@@ -15,14 +15,14 @@ args = sys.argv[:]
 source_id = args.pop()
 while args:
     arg = args.pop()
-    if arg.lower() in ('html', 'xml', 'pxml'):
+    if arg.lower() in ('html', 'xml', 'pseudoxml'):
         writer=arg
 
 source = open(source_id).read()
 
 buildline = read_buildline(source)
 builder = None
-
+#print writer, buildline
 builder = get_builder_class(*buildline)()
 try:
     builder = get_builder_class(*buildline)()
@@ -33,5 +33,12 @@ except AttributeError, e:
     print >> sys.stderr, "No such builder class '%s'." % buildline[1]
     sys.exit()
 
-print builder.build(source, source_id, writer)
+document = builder.build(source, source_id)
+
+print builder.render(document, writer_name=writer)
+
+builder.process(document)
+
+from pprint import pformat
+print pformat(builder.form_store.form_settings)
 

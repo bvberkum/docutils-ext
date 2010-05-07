@@ -1,8 +1,7 @@
-from docutils import Component
+from docutils import Component, readers
 from docutils.transforms import universal, frontmatter, references, misc
 
-from dotmpe.du.ext.reader import spec
-from dotmpe.du.ext.transform import template, generate, include, specinfo, clean
+from dotmpe.du.ext.transform import template, generate, include, user, clean
 
 
 #MyPHPTemplate = template.TemplateSubstitutions
@@ -10,19 +9,15 @@ from dotmpe.du.ext.transform import template, generate, include, specinfo, clean
 #MyPHPTemplate.format = ""
 
 
-# TODO: regroup in builder
-class Reader(spec.Reader):
-
-    reader_settings_spec = (
-            )
+class Reader(readers.Reader):
 
     settings_spec = (
             'Example reader for dynamic content (.mpe)',
             None,
-            reader_settings_spec +
-            specinfo.SpecInfo.settings_spec +
+
+            user.UserSettings.settings_spec +
             include.Include.settings_spec +
-            template.TemplateSubstitutions.settings_spec +
+            #template.TemplateSubstitutions.settings_spec +
             generate.PathBreadcrumb.settings_spec +
             generate.Timestamp.settings_spec +
             generate.CCLicenseLink.settings_spec +
@@ -35,9 +30,9 @@ class Reader(spec.Reader):
 
     def get_transforms(self):
         return Component.get_transforms(self) + [
-            specinfo.SpecInfo,              # 20
+            user.UserSettings,              # 20
             include.Include,                # 50
-            template.TemplateSubstitutions, # 190
+            #template.TemplateSubstitutions, # 190
 #            MyPHPTemplate,
             generate.PathBreadcrumb,        # 200
             generate.Timestamp,             # 200

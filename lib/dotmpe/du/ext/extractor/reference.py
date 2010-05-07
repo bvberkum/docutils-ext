@@ -1,4 +1,10 @@
-from google.appengine.ext import db
+"""
+Back `in 2004 there was a great post`__ on the mailing list about handling of
+references in docutils. 
+
+.. __: http://thread.gmane.org/gmane.text.docutils.devel/2060/focus=2066
+
+"""
 import urlparse
 from docutils import nodes
 from nabu import extract
@@ -10,9 +16,7 @@ class Extractor(extract.Extractor):
     """
     default_priority = 900
 
-    def apply(self, **kwargs):
-        self.unid, self.storage = kwargs['unid'], kwargs['storage']
-
+    def apply(self, unid=None, store=None, **kwargs):
         v = self.Visitor(self.document)
         v.x = self
         self.document.walk(v)
@@ -30,28 +34,37 @@ class Extractor(extract.Extractor):
 
 ## App-engine storage
 
-class Reference(db.Model):
-    url = db.LinkProperty()
-    unid = db.StringProperty()
+try:
 
-class ReferenceStorage(extract.ExtractorStorage):
-    def store(self, unid, url):
-        ref = Reference()
-        ref.unid = unid
-        ref.url = url
-        ref.put()
+    from google.appengine.ext import db
 
-    def clear(self, unid=None):
-        if unid:
-            refs = Reference.gql('WHERE unid = :1', unid).fetch(1)
-        else:
-            refs = Reference.all().fetch(1000)
-            
-        if refs:
-            for ref in refs:
-                ref.delete()
+except ImportError, e:
+    pass#print 'Not loading GAE reference model.'
 
-    def reset_schema(self):
-        raise Exception, 'reset_schema'+repr(self)
+else:
+
+    class Reference(db.Model):
+        url = db.LinkProperty()
+        unid = db.StringProperty()
+
+    class ReferenceStorage(extract.ExtractorStorage):
+        def store(self, unid, url):
+            ref = Reference()
+            ref.unid = unid
+            ref.url = url
+            ref.put()
+
+        def clear(self, unid=None):
+            if unid:
+                refs = Reference.gql('WHERE unid = :1', unid).fetch(1)
+            else:
+                refs = Reference.all().fetch(1000)
+                
+            if refs:
+                for ref in refs:
+                    ref.delete()
+
+        def reset_schema(self):
+            raise Exception, 'reset_schema'+repr(self)
 
 

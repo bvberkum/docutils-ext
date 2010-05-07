@@ -17,7 +17,10 @@ from dotmpe.du.ext.transform import include
 # 200 places them after template.TemplateSubstitutions "
 # and before the earliest transform (misc.ClassAttribute at 210). "
 
-class PathBreadcrumb(include.Include):
+class Generator(include.Include):
+    pass
+
+class PathBreadcrumb(Generator):
 
     "Insert a substitution definition into the document tree, "
     "and a substitution reference if needed. "
@@ -150,7 +153,7 @@ class CCLicenseLink(include.Include):
            ['--cc'],
            {'action':'store_true', 'dest':'cc_embed'}
        ),(
-           'Explicitly disallow Creative Commons License link. ',
+           'Do not insert Creative Commons License link. ',
            ['--no-cc'],
            {'action':'store_false', 'dest':'cc_embed'}
        ),(
@@ -165,7 +168,7 @@ class CCLicenseLink(include.Include):
            {'default': 'pd', 'choices':['pd','sa','nc','nd','by'], 
                'validator': validate_cc_license, 'metavar': '<LICENSE>' }
        ),(
-           'Insert cc-license substitution reference if it is not there at ' 
+           'Insert cc-license substitution reference, *if it is not there* at ' 
            'given location (default: %default). ', 
            ['--cc-license-location'], 
            {'default':'footer', 'metavar':'<DECORATOR_OR_XPATH>'}

@@ -3,7 +3,7 @@ Work in progess example of form validation in docutils.
 
 Lots to be desired:
   - more optionparser like functionality, such as help.
-  - may unsupported constructs, ideas. What about feedback from output format, 
+  - many unsupported constructs, ideas. What about feedback from output format, 
     e.g. HTML form.
 
 Started:
@@ -53,7 +53,7 @@ FormExtractor.options_spec = {
         'my-du-tree-2': ((util.du_list, util.is_du_headed_list,
             util.du_nested_list_header, util.du_str), False, True),
     }
-form_values = form.SimpleFormStorage()
+form_values = form.FormStorage()
 def validate_myform(frmextr, settings):
     if 'my-exclusive-flag' in settings:
         assert 'my-flag' not in settings, "Cannot have both values. "
@@ -90,7 +90,7 @@ builder.process(document, source_id)
 print document.pformat()
 
 print "Settings:"
-pprint(form_values.document_settings)
+pprint(form_values.form_settings)
 
 # Report error
 if builder.build_warnings:

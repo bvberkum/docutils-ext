@@ -23,13 +23,12 @@ directives.register_directive('margin', Margin)
 #from pub import Publisher
 
 #"Override standard html writer, add margin support"
-#import docutils
-#docutils.writers._writer_aliases['html'] = 'dotmpe.du.ext.writer.xhtml'
 
 # XXX: docutils.{reader,parser,writer}s.get_*_class
-# cannot load modules from other packages
+# cannot load modules from other packages, see dotmpe.du.ext.comp.
+# Fail:
 #docutils.writers._writer_aliases.update({
-#    'dotmpe-htdocs': 'dotmpe.du.ext.writer.xhtml'})
+#    'dotmpe-html': 'dotmpe.du.ext.writer.xhtml'})
 #docutils.writers._writer_aliases.update({
 #    'dotmpe-rst': 'dotmpe.du.ext.writer.rst',
 #    'rst': 'dotmpe-rst' })

@@ -1,12 +1,16 @@
+"""
+Helper functions.
+"""
 import re
 from docutils import utils, nodes
 #from docutils.nodes import fully_normalize_name, make_id
 from dotmpe.du.ext.transform import include
-# this has some handy argument handlers
 from docutils.parsers.rst import directives
 
 
-# Helper function
+"""
+Document tree parsing. 
+"""
 
 def parse_list(list, split, item):
     "Parse each item from list. "
@@ -66,23 +70,33 @@ def is_du_headed_list(itemnode):
 def du_nested_list_header(itemnode):
     return itemnode[0], itemnode[1]
 
-# Validators, used on field body
+
+"""
+Parsing/validating of data from document nodes.
+"""
+
+def du_astext(node):
+    "Flattens node. "
+    if isinstance(node, nodes.Node):
+        return node.astext()
+    return node
 
 def du_str(node):
-    return __astext(node)
+    "Passes or converts to unicode. "
+    return du_astext(node)
 
 def du_int(node):
-    return int(__astext(node))
+    return int(du_astext(node))
 
 def du_float(node):
-    return float(__astext(node))
+    return float(du_astext(node))
 
 #def du_uri(node):
-#    arg = __astext(node)
+#    arg = du_astext(node)
 #    return directives.uri(node.astext())
 
 def du_flag(node):
-    return directives.flag(__astext(node))
+    return directives.flag(du_astext(node))
 
 """
 docutils.parser.rst.directives has some more argument validators which could
@@ -107,19 +121,30 @@ easy be added here by generating a wrapper for this series.
 Custom validators below.
 """
 
-# XXX: what about flattening references and other inline..
+def du_bool(node):
+    """
+    Parse yes/no, on/off, true/false and 1/0.
+    """
+    choice = directives.choice(du_astext(node), ('yes', 'no', 'on', 'off', 'true',
+        'false', '1', '0'))
+
+    return choice in ('yes', 'on', 'true', '1')
+
 def yesno(node):
     """
     Argument parser/validator.
     """
-    return directives.choice(__astext(node), ('yes', 'no'))
+    choice = directives.choice(du_astext(node), ('yes', 'no'))
+    return choice == 'yes'
+
+# XXX: what about flattening references and other inline..
 
 def cs_list(node):
     """
     Argument validator, parses comma-separated list.
     May contain empty values.
     """
-    arg = __astext(node).strip()
+    arg = du_astext(node).strip()
     if arg:
         return [a.strip() for a in arg.split(',')]
     else:
@@ -130,7 +155,7 @@ def ws_list(node):
     Argument validator, parses white-space separated nodes.
     Cannot contain empty values.
     """
-    items = re.sub('[\s ]+', ' ', __astext(node).strip())
+    items = re.sub('[\s ]+', ' ', du_astext(node).strip())
     if items:
         return items.split(' ')
 
@@ -140,31 +165,28 @@ def du_list(node):
     """
     return [item for item in node]
 
+"""
+Corresponding Option parser validators.
+"""
+
+def validate_cs_list(setting, value, option_parser):
+    ls = []
+    for i in range(0,len(value)):
+        v = value[i]
+        if ',' in v:
+            ls.extend( cs_list(v) )
+        else:
+            ls.append(v)
+    return ls
+    #except... raise frontend.LookupError
+    return value
+
+
+"""
+Parse settings from field-lists.
+"""
 
 # this is called option for now, but rewrite to form-framework...?
-class UnknownOptionError(utils.ExtensionOptionError):
-    def __str__(self):
-        return "unknown option `%s`. " % self.args
-
-class DuplicateOptionError(utils.DuplicateOptionError):
-    def __str__(self):
-        return "duplicate option `%s`. " % self.args
-
-class OptionTypeError(utils.BadOptionDataError):
-    def __str__(self):
-        name, data, e = self.args
-        return "invalid value type '%s' for option `%s`:\n\n\t%s " % (
-                data, name, e)
-
-class OptionValueError(utils.BadOptionDataError):
-    def __str__(self):
-        name, data, e = self.args
-        return "invalid value '%s' for option `%s`:\n\n\t%s " % (
-                data, name, e)
-
-class MissingOptionError(utils.ExtensionOptionError):
-    def __str__(self):
-        return "missing option `%s`. " % self.args
 
 def extract_extension_options(fields, options_spec, raise_fail=True, errors=[]):
     """
@@ -292,10 +314,33 @@ def extract_field_name(field_name):
     else:
         data = body[0][0].astext()
 
-def __astext(node):
-    if isinstance(node, nodes.Node):
-        return node.astext()
-    return node
+"""
+Errors from parsing field-lists as options.
+"""
+
+class UnknownOptionError(utils.ExtensionOptionError):
+    def __str__(self):
+        return "unknown option `%s`. " % self.args
+
+class DuplicateOptionError(utils.DuplicateOptionError):
+    def __str__(self):
+        return "duplicate option `%s`. " % self.args
+
+class OptionTypeError(utils.BadOptionDataError):
+    def __str__(self):
+        name, data, e = self.args
+        return "invalid value type '%s' for option `%s`:\n\n\t%s " % (
+                data, name, e)
+
+class OptionValueError(utils.BadOptionDataError):
+    def __str__(self):
+        name, data, e = self.args
+        return "invalid value '%s' for option `%s`:\n\n\t%s " % (
+                data, name, e)
+
+class MissingOptionError(utils.ExtensionOptionError):
+    def __str__(self):
+        return "missing option `%s`. " % self.args
 
 
 def addClass(classnames):
@@ -314,6 +359,10 @@ def addClass(classnames):
     AddClass.add_class = classnames
     return AddClass
 
+
+"""
+Regex field-list parsing.
+"""
 
 field_re = '^\s*:%s:\s*([a-zA-Z0-9\.,\ _-]+)\s*$'
 
@@ -346,4 +395,49 @@ def read_buildline(source, strip=False,
         return module, field[p+1:]
 
     return field, default_class
+
+
+"""
+Document visitors.
+"""
+
+class FieldListVisitor(nodes.SparseNodeVisitor):
+
+    """
+    Nabu has a FieldListVisitor but that returns dictionaries.
+
+    This simply gathers all fields into a list, which should be fine as its
+    treated as iterable.
+    """
+
+    def __init__(self, *args, **kwds):
+        nodes.SparseNodeVisitor.__init__(self, *args, **kwds)
+
+    def apply(self):
+        self.initialize()
+        self.document.walkabout(self)
+
+    def initialize(self):
+        self.field_list = []
+
+    def visit_field(self, node):
+        assert len(node.children) == 2
+        self.field_list.append(node)
+
+
+def first_and_last_field_list(document):
+    """
+    """
+    field_lists = document.traverse(nodes.field_list)
+
+    if len(field_lists) == 1:
+        return (field_lists[0],)
+
+    elif len(field_lists):
+        return (field_lists[0], field_lists[-1])
+
+    else:
+        return ()
+        
+
 
