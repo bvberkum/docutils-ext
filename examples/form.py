@@ -22,8 +22,10 @@ from pprint import pprint
 example_dir = os.path.dirname(__file__)
 sys.path.insert(0, os.path.realpath(os.path.join(example_dir, '..', 'lib')))
 from dotmpe.du import builder, util, form
+from dotmpe.du.ext.transform import form1
 from dotmpe.du.ext.extractor import form2
 # this has some handy argument handlers
+from docutils import readers, core, Component
 from docutils.parsers.rst import directives
 
 
@@ -41,74 +43,103 @@ def validate_myform(frmextr, settings):
     return settings
 
 
-class MyFormPage(builder.Builder):
+# Reader with transform, and Builder with extractor configuration:
+
+class FormReader(readers.Reader):
 
     settings_spec = (
-            '', None,
-            form.FormProcessor.settings_spec
-        )
+        'My form', 
+        None,
+        form.FormProcessor.settings_spec + (
+            ('',['--builder'],{}),
+    ))
 
-    class FormExtractor(form2.FormExtractor):
-        options_spec = {
-                'my-integer': (util.du_int,),
-                'my-string': (util.du_str,),
-                'my-yesno': (util.yesno,),
-                'my-flag': (util.du_flag, False),
-                'my-exclusive-flag': (util.du_flag, False),
-                'my-colour': (color, False),
-                #'my-uri': (util.du_uri,),
-                #'my-integer-percentage': (util.percentage,),
-                #'my-unsigned-integer': (util.nonnegative_int, False),
-                'my-cs-list': ((util.cs_list, util.du_str), False, True),
-                'my-ws-list': ((util.ws_list, int), False, True),
-                'my-du-list': ((util.du_list, util.du_str), False, True),
-                'my-du-tree': ((util.du_list, util.is_du_list, util.du_str), False, True),
-                'my-du-tree-2': ((util.du_list, util.is_du_headed_list,
-                    util.du_nested_list_header, util.du_str), False, True),
-            }
-        
     extractors = [
-            (FormExtractor, form2.FormStorage),
+            (form2.FormExtractor, form2.FormStorage),
         ]
 
+    def get_transforms(self):
+        return Component.get_transforms(self) + [
+                form1.DuForm ]
 
-# Simple command-line processing
-if sys.argv[1:]:
-    source_id = sys.argv[1]
-else:
-    source_id = os.path.join(example_dir, 'form.rst')
-source = open(source_id).read()
-builder = MyFormPage()
-builder.initialize(strip_comments=True)
-print builder.overrides
+class MyFormPage(builder.Builder):
 
-print "Building %s" % source_id
+    Reader = FormReader
 
-# Build the document tree from source
-document = builder.build(source, source_id)
+    settings_overrides = {
+        'form_spec': {
+            'my-integer': (util.du_int,),
+            'my-string': (util.du_str,),
+            'my-yesno': (util.yesno,),
+            'my-flag': (util.du_flag, False),
+            'my-exclusive-flag': (util.du_flag, False),
+            'my-colour': (color, False),
+            #'my-uri': (util.du_uri,),
+            #'my-integer-percentage': (util.percentage,),
+            #'my-unsigned-integer': (util.nonnegative_int, False),
+            'my-cs-list': ((util.cs_list, util.du_str), False, True),
+            'my-ws-list': ((util.ws_list, int), False, True),
+            'my-du-list': ((util.du_list, util.du_str), False, True),
+            'my-du-tree': ((util.du_list, util.is_du_list, util.du_str), False, True),
+            'my-du-tree-2': ((util.du_list, util.is_du_headed_list,
+                util.du_nested_list_header, util.du_str), False, True),
+        },
+        'form': 'name',
+    }
 
-print "Processing"
 
-# Extract form data
-print builder.settings_spec
-builder.prepare()
-builder.process(document, source_id)
+def reader_(source, source_id):
+    doc = core.publish_string(source, source_id, 
+            settings_overrides=MyFormPage.settings_overrides,
+            reader=FormReader(), writer_name='pseudoxml')
+    return doc
 
-# SimpleFormStorage kept the values for each document it processed:
-print "Settings:"
-pprint(builder.extractors[0][1].form_settings)
 
-# Report error
-if builder.build_warnings:
-    print >>sys.stderr, "Build messages:"
-    print >>sys.stderr, builder.build_warnings
-    print >>sys.stderr, "There where messages during building. "
-    print >>sys.stderr
+def builder_(source, source_id):
+    builder = MyFormPage()
+    builder.initialize(strip_comments=True)
+    #print "Building %s" % source_id
+    # Build the document tree from source
+    document = builder.build(source, source_id)
+    print document.settings.form_values
+    
+    return
+    #print document.settings
+    #print "Processing"
+    # Extract form data
+    builder.prepare()
+    builder.process(document, source_id)
+    # SimpleFormStorage kept the values for each document it processed:
+    #print "Settings:"
+    #pprint(builder.extractors[0][1].form_settings)
+    # Print reports
+    if builder.build_warnings.tell():
+        print >>sys.stderr, "Build messages:\n%s\n"\
+                "There where messages during building.\n" %\
+                builder.build_warnings.getvalue()
+    if builder.process_messages:
+        print >>sys.stderr, "Process messages:\n%s\n"\
+            "There where errors during processing. " %\
+            builder.process_messages
 
-if builder.process_messages:
-    print >>sys.stderr, "Process messages:"
-    print >>sys.stderr, builder.process_messages
-    print >>sys.stderr, "There where errors during processing. "
-    print >>sys.stderr
 
+if __name__ == '__main__':
+    args = sys.argv[1:]
+    opts = {}
+    source_id = None
+    while args:
+        arg = args.pop()
+        if arg.startswith('-'):
+            opts[arg.lstrip('-')] = None
+        else:
+            source_id = arg
+    if not source_id:            
+        source_id = os.path.join(example_dir, 'form.rst')
+    print 'Source:',source_id        
+    source = open(source_id).read()
+
+    if 'builder' in opts:
+        builder_(source, source_id)
+    else:
+        print reader_(source, source_id)
 

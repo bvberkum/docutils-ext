@@ -11,25 +11,35 @@ Supported
 
 .. Du list variants:
 
-:my du list:
+my du list
   - 1
   - 2  
 
-.. some nested freaks.. testing
+.. note that both field and definition list above are noted as form-field 
+   because the nameid matches. Same goes for the following section
 
-:my du tree:
-   - - nesting test 1.1
-     - test 1.2
+My Du tree
+----------
+.. some nested freaks.. testing. 
 
-   - - 2.1
-     - 2.2
-     - - - 2.3.1.1
+- - nesting test 1.1
+  - test 1.2
 
-   - 3
-   - - 4.1
-     - - - - - - 4.2.1.1.1.1.1
-       - 4.2.2
-       - 4.2.3
+- - 2.1
+  - 2.2
+  - - - 2.3.1.1
+
+- 3
+- - 4.1
+  - - - - - - 4.2.1.1.1.1.1
+    - 4.2.2
+    - 4.2.3
+
+.. And what exactly makes up the body of the section-form-field?
+   see wat convertors can do perhaps.
+
+Supported Cont'd
+""""""""""""""""
 
 :my du tree 2:
     - branch 1
@@ -54,6 +64,8 @@ Supported
 .. :my uri:                http://docutils.sourceforge.net/
 
 .. :my integer percentage: 99%
+
+.. class:: form
 
 :my string:             test
 :my integer:            +123

@@ -87,7 +87,7 @@ class Builder(SettingsSpec):
         self.overrides.update(settings_overrides)
         # build attributes:
         self.docpickled = None
-        self.warnings = StringIO.StringIO()
+        self.build_warnings = StringIO.StringIO()
         # for process attributes see self.prepare
         # writers attributes:
         self.writer_parts = {}
@@ -99,7 +99,7 @@ class Builder(SettingsSpec):
         logging.debug("Building %s (%s).", source_id, self)
         # Errors from conversion to document tree.
         if 'warning_stream' not in self.overrides:
-            self.overrides['warning_stream'] = self.warnings
+            self.overrides['warning_stream'] = self.build_warnings
         else:
             logging.info("TODO: open or keep filelike warning_stream %s",
                     self.overrides['warning_stream'])
@@ -114,7 +114,8 @@ class Builder(SettingsSpec):
         definition work on multiple documents. So only use this to reset in-memory
         stores or before calling `process` the first time.
         """
-        logger.debug("Prepare.")
+        logger.debug("Builder prepare.")
+        self.process_messages = u''
         for idx, (xcls, xstore) in enumerate(self.extractors):
             # initialize extractor
             #xcls.init_parser(xcls)

@@ -74,10 +74,10 @@ class FormPage(Document):
     ]
 
     settings_spec = (
-            'Blue Lines Form settings. ',
-            None, 
-            form.FormProcessor.settings_spec + 
-            form2.FormExtractor.settings_spec
+        'Blue Lines Form settings.  ',
+        None, 
+        form.FormProcessor.settings_spec + 
+        form2.FormExtractor.settings_spec
             )
 
     class Reader(readers.Reader):
@@ -85,7 +85,7 @@ class FormPage(Document):
             'Blue Lines form-page reader. ',
             None,
             form.FormProcessor.settings_spec + 
-            form1.DuForm.settings_spec +
+            form1.DuForm.settings_spec 
                 )
         config_section = 'Blue Lines reader'
         config_section_dependencies = ('readers',)
@@ -94,7 +94,7 @@ class FormPage(Document):
             return Component.get_transforms(self) + [ 
                 generate.Timestamp,         # 200
                 form1.DuForm ,              # 500
-            ]
+                    ]
 
     class Writer(xhtmlform.Writer):
         pass
@@ -134,5 +134,17 @@ class UserFormPage(FormPage):
     settings_overrides = { }
 
 
+if __name__ == '__main__':
+    if sys.argv[1:]:
+        source_id = sys.argv[1]
+    else:
+        source_id = os.path.join(example_dir, 'form.rst')
+    source = open(source_id).read()
 
+    builder = AliasFormPage()
+    builder.initialize()
+    document = builder.builder(source, source_id)
+
+    builder.prepare()
+    builder.process(document, source_id)
 

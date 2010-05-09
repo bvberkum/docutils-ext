@@ -28,7 +28,7 @@ The following Du structures lend themselves for such model:
 - definition lists: term, definition
 - sections: heading, body
 
-Note: Nesting needs special considerations for validation. 
+Note: Nesting needs special considerations for validation.
 
 Besides converting the whole tree to a form in such a fashion, it may be more
 effective to divide some options for recognizing forms:
@@ -50,12 +50,15 @@ Validation
 - Two additional for trees (branching lists).
 
 """
-from docutils import nodes, DataError
+import logging
+from docutils import nodes, utils
 from dotmpe.du.ext import extractor
 from dotmpe.du import util
 
 
+logger = logging.getLogger(__name__)
 class FormData:
+    values = {}
 
     def asxml(self): pass
     def astags(self): pass
@@ -82,53 +85,123 @@ class FormProcessor:
     settings_spec = (
         (
             'Set form-recognition heuristics (see form documentation). ',
-            ['--form'], 
-            {'choices':['off', 'class', 'name', 'class-and-name'], 
-                'default': 'class-and-name'}
+            ['--form'],
+            {'choices':['off', 'class', 'name', 'class-and-name'],
+                'default': 'name'}
         ),(
             'Alter the class-name that indicates form constructs.  ',
-            ['--form-class'], 
+            ['--form-class'],
             {'action':'store_true', 'default': 'form'}
         ),(
             'Ignore any but explicitly listed names.  ',
-            ['--form-fields'], 
+            ['--form-fields'],
             {'action':'append', 'default': []}
-    ))
+        ),
+        # --form-spec
+    )
 
-    def __init__(self, document, fields_specs):
+    def __init__(self, document, form_spec):
         self.document = document
-        self.settings = document.settings
+        self.values = {}#FormData()
         self.fields = {}
-        self.fields.update([(field_id,{'spec':spec})
-            for field_id, spec in fields_specs.items()])
+        self.nodes = {}
+        self.fields.update([
+            (field_id, FormField(field_id, *spec))
+            for field_id, spec in form_spec.items() ])
 
     def process_fields(self):
-        fv = FormVisitor(self.document)
+        " Gather fields and convert data.  "
+        fv = FormFieldIDVisitor(self.document)
+        fv.initialize(self.fields.keys())
         fv.apply()
-        self.extract_fields(fv.form)
-
-    def extract_fields(self, fields):
-        print 'ef', fields
-        #extract_form_fields(fields, 
-        values = {}
+        seen = []
+        for field_id, node in fv.form.items():
+            # Get value. Errors are reported in document
+            v = self.__process_field(field_id, node)
+            self.values[field_id] = v
+            if field_id not in seen:
+                seen.append(field_id)
+            self.nodes[field_id] = node
+        if len(self.fields) > len(seen):
+            # Report missing fields
+            field_ids = self.fields.keys()
+            [field_ids.remove(field_id) for field_id in seen]
+            self.__report_missing(field_ids)
 
     def validate(self):
+        " Validate form fields. "
         pass
-    
 
-def extract_form_name(field):    
+    def __process_field(self, field_id, node, value=None):
+        field = self.fields[field_id]
+        name = extract_form_field_label(node)
+        label, body = node[0], node[1]
+        if len(node)>2:
+            logger.info("Node contents out of bound for field %r. ", name)
+        if field_id not in self.fields or not field.convertor:
+            self.__report(node, UnknownFieldError, name)
+        if value and not field.append:
+            self.__report(node, DuplicateFieldError, name)
+        data = None
+        try:
+            conv = field.convertor
+            if not callable(conv):
+                if len(conv)==2:
+                    data = list(util.parse_list(body, *conv))
+                elif len(conv)==3:
+                    data = list(util.parse_nested_list(body, *conv))
+                elif len(conv)==4:
+                    data = list(util.parse_nested_list_with_headers(body, *conv))
+            elif len(body):
+                data = conv(body)
+            else:
+                data = u''
+        except ValueError, e:
+            self.__report(node, FieldValueError, name, e )
+        except TypeError, e:
+            self.__report(node, FieldTypeError, name, e )
+        if field.append:
+            if not value:
+                value = []
+            if isinstance(data, list):
+                value.extend(data)
+            else:
+                value.append(data)
+        else:
+            value = data
+        return value
+
+    def __report_missing(self, field_ids):
+        for field_id in field_ids:
+            if self.fields[field_id].required:
+                self.__report(None, MissingFieldError, field_id,)
+
+    def __report_warning(self, node, error, *args):
+        pass
+    def __report_error(self, node, error, *args):
+        msg = str(error(*args))
+        self.document.reporter.error(msg, node) 
+
+
+class FormField:
+
+    def __init__(self, field_id, convertor, required=True, append=False, editable=True,
+            disabled=False, validators=(), **classnames):
+        self.field_id = field_id
+        self.convertor = convertor
+        self.required = required
+        self.append = append
+        self.editable = editable
+        self.disabled = disabled
+        self.validators = validators
+        self.classnames = classnames
+
+
+def extract_form_field_label(field):
     return field[0].astext().lower()
 
-def extract_form_fields(fields, options_spec, raise_fail=True, errors=[]):
-    pass
 
-
-class FormVisitor(nodes.SparseNodeVisitor):
-
-    """
-    Scan tree for section, field or definition_list_item that qualify as form-field
-    or field-set.
-    """
+class AbstractFormVisitor(nodes.SparseNodeVisitor):
 
     def __init__(self, document):
         nodes.SparseNodeVisitor.__init__(self, document)
@@ -137,43 +210,119 @@ class FormVisitor(nodes.SparseNodeVisitor):
     def apply(self):
         self.initialize()
         if self.settings.form != 'off':
+            assert self.settings.form == 'name',\
+                    "Unimplemented: %s" % self.settings.form
             self.document.walkabout(self)
 
-    def initialize(self):
+    def initialize(self, field_ids=[]):
+        if not hasattr(self, 'field_ids') or field_ids:
+            self.field_ids = field_ids
         self.form = {} # name: field
         # TODO: self.fieldsets = []
+        self.fieldset_class = self.settings.form_class
+        self.field_class = self.fieldset_class + '-field'
 
-    def readable_field(self, node):
-        if 'class' in self.settings.form:
-            # XXX: what about superstructure, cascade class down?
-            return self.settings.form_class in node
-        if 'name' in self.settings.form:
-            name = extract_form_name(node)
-            return name in self.settings.form_fields
+    def is_fieldset(self, node):
+        if self.__hasclass(node, self.fieldset_class):
+            return True
 
-    # pseudo hook
-    def visit_form(self, node):
-        if not self.readable_field(node):
-            return
-        name = extract_form_name(node)
-        if name in self.form:
-            if not isinstance(self.form[name], types.ListType):
-                self.form[name] = [self.form[name]]
-            self.form[name].append(node)
+    def is_field(self, field_node):
+        if self.__hasclass(field_node, self.field_class):
+            return True
+        elif self.__hasfieldid(field_node):
+            return True
+
+    def scan_field(self, node):
+        field_id = nodes.make_id(extract_form_field_label(node))
+        if field_id in self.form:
+            if not isinstance(self.form[field_id], types.ListType):
+                self.form[field_id] = [self.form[field_id]]
+            self.form[field_id].append(node)
         else:
-            self.form[name] = node
+            self.form[field_id] = node
+
+        if self.field_class not in node['classes']:
+            node['classes'].append(self.field_class)
+
+    # util
+    def _path(self, n):
+        p = []
+        p.insert(0, n.tagname)
+        while hasattr(n, 'parent'):
+            n = n.parent
+            if not n: break
+            p.insert(0, n.tagname)
+        return '/'.join(p)
+
+    def __hasclass(self, node, classname):
+        if 'class' in self.settings.form:
+            if classname in node:
+                return True
+
+    def __hasfieldid(self, node):
+        if 'name' in self.settings.form:
+            name = extract_form_field_label(node)
+            field_id = nodes.make_id(name)
+            return field_id in self.field_ids
+
+
+class FormFieldSetVisitor(AbstractFormVisitor):
+    def visit_definition_list(self, node):
+        if self.is_form_element(node):
+            pass # subs_add_form_class(node)
+
+    def visit_field_list(self, node):
+        if self.is_form_element(node):
+            pass # subs_add_form_class(node)
+
+
+class FormFieldIDVisitor(AbstractFormVisitor):
 
     # NodeVisitor hooks
+
     def visit_section(self, node):
         assert isinstance(node[0], nodes.title)
-        self.visit_form(node)
+        if self.is_field(node):
+            self.scan_field(node)
 
     def visit_definition_list_item(self, node):
         assert len(node.children) == 2
-        self.visit_form(node)
+        if self.is_field(node):
+            self.scan_field(node)
 
     def visit_field(self, node):
         assert len(node.children) == 2
-        self.visit_form(node)
+        if self.is_field(node):
+            self.scan_field(node)
+
+
+## FormErrors
+
+
+class FormError(utils.ExtensionOptionError): pass
+
+class UnknownFieldError(FormError):
+    def __str__(self):
+        return "unknown option `%s`. " % self.args
+
+class DuplicateFieldError(utils.DuplicateOptionError):
+    def __str__(self):
+        return "duplicate option `%s`. " % self.args
+
+class FieldTypeError(utils.BadOptionDataError):
+    def __str__(self):
+        name, data, e = self.args
+        return "invalid value type '%s' for option `%s`:\n\n\t%s " % (
+                data, name, e)
+
+class FieldValueError(utils.BadOptionDataError):
+    def __str__(self):
+        name, data, e = self.args
+        return "invalid value '%s' for option `%s`:\n\n\t%s " % (
+                data, name, e)
+
+class MissingFieldError(FormError):
+    def __str__(self):
+        return "missing option `%s`. " % self.args
 
 

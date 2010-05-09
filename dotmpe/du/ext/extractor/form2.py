@@ -1,7 +1,5 @@
 """
 Extractors and util to retrieve and validate user-data from a document.
-
-TODO: this does not validate against documents original settings_spec yet.
 """
 from nabu import extract
 from dotmpe.du import form
@@ -16,18 +14,17 @@ class FormExtractor(extract.Extractor):
 
     default_priority = 500
 
-    settings_spec = (
-        )
+    # See dotmpe.du.form for settings_spec
 
-    options_spec = {}
-    # XXX: see comments elsewhere, this will/should change..
+    form_spec = {}
 
     def init_parser(cls):
         " do some env. massage if needed. "
 
     def apply(self, unid=None, storage=None, **kwds):
         " process and validate found entries. "
-        pfrm = form.FormProcessor(self.document, self.options_spec)
+        specs = self.form_spec or settings.get('form_spec', {})
+        pfrm = form.FormProcessor(self.document, specs)
         pfrm.process_fields()
 
         return
