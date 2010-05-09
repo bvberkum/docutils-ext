@@ -9,6 +9,11 @@ sys.path.insert(0, os.path.realpath(os.path.join(os.path.dirname(__file__),
 from dotmpe.du.comp import get_builder_class
 from dotmpe.du.util import read_buildline
 
+#import logging
+#logging.basicConfig()
+#logger = logging.getLogger(__name__)
+#logger.info(__name__)
+
 writer = None
 
 args = sys.argv[:]
@@ -20,7 +25,8 @@ while args:
 
 source = open(source_id).read()
 
-buildline = read_buildline(source)
+buildline = read_buildline(source, default_module='bluelines',
+        default_class='AliasFormPage')
 builder = None
 #print writer, buildline
 builder = get_builder_class(*buildline)()
@@ -33,12 +39,15 @@ except AttributeError, e:
     print >> sys.stderr, "No such builder class '%s'." % buildline[1]
     sys.exit()
 
+builder.initialize()
 document = builder.build(source, source_id)
 
-print builder.render(document, writer_name=writer)
+builder.render(document, writer_name=writer)
 
-builder.process(document)
+builder.prepare()
+#builder.process(document)
+#form_store = builder.extractors[0][1]
 
-from pprint import pformat
-print pformat(builder.form_store.form_settings)
+#from pprint import pformat
+#print pformat(form_store.form_settings)
 

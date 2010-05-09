@@ -14,6 +14,15 @@ class HTMLTranslator(html4css1.HTMLTranslator):
         self.left_margin = []
         self.right_margin = []
 
+    def starttag(self, node, tagname, suffix='\n', empty=0, **attributes):
+        # XXX: dont allow frame(=void) or rules(=none)
+        if 'rules' in attributes:
+            del attributes['rules'] 
+        if 'frame' in attributes:
+            del attributes['frame'] 
+        return html4css1.HTMLTranslator.starttag(self, node, tagname, suffix=suffix,
+                empty=empty, **attributes)
+
     def visit_left_margin(self, node):
         self.context.append(len(self.body))
 

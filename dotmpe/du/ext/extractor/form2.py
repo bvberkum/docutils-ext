@@ -3,54 +3,48 @@ Extractors and util to retrieve and validate user-data from a document.
 
 TODO: this does not validate against documents original settings_spec yet.
 """
-from docutils import nodes, DataError
 from nabu import extract
-from dotmpe.du import extractor
-from dotmpe.du import util
-#from dotmpe.du.ext.transform import user
+from dotmpe.du import form
+from dotmpe.du.ext import extractor
 
 
-
-class FormExtractor(extract.Extractor):#, user.UserSettings):
+class FormExtractor(extract.Extractor):
 
     """
-    Treat certain or all field lists from document as form-fields.
-    Use the option_spec to specify which fields to extract and with what
-    validator.
-
-    Does not alter the tree.
-
-    This is like the UserSettings transform's, with a wrapper to operate
-    as Extractor.
+    See dotmpe.du.form for documentation.
     """
 
     default_priority = 500
 
     settings_spec = (
         )
-    "TODO: settings for extractors. "
 
     options_spec = {}
     # XXX: see comments elsewhere, this will/should change..
 
-    validate = None
-    "Hook for additional sanity check. "
+    def init_parser(cls):
+        " do some env. massage if needed. "
 
     def apply(self, unid=None, storage=None, **kwds):
-        v = util.FieldListVisitor(self.document)
-        v.apply()
-        settings = self.extract_fields(v.field_list)
-        storage.clear(unid)
-        storage.store(unid, settings)
+        " process and validate found entries. "
+        pfrm = form.FormProcessor(self.document, self.options_spec)
+        pfrm.process_fields()
+
+        return
+        #
+        # Old
+        #v = util.FieldListVisitor(self.document)
+        #v.apply()
+        #settings = self.extract_fields(v.field_list)
+        #storage.clear(unid)
+        #storage.store(unid, settings)
        
     # TODO: merge FormExtractor.extract_fields with UserSettings..       
     def extract_fields(self, fields):
         settings = {}
         errors = []
-
         settings = util.extract_extension_options(fields, self.options_spec,
                 raise_fail=False, errors=errors)
-
         for field, error in errors:
             sysmsg = self.document.reporter.error(
                     #"Error processing value.\n"+
@@ -61,7 +55,7 @@ class FormExtractor(extract.Extractor):#, user.UserSettings):
                 field[1].append(sysmsg)
                     
             else:
-                # XXX:BVB: gather later by universal.Messages
+                # XXX:BVB: gathered later by universal.Messages
                 self.document.append(sysmsg)
 
         if not settings:
@@ -81,8 +75,10 @@ class FormExtractor(extract.Extractor):#, user.UserSettings):
 
 
 class FormStorage(extractor.TransientStorage):
-    "Special storage for form values. "
-    "This keeps the form dict for each document. "
+    """
+    Special storage for form values.
+    This keeps the form dict for each document. 
+    """
 
     def __init__(self):
         self.form_settings = {}

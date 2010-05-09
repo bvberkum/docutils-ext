@@ -6,10 +6,7 @@ publisher has started. Nabu does this for the document's ID. I myself use some
 fields the establish what reader to use.
 
 But settings my be overriden by a transform only for later and the actual writing.
-That is what the SpecInfo transform does.
-
-Right now it takes settings from the first or last field-list, but that will
-change.
+That is what the UserSettings transform does.
 """
 from docutils import transforms, nodes
 from dotmpe.du import util

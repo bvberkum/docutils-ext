@@ -193,7 +193,7 @@ def extract_extension_options(fields, options_spec, raise_fail=True, errors=[]):
     Inspired by ``docutils.utils.extract_extension_options``, this processes a
     field list or list of field nodes and parses the field values according
     to options_spec. In contrast with the DU utility, it allows more complex
-    field names and bodies as is the case in e.g. processed references or lists.
+    field names and bodies as is the case in e.g. processed references or lists?
     """
     """
     :Parameters:
@@ -376,25 +376,23 @@ def extract_modeline(source, strip=False):
     pass # TODO: extract_modeline
 
 def read_buildline(source, strip=False,
-        default_module='standalone',
+        default_package='standalone',
         default_class='Document',
         field_name='build'):
-    "Return the appropiate builder module and class-name for the given source. "
-    # FIXME: field_name should be coordinated by specreader?
-    # XXX: what about other line-forms like mode line?
+    "Read builder package and class-name from sentinel line formatted as rSt field.  "
 
-    field = extract_field(source, field_name, strip=strip)
-    if not field:
-        return default_module, default_class
+    builder_name = extract_field(source, field_name, strip=strip)
+    if not builder_name:
+        return default_package, default_class
 
     for c in ('.', ' '):
-        p = field.rfind(c)
+        p = builder_name.rfind(c)
         if p == -1:
             continue
-        module = field[:p].replace('-', '_')
-        return module, field[p+1:]
+        package = builder_name[:p].replace('-', '_')
+        return package, builder_name[p+1:]
 
-    return field, default_class
+    return builder_name, default_class
 
 
 """

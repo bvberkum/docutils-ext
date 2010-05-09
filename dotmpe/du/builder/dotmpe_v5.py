@@ -45,9 +45,9 @@ class Page(Builder):
             'cc-license': 'by-nd'
         }
 
-    class Reader(Reader):
+    class Reader(Builder.Reader):
 
-        add_class = Reader.add_class + [
+        add_class = Builder.Reader.add_class + [
                 'document[0]/section[0],page',
             ]
 
@@ -67,7 +67,7 @@ class Frontpage(Page):
 
     class Reader(Page):
 
-        add_class = Reader.add_class + [
+        add_class = Builder.Reader.add_class + [
                 'document[0]/section[0],frontpage',
             ]
 

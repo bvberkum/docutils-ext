@@ -18,7 +18,7 @@ from dotmpe.du.ext.transform import include
 # and before the earliest transform (misc.ClassAttribute at 210). "
 
 class Generator(include.Include):
-    pass
+    pass # Abstract superclass
 
 class PathBreadcrumb(Generator):
 

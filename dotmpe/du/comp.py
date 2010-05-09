@@ -1,7 +1,10 @@
+import logging
 import docutils
 from dotmpe.du.ext.reader import mpe
 from dotmpe.du.ext.writer import xhtml
 
+
+logger = logging.getLogger(__name__)
 
 readers = {
     'dotmpe': mpe,
@@ -52,13 +55,16 @@ def get_builder_class(builder_name,
         mod_name += '.'+builder_name
         import logging
         logging.info('get_builder_class %s %s', mod_name, klass)
-        module = \
-                __import__(mod_name, fromlist=[builder_name], level=0)
-        logging.info(module)
+        try:
+            module = \
+                    __import__(mod_name, fromlist=[builder_name], level=0)
+        except ImportError, e:
+            logger.error('Failed importing builder module %s from %s.  ', builder_name, mod_name)
+            raise e
         # BVB: dont think this is needed anymore                
         if module.__name__ != mod_name:
             raise ImportError, mod_name
-        logging.info(('get_builder_class',builders, builder_name, 
+        logger.info(('get_builder_class',builders, builder_name, 
             mod_name,
             getattr(module, klass)))
         builders[builder_name] = module

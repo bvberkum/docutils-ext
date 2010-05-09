@@ -15,14 +15,14 @@ Started:
   - some ideas from docutils, examples below
   - errors are reported
 
-XXX:BVB:I'm a little fuzzy on the last one or two validators.
+XXX:BVB:I'm a little fuzzy on the last one or two convertors.
 """
 import sys, os
 from pprint import pprint
 example_dir = os.path.dirname(__file__)
 sys.path.insert(0, os.path.realpath(os.path.join(example_dir, '..', 'lib')))
-from dotmpe.du import builder, util
-from dotmpe.du.ext.extractor import form
+from dotmpe.du import builder, util, form
+from dotmpe.du.ext.extractor import form2
 # this has some handy argument handlers
 from docutils.parsers.rst import directives
 
@@ -35,36 +35,41 @@ def color(node):
 # Extact the following fields from the document
 # and demonstrate some argument parsers
 # Note that all these fields need to be present.
-FormExtractor = form.FormExtractor
-FormExtractor.options_spec = {
-        'my-integer': (util.du_int,),
-        'my-string': (util.du_str,),
-        'my-yesno': (util.yesno,),
-        'my-flag': (util.du_flag, False),
-        'my-exclusive-flag': (util.du_flag, False),
-        'my-colour': (color, False),
-        #'my-uri': (util.du_uri,),
-        #'my-integer-percentage': (util.percentage,),
-        #'my-unsigned-integer': (util.nonnegative_int, False),
-        'my-cs-list': ((util.cs_list, util.du_str), False, True),
-        'my-ws-list': ((util.ws_list, int), False, True),
-        'my-du-list': ((util.du_list, util.du_str), False, True),
-        'my-du-tree': ((util.du_list, util.is_du_list, util.du_str), False, True),
-        'my-du-tree-2': ((util.du_list, util.is_du_headed_list,
-            util.du_nested_list_header, util.du_str), False, True),
-    }
-form_values = form.FormStorage()
 def validate_myform(frmextr, settings):
     if 'my-exclusive-flag' in settings:
         assert 'my-flag' not in settings, "Cannot have both values. "
     return settings
-FormExtractor.validate = validate_myform
+
 
 class MyFormPage(builder.Builder):
 
-    extractors = (
-            (FormExtractor, form_values),
+    settings_spec = (
+            '', None,
+            form.FormProcessor.settings_spec
         )
+
+    class FormExtractor(form2.FormExtractor):
+        options_spec = {
+                'my-integer': (util.du_int,),
+                'my-string': (util.du_str,),
+                'my-yesno': (util.yesno,),
+                'my-flag': (util.du_flag, False),
+                'my-exclusive-flag': (util.du_flag, False),
+                'my-colour': (color, False),
+                #'my-uri': (util.du_uri,),
+                #'my-integer-percentage': (util.percentage,),
+                #'my-unsigned-integer': (util.nonnegative_int, False),
+                'my-cs-list': ((util.cs_list, util.du_str), False, True),
+                'my-ws-list': ((util.ws_list, int), False, True),
+                'my-du-list': ((util.du_list, util.du_str), False, True),
+                'my-du-tree': ((util.du_list, util.is_du_list, util.du_str), False, True),
+                'my-du-tree-2': ((util.du_list, util.is_du_headed_list,
+                    util.du_nested_list_header, util.du_str), False, True),
+            }
+        
+    extractors = [
+            (FormExtractor, form2.FormStorage),
+        ]
 
 
 # Simple command-line processing
@@ -74,23 +79,24 @@ else:
     source_id = os.path.join(example_dir, 'form.rst')
 source = open(source_id).read()
 builder = MyFormPage()
+builder.initialize(strip_comments=True)
+print builder.overrides
 
 print "Building %s" % source_id
 
 # Build the document tree from source
-document = builder.build(source, source_id,
-        settings_overrides={'strip_comments':True})
+document = builder.build(source, source_id)
 
 print "Processing"
 
 # Extract form data
+print builder.settings_spec
+builder.prepare()
 builder.process(document, source_id)
 
 # SimpleFormStorage kept the values for each document it processed:
-print document.pformat()
-
 print "Settings:"
-pprint(form_values.form_settings)
+pprint(builder.extractors[0][1].form_settings)
 
 # Report error
 if builder.build_warnings:
