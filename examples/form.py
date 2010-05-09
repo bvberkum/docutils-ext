@@ -33,10 +33,6 @@ def color(node):
     return directives.choice(node.astext(),
             ['red','orange','yellow','green','blue','violet'])
 
-
-# Extact the following fields from the document
-# and demonstrate some argument parsers
-# Note that all these fields need to be present.
 def validate_myform(frmextr, settings):
     if 'my-exclusive-flag' in settings:
         assert 'my-flag' not in settings, "Cannot have both values. "
@@ -98,13 +94,11 @@ def reader_(source, source_id):
 def builder_(source, source_id):
     builder = MyFormPage()
     builder.initialize(strip_comments=True)
-    #print "Building %s" % source_id
+    print "Building %s" % source_id
     # Build the document tree from source
     document = builder.build(source, source_id)
-    print document.settings.form_values
-    
+    #print document.settings.form_values
     return
-    #print document.settings
     #print "Processing"
     # Extract form data
     builder.prepare()
