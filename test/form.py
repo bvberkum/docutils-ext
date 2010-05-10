@@ -1,25 +1,10 @@
 """
-Work in progess example of form validation in docutils.
-
-Lots to be desired:
-  - more optionparser like functionality, such as help.
-  - many unsupported constructs, ideas. What about feedback from output format, 
-    e.g. HTML form.
-
-Started:
-  - spec second item indicates required, true when absent 
-  - spec third item indicates append/concat multiple, false when absent
-  - spec first item indicates validator, 2 validators for list parser,
-    3 for tree or nested list parser, and 4 for a variant on nested lists..
-  - various types of list parsing is supported
-  - some ideas from docutils, examples below
-  - errors are reported
-
-XXX:BVB:I'm a little fuzzy on the last one or two convertors.
 """
+import unittest
 import sys, os
 from pprint import pprint
-example_dir = os.path.dirname(__file__)
+test_dir = os.path.dirname(__file__)
+example_dir = os.path.realpath(os.path.join(test_dir, '..', 'examples'))
 sys.path.insert(0, os.path.realpath(os.path.join(example_dir, '..', 'lib')))
 from dotmpe.du import builder, util, form
 from dotmpe.du.ext.transform import form1
@@ -47,7 +32,6 @@ class FormReader(readers.Reader):
         'My form', 
         None,
         form.FormProcessor.settings_spec + (
-            ('',['--builder'],{}),
     ))
 
     extractors = [
@@ -57,6 +41,7 @@ class FormReader(readers.Reader):
     def get_transforms(self):
         return Component.get_transforms(self) + [
                 form1.DuForm ]
+
 
 class MyFormPage(builder.Builder):
 
@@ -90,14 +75,13 @@ def reader_(source, source_id):
             reader=FormReader(), writer_name='pseudoxml')
     return doc
 
-
 def builder_(source, source_id):
     builder = MyFormPage()
     builder.initialize(strip_comments=True)
     print "Building %s" % source_id
     # Build the document tree from source
     document = builder.build(source, source_id)
-    #print document.settings.form_values
+    print document.settings.form_values
     return
     #print "Processing"
     # Extract form data
@@ -116,8 +100,7 @@ def builder_(source, source_id):
             "There where errors during processing. " %\
             builder.process_messages
 
-
-if __name__ == '__main__':
+def main_():    
     args = sys.argv[1:]
     opts = {}
     source_id = None
@@ -136,4 +119,35 @@ if __name__ == '__main__':
         builder_(source, source_id)
     else:
         print reader_(source, source_id)
+
+
+# see example/form.rst
+expected = {
+        'my-cs-list': [u'1', u'two', u'3', u'and four'],
+        'my-ws-list': [1, 2, 3],
+        'my-du-list': [u'1', u'2'],
+        'my-du-tree': [[u'nesting test 1.1', u'test 1.2'], [u'2.1', u'2.2', [[u'2.3.1.1']]], u'3', [u'4.1', [[[[[u'4.2.1.1.1.1.1']]]], u'4.2.2', u'4.2.3']]],
+        'my-du-tree-2': [[u'branch 1', [[u'branch 1.1', [u'leaf 1.1.1', u'leaf 1.1.2']], u'leaf 1.2', u'leaf 1.3']], u'branch 2', [u'branch 3', [u'leaf 3.1', u'leaf 3.2']]],
+        'my-string': 'test',
+        'my-integer': 123,
+        'my-yesno': True,
+        'my-colour': 'red',
+        'my-flag': u'',
+        'my-exclusive-flag': u'',
+    }
+
+class FormTest(unittest.TestCase):
+
+    def test_(self):
+        source_id = os.path.join(example_dir, 'form.rst')
+        source = open(source_id).read()
+        builder = MyFormPage()
+        builder.initialize(strip_comments=True)
+        document = builder.build(source, source_id)
+        for field_id, value in document.settings.form_values.items():
+            assert expected[field_id] == value, "Value error for %s: %r" % (field_id, value)
+
+if __name__ == '__main__':
+    unittest.main()
+    #main_()
 

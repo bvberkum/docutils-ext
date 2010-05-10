@@ -1,6 +1,8 @@
 Example Form
 """"""""""""
 
+See test/form.py.
+
 Supported
 '''''''''
 
@@ -18,22 +20,23 @@ my du list
 .. note that both field and definition list above are noted as form-field 
    because the nameid matches. Same goes for the following section
 
-My Du tree
+Du Tree
 ----------
 .. some nested freaks.. testing. 
 
-- - nesting test 1.1
-  - test 1.2
+:My Du tree:
+    - - nesting test 1.1
+      - test 1.2
 
-- - 2.1
-  - 2.2
-  - - - 2.3.1.1
+    - - 2.1
+      - 2.2
+      - - - 2.3.1.1
 
-- 3
-- - 4.1
-  - - - - - - 4.2.1.1.1.1.1
-    - 4.2.2
-    - 4.2.3
+    - 3
+    - - 4.1
+      - - - - - - 4.2.1.1.1.1.1
+        - 4.2.2
+        - 4.2.3
 
 .. And what exactly makes up the body of the section-form-field?
    see wat convertors can do perhaps.

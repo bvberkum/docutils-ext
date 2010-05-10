@@ -57,17 +57,6 @@ from dotmpe.du import util
 
 
 logger = logging.getLogger(__name__)
-class FormData:
-    values = {}
-
-    def asxml(self): pass
-    def astags(self): pass
-    def asdom(self): pass
-
-    @classmethod
-    def fromxml(clss):pass
-    def fromdom():pass
-    def fromtags():pass
 
 
 class FormProcessor:
@@ -102,7 +91,7 @@ class FormProcessor:
 
     def __init__(self, document, form_spec):
         self.document = document
-        self.values = {}#FormData()
+        self.values = {}
         self.fields = {}
         self.nodes = {}
         self.fields.update([
@@ -147,13 +136,13 @@ class FormProcessor:
             conv = field.convertor
             if not callable(conv):
                 if len(conv)==2:
-                    data = list(util.parse_list(body, *conv))
+                    data = list(util.parse_list(body[0], *conv))
                 elif len(conv)==3:
-                    data = list(util.parse_nested_list(body, *conv))
+                    data = list(util.parse_nested_list(body[0], *conv))
                 elif len(conv)==4:
-                    data = list(util.parse_nested_list_with_headers(body, *conv))
+                    data = list(util.parse_nested_list_with_headers(body[0], *conv))
             elif len(body):
-                data = conv(body)
+                data = conv(body[0])
             else:
                 data = u''
         except ValueError, e:
