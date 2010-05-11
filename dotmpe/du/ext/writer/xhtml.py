@@ -49,6 +49,35 @@ class HTMLTranslator(html4css1.HTMLTranslator):
         self.right_margin.extend(margin)
         del self.body[start:]
 
+    def visit_system_message(self, node):
+        self.body.append(self.starttag(node, 'div', 
+            CLASS='system-message level-%s %s'%(node['level'],
+                node['type'].lower())))
+        self.body.append('<p class="system-message-title">')
+        backref_text = ''
+        if len(node['backrefs']):
+            backrefs = node['backrefs']
+            if len(backrefs) == 1:
+                backref_text = ('; <em><a href="#%s">backlink</a></em>'
+                                % backrefs[0])
+            else:
+                i = 1
+                backlinks = []
+                for backref in backrefs:
+                    backlinks.append('<a href="#%s">%s</a>' % (backref, i))
+                    i += 1
+                backref_text = ('; <em>backlinks: %s</em>'
+                                % ', '.join(backlinks))
+        if node.hasattr('line'):
+            line = ', line %s' % node['line']
+        else:
+            line = ''
+        self.body.append('%s/%s '
+                         '(<tt class="docutils">%s</tt>%s)%s</p>\n'
+                         % (node['type'], node['level'],
+                            self.encode(node['source']), line, backref_text))
+
+
 
 class Writer(html4css1.Writer):
 

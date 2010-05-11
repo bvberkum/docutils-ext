@@ -73,6 +73,8 @@ def du_nested_list_header(itemnode):
 
 """
 Parsing/validating of data from document nodes.
+
+Use for option or form data convertors.
 """
 
 def du_astext(node):
@@ -82,20 +84,28 @@ def du_astext(node):
     return node
 
 def du_str(node):
-    "Passes or converts to unicode. "
-    return du_astext(node)
-
+    "Return unicode string, collapsed whitespace. "
+    return re.sub('\s+', ' ', du_astext(node)).strip()  
+ 
 def du_int(node):
     return int(du_astext(node))
 
 def du_float(node):
     return float(du_astext(node))
 
+def du_text(node):
+    "Multiline text. "
+    return du_astext(node)
+
+def du_reference(node):
+    pass # TODO
+
 #def du_uri(node):
 #    arg = du_astext(node)
 #    return directives.uri(node.astext())
 
 def du_flag(node):
+    " No argument allowed.  "
     return directives.flag(du_astext(node))
 
 """
@@ -130,7 +140,7 @@ def du_bool(node):
 
     return choice in ('yes', 'on', 'true', '1')
 
-def yesno(node):
+def du_yesno(node):
     """
     Argument parser/validator.
     """
@@ -165,8 +175,21 @@ def du_list(node):
     """
     return [item for item in node]
 
+
+def conv_timestamp(data):
+    pass # TODO
+
+def conv_iso8801date(data):
+    pass
+
+def conv_rfc822date(data):
+    pass
+
+
 """
 Corresponding Option parser validators.
+
+Raise any exception or optparse.OptionValueError if needed.
 """
 
 def validate_cs_list(setting, value, option_parser):
@@ -178,8 +201,93 @@ def validate_cs_list(setting, value, option_parser):
         else:
             ls.append(v)
     return ls
-    #except... raise frontend.LookupError
+
+
+def form_field_spec(value): 
+    " Parse option value to spec for FormField construct.  "
+    'id[,descr];type[;require[,append[,editable[,disabled]]]][;vldtors,]'
+    partcnt = value.count(':')
+    if partcnt < 1:
+        raise "At least a field-id and datatype name is required. "
+    elif partcnt > 3:
+        raise "Too many fields in fieldspec. " # TODO: option spec parsing error
+    parts = value.split(':')
+    id_part = parts.pop(0)
+    field_id, descr = id_part, ''
+    if ',' in id_part:
+        field_id, descr = id_part.split(',')
+        descr = descr.strip('\'"')
+    convertorname = parts.pop(0)
+    kwds = {}
+    kwds['help'] = descr
+    if parts:
+        attrs = parts.pop(0).split(',')
+        keys = ['required','append','editable','disabled']
+        while attrs:
+            key = keys.pop(0)
+            kwds[key] = du_bool(attrs.pop(0))
+        if attrs:
+            raise "Spec attributes out of bound. " # parsing error
+    if parts:
+        vldtor_part = parts.pop(0)
+        kwds['validators'] = vldtor_part.split(',')        
+    return (field_id, convertorname), kwds
+
+def opt_form_field_spec(setting, value, option_parser):
+    " Add or update form field specification.  "
+    (nfid, nconv), nattr = form_field_spec(value.pop())
+    for idx, ((fid, conv), attr) in enumerate(value):
+        if fid == nfid:
+            attr.update(nattr)
+            value[idx] = fid, nconv, attr
+            return value
+    value.append((nfid, nconv, nattr))
     return value
+
+
+
+"""
+Registry of convertors(/validators?) for form-framework and other user entry
+parsers.
+
+Note: list and tree convertors need to be used together with primitive type
+convertors.
+
+Any check that does not transform the data(-instance) can be put into a
+validator instead.
+"""
+
+data_convertor = {
+    'flag': du_flag,
+    'bool': du_bool,
+    'int': du_int,
+    'float': du_float,
+    'str': du_str,
+    'text': du_text,
+    'href': du_reference,
+    'yesno': du_yesno,
+    'timestamp': conv_timestamp, 
+    'isodate': conv_iso8801date,
+    'rfc822date': conv_rfc822date,
+    # list types
+    'cs-list': (cs_list,),
+    'ws-list': (ws_list,),
+    'list': (du_list,),
+    # misc. complex types
+    'tree1': (du_list, is_du_list),
+    'tree2': (du_list, is_du_headed_list, du_nested_list_header),
+    #'du-deflist': du_definition_list, # nested dicts in form?
+    #'du-enumlist': du_enumerated_list,
+}
+
+def get_convertor(type_name):
+    if ',' in type_name:
+        complextype_names = type_name.split(',')
+        basetype = data_convertor[complextype_names.pop(0)]
+        return basetype + tuple([ data_convertor[n] 
+                for n in complextype_names ])
+    else:
+        return data_convertor[type_name]
 
 
 """

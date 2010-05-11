@@ -38,6 +38,9 @@ class Include(Transform):
     datav_re = r'^(latex|html|xml):(file:)?(.*)$'
 
     def apply(self):
+        if not hasattr(self.document.settings, 'include'):
+            return
+
         # validate options
         inserts = [i.split(',') for i in self.document.settings.include]
         for i in range(0, len(inserts)):

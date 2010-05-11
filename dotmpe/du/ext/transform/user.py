@@ -63,7 +63,7 @@ class UserSettings(transforms.Transform):
 
     def apply(self):
         settings = self.document.settings
-        if not getattr(settings, 'user_settings'):
+        if not getattr(settings, 'user_settings', None):
             return
 
         if not hasattr(settings, 'strip_user_settings'):

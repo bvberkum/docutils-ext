@@ -1,3 +1,6 @@
+"""
+form1 - Du transform components for dotmpe.du.form.
+"""
 import logging
 from docutils import transforms
 from dotmpe.du import form
@@ -15,21 +18,34 @@ class DuForm(transforms.Transform):
 
     default_priority = 500
 
-    settings_spec = (
-        )
+    # See dotmpe.du.form for settings_spec
+
+    fields_spec = []
 
     def apply(self):
-        logging.info('DuForm.apply')
-        fp = form.FormProcessor(self.document)
+        if not hasattr(self.document, 'form_processor'):
+            fp = form.FormProcessor(self.document)
+        else:
+            fp = self.document.form_processor
+        if self.fields_spec:
+            fp.initialize(self.document, self.fields_spec)
         fp.process_fields()
         fp.validate()
-        #if fp.errors:
-        #fp.report_form_errors()
 
+## Form generator
 
-class FormTransform:
+class GenerateForm(transforms.Transform):
     
     """
-    Recreate a Du document from a previously extracted form.
+    Recreate or generate a Du document with previously initialized form.
+    Populate with (default) data if present.
     """
+
+    def apply(self):
+        settings = self.document.settings
+        specs = self.form_spec or getattr(settings, 'form_spec', {})
+        values = getattr(settings, 'form_values', {})
+        #for field_id in 
+
+
 
