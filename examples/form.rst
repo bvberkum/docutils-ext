@@ -61,18 +61,20 @@ Supported Cont'd
       - leaf 3.1
       - leaf 3.2
 
-
-
-
 .. :My uri:                http://docutils.sourceforge.net/
-
 .. :My integer percentage: 99%
 
 .. class:: form
 
-:My string:             test
-:My integer:            +123
-:My yesno:              yes 
+My string
+    test
+My integer
+    +123
+My yesno
+    yes 
+
+.. class:: form
+
 :My flag: 
 :My exclusive flag:
 :My unsigned integer:   d
@@ -84,29 +86,11 @@ Supported Cont'd
 Unsupported
 ''''''''''''
 
-.. option lists
+.. option lists?
 
---opt-str opt-arg
+--opt arg      opt-descr
+--opt, -o      testing
+--opt=val, -f value
     opt-descr
 
---opt, -o
-    testing
 
-
-term
-    definition
-term
-    term
-        definition
-    term
-        definition
-
-----
-
-.. intentional build error:
-
-x
-xx
- x
-
- 

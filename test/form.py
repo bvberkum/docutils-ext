@@ -1,4 +1,5 @@
 """
+Form unittest and extractor (use nabu-test-extractor).
 """
 import unittest
 import sys, os
@@ -38,7 +39,8 @@ class Form:
         ('my-colour','color',{ 'required': False }),
         #('my-uri': (util.du_uri,),
         #('my-integer-percentage': (util.percentage,),
-        #('my-unsigned-integer': (util.nonnegative_int, False),
+        ('my-unsigned-integer','int',{ 'required':False, 
+            'validators':(lambda i:i>=0,), 'help': 'Enter a non-negative integer. ' }),
         ('my-cs-list','cs-list,str',{ 'required':False, 'append':True }),
         #(util.cs_list, util.du_str)
         ('my-ws-list','ws-list,int',{ 'required':False, 'append':True }),

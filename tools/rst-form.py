@@ -12,10 +12,13 @@ sys.path.insert(0, os.path.realpath(os.path.join(os.path.dirname(__file__),
 from dotmpe.du import form
 from dotmpe.du.ext.transform import form1
 from dotmpe.du.ext.reader import mpe
-from dotmpe.du.ext.writer import xhtmlform
+from dotmpe.du.ext.writer import htmlform
+
+from docutils import readers, Component
+from docutils.readers import standalone
 
 
-class FormReader(mpe.Reader):
+class FormReader(standalone.Reader):
 
     settings_spec = (
         'Form Reader', None,
@@ -24,8 +27,8 @@ class FormReader(mpe.Reader):
     )
 
     def get_transforms(self):
-        from docutils import readers, Component
-        return readers.Reader.get_transforms(self) + [
+        return standalone.Reader.get_transforms(self) + [
+        #return readers.Reader.get_transforms(self) + [
         #return mpe.Reader.get_transforms(self) + [
             form1.DuForm
                 ]

@@ -2,10 +2,18 @@
 Helper functions.
 """
 import re
-from docutils import utils, nodes
+import uriref
+from docutils import utils, nodes, frontend
 #from docutils.nodes import fully_normalize_name, make_id
 from dotmpe.du.ext.transform import include
 from docutils.parsers.rst import directives
+
+
+
+def new_document(source_path, settings=None):
+    if settings is None:
+        settings = frontend.OptionParser().get_default_values()
+    return utils.new_document(source_path, settings=settings)        
 
 
 """
@@ -15,7 +23,11 @@ Document tree parsing.
 def parse_list(list, split, item):
     "Parse each item from list. "
     for i in split(list):
-        yield item(i)
+        try:
+            yield item(i)
+        except ValueError, e:
+            raise ValueError, "for item in list: %s" % e
+        #list item %s: %s" % (i, e)
 
 def parse_nested_list(tree, split, branch, item):
     "Traverse tree, branching to each sublevel, parsing each leaf. "
@@ -86,23 +98,43 @@ def du_astext(node):
 def du_str(node):
     "Return unicode string, collapsed whitespace. "
     return re.sub('\s+', ' ', du_astext(node)).strip()  
- 
+
+def du_word(node):
+    w = du_astext(node).strip()
+    if ' ' in w:
+        raise ValueError("Need a single word value without whitespace. ")
+    return w
+
 def du_int(node):
-    return int(du_astext(node))
+    return int(du_word(node))
 
 def du_float(node):
-    return float(du_astext(node))
+    return float(du_word(node))
 
 def du_text(node):
     "Multiline text. "
     return du_astext(node)
 
-def du_reference(node):
-    pass # TODO
+def du_uri_reference(node):
+    href = du_astext(node).strip()
+    m = uriref.absoluteURI.match(href)
+    if not m:
+        raise ValueError, ""
+    return href
 
-#def du_uri(node):
-#    arg = du_astext(node)
-#    return directives.uri(node.astext())
+def du_reference(node):
+    while node:
+        if isinstance(node, nodes.Element) and not isinstance(node, nodes.reference):
+            node = node[0]
+        else:
+            break
+    if not node:
+        return ()
+    elif not isinstance(node, nodes.reference):        
+        raise ValueError, "expected reference, not %r. " % node
+    span = du_str(node)
+    href = du_uri_reference(node['refuri'])
+    return span, href
 
 def du_flag(node):
     " No argument allowed.  "
@@ -131,21 +163,40 @@ easy be added here by generating a wrapper for this series.
 Custom validators below.
 """
 
+def choice(argument, values):
+    """ Like docutils.parsers.rst.directives.choice but adjusted error
+    reporting. """
+    try:
+        value = argument.lower().strip()
+    except AttributeError:
+        raise ValueError('must supply an argument; choose from %s'
+                         % directives.format_values(values))
+    if value in values:
+        return value
+    elif value:
+        raise ValueError('"%s" unknown; choose from %s'
+                         % (argument, directives.format_values(values)))
+    else:
+        raise ValueError('choose from %s'
+                         % (directives.format_values(values)))
+
 def du_bool(node):
     """
     Parse yes/no, on/off, true/false and 1/0.
     """
-    choice = directives.choice(du_astext(node), ('yes', 'no', 'on', 'off', 'true',
+    opt = choice(du_astext(node), ('yes', 'no', 'on', 'off', 'true',
         'false', '1', '0'))
 
-    return choice in ('yes', 'on', 'true', '1')
+    return opt in ('yes', 'on', 'true', '1')
 
-def du_yesno(node):
+def du_yesno(arg):
     """
-    Argument parser/validator.
+    Parse yes/no, return bool.
     """
-    choice = directives.choice(du_astext(node), ('yes', 'no'))
-    return choice == 'yes'
+    arg = du_astext(arg).strip()
+    if arg:
+        opt = choice(arg, ('yes', 'no'))
+        return opt == 'yes'
 
 # XXX: what about flattening references and other inline..
 
@@ -184,6 +235,29 @@ def conv_iso8801date(data):
 
 def conv_rfc822date(data):
     pass
+
+
+def nonzero_validator(vdscr):
+    def validate_nonzero(arg, proc=None):
+        if not arg:
+            raise ValueError, "you must enter %s." % vdscr
+        return True        
+    return validate_nonzero        
+
+def regex_validator(pattern, failmsg="invalid value: %(value)s"):
+    P = re.compile(pattern)
+    def validate_regex(data, proc=None):
+        m = P.match(data)
+        if not m:
+            raise ValueError, failmsg % {'value': data}
+        return True
+    return validate_regex
+
+def validate_email(data, proc=None):
+    span, href = data
+    if not href.startswith('mailto:'):
+        raise ValueError, "expected mailto reference, not %r" % href
+    return True
 
 
 """
@@ -245,6 +319,20 @@ def opt_form_field_spec(setting, value, option_parser):
     return value
 
 
+# docutils component name
+def component_name(obj, strip_module=True):
+    clssobj = obj
+    if isinstance(obj, type(obj)): # FIXME
+        clssobj = obj.__class__
+    cname = clssobj.__module__ +'.'+ clssobj.__name__
+    # XXX: less confusing when uses (canonical) alias?
+    # XXX: Builder class scope is always lost. 
+    if strip_module:
+        p = clssobj.__module__.rfind('.')
+        #p = clssobj.__module__[p+1].rfind('.')
+        return cname[p+1:]
+    return cname
+
 
 """
 Registry of convertors(/validators?) for form-framework and other user entry
@@ -264,11 +352,12 @@ data_convertor = {
     'float': du_float,
     'str': du_str,
     'text': du_text,
-    'href': du_reference,
+    'href': du_uri_reference,
+    'ref': du_reference,
     'yesno': du_yesno,
-    'timestamp': conv_timestamp, 
-    'isodate': conv_iso8801date,
-    'rfc822date': conv_rfc822date,
+    #'timestamp': conv_timestamp, 
+    #'isodate': conv_iso8801date,
+    #'rfc822date': conv_rfc822date,
     # list types
     'cs-list': (cs_list,),
     'ws-list': (ws_list,),
@@ -288,6 +377,14 @@ def get_convertor(type_name):
                 for n in complextype_names ])
     else:
         return data_convertor[type_name]
+
+validators = {
+    #'href': du_reference,
+    'email': validate_email,
+    #'timestamp': conv_timestamp, 
+    #'isodate': conv_iso8801date,
+    #'rfc822date': conv_rfc822date,
+}
 
 
 """
@@ -451,6 +548,8 @@ class MissingOptionError(utils.ExtensionOptionError):
         return "missing option `%s`. " % self.args
 
 
+# Utility add-class transform
+
 def addClass(classnames):
     "Create a new transform to set one or more classnames."
 
@@ -475,6 +574,8 @@ Regex field-list parsing.
 field_re = '^\s*:%s:\s*([a-zA-Z0-9\.,\ _-]+)\s*$'
 
 def extract_field(source, field, strip=False):
+    # TODO: configurable body regex
+    # TODO: case insensitive option
     m = re.compile(field_re % field, re.M).search(source)
     if m:
         return m.groups()[0].strip()
