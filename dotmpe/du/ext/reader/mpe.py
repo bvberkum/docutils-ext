@@ -11,8 +11,12 @@ from dotmpe.du.ext.transform import template, generate, include, user, clean,\
 
 class Reader(readers.Reader):
 
+    """
+    Reader with many transforms in priority range of 20 to 900.
+    """
+
     settings_spec = (
-            'Example reader for dynamic content (.mpe)',
+            'Reader with extended set of transforms',
             None,
 
             user.UserSettings.settings_spec +

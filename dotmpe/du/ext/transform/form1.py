@@ -98,4 +98,3 @@ class FormMessages(transforms.Transform):
             self.document += messages
             self.document.form_processor.messages[:] = []
 
-

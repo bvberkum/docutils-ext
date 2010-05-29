@@ -71,6 +71,7 @@ Field types
 """
 import logging, types
 from docutils import nodes, utils, transforms
+from docutils.frontend import Values
 from dotmpe.du.ext import extractor
 from dotmpe.du import util
 
@@ -166,6 +167,7 @@ class FormProcessor:
         self.values = {} # cache for get-item, field-id: value
         #setattr(settings, 'form_values', self.values) # as dict or listed?
         self.nodes = {} # field-id: node
+        self.invalid = {}
         setattr(document, 'form_processor', self)
 
     def __init_fields(self, specs):
@@ -241,6 +243,9 @@ class FormProcessor:
     def __getitem__(self, field_id):
         if field_id not in self.values:
             v = self.__process_field(field_id)
+            if field_id=='id':
+                logging.info("%s: %s", field_id, v)
+            
             self.values[field_id] = v
         return self.values[field_id]
 
@@ -273,9 +278,11 @@ class FormProcessor:
         for fid, field in self.fields.items():
             if not field.editable or field.disabled:
                 continue # XXX: oldval == newval
-            if fid not in self and field.required:
-                self.__report( 3, None, MissingFieldError, fid )
-                v = False
+            if fid not in self:
+                logging.info("MissingFieldNotice %s", fid)
+                if field.required:
+                    self.__report( 3, None, MissingFieldError, fid )
+                    v = False
                 continue
             data = []
             node = self.nodes.get(fid, None)
@@ -290,16 +297,23 @@ class FormProcessor:
                     assert False, "fid is in self?"
                 except TypeError, e:
                     self.__report_error(node, FieldTypeError, e)
+                    #self.invalid[fid] = value
+                    #v = False
                 except ValueError, e:
                     self.__report_error(node, FieldValueError, fid, data, e)
+                    #self.invalid[fid] = value
+                    #v = False
             for value in data:
-                if type(data) == type(None) and not field.required:
+                if type(value) == type(None) and not field.required:
                     continue
+                assert not fid in self.invalid, "Not implemented"
                 for vldtor in field.validators:
                     try:
                         _v = vldtor(value, self)
+                        #logger.info("%s, %s, %s", vldtor, _v, v)
                         v = v and _v
                     except ValueError, e:
+                        self.invalid[fid] = value
                         self.__report(3, node, FieldValueError, fid, data, e)
                         v = False
                         continue
@@ -307,7 +321,20 @@ class FormProcessor:
                         import traceback, sys
                         traceback.print_exc(sys.stderr)
                         assert False, "Unexpected validation failure: %s" % e
+                if type(value) == type(None) and field.required:
+                    self.__report( 3, node, MissingFieldError, fid )
+                    self.invalid[fid] = value
+                    v = False
         self.document.settings.validated = v
+        if v:
+            # FIXME: multiple forms by index or name?
+            values = dict([(k.replace('-','_'), v) 
+                for k, v in self.values.items() if type(v) != type(None)])
+            setattr(self.document, 'form', values)
+        else:            
+            assert self.invalid, "Invalid form but no invalid fields. "
+            logger.info('Invalid document %s, fields: %s',
+                    self.document['source'], self.invalid)
         return v
 
         # XXX: Old?
@@ -409,9 +436,9 @@ class FormProcessor:
         except TypeError, e:
             self.__report_error(None, FieldTypeError, name, body.astext(),
                     conv.__name__, e )
-        finally:
-            if isinstance(data, types.NoneType):
-                data = u''
+            #finally:
+            #    if isinstance(data, types.NoneType):
+            #        data = u''
         if field.append:
             if not value:
                 value = []
@@ -440,7 +467,7 @@ class FormProcessor:
             msgnode.add_backref(prbid)
             node.replace_self(prb)
             #prb += node
-        logger.debug('Reported %s: %s, %s', level, error, prbid)
+        logger.info('Reported %s: %s, %s', level, error, prbid)
 
         self.messages.append(msgnode)
         return msgnode
@@ -613,7 +640,7 @@ class FormFieldIDVisitor(AbstractFormVisitor):
 
 class FormError(utils.ExtensionOptionError): pass
 
-class UnknownFieldError(FormError):
+class UnknownFieldError(FormError, KeyError):
     def __str__(self):
         return "unknown or disallowed field `%s`" % self.args
 

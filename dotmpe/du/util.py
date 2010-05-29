@@ -1,5 +1,12 @@
 """
 Helper functions.
+
+Mainly convertors and validators, but needs some cleaning up.
+
+- Convertors. Used as argument parsers on strings and doctree fragments to
+  extract certain data types. May return None and raise Value or Type Errors.
+- Validators. Used for option or form validation... XXX: raises validation error?
+
 """
 import re
 import uriref
@@ -16,8 +23,40 @@ def new_document(source_path, settings=None):
     return utils.new_document(source_path, settings=settings)        
 
 
-"""
-Document tree parsing. 
+def merge(d, **kwds):
+
+    """
+    Recursive dictionary merge, ie. multi-level `dict.update`.
+
+    Set D[k] = kwds[k1..n][k] where D is any dictionary nested within `d`.
+    Works like dict.update but recurses and updates nested dictionaries
+    first.
+
+    Returns in-place updated dict `d` for convenience.
+    """
+
+    # merge sublevels before overwriting on update
+    for k in kwds:
+        if isinstance( kwds[k], dict ):
+            if k in d:
+                subl = kwds[k]
+                kwds[k] = merge( d[k], **subl )
+    d.update(kwds)
+    return d
+
+def merge_level(d, *args, **kwds):
+    """
+    Update and/or return dictionary found in `d` by keys provided in `args`.
+    """
+    while args:
+        d = d[args.pop()]
+    if kwds:
+        merge(d, **kwds)
+    return d
+
+
+"""
+Document tree parsing, used by some convertors.
 """
 
 def parse_list(list, split, item):
@@ -82,11 +121,24 @@ def is_du_headed_list(itemnode):
 def du_nested_list_header(itemnode):
     return itemnode[0], itemnode[1]
 
+def find_first_element(node, node_class):    
+    while node:
+        if isinstance(node, nodes.Element) and len(node) \
+                and not isinstance(node, node_class):
+            node = node[0]
+        else:
+            break
+    if isinstance(node, node_class):
+        return node
 
-"""
+
+"""
 Parsing/validating of data from document nodes.
 
-Use for option or form data convertors.
+Generic convertors for simple types from document nodes.
+
+XXX: there are that accept document nodes, understand paragraphs or list.
+XXX: how about flattening these, ie. blocks, references and other inline..
 """
 
 def du_astext(node):
@@ -98,6 +150,23 @@ def du_astext(node):
 def du_str(node):
     "Return unicode string, collapsed whitespace. "
     return re.sub('\s+', ' ', du_astext(node)).strip()  
+
+def null_conv(datatype=str, conv=du_str):
+    def du_null(node):
+        arg = du_astext(node)
+        if not arg:
+            if datatype == str:
+                return ''
+            elif datatype == unicode:
+                return u''
+            elif datatype == float:
+                return 0.0
+            elif datatype == int:
+                return 0
+            return conv(arg)
+        else:
+            return conv(node)
+    return du_null
 
 def du_word(node):
     w = du_astext(node).strip()
@@ -116,31 +185,34 @@ def du_text(node):
     return du_astext(node)
 
 def du_uri_reference(node):
-    href = du_astext(node).strip()
-    m = uriref.absoluteURI.match(href)
-    if not m:
-        raise ValueError, ""
-    return href
+    rnode = find_first_element(node, nodes.reference)
+    if not rnode:
+        href = du_astext(node).strip()
+    elif 'refuri' in rnode.attributes:
+        href = rnode['refuri']
+    if href:
+        # XXX: relative or absolute
+        m = uriref.match(href)
+        if not m:
+            raise ValueError, "Not a valid URI reference: %s" % href
+        return href
 
 def du_reference(node):
-    while node:
-        if isinstance(node, nodes.Element) and not isinstance(node, nodes.reference):
-            node = node[0]
-        else:
-            break
-    if not node:
-        return ()
-    elif not isinstance(node, nodes.reference):        
-        raise ValueError, "expected reference, not %r. " % node
-    span = du_str(node)
-    href = du_uri_reference(node['refuri'])
+    rnode = find_first_element(node, nodes.reference)
+    if not rnode:
+        return None
+    elif not isinstance(rnode, nodes.reference):        
+        raise ValueError, "expected reference, not %r. " % rnode
+    span = du_str(rnode)
+    href = du_uri_reference(rnode['refuri'])
     return span, href
 
 def du_flag(node):
     " No argument allowed.  "
     return directives.flag(du_astext(node))
 
-"""
+
+"""
 docutils.parser.rst.directives has some more argument validators which could
 easy be added here by generating a wrapper for this series.
 
@@ -182,23 +254,23 @@ def choice(argument, values):
 
 def du_bool(node):
     """
-    Parse yes/no, on/off, true/false and 1/0.
+    Parse yes/no, on/off, true/false and 1/0. Return bool or null.
     """
-    opt = choice(du_astext(node), ('yes', 'no', 'on', 'off', 'true',
-        'false', '1', '0'))
+    arg = du_astext(node).strip()
+    if arg:
+        opt = choice(du_astext(arg), ('yes', 'no', 'on', 'off', 'true',
+            'false', '1', '0'))
 
-    return opt in ('yes', 'on', 'true', '1')
+        return opt in ('yes', 'on', 'true', '1')
 
 def du_yesno(arg):
     """
-    Parse yes/no, return bool.
+    Parse yes/no, return bool or null.
     """
     arg = du_astext(arg).strip()
     if arg:
         opt = choice(arg, ('yes', 'no'))
         return opt == 'yes'
-
-# XXX: what about flattening references and other inline..
 
 def cs_list(node):
     """
@@ -209,7 +281,7 @@ def cs_list(node):
     if arg:
         return [a.strip() for a in arg.split(',')]
     else:
-        return [u'']
+        return []#XXX:u'']
 
 def ws_list(node):
     """
@@ -237,6 +309,19 @@ def conv_rfc822date(data):
     pass
 
 
+def null_validator(arg, datatype=str):
+    "Return None equivalent for certain primitive types. " 
+    if not arg:
+        if datatype == str:
+            return ''
+        elif datatype == unicode:
+            return u''
+        elif datatype == float:
+            return 0.0
+        elif datatype == int:
+            return 0
+        return datatype(arg)
+
 def nonzero_validator(vdscr):
     def validate_nonzero(arg, proc=None):
         if not arg:
@@ -244,23 +329,38 @@ def nonzero_validator(vdscr):
         return True        
     return validate_nonzero        
 
-def regex_validator(pattern, failmsg="invalid value: %(value)s"):
+def regex_validator(pattern, failmsg="invalid value: %(value)s", force=False):
     P = re.compile(pattern)
     def validate_regex(data, proc=None):
-        m = P.match(data)
-        if not m:
-            raise ValueError, failmsg % {'value': data}
+        if force or data:
+            m = P.match(data)
+            if not m:
+                raise ValueError, failmsg % {'value': data}
         return True
     return validate_regex
 
 def validate_email(data, proc=None):
-    span, href = data
+    if not data:
+        raise ValueError, "expected mailto reference"
+    href = data
+    if isinstance(data, tuple):
+        span, href = data
     if not href.startswith('mailto:'):
         raise ValueError, "expected mailto reference, not %r" % href
     return True
 
+def validate_absolute_uriref(data, proc=None):
+    if not data:
+        raise ValueError, "expected Absolute URI"
+    href = data
+    if isinstance(data, tuple):
+        span, href = data
+    m = uriref.match(href)
+    if not m:
+        raise ValueError, "does not match Absolute URI: %s" % href
+    return True
 
-"""
+"""
 Corresponding Option parser validators.
 
 Raise any exception or optparse.OptionValueError if needed.
@@ -334,7 +434,7 @@ def component_name(obj, strip_module=True):
     return cname
 
 
-"""
+"""
 Registry of convertors(/validators?) for form-framework and other user entry
 parsers.
 
@@ -351,6 +451,9 @@ data_convertor = {
     'int': du_int,
     'float': du_float,
     'str': du_str,
+    #'null': du_null,
+    # XXX: 'null,str'?
+    'null-str': null_conv(str, du_str),
     'text': du_text,
     'href': du_uri_reference,
     'ref': du_reference,
@@ -379,15 +482,17 @@ def get_convertor(type_name):
         return data_convertor[type_name]
 
 validators = {
+    'absolute-uri': validate_absolute_uriref,
     #'href': du_reference,
     'email': validate_email,
     #'timestamp': conv_timestamp, 
     #'isodate': conv_iso8801date,
     #'rfc822date': conv_rfc822date,
 }
+"Form validators.. "
+#XXX: or split into form and option validators.. each has own call-spec.
 
-
-"""
+"""
 Parse settings from field-lists.
 """
 
@@ -519,7 +624,7 @@ def extract_field_name(field_name):
     else:
         data = body[0][0].astext()
 
-"""
+"""
 Errors from parsing field-lists as options.
 """
 
@@ -567,19 +672,21 @@ def addClass(classnames):
     return AddClass
 
 
-"""
+"""
 Regex field-list parsing.
 """
 
 field_re = '^\s*:%s:\s*([a-zA-Z0-9\.,\ _-]+)\s*$'
 
-def extract_field(source, field, strip=False):
+def extract_field(source, field, default=None, strip=False):
     # TODO: configurable body regex
     # TODO: case insensitive option
     m = re.compile(field_re % field, re.M).search(source)
     if m:
         return m.groups()[0].strip()
-    assert not strip, "TODO"
+    else:
+        return default
+    assert not strip, "TODO, remove field lines from source. "
 
 def extract_modeline(source, strip=False):
     pass # TODO: extract_modeline
@@ -604,7 +711,7 @@ def read_buildline(source, strip=False,
     return builder_name, default_class
 
 
-"""
+"""
 Document visitors.
 """
 
@@ -646,5 +753,4 @@ def first_and_last_field_list(document):
     else:
         return ()
         
-
 

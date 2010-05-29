@@ -56,7 +56,8 @@ class Builder(SettingsSpec):
         # Within a server, we often would not want to read local files:
         '_disable_config': True,
         'file_insertion_enabled': False,
-        'embed_stylesheet': False,
+        #'embed_stylesheet': False,
+        #'embed_script': False,
         #'template': os.path.join(DOC_ROOT, 'var', 'du-template.txt'),
     }
 
@@ -149,9 +150,15 @@ class Builder(SettingsSpec):
         """
         writer_name = writer_name or self.default_writer
         writer = comp.get_writer_class(writer_name)()
-        logger.debug('Rendering %r as %r.', source_id, writer_name)
+        logger.info('Rendering %r as %r.', source_id, writer_name)
+        #logger.info("source-length: %i", not source or len(source))
         output, pub = self.__publish(source, source_id, writer, overrides)
         self.parts = pub.writer.parts
+        #logging.info(overrides)
+        #parts = ['html_title', 'script', 'stylesheet']
+        #logger.info("output-length: %i", not output or len(output))
+        #logger.info([(part, self.parts.get(part)) for part in parts])
+        logger.info("Deps for %s: %s", source_id, pub.document.settings.record_dependencies)
         return ''.join([self.parts.get(part) for part in parts])
 
     def render_fragment(self, source, source_id='<render_fragment>',
@@ -181,15 +188,20 @@ class Builder(SettingsSpec):
 
     # Builder Du core
     def __publish(self, source, source_path, writer, overrides={}):
+        assert source, "Need source to build, not %s" % source
         if isinstance(source, docutils.nodes.document):
             # Reread document
             source_class = docutils.io.DocTreeInput
             parser = comp.get_parser_class('null')()
             reader = self.ReReader(parser)
+            assert not source.parse_messages, map(lambda x:x.astext(),
+                    source.parse_messages)
+            assert not source.transform_messages, map(lambda x:x.astext(),
+                    source.transform_messages)
         else: # Read from source
             source_class = docutils.io.StringInput 
             parser = self.Parser()
-            reader = self.Reader(parser)
+            reader = self.Reader(parser=parser)
         if not writer:
             writer = comp.get_writer_class('null')()
         destination_class = docutils.io.StringOutput

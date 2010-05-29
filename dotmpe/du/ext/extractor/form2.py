@@ -41,8 +41,9 @@ class FormExtractor(extract.Extractor):
                     3, 'Invalid form cannot be applied to storage. ',)
         elif form_process == 'submit':
             logging.info('Applying FormExtractor. ')
-            for fid, value in pfrm.values.items():
-                storage.store(unid, fid, value)
+            storage.store(unid, pfrm.values)
+            #for fid, value in pfrm.values.items():
+            #    storage.store(unid, fid, value)
         else:
             raise KeyError, "Unknown action %r" % form_process
 

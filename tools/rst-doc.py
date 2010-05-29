@@ -9,7 +9,7 @@ import sys, os
 sys.path.insert(0, os.path.realpath(os.path.join(os.path.dirname(__file__),
     '..', 'lib')))
 from dotmpe.du.ext.reader import mpe
-from dotmpe.du.ext.writer import xhtml, rst
+from dotmpe.du.ext.writer import xhtml, html, rst
 
 try:
     import locale
@@ -24,6 +24,6 @@ description = ('Generates (X)HTML documents from standalone reStructuredText '
                'sources.  ' + default_description)
 
 #publish_cmdline(reader=mpe.Reader(), writer_name='dotmpe-htdocs', description=description)
-publish_cmdline(reader=mpe.Reader(), writer=xhtml.Writer(), description=description)
+publish_cmdline(reader=mpe.Reader(), writer=html.Writer(), description=description)
 #publish_cmdline(reader=mpe.Reader(), writer=rst.Writer(), description=description)
 
