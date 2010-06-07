@@ -190,13 +190,16 @@ class Builder(SettingsSpec):
     def __publish(self, source, source_path, writer, overrides={}):
         assert source, "Need source to build, not %s" % source
         if isinstance(source, docutils.nodes.document):
+            logger.info("ReReading %s", source_path)
             # Reread document
             source_class = docutils.io.DocTreeInput
             parser = comp.get_parser_class('null')()
             reader = self.ReReader(parser)
-            assert not source.parse_messages, map(lambda x:x.astext(),
+            if source.parse_messages:
+                map(lambda x:logger.info(x.astext()),
                     source.parse_messages)
-            assert not source.transform_messages, map(lambda x:x.astext(),
+            if source.transform_messages:
+                map(lambda x:logger.info(x.astext()),
                     source.transform_messages)
         else: # Read from source
             source_class = docutils.io.StringInput 
@@ -220,14 +223,14 @@ class Builder(SettingsSpec):
     def __str__(self):
         return type(self).__module__+'.'+type(self).__name__
 
-    def __keep_messages(self):
-        " "
-        # Errors from conversion to document tree.
-        if 'warning_stream' not in self.overrides:
-            self.overrides['warning_stream'] = self.build_warnings
-        else:
-            logger.info("TODO: open or keep filelike warning_stream %s",
-                    self.overrides['warning_stream'])
+    #def __keep_messages(self):
+    #    " "
+    #    # Errors from conversion to document tree.
+    #    if 'warning_stream' not in self.overrides:
+    #        self.overrides['warning_stream'] = self.build_warnings
+    #    else:
+    #        logger.info("TODO: open or keep filelike warning_stream %s",
+    #                self.overrides['warning_stream'])
 
 
 

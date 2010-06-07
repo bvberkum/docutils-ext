@@ -21,6 +21,7 @@ class Reader(readers.Reader):
 
             user.UserSettings.settings_spec +
             include.Include.settings_spec +
+            #include.RemoteInclude.settings_spec + 
             #template.TemplateSubstitutions.settings_spec +
             generate.PathBreadcrumb.settings_spec +
             generate.Timestamp.settings_spec +
@@ -38,6 +39,7 @@ class Reader(readers.Reader):
         return Component.get_transforms(self) + [
             user.UserSettings,              # 20
             include.Include,                # 50
+            include.RecordDependencies,     #
             #template.TemplateSubstitutions, # 190
 #            MyPHPTemplate,
 # TODO: cannot have decorations before DocInfo transform

@@ -8,8 +8,7 @@ Mainly convertors and validators, but needs some cleaning up.
 - Validators. Used for option or form validation... XXX: raises validation error?
 
 """
-import re
-import uriref
+import re, hashlib, urllib2, time, uriref
 from docutils import utils, nodes, frontend
 #from docutils.nodes import fully_normalize_name, make_id
 from dotmpe.du.ext.transform import include
@@ -54,6 +53,10 @@ def merge_level(d, *args, **kwds):
         merge(d, **kwds)
     return d
 
+
+def compare(obj1, obj2):
+    "Attr/key based compare to determine document.setting differences ?"
+    pass
 
 """
 Document tree parsing, used by some convertors.
@@ -147,9 +150,14 @@ def du_astext(node):
         return node.astext()
     return node
 
-def du_str(node):
-    "Return unicode string, collapsed whitespace. "
+def du_unicode(node):
+    "Return unicode, collapsed whitespace. "
     return re.sub('\s+', ' ', du_astext(node)).strip()  
+
+def du_str(node):
+    "Return string, collapsed whitespace. "
+    unistr = du_unicode(node)
+    return unistr.encode('ascii')
 
 def null_conv(datatype=str, conv=du_str):
     def du_null(node):
@@ -451,6 +459,7 @@ data_convertor = {
     'int': du_int,
     'float': du_float,
     'str': du_str,
+    'unicode': du_unicode,
     #'null': du_null,
     # XXX: 'null,str'?
     'null-str': null_conv(str, du_str),

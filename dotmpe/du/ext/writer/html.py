@@ -1,4 +1,4 @@
-"""docutils HTML4CSS1 writer with support for left/right margins.
+"""docutils HTML4CSS1 writer with support for extensions in this package.
 
 Copyleft 2009  Berend van Berkum <dev@dotmpe.com>
 This file has been placed in the Public Domain.
@@ -6,6 +6,9 @@ This file has been placed in the Public Domain.
 import os
 from docutils import utils, nodes, frontend, io
 from docutils.writers import html4css1
+
+
+MIME_HTML = 'text/html'
 
 
 def get_script_list(settings):
@@ -54,6 +57,19 @@ class HTMLTranslator(html4css1.HTMLTranslator):
             del attributes['frame'] 
         return html4css1.HTMLTranslator.starttag(self, node, tagname, suffix=suffix,
                 empty=empty, **attributes)
+
+    # FIXME: should only allow in output for certain clients
+    def visit_include(self, node):
+        href = node['refuri']
+        # TODO: mediatype
+        obj=self.starttag(node, 'object', data=href, TYPE=MIME_HTML, CLASS='docutils include')
+        self.body.append(obj)
+        self.body.append(self.starttag(node, 'div', CLASS='unsupported'))
+        self.body.append('Warning: remote content missing (%s)</div>' % href)
+        self.body.append('</div>')
+
+    def depart_include(self, node):
+        pass
 
     def visit_left_margin(self, node):
         self.context.append(len(self.body))
