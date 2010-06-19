@@ -96,7 +96,7 @@ class Builder(SettingsSpec):
                 if type(xstore) == types.InstanceType:
                     xstore = xstore.__class__
                 assert isinstance(xstore, types.ClassType)                    
-                args, kwds = store_params.get(xstore, ((),{}))
+                args, kwds = store_params.get(xstore.__name__, ((),{}))
                 try:
                     xstore = xstore(*args, **kwds)
                 except TypeError, e:
@@ -201,12 +201,16 @@ class Builder(SettingsSpec):
             if source.transform_messages:
                 map(lambda x:logger.info(x.astext()),
                     source.transform_messages)
+            settings = source.settings                
         else: # Read from source
             source_class = docutils.io.StringInput 
             parser = self.Parser()
             reader = self.Reader(parser=parser)
+            settings = None
         if not writer:
             writer = comp.get_writer_class('null')()
+        settings = None # TODO: reuse (but needs full component (r/p/w) config!)
+        assert not settings or isinstance(settings, frontend.Values)
         destination_class = docutils.io.StringOutput
         logger.info("Publishing %r (%s, %s, %s)", 
                 source_path, *map(util.component_name, (reader, parser, writer)))
@@ -216,7 +220,7 @@ class Builder(SettingsSpec):
             reader, str(self)+'.Reader',
             parser, str(self)+'.Parser',
             writer, str(self)+'.Writer',
-            None, self,
+            settings, self,
             overrides, config_section=None, enable_exit_status=False)
         return output, pub
 

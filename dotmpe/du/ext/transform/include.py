@@ -108,22 +108,3 @@ class Include(Transform):
             return doc
 
 
-class IncludeRemote(Transform):
-
-    def apply(self):
-        
-        walkeabout
-
-
-class IncludeDoctree(Transform):
-
-    "Include nodes in doctree, resolves <include /> nodes. "
-    "Optionally rewrite relative reference. "
-
-
-
-    def apply(self):
-        pass
-
-
-

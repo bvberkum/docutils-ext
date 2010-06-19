@@ -23,7 +23,5 @@ from docutils.core import publish_cmdline, default_description
 description = ('Generates (X)HTML documents from standalone reStructuredText '
                'sources.  ' + default_description)
 
-#publish_cmdline(reader=mpe.Reader(), writer_name='dotmpe-htdocs', description=description)
 publish_cmdline(reader=mpe.Reader(), writer=html.Writer(), description=description)
-#publish_cmdline(reader=mpe.Reader(), writer=rst.Writer(), description=description)
 

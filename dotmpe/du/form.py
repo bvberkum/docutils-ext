@@ -245,7 +245,7 @@ class FormProcessor:
             v = self.__process_field(field_id)
             if field_id=='id':
                 logging.info("%s: %s", field_id, v)
-            
+
             self.values[field_id] = v
         return self.values[field_id]
 
@@ -270,7 +270,8 @@ class FormProcessor:
     def validate(self):
         """
         Validate form fields, respecting properties and validators from
-        field-spec. """
+        field-spec.
+        """
         logger.info('Validating %s', self.document['source'])
         v = not self.errors
         if not v:
@@ -328,10 +329,10 @@ class FormProcessor:
         self.document.settings.validated = v
         if v:
             # FIXME: multiple forms by index or name?
-            values = dict([(k.replace('-','_'), v) 
+            values = dict([(k.replace('-','_'), v)
                 for k, v in self.values.items() if type(v) != type(None)])
             setattr(self.document, 'form', values)
-        else:            
+        else:
             assert self.invalid, "Invalid form but no invalid fields. "
             logger.info('Invalid document %s, fields: %s',
                     self.document['source'], self.invalid)
@@ -659,7 +660,7 @@ class FieldValueError(utils.BadOptionDataError):
         name, data, e = self.args
         if isinstance(data, list):
             return "invalid value in field `%s`: %s" % ( name, e )
-        else:        
+        else:
             return "invalid value for field `%s`: %s" % ( name, e )
 
 class MissingFieldError(FormError):

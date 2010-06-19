@@ -9,6 +9,7 @@ Mainly convertors and validators, but needs some cleaning up.
 
 """
 import re, hashlib, urllib2, time, uriref
+from pickle import loads
 from docutils import utils, nodes, frontend
 #from docutils.nodes import fully_normalize_name, make_id
 from dotmpe.du.ext.transform import include
@@ -154,31 +155,22 @@ def du_unicode(node):
     "Return unicode, collapsed whitespace. "
     return re.sub('\s+', ' ', du_astext(node)).strip()  
 
-def du_str(node):
-    "Return string, collapsed whitespace. "
+def du_str(node, charset='ascii'):
+    "Return string (default: ascii), collapsed whitespace. "
     unistr = du_unicode(node)
-    return unistr.encode('ascii')
+    return unistr.encode(charset)
 
-def null_conv(datatype=str, conv=du_str):
-    def du_null(node):
-        arg = du_astext(node)
-        if not arg:
-            if datatype == str:
-                return ''
-            elif datatype == unicode:
-                return u''
-            elif datatype == float:
-                return 0.0
-            elif datatype == int:
-                return 0
-            return conv(arg)
-        else:
-            return conv(node)
-    return du_null
+def du_text(node):
+    "Multiline text, unicode. "
+    return du_astext(node)
 
+has_whitespace = re.compile("\s").match
 def du_word(node):
+    """
+    Unicode without whitespace.
+    """
     w = du_astext(node).strip()
-    if ' ' in w:
+    if has_whitespace(w):
         raise ValueError("Need a single word value without whitespace. ")
     return w
 
@@ -188,9 +180,11 @@ def du_int(node):
 def du_float(node):
     return float(du_word(node))
 
-def du_text(node):
-    "Multiline text. "
-    return du_astext(node)
+def du_long(node):
+    return long(du_word(node))
+
+def du_complex(node):
+    return complex(du_str(node))
 
 def du_uri_reference(node):
     rnode = find_first_element(node, nodes.reference)
@@ -219,6 +213,26 @@ def du_flag(node):
     " No argument allowed.  "
     return directives.flag(du_astext(node))
 
+
+def null_conv(datatype=str, conv=None):
+    """
+    Create convertor for NoneType instances to type-specific empty instances. 
+    (Those for which ___nonzero__ == False holds)
+
+    The convertor accepts a Node or string. Param `conv` may be provided for
+    non-standard types. Otherwise the value from null() is used.
+    """
+    def du_null(node):
+        arg = du_astext(node)
+        if conv:
+            return conv(arg)
+        else:
+            i = datatype()
+            if arg and str(i) != arg:
+                raise ValueError, "Invalid str representation of %r for %s" % (
+                        arg, i)
+            return i
+    return du_null
 
 """
 docutils.parser.rst.directives has some more argument validators which could
@@ -306,6 +320,9 @@ def du_list(node):
     """
     return [item for item in node]
 
+def conv_unpickle(data):
+    if data:
+        return loads(data)
 
 def conv_timestamp(data):
     pass # TODO
@@ -316,19 +333,6 @@ def conv_iso8801date(data):
 def conv_rfc822date(data):
     pass
 
-
-def null_validator(arg, datatype=str):
-    "Return None equivalent for certain primitive types. " 
-    if not arg:
-        if datatype == str:
-            return ''
-        elif datatype == unicode:
-            return u''
-        elif datatype == float:
-            return 0.0
-        elif datatype == int:
-            return 0
-        return datatype(arg)
 
 def nonzero_validator(vdscr):
     def validate_nonzero(arg, proc=None):
@@ -458,12 +462,17 @@ data_convertor = {
     'bool': du_bool,
     'int': du_int,
     'float': du_float,
-    'str': du_str,
+    'long': du_long,
+    'complex': du_complex,
+    'word': du_word, # unicode word without whitespace
+    # collapsed whitespace strings:
+    # XXX: 'str,charset'?
+    'str': du_str, # ascii
     'unicode': du_unicode,
     #'null': du_null,
     # XXX: 'null,str'?
     'null-str': null_conv(str, du_str),
-    'text': du_text,
+    'text': du_text, # unicode multiline text
     'href': du_uri_reference,
     'ref': du_reference,
     'yesno': du_yesno,
@@ -479,6 +488,8 @@ data_convertor = {
     'tree2': (du_list, is_du_headed_list, du_nested_list_header),
     #'du-deflist': du_definition_list, # nested dicts in form?
     #'du-enumlist': du_enumerated_list,
+    'pickled': conv_unpickle,
+    'pickle': lambda blob:blob,
 }
 
 def get_convertor(type_name):
