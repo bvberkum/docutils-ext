@@ -209,7 +209,7 @@ class Builder(SettingsSpec):
             settings = None
         if not writer:
             writer = comp.get_writer_class('null')()
-        settings = None # TODO: reuse (but needs full component (r/p/w) config!)
+        #settings = None # TODO: reuse (but needs full component (r/p/w) config!)
         assert not settings or isinstance(settings, frontend.Values)
         destination_class = docutils.io.StringOutput
         logger.info("Publishing %r (%s, %s, %s)", 

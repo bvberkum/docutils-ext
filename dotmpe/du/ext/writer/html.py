@@ -66,7 +66,7 @@ class HTMLTranslator(html4css1.HTMLTranslator):
         self.body.append(obj)
         self.body.append(self.starttag(node, 'div', CLASS='unsupported'))
         self.body.append('Warning: remote content missing (%s)</div>' % href)
-        self.body.append('</div>')
+        self.body.append('</object>')
 
     def depart_include(self, node):
         pass
