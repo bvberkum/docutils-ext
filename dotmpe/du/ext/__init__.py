@@ -25,9 +25,10 @@ import dotmpe.du.ext.writer
 from dotmpe.du.ext.parser.rst.directive.margin import Margin
 directives.register_directive('margin', Margin)
 
-"Override include directive registration. "
-from dotmpe.du.ext.parser.rst.directive.include import Include
-directives.register_directive('include', Include)
+#"Override include directive registration. "
+# FIXME: better use another directive name
+#from dotmpe.du.ext.parser.rst.directive.include import Include
+#directives.register_directive('include', Include)
 
 
 #from pub import Publisher

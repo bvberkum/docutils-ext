@@ -9,6 +9,14 @@ from dotmpe.du.ext.node.include import include
 #class Include(misc.Include):
 class Include(Directive):
 
+    """
+    Instead of include as rst, replace include directive by 'include' node
+    with attributes from directive options/flags.
+
+    Maybe usefull in hyerptext publishing, but requires another/separate handling of 
+    included sources.
+    """
+
     required_arguments = 1
     optional_arguments = 0
     final_argument_whitespace = True
@@ -23,6 +31,8 @@ class Include(Directive):
     standard_include_path = os.path.join(os.path.dirname(states.__file__),
                                          'include')
 
+    # this override does not include/parse the source, as std impl. does
+    # but returns a node 'include'
     def run(self):
         """Include a reST file as part of the content of this reST file."""
         #if not self.state.document.settings.file_insertion_enabled:
