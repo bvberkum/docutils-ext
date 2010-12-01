@@ -14,19 +14,7 @@ Development targets:
 - Also in this project some `documentation on Du`__, and there are `some examples
   of rSt and docutils`__ code.  
 
-.. XXX: separate project? A first stab at a quick-reference chart for Du/rSt, based in rSt. See if combinable with sheet.
-
-To use the extensions, change from the standard du components to those in 
-``dotmpe.du.ext.*``. There may not be a ready-to-use frontend, or even a
-suitable reader for your purposes here. 
-Mostly it is a place to keep my own particular component/transform
-configurations, and experiment with some new ones. 
-There is some incomplete code for frontend support, but mainly that is to enable
-another publisher project, `Blue Lines`. 
-
-However other additions by this project may be compatible with the interests of the
-Du project itself, ie. might be contributed. 
-
+  .. XXX: separate project? A first stab at a quick-reference chart for Du/rSt, based in rSt. See if combinable with sheet.
 
 .. __: doc/main.rst  
 .. __: examples
@@ -68,31 +56,29 @@ settings spec.
 
 Read more about them in `Transforms <doc/transforms.rst>`__.
 
+
 Overview
 --------
-Source code sits in package ``dotmpe`` in the ``lib`` directory.
+Work in progress:
 
-There is my own attempt at an rst writer, and in test/init.py the writer from
-Stefan's docutils branch is included. Not under active development but i hope to pick
-it up.
+  - There is my own attempt at an rst writer, and in test/init.py the writer from
+    Stefan's docutils branch is included. Not under active development but i hope to pick
+    it up.
 
-Before that happens I'm cleaning up code from some other docutils related projects.
-dotmpe.du.builder is shaping up nicely to be a collection of publishers for
-running in an server-environment. Maybe these can wrap some Nabu stuff
-(data-mining) later. Front-end development active in `Blue Lines`__.
-
-Working functionality is listed above in `dotmpe extensions`_. 
+  - Before that happens I'm cleaning up code from some other docutils related projects.
+    dotmpe.du.builder is shaping up nicely to be a collection of publishers for
+    running in an server-environment. Maybe these can wrap some Nabu stuff
+    (data-mining) later. Front-end development active in `Blue Lines`__.
 
 .. __: http://blue-lines.appspot.com/
 
-TODO
+Other ToDo
   -  propose breadcrumb and other generate transforms on devel list
      Lea mentioned breadcrumbs.
   -  re-evaluate include, literal and raw dereferencing.
      
 
-What follows is a discussion of document publishing and exploration of what
-management is needed.
+What follows is some thoughts on document publishing.
 
 Host-based publishing
 ----------------------
@@ -127,7 +113,7 @@ Examples
 
 .. TODO: 
 
-Misc
+Log
 -----
 2010-11-04
   Stefan Merten published his xml2rst and included an installer.
@@ -135,6 +121,10 @@ Misc
   and rst2diff 'comparing two input files producing a marked up difference
   output'.
   See the `source directory <~/src/python-docutils>`__
+
+2010-12-01
+    Integrating figure label patch by Alex @ du mailinglist.
+    Created subclass of latex2e writter for this.
 
 
 
