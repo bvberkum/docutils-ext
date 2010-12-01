@@ -1,6 +1,7 @@
 docutils-ext.mpe
 ================
-Extensions for Python docutils (>= 0.5)
+Extensions for Python docutils.
+Some functionality needs the latest docutils from SVN.
 
 Development targets:
   - RSt parser directives for left- and right-margin decoration.
