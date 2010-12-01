@@ -1,7 +1,7 @@
 from docutils import Component, readers
 from docutils.transforms import universal, frontmatter, references, misc
-
-from dotmpe.du.ext.transform import template, generate, include, user, clean
+from dotmpe.du.ext.transform import template, generate, include, user, clean,\
+    debug
 
 
 #MyPHPTemplate = template.TemplateSubstitutions
@@ -11,19 +11,26 @@ from dotmpe.du.ext.transform import template, generate, include, user, clean
 
 class Reader(readers.Reader):
 
+    """
+    Reader with many transforms in priority range of 20 to 900.
+    """
+
     settings_spec = (
-            'Example reader for dynamic content (.mpe)',
+            'Reader with extended set of transforms',
             None,
 
             user.UserSettings.settings_spec +
             include.Include.settings_spec +
+            #include.RecordDependencies.settings_spec + 
             #template.TemplateSubstitutions.settings_spec +
             generate.PathBreadcrumb.settings_spec +
             generate.Timestamp.settings_spec +
             generate.CCLicenseLink.settings_spec +
             generate.SourceLink.settings_spec +
             clean.StripSubstitutionDefs.settings_spec +
-            clean.StripAnonymousTargets.settings_spec,
+            clean.StripAnonymousTargets.settings_spec +
+            debug.Options.settings_spec +
+            debug.Settings.settings_spec,
     )
     config_section = 'Template reader'
     config_section_dependencies = ('readers',)
@@ -32,12 +39,15 @@ class Reader(readers.Reader):
         return Component.get_transforms(self) + [
             user.UserSettings,              # 20
             include.Include,                # 50
+            #include.RecordDependencies,     # 500
             #template.TemplateSubstitutions, # 190
 #            MyPHPTemplate,
+# TODO: cannot have decorations before DocInfo transform
             generate.PathBreadcrumb,        # 200
             generate.Timestamp,             # 200
             generate.SourceLink,            # 200
             generate.CCLicenseLink,         # 200
+            #
             references.Substitutions,       # 220
             references.PropagateTargets,    # 260
             frontmatter.DocTitle,           # 320
@@ -45,6 +55,8 @@ class Reader(readers.Reader):
             frontmatter.DocInfo,            # 340
             references.AnonymousHyperlinks, # 440
             references.IndirectHyperlinks,  # 460
+            debug.Settings,                 # 500
+            debug.Options,                  # 500
             references.Footnotes,           # 620
             references.ExternalTargets,     # 640
             references.InternalTargets,     # 660

@@ -58,7 +58,7 @@ class PathBreadcrumb(Generator):
     default_priority = 200
 
     def apply(self):
-        if not self.document.settings.breadcrumb:
+        if not hasattr(self.document.settings, 'breadcrumb'):
             return
 
         subrefname = nodes.fully_normalize_name(
@@ -185,7 +185,7 @@ class CCLicenseLink(include.Include):
 
     def apply(self):
         settings = self.document.settings
-        if not settings.cc_embed:
+        if not hasattr(settings, 'cc_embed'):
             return
 
         subrefname = nodes.fully_normalize_name(

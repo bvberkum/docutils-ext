@@ -4,6 +4,7 @@ Extensions for docutils reStructuredText.
 Upon import registers:
 
 - Margin directive with rSt parser.
+- Updated inlcude directive for use with dotmpe.du.builder
 
 TODO:
 - 'dotmpe-htdocs' writer alias for XHTML output with margin support.
@@ -16,8 +17,12 @@ from docutils.parsers.rst import directives
 
 
 "Register left_margin/right_margin directives. "
-from dotmpe.du.ext.node.margin import Margin
+from dotmpe.du.ext.parser.rst.directive.margin import Margin
 directives.register_directive('margin', Margin)
+
+"Override include directive registration. "
+from dotmpe.du.ext.parser.rst.directive.include import Include
+directives.register_directive('include', Include)
 
 
 #from pub import Publisher

@@ -9,6 +9,7 @@ import sys, os
 sys.path.insert(0, os.path.realpath(os.path.join(os.path.dirname(__file__),
     '..', 'lib')))
 from dotmpe.du.ext.reader import mpe
+from docutils.writers import manpage
 from dotmpe.du.ext.writer import xhtml, html, rst
 
 try:
@@ -23,5 +24,6 @@ from docutils.core import publish_cmdline, default_description
 description = ('Generates (X)HTML documents from standalone reStructuredText '
                'sources.  ' + default_description)
 
-publish_cmdline(reader=mpe.Reader(), writer=html.Writer(), description=description)
+publish_cmdline(reader=mpe.Reader(), writer=manpage.Writer(), description=description)
+
 

@@ -1,22 +1,27 @@
+# $Id$
 """
 Builders are preconfigured sets of Reader, Parser, Extractor and Writer components.
+Its may be a bit of an antipattern but the first I came up with when starting to
+rewrite various Du bits I made.
 
-The goal is to have a component interface for multiple input and output formats,
-perhaps to experiment with content-negotiation later. But for now this serves as
-a convenient wrapper.
+The goal was to have a component interface for multiple input and output formats,
+perhaps to experiment with content-negotiation later. But until then this serves as
+a convenient interface to the Du publisher framework. Actually the Blue-Lines server 
+is a pretty thin wrapper to these builder things.
 """
 import logging
 import types
 import StringIO
 import docutils.core
+
 import nabu
 import nabu.server
 import dotmpe
-from docutils import SettingsSpec
-from dotmpe.du import comp
+from docutils import SettingsSpec, frontend, utils, transforms
+from dotmpe.du import comp, util
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('dotmpe.du.builder')
 
 class Builder(SettingsSpec):
 
@@ -28,11 +33,14 @@ class Builder(SettingsSpec):
     """
 
     Reader = comp.get_reader_class('standalone')
+    ReReader = comp.get_reader_class('doctree')
     Parser = comp.get_parser_class('restructuredtext')
     """
-    Both Du Reader and Parser Component classes are described here. 
+    Both Du Reader and Parser Component classes are set/described here and can
+    be overridden in builder subclasses. 
     The writer is accessed directly by name for now.
     """
+    default_writer = 'dotmpe-html'
 
     settings_spec = (
     )
@@ -41,70 +49,34 @@ class Builder(SettingsSpec):
     Writer by Du Publisher. Use e.g. for those defined by extractors.
     """
 
-    settings_overrides = {
-        # Within a server, we often would not want to read local files:
-        'file_insertion_enabled': False,
-        'embed_stylesheet': False,
-        '_disable_config': True,
-        # If your builder uses the html4css1 writer it needs this file:
-        #'template': 'template.txt'
-        'error_encoding': 'UTF-8',
-        'halt_level': 100, # never halt
-        'report_level': 1,
+    settings_defaults = {
     }
-    """
-    All overrides, for Reader, Parser, Transforms and Writer settings are lumped
-    together at the builder class. 
-    """
 
-    def get_overrides(self, **settings):
-        """
-        Get merged settings_overrides from builder class down to current.
-        "FIXME: rewrite single level update to tree merge. "
-        """
-        for c in self.__base():
-            settings.update(c.settings_overrides)
-        return settings
+    settings_default_overrides = {
+        # Within a server, we often would not want to read local files:
+        '_disable_config': True,
+        'file_insertion_enabled': False,
+        #'embed_stylesheet': False,
+        #'embed_script': False,
+        #'template': os.path.join(DOC_ROOT, 'var', 'du-template.txt'),
+    }
 
     relative_path_settings = ()
     " XXX: Some pair of keynames used to lookup paths? "
 
     extractors = [] # list of (transform, storage) type pairs
     """
-    Transforms that are run during `process`. They receive source_id, storage and
-    pickle-receiver arguments at apply. These may modify the tree but usually
-    extract data for storage. The stores may be left uninitialized until `prepare`.
+    Transforms that are run during `process`. See Nabu for their interface.
+    The stores may be left uninitialized until `prepare`.
     """
 
-    def initialize(self, **settings_overrides):
-        """
-        Reloads overrides from class onto instance and prepare builder before use. 
-        Resets builder (but not extractor) instance(s). 
-        """
-        logger.debug("Initializing %s. ", self)
-        # get overrides
-        self.overrides = self.get_overrides()
-        self.overrides.update(settings_overrides)
-        # build attributes:
-        self.docpickled = None
-        self.build_warnings = StringIO.StringIO()
-        # for process attributes see self.prepare
-        # writers attributes:
-        self.writer_parts = {}
-
-    def build(self, source, source_id='<build>'):
+    def build(self, source, source_id='<build>', overrides={}):
         """
         Build document from source, returns the document.
         """
-        logging.debug("Building %s (%s).", source_id, self)
-        # Errors from conversion to document tree.
-        if 'warning_stream' not in self.overrides:
-            self.overrides['warning_stream'] = self.build_warnings
-        else:
-            logging.info("TODO: open or keep filelike warning_stream %s",
-                    self.overrides['warning_stream'])
+        logger.debug("Building %r.", source_id)
         output, self.publisher = self.__publish(source, source_id, None,
-                self.overrides)
+                overrides)
         return self.publisher.document
 
     def prepare(self, **store_params):
@@ -124,69 +96,78 @@ class Builder(SettingsSpec):
                 if type(xstore) == types.InstanceType:
                     xstore = xstore.__class__
                 assert isinstance(xstore, types.ClassType)                    
-                args, kwds = store_params.get(xstore, ((),{}))
+                args, kwds = store_params.get(xstore.__name__, ((),{}))
                 try:
                     xstore = xstore(*args, **kwds)
                 except TypeError, e:
-                    logging.error(e)
+                    logger.error(e)
                     raise TypeError, "Error instantiating storage %r "  % xstore
             # keep prepared extractor pairs:
             self.extractors[idx] = (xcls, xstore)
 
-    def process(self, document, source_id='<process>', settings_overrides={}):
+    def process(self, document, source_id='<process>', overrides={},
+            pickle_receiver=None):
         """
         If there are extractors for this builder, apply them to the document. 
+        Return messages.
 
-        Given source_id is used in the extractor stores to refer to the current
-        document. `prepare` should have been run if stores need specific instance
-        arguments. The extractor-types are instantiated later on, by Nabu using
-        the document as argument.
-
-        Afterward the document is returned, and `builder.docpickled` and
-        `builder.process_messages` are available.
+        `prepare` should have been run to initialize storages. 
         """
         if not self.extractors:
-            logging.info("No extractors to run. ")
-            self.docpickled = None
-            return document
-        
-        logging.debug("Processing %s (%s). ", source_id, self)
-        # Each transform that alters the tree should repickle it
-        pickles = []
-        pickle_receiver = nabu.server.SimpleAccumulator(pickles)
-
+            logger.info("Process: no extractors to run. ")
+            return u''
+        logger.debug("Processing %r. ", source_id)
+        document.transformer = transforms.Transformer(document)
+        # before extract, remove existing msg.level < reporter.report_level from tree
+        #document.transformer.add_transform(universal.FilterMessages, priority=1)
+        # Sanity check
+        assert not document.parse_messages, '\n'.join(map(str,
+            document.parse_messages))
+        assert not document.transform_messages, '\n'.join(map(str,
+            document.transform_messages))
+        # Populate with transforms.
+        for tclass, storage in self.extractors:
+            document.transformer.add_transform(
+                tclass, unid=source_id, storage=storage,
+                pickle_receiver=pickle_receiver)
+        # Create an appropriate reporter.
+        if overrides:
+            #prsr = frontend.OptionParser(specs=(self, self.Reader, self.)
+            # XXX: parser allows update of list attrs
+            document.settings.update(overrides)#, prsr)
+        document.reporter = utils.new_reporter('', document.settings)
         # Run extractor transforms on the document tree.
-        # XXX: Altered trees should be pickled again.
-        report_level = settings_overrides.get('report_level', 1)
-        self.process_messages = nabu.process.transform_doctree(
-            source_id, document, 
-            self.extractors, pickle_receiver, report_level)
+        document.transformer.apply_transforms()
+        # clean doc
+        document.transform = document.reporter = document.form_processor = None
+        # FIXME: what about when FP needs run during process i.o. build?
+        # what about values from FP then..
 
-        if pickles:
-            self.docpickled = pickles[-1]
-        else:
-            self.docpickled = None
-    
-        return document
-
-    def render(self, source, source_id='<render>', writer_name='xhtml',
-            parts=['whole']):
+    def render(self, source, source_id='<render>', writer_name=None,
+            overrides={}, parts=['whole']):
         """
-        XXX: Simple interface to writer component..
+        Invoke writer by name and return parts after publishing.        
         """
-        #writer_name = writer_name or self.default_writer
+        writer_name = writer_name or self.default_writer
         writer = comp.get_writer_class(writer_name)()
-        output, pub = self.__publish(source, source_id, writer,
-                self.overrides)
+        logger.info('Rendering %r as %r.', source_id, writer_name)
+        #logger.info("source-length: %i", not source or len(source))
+        output, pub = self.__publish(source, source_id, writer, overrides)
         self.parts = pub.writer.parts
+        #logging.info(overrides)
+        #parts = ['html_title', 'script', 'stylesheet']
+        #logger.info("output-length: %i", not output or len(output))
+        #logger.info([(part, self.parts.get(part)) for part in parts])
+        logger.info("Deps for %s: %s", source_id, pub.document.settings.record_dependencies)
         return ''.join([self.parts.get(part) for part in parts])
 
-    def render_fragment(self, source, source_id='<render_fragment>', settings_overrides={}):
+    def render_fragment(self, source, source_id='<render_fragment>',
+            overrides={}):
         """
-        XXX: HTML only, return body fragment (without body container).
+        HTML only, return body fragment (without body container).
         """
-        return self.render(source, source_id, writer_name='xhtml',
-                parts=['html_title', 'body'])
+        return self.render(source, source_id, writer_name=None,
+                parts=['html_title', 'body'], overrides=overrides)
 
     # HTML-writer parts:                                                         #
     ['subtitle', 'version', 'encoding', 'html_prolog', 'header', 'meta',
@@ -205,41 +186,55 @@ class Builder(SettingsSpec):
 #        for p in ['whole',]:
 #            parts[p] = parts[p].replace('</head>', script+'\n</head>')
 
-    def __base(self):
-        """ Walk inheritance chain top down, updating settings with found
-        overrides. """
-        c = self.__class__#klass
-        bases = [c]
-        while c != Builder:
-            c = c.__bases__[0]
-            bases.append(c)
-        while bases:
-            yield bases.pop()
-
     # Builder Du core
-    def __publish(self, source, source_path, writer, settings_overrides={}):
+    def __publish(self, source, source_path, writer, overrides={}):
+        assert source, "Need source to build, not %s" % source
         if isinstance(source, docutils.nodes.document):
+            logger.info("ReReading %s", source_path)
+            # Reread document
             source_class = docutils.io.DocTreeInput
             parser = comp.get_parser_class('null')()
-            reader = comp.get_reader_class('doctree')()
-        else:
+            reader = self.ReReader(parser)
+            if source.parse_messages:
+                map(lambda x:logger.info(x.astext()),
+                    source.parse_messages)
+            if source.transform_messages:
+                map(lambda x:logger.info(x.astext()),
+                    source.transform_messages)
+            settings = source.settings                
+        else: # Read from source
             source_class = docutils.io.StringInput 
             parser = self.Parser()
-            reader = self.Reader(parser)
+            reader = self.Reader(parser=parser)
+            settings = None
         if not writer:
             writer = comp.get_writer_class('null')()
+        #settings = None # TODO: reuse (but needs full component (r/p/w) config!)
+        assert not settings or isinstance(settings, frontend.Values)
         destination_class = docutils.io.StringOutput
-        overrides = self.settings_overrides
-        overrides.update(settings_overrides)
-        logger.info("Publishing %s (%s, %s, %s)", 
-                source_path, reader, parser, writer)
+        logger.info("Publishing %r (%s, %s, %s)", 
+                source_path, *map(util.component_name, (reader, parser, writer)))
         output, pub = docutils.core.publish_programmatically(
             source_class, source, source_path, 
             destination_class, None, None,
-            reader, None,
-            parser, None,
-            writer, None,
-            None, self,
-            overrides, None, None)
+            reader, str(self)+'.Reader',
+            parser, str(self)+'.Parser',
+            writer, str(self)+'.Writer',
+            settings, self,
+            overrides, config_section=None, enable_exit_status=False)
         return output, pub
+
+    def __str__(self):
+        return type(self).__module__+'.'+type(self).__name__
+
+    #def __keep_messages(self):
+    #    " "
+    #    # Errors from conversion to document tree.
+    #    if 'warning_stream' not in self.overrides:
+    #        self.overrides['warning_stream'] = self.build_warnings
+    #    else:
+    #        logger.info("TODO: open or keep filelike warning_stream %s",
+    #                self.overrides['warning_stream'])
+
+
 

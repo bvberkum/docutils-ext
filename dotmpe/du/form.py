@@ -1,34 +1,49 @@
 """
 It may be convenient to treat a Du document as a form for user data. The
-objective here is to extract, validate, and to feedback processing errors as
-system-messages.
-
-ext.transform.form.DuForm
-    Heuristics to find form fields, attach to definition.
-    Validate entries, reports problems in-tree.
-
-ext.transform.form.FormTransform
-    Transform a Form values object into a Du document.
-
-ext.extractor.form.FormExtractor and FormStorage
-    Apply validated entries to datastore.
-
-ext.writer.html4css1form
-    Write Du documents with form constructs to XHTML, possibly validate.
-
+objective here is to extract and validate, and to feedback any errors.
 
 Du Forms
 ==========
-A form is defined as any set of key, value pairs. Nested in sets with a key
-if needed.
-
+The result of the form is a set of key, value pairs.
 The following Du structures lend themselves for such model:
 
 - field lists: name, body
 - definition lists: term, definition
 - sections: heading, body
 
-Note: Nesting needs special considerations for validation.
+To process these fields, the structure `FormField` is initialized for each
+`--form-field` [*]_. Processing consists of a conversion of the document node to
+primitive or complex data.
+
+These fields, references to the original nodes, and eventually the extracted and
+validated values are kepts as attributes of a FormProcessor instance.
+
+When validation is done, the settings key 'validated' is set to true, so care
+must be taken by any calling code to properly match this status to a specific
+set of fields.
+
+While all the work is done by FormProcessor, the following classes actually
+integrate it into various docutils components.
+
+ext.transform.form1.DuForm
+    A standard Du transform, processes and validate according to settings or its
+    own fields_spec.
+
+ext.transform.form1.GenerateForm
+    Transforms a document with form settings to include field structures
+    (nodes) for every or all required fields. May be used on empty or
+    existing document.
+
+ext.extractor.form2.FormExtractor and FormStorage
+    No more processing or validation, if valid apply data to storage.
+
+    Process/validate if needed (just like from1), and apply data per document to datastore.
+
+ext.writer.xhtmlform
+    Write Du documents with form constructs to XHTML, possibly validate.
+
+.. [#] The field's ID is created from the text value of each label.
+
 
 Besides converting the whole tree to a form in such a fashion, it may be more
 effective to divide some options for recognizing forms:
@@ -43,15 +58,20 @@ was that if a generic construct can do the job of a more specific one, then the
 former is preferred. Ie. the option-list would have been deprecated if e.g.
 definition list could capture the same.
 
-Validation
-----------
-- Any list of parametrized validators per primitive type.
-- An additional special validator for lists.
-- Two additional for trees (branching lists).
+Field types
+------------
+- str, whitespace collapsed unicode
+- text, multiline unicode
+- href, a 'valid' URI or hyper-reference
+- reference, str with href
+- email, str with mailto: href
+- list, combined with anyther field-type
+- bool, any on of the str's '0', '1', 'True', 'False', 'On', 'Off', 'true', etc.
 
 """
-import logging
-from docutils import nodes, utils
+import logging, types
+from docutils import nodes, utils, transforms
+from docutils.frontend import Values
 from dotmpe.du.ext import extractor
 from dotmpe.du import util
 
@@ -59,78 +79,341 @@ from dotmpe.du import util
 logger = logging.getLogger(__name__)
 
 
+def opt_form_prepare():
+    pass
+
 class FormProcessor:
 
     """
     Uses FormVisitor to fetch any form constructs from the document according to
-    settings, and process and validate the result values according to form_spec.
+    settings, and can process and validate the result data. Fields may be defined
+    in the document's settings (using the 'form_fields_spec', see `--field-spec`)
+    or added the programmatic way by initializing the FormProcessor manually.
 
-    form_spec should preferebly be specified using a subclass.
+    Instances of this class are attached to the form_processor attribute on the
+    document, and initialized/reused by the 3 form transformations, which to the
+    actual processing on the document.
 
-    Use the option_spec to specify which fields to extract and with what
-    convertor and validators.
+    - form1.GenerateForm may be run first to add missing fields, optional or otherwise.
+    - form1.DuForm may be used (e.g. on a custom Du Reader),
+      to initialize the form for a certain fields_spec or to validate the form.
+    - form2.FormExtractor is applied by Builder.process and may do the same as
+      GenerateForm (if not done yet), and also submit the values to storage, if
+      valid.
+
     """
 
     settings_spec = (
         (
-            'Set form-recognition heuristics (see form documentation). ',
+            'Set form-recognition heuristics (see form documentation). '
+            "(partial implementation, only 'off' and 'name' are working)",
             ['--form'],
             {'choices':['off', 'class', 'name', 'class-and-name'],
                 'default': 'name'}
         ),(
             'Alter the class-name that indicates form constructs.  ',
             ['--form-class'],
-            {'action':'store_true', 'default': 'form'}
+            {'action':'store', 'default': 'form'}
         ),(
             'Ignore any but explicitly listed names.  ',
             ['--form-fields'],
-            {'action':'append', 'default': []}
-        ),
-        # --form-spec
+            {'action':'append', 'default': [], 'metavar':'[ID[,ID]]'}
+        ),(
+            'Add or redefine a form-field (see form documentation). ',
+            ['--field-spec', '--form-fields-spec'],
+            { 'dest':'form_fields_spec', 'default':[], 'metavar':
+                'id[,help];type[,require[,append[,editable[,disabled]]]][;vldtors,]',
+                'action':'append', 'validator': util.opt_form_field_spec, }
+        ),(
+            "Set 'prepare' for pass-through of current field entries, or "
+            "'submit' to store (after validation). The default 'validate' "
+            "reports all field-data conversion and validation errors. ",
+            ['--form-process'],
+            { 'choices':['prepare','validate','submit'],'default':'validate' }
+            # TODO: 'validator':
+        ),(
+            'Form field generator policy. See form documentation. ',
+            ['--form-generate'],
+            { 'choices':['off','all','optional','required','editable','noneditable'],
+                'default':'required+noneditable'}
+            #'validator': util., }
+        )
     )
 
-    def __init__(self, document, form_spec):
-        self.document = document
-        self.values = {}
-        self.fields = {}
-        self.nodes = {}
-        self.fields.update([
-            (field_id, FormField(field_id, *spec))
-            for field_id, spec in form_spec.items() ])
+    fields_spec = []
 
-    def process_fields(self):
-        " Gather fields and convert data.  "
+    def __init__(self, document=None):
+        self.document = None
+        if document:
+            self.initialize(document)
+
+    def initialize(self, document, fields_spec=[]):
+        """ Move processor to a new document.
+        Initialize form fields from settings if needed.  """
+        if self.document:
+            self.document.form_processor = None # move on to next doc
+        self.document = document
+        settings = self.document.settings
+        if not hasattr(settings, 'validated'):
+            settings.validated = False
+        self.settings = settings
+        self.messages = []
+        self.errors = []
+        #setattr(document, 'form_messages', self.messages)
+        specs = self.fields_spec or fields_spec or getattr(settings,
+                'form_fields_spec', [])
+        self.fields = {} # field-id: Field
+        self.__init_fields(specs)
+        self.values = {} # cache for get-item, field-id: value
+        #setattr(settings, 'form_values', self.values) # as dict or listed?
+        self.nodes = {} # field-id: node
+        self.invalid = {}
+        setattr(document, 'form_processor', self)
+
+    def __init_fields(self, specs):
+        for spec in specs:
+            if not isinstance(spec, FormField):
+                field_id, conv = spec[0:2]
+                if len(spec)==3: attrs = spec[2]
+                else: attrs = {}
+                args, kwds = form_field_spec(field_id, conv, **attrs)
+                spec = FormField(*args, **kwds)
+            else:
+                field_id = spec.field_id
+            self.fields[field_id] = spec
+
+    def __init_form_messages(self):
+        # XXX: Use system-messages section, but there is no default way, like
+        # decorator, to retrieve that section
+        sysmsgsclass = 'system-messages'
+        doc = self.document
+        for idx in range(len(doc)-1, 0, -1):
+            if isinstance(doc[idx], nodes.section) and sysmsgsclass in doc[idx]:
+                self.messages = document[idx]
+                return
+        self.messages = nodes.section(classes=[sysmsgsclass])
+        self.messages += nodes.title('', 'Docutils System Messages')
+        doc += self.messages
+        # XXX: defer or configure; what if a site keeps it in some notice block
+
+    def process_fields(self, require_value=True):
+        """
+        Gather field nodes according to form-class or field-names. For each
+        there may be a value, contained either in the 'body' of the node, or in
+        the defaults. This method saves the node to self.nodes, and makes sure
+        that its datatype validates. The value may be retrieved or set using
+        self.values[field_id].
+
+        Reports datatype or value conversion errors but not form-errors.
+        """
         fv = FormFieldIDVisitor(self.document)
         fv.initialize(self.fields.keys())
         fv.apply()
-        seen = []
-        for field_id, node in fv.form.items():
-            # Get value. Errors are reported in document
-            v = self.__process_field(field_id, node)
+        self.seen = []
+        for field_id, node in fv.fields:
+            if self.fields[field_id].append:
+                if field_id not in self.nodes:
+                    self.nodes[field_id] = []
+                self.nodes[field_id].append(node)
+            elif field_id in self.nodes:
+                self.__report_error(node, DuplicateFieldError, field_id)
+                continue
+            else:
+                self.nodes[field_id] = node
+            if field_id not in self.seen:
+                self.seen.append(field_id)
+            if require_value:
+                try:
+                    value = self[field_id]
+                except KeyError, e:
+                    assert False, "Unexpected missing node for field %s" % field_id
+                    #self.__report_error(node, KeyError, e)
+                except TypeError, e:
+                    self.__report_error(node, TypeError, e)
+                except ValueError, e:
+                    self.__report_error(node, ValueError, field_id, '', e)
+            #self.__report_missing(field_ids, require_value)
+
+    def __nonzero__(self):
+        return self.nodes != {}
+
+    def __contains__(self, field_id):
+        return field_id in self.nodes
+
+    def __getitem__(self, field_id):
+        if field_id not in self.values:
+            v = self.__process_field(field_id)
+            if field_id=='id':
+                logging.info("%s: %s", field_id, v)
+
             self.values[field_id] = v
-            if field_id not in seen:
-                seen.append(field_id)
-            self.nodes[field_id] = node
-        if len(self.fields) > len(seen):
-            # Report missing fields
-            field_ids = self.fields.keys()
-            [field_ids.remove(field_id) for field_id in seen]
-            self.__report_missing(field_ids)
+        return self.values[field_id]
+
+    def __setitem__(self, field_id, value):
+        self.document.validated = False
+        if isinstance(value, nodes.Element):
+            #logger.debug('Inserted at %r raw node fragment: %r', field_id, value)
+            self.nodes[field_id] = value # XXX: insert into doc..
+            return
+        if field_id not in self.nodes:
+            #logger.info('Preparing node for %r', field_id)
+            form_class = getattr(self.settings, 'form_class', 'form')
+            fnode = nodes.field(classes=[form_class+'-field'])
+            fnode += nodes.field_name(field_id, field_id),\
+                nodes.field_body()
+            self.nodes[field_id] = fnode
+            # place/extend field-list in front of document.
+            field_list = self.__insert_field_list(form_class)
+            field_list += fnode
+        self.__wrap_field(field_id, value)
 
     def validate(self):
-        " Validate form fields. "
-        pass
+        """
+        Validate form fields, respecting properties and validators from
+        field-spec.
+        """
+        logger.info('Validating %s', self.document['source'])
+        v = not self.errors
+        if not v:
+            return v
+        for fid, field in self.fields.items():
+            if not field.editable or field.disabled:
+                continue # XXX: oldval == newval
+            if fid not in self:
+                logging.info("MissingFieldNotice %s", fid)
+                if field.required:
+                    self.__report( 3, None, MissingFieldError, fid )
+                    v = False
+                continue
+            data = []
+            node = self.nodes.get(fid, None)
+            if fid in self:
+                try:
+                    d = self[fid]
+                    if isinstance(d, list):
+                        data.extend(d)
+                    else:
+                        data = [d]
+                except KeyError, e:
+                    assert False, "fid is in self?"
+                except TypeError, e:
+                    self.__report_error(node, FieldTypeError, e)
+                    #self.invalid[fid] = value
+                    #v = False
+                except ValueError, e:
+                    self.__report_error(node, FieldValueError, fid, data, e)
+                    #self.invalid[fid] = value
+                    #v = False
+            for value in data:
+                if type(value) == type(None) and not field.required:
+                    continue
+                assert not fid in self.invalid, "Not implemented"
+                for vldtor in field.validators:
+                    try:
+                        _v = vldtor(value, self)
+                        #logger.info("%s, %s, %s", vldtor, _v, v)
+                        v = v and _v
+                    except ValueError, e:
+                        self.invalid[fid] = value
+                        self.__report(3, node, FieldValueError, fid, data, e)
+                        v = False
+                        continue
+                    except Exception, e:
+                        import traceback, sys
+                        traceback.print_exc(sys.stderr)
+                        assert False, "Unexpected validation failure: %s" % e
+                if type(value) == type(None) and field.required:
+                    self.__report( 3, node, MissingFieldError, fid )
+                    self.invalid[fid] = value
+                    v = False
+        self.document.settings.validated = v
+        if v:
+            # FIXME: multiple forms by index or name?
+            values = dict([(k.replace('-','_'), v)
+                for k, v in self.values.items() if type(v) != type(None)])
+            setattr(self.document, 'form', values)
+        else:
+            assert self.invalid, "Invalid form but no invalid fields. "
+            logger.info('Invalid document %s, fields: %s',
+                    self.document['source'], self.invalid)
+        return v
 
-    def __process_field(self, field_id, node, value=None):
-        field = self.fields[field_id]
-        name = extract_form_field_label(node)
+        # XXX: Old?
+        if len(self.fields) > len(self.seen):
+            # Report missing fields
+            missing = self.fields.keys()
+            [missing.remove(field_id) for field_id in self.seen]
+            for field_id in missing:
+                if self.fields[field_id].required:
+                    v = False
+                    self.__report(3, None, MissingFieldError, field_id,)
+                else:#if report_optional:
+                    self.__report(1, None, MissingFieldNotice, field_id,)
+
+        return v
+
+    def iter_missing(self, *generate):
+        " Iterate Ids and fields for missing nodes. "
+        generate = list(generate) or getattr(self.document.settings, 'form_generate',
+                'required')
+        if 'off' in generate:
+            pass
+        elif 'all' in generate:
+            for field_id, field in self.fields.items():
+                if field_id not in self.nodes:
+                    yield field_id, field
+        else:
+            if not 'optional' in generate:
+                if not 'required' in generate:
+                    generate.append('required')
+            editable = ('editable' in generate or 'noneditable' not in generate)
+            required = ('required' in generate or 'optional' not in generate)
+            for field_id, field in self.fields.items():
+                if field_id not in self.nodes:
+                    if field.required and required or \
+                            field.editable and editable:
+                        yield field_id, field
+
+    def __insert_field_list(self, form_class):
+        index = self.document.first_child_not_matching_class(
+            nodes.PreBibliographic)
+        if index:
+            candidate = self.document[index]
+            #logger.info('Candidate %s', candidate)
+            if isinstance(candidate, nodes.field_list):
+                return candidate
+            elif isinstance(candidate, nodes.docinfo):
+                index += 1
+        else:
+            index = 0
+        field_list = nodes.field_list(classes=[form_class])
+        if index:
+            self.document.insert(index, field_list)
+        else:
+            self.document.append(field_list)
+        return field_list
+
+    def __wrap_field(self, field_id, value):
+        node = self.nodes[field_id]
         label, body = node[0], node[1]
+        #body.append(nodes.Text(value))
+        body[:] = [nodes.paragraph('',nodes.Text(value))]
+        #logger.debug("Filled in with %s for %r", value, field_id)
+
+    def __process_field(self, field_id):
+        """
+        Extract value from node using field.
+        """
+        node = self.nodes[field_id]
+        assert not isinstance(node, list), "Multiple fields not supported. "
+        name = extract_form_field_label(node)
+        field = self.fields[field_id]
+        if field_id not in self.fields or not field.convertor:
+            self.__report_error(node, UnknownFieldError, name)
         if len(node)>2:
             logger.info("Node contents out of bound for field %r. ", name)
-        if field_id not in self.fields or not field.convertor:
-            self.__report(node, UnknownFieldError, name)
-        if value and not field.append:
-            self.__report(node, DuplicateFieldError, name)
+            # TODO: insert message at end-bound
+        label, body = node[0], node[1]
         data = None
         try:
             conv = field.convertor
@@ -144,11 +427,19 @@ class FormProcessor:
             elif len(body):
                 data = conv(body[0])
             else:
-                data = u''
+                data = conv(None)
+        #except Exception, e:
+        #    import traceback, sys
+        #    traceback.print_exc(sys.stderr)
+        #    raise
         except ValueError, e:
-            self.__report(node, FieldValueError, name, e )
+            self.__report_error(node, FieldValueError, name, body.astext(), e )
         except TypeError, e:
-            self.__report(node, FieldTypeError, name, e )
+            self.__report_error(None, FieldTypeError, name, body.astext(),
+                    conv.__name__, e )
+            #finally:
+            #    if isinstance(data, types.NoneType):
+            #        data = u''
         if field.append:
             if not value:
                 value = []
@@ -160,35 +451,98 @@ class FormProcessor:
             value = data
         return value
 
-    def __report_missing(self, field_ids):
-        for field_id in field_ids:
-            if self.fields[field_id].required:
-                self.__report(None, MissingFieldError, field_id,)
-
-    def __report_warning(self, node, error, *args):
-        pass
-    def __report_error(self, node, error, *args):
+    def __report(self, level, node, error, *args):
         msg = str(error(*args))
-        self.document.reporter.error(msg, node) 
+        sysmsg = self.document.reporter.system_message
+        #if node:
+        #    msgnode = sysmsg(level, msg, node)
+        msgnode = sysmsg(level, msg)
+
+        prbid = 'unknown'
+        if node and len(node)>=2 and len(node[1]):
+            node = node[1][0]
+            msgid = self.document.set_id(msgnode)
+            # XXX: include problematic/invalid values or not..
+            prb = nodes.problematic('',node.astext(), refid=msgid)
+            prbid = self.document.set_id(prb)
+            msgnode.add_backref(prbid)
+            node.replace_self(prb)
+            #prb += node
+        logger.info('Reported %s: %s, %s', level, error, prbid)
+
+        self.messages.append(msgnode)
+        return msgnode
+
+    def __report_error(self, *args):
+        return self.__report(3, *args)
+
+    def __insert_data():
+        pass
+
+    @classmethod
+    def get_instance(clss, document, fields_spec=[]):
+        if not hasattr(document, 'form_processor'):
+            logger.debug('Created new FormProcessor for %s',
+                    document['source'])
+            pfrm = FormProcessor(document)
+        else:
+            logger.debug('Reusing FormProcessor for %s',
+                    document['source'])
+            pfrm = document.form_processor
+        pfrm.initialize(document, fields_spec=fields_spec)
+        return pfrm
+
+
+def extract_form_field_label(field):
+    " Return text-value of first node.  "
+    return field[0].astext()
 
 
 class FormField:
 
-    def __init__(self, field_id, convertor, required=True, append=False, editable=True,
-            disabled=False, validators=(), **classnames):
+    """
+    Struct for keeping metadata for form fields. Prolly should move some into
+    DOM?
+    """
+
+    def __init__(self, field_id, convertor, required=True, append=False,
+            editable=True, disabled=False, validators=(), help=''):
         self.field_id = field_id
         self.convertor = convertor
+        "Callable to convert string argument to native type.  "
         self.required = required
+        "Field must be present and will be validated, even if null-value.  "
         self.append = append
+        "Multiple fields will be concatenated. "
         self.editable = editable
+        "Process, but neither change nor validate field. "
         self.disabled = disabled
+        "Same effect as editable, other semantics? "
         self.validators = validators
-        self.classnames = classnames
+        "List of callables invoked with value and processor as arguments. "
+        self.help = help
+        "Generic help text for field entry. "
 
 
-def extract_form_field_label(field):
-    return field[0].astext().lower()
+def form_field_spec(field_id, convertor_or_names, validators=(), **attrs):
+    " Preprocess FormField spec, resolve convertor names. "
+    vtors = []
+    for vtorname in validators:
+        if not callable(vtorname):
+            vtor = util.validators[vtorname]
+            if callable(vtor):
+                vtors.append(vtor)
+            else:# tuple
+                vtors.extend(vtor)
+    attrs['validators'] = vtors
+    if not callable(convertor_or_names):
+        conv = util.get_convertor(convertor_or_names)
+    else:
+        conv = convertor_or_names
+    return (field_id, conv), attrs
 
+
+# Du document visitors
 
 class AbstractFormVisitor(nodes.SparseNodeVisitor):
 
@@ -198,17 +552,20 @@ class AbstractFormVisitor(nodes.SparseNodeVisitor):
 
     def apply(self):
         self.initialize()
+        if not hasattr(self.settings, 'form'):
+            setattr(self.settings, 'form', 'name')
         if self.settings.form != 'off':
+            # XXX: fieldset and class-directive scan not implemented
             assert self.settings.form == 'name',\
                     "Unimplemented: %s" % self.settings.form
             self.document.walkabout(self)
 
     def initialize(self, field_ids=[]):
+        """ Initialize or reset field-id list.  """
         if not hasattr(self, 'field_ids') or field_ids:
             self.field_ids = field_ids
-        self.form = {} # name: field
-        # TODO: self.fieldsets = []
-        self.fieldset_class = self.settings.form_class
+        self.fields = []
+        self.fieldset_class = getattr(self.settings, 'form_class', 'form')
         self.field_class = self.fieldset_class + '-field'
 
     def is_fieldset(self, node):
@@ -223,15 +580,9 @@ class AbstractFormVisitor(nodes.SparseNodeVisitor):
 
     def scan_field(self, node):
         field_id = nodes.make_id(extract_form_field_label(node))
-        if field_id in self.form:
-            if not isinstance(self.form[field_id], types.ListType):
-                self.form[field_id] = [self.form[field_id]]
-            self.form[field_id].append(node)
-        else:
-            self.form[field_id] = node
-
         if self.field_class not in node['classes']:
             node['classes'].append(self.field_class)
+        self.fields.append((field_id, node))
 
     # util
     def _path(self, n):
@@ -290,28 +641,34 @@ class FormFieldIDVisitor(AbstractFormVisitor):
 
 class FormError(utils.ExtensionOptionError): pass
 
-class UnknownFieldError(FormError):
+class UnknownFieldError(FormError, KeyError):
     def __str__(self):
-        return "unknown option `%s`. " % self.args
+        return "unknown or disallowed field `%s`" % self.args
 
 class DuplicateFieldError(utils.DuplicateOptionError):
     def __str__(self):
-        return "duplicate option `%s`. " % self.args
+        return "duplicate field not allowed for `%s`" % self.args
 
 class FieldTypeError(utils.BadOptionDataError):
     def __str__(self):
-        name, data, e = self.args
-        return "invalid value type '%s' for option `%s`:\n\n\t%s " % (
-                data, name, e)
+        name, data, convtr, e = self.args
+        return "convertor %r not applicable to '%s' for field `%s`:  %s" % (
+                convtr, data, name, e)
 
 class FieldValueError(utils.BadOptionDataError):
     def __str__(self):
         name, data, e = self.args
-        return "invalid value '%s' for option `%s`:\n\n\t%s " % (
-                data, name, e)
+        if isinstance(data, list):
+            return "invalid value in field `%s`: %s" % ( name, e )
+        else:
+            return "invalid value for field `%s`: %s" % ( name, e )
 
 class MissingFieldError(FormError):
     def __str__(self):
-        return "missing option `%s`. " % self.args
+        return "field `%s` is required" % self.args
+
+class MissingFieldNotice(FormError):
+    def __str__(self):
+        return "field `%s` also available" % self.args
 
 

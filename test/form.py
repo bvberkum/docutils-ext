@@ -1,4 +1,5 @@
 """
+Form unittest and extractor (use nabu-test-extractor).
 """
 import unittest
 import sys, os
@@ -18,13 +19,44 @@ def color(node):
     return directives.choice(node.astext(),
             ['red','orange','yellow','green','blue','violet'])
 
+util.data_convertor['color'] = color
+
 def validate_myform(frmextr, settings):
     if 'my-exclusive-flag' in settings:
         assert 'my-flag' not in settings, "Cannot have both values. "
     return settings
 
 
-# Reader with transform, and Builder with extractor configuration:
+class Form:
+    
+    fields_spec = [
+        ('my-integer','int',),
+        ('my-string', 'str',),
+        ('my-bool','bool',),
+        ('my-yesno','yesno',),
+        ('my-flag','flag',{ 'required': False }),
+        ('my-exclusive-flag','flag',{ 'required': False }),
+        ('my-colour','color',{ 'required': False }),
+        #('my-uri': (util.du_uri,),
+        #('my-integer-percentage': (util.percentage,),
+        ('my-unsigned-integer','int',{ 'required':False, 
+            'validators':(lambda i:i>=0,), 'help': 'Enter a non-negative integer. ' }),
+        ('my-cs-list','cs-list,str',{ 'required':False, 'append':True }),
+        #(util.cs_list, util.du_str)
+        ('my-ws-list','ws-list,int',{ 'required':False, 'append':True }),
+        #(util.ws_list, int)
+        ('my-du-list','list,str',{ 'required':False, 'append':True }),
+        #(util.du_list, util.du_str)
+        ('my-du-tree','tree1,str',{ 'required':False, 'append':True }),
+        #(util.du_list, util.is_du_list, util.du_str)
+        ('my-du-tree-2','tree2,str',{ 'required':False, 'append':True }),
+        #(util.du_list, util.is_du_headed_list, util.du_nested_list_header, util.du_str)
+    ]
+
+class FormExtractor(form2.FormExtractor):
+    fields_spec = Form.fields_spec
+class FormTransform(form1.DuForm):
+    fields_spec = Form.fields_spec
 
 class FormReader(readers.Reader):
 
@@ -35,12 +67,12 @@ class FormReader(readers.Reader):
     ))
 
     extractors = [
-            (form2.FormExtractor, form2.FormStorage),
+            (FormExtractor, form2.FormStorage),
         ]
 
     def get_transforms(self):
         return Component.get_transforms(self) + [
-                form1.DuForm ]
+                FormTransform ]
 
 
 class MyFormPage(builder.Builder):
@@ -48,24 +80,8 @@ class MyFormPage(builder.Builder):
     Reader = FormReader
 
     settings_overrides = {
-        'form_spec': {
-            'my-integer': (util.du_int,),
-            'my-string': (util.du_str,),
-            'my-yesno': (util.yesno,),
-            'my-flag': (util.du_flag, False),
-            'my-exclusive-flag': (util.du_flag, False),
-            'my-colour': (color, False),
-            #'my-uri': (util.du_uri,),
-            #'my-integer-percentage': (util.percentage,),
-            #'my-unsigned-integer': (util.nonnegative_int, False),
-            'my-cs-list': ((util.cs_list, util.du_str), False, True),
-            'my-ws-list': ((util.ws_list, int), False, True),
-            'my-du-list': ((util.du_list, util.du_str), False, True),
-            'my-du-tree': ((util.du_list, util.is_du_list, util.du_str), False, True),
-            'my-du-tree-2': ((util.du_list, util.is_du_headed_list,
-                util.du_nested_list_header, util.du_str), False, True),
-        },
-        'form': 'name',
+        #'form_field': (),
+        #'form': 'name',
     }
 
 
@@ -134,11 +150,12 @@ expected = {
         'my-colour': 'red',
         'my-flag': u'',
         'my-exclusive-flag': u'',
+        'my-error': u'',
     }
 
 class FormTest(unittest.TestCase):
 
-    def test_(self):
+    def test_1(self):
         source_id = os.path.join(example_dir, 'form.rst')
         source = open(source_id).read()
         builder = MyFormPage()
@@ -146,6 +163,7 @@ class FormTest(unittest.TestCase):
         document = builder.build(source, source_id)
         for field_id, value in document.settings.form_values.items():
             assert expected[field_id] == value, "Value error for %s: %r" % (field_id, value)
+            print field_id, 'OK'
 
 if __name__ == '__main__':
     unittest.main()

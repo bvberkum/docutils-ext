@@ -8,12 +8,12 @@ Supported
 
 .. Plain lists
 
-:my cs-list: 1,two, 3, and four
-:my ws-list: 1 2 3
+:My CS-List: 1,two, 3, and four
+:My WS-List: 1 2 3
 
 .. Du list variants:
 
-my du list
+My Du List
   - 1
   - 2  
 
@@ -44,7 +44,7 @@ Du Tree
 Supported Cont'd
 """"""""""""""""
 
-:my du tree 2:
+:My Du tree 2:
     - branch 1
 
       - branch 1.1
@@ -61,51 +61,36 @@ Supported Cont'd
       - leaf 3.1
       - leaf 3.2
 
-
-
-
-.. :my uri:                http://docutils.sourceforge.net/
-
-.. :my integer percentage: 99%
+.. :My uri:                http://docutils.sourceforge.net/
+.. :My integer percentage: 99%
 
 .. class:: form
 
-:my string:             test
-:my integer:            +123
-:my yesno:              yes 
-:my flag: 
-:my exclusive flag:
-:my unsigned integer:   d
-:my unknown: entry
-:my colour:             red
+My string
+    test
+My integer
+    +123
+My yesno
+    yes 
 
+.. class:: form
+
+:My flag: 
+:My exclusive flag:
+:My unsigned integer:   d
+:My unknown: entry
+:My colour:             red
+
+:My error:   str
 
 Unsupported
 ''''''''''''
 
-.. option lists
+.. option lists?
 
---opt-str opt-arg
+--opt arg      opt-descr
+--opt, -o      testing
+--opt=val, -f value
     opt-descr
 
---opt, -o
-    testing
 
-
-term
-    definition
-term
-    term
-        definition
-    term
-        definition
-
-----
-
-.. intentional build error:
-
-x
-xx
- x
-
- 

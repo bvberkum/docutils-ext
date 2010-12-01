@@ -8,6 +8,7 @@ fields the establish what reader to use.
 But settings my be overriden by a transform only for later and the actual writing.
 That is what the UserSettings transform does.
 """
+import logging
 from docutils import transforms, nodes
 from dotmpe.du import util
 
@@ -63,7 +64,7 @@ class UserSettings(transforms.Transform):
 
     def apply(self):
         settings = self.document.settings
-        if not getattr(settings, 'user_settings'):
+        if not getattr(settings, 'user_settings', None):
             return
 
         if not hasattr(settings, 'strip_user_settings'):
@@ -77,7 +78,7 @@ class UserSettings(transforms.Transform):
         document = self.document
         field_lists = self.candidate_field_lists()
         if not field_lists:
-            print 'info: settings but no field-lists'
+            logging.info('settings but no field-lists')
             return
         for list in field_lists:
             nodelist = [] 
@@ -87,10 +88,11 @@ class UserSettings(transforms.Transform):
             for r in self.extract_spec(list):
                 if isinstance(r, nodes.field):
                     nodelist.append(r) # keep field
+                                    
             if not nodelist:
-                list.parent.remove(list)
-            else:    
-                list[:] = nodelist
+                pass#list.parent.remove(list)
+            #else:    
+            #    list[:] = nodelist
 
     def find_setting(self, name):
         pass # TODO: need access to option_parser here.
@@ -100,33 +102,34 @@ class UserSettings(transforms.Transform):
         "Return a stripped field_list and a dictionary with settings overrides. "
         settings = self.document.settings
 
-        match_any = False#'*' in settings.spec_names
+        match_any = False#'*' in settings.user_settings
         for field in field_list:
             name = field[0][0].astext()
             normedname = nodes.fully_normalize_name(name)
-            normedid = normedname.replace('-', '_') # BVB:?
+            normedid = normedname.replace(' -', '_') # BVB:?
 
-            print name, normedname, normedid
+            #print name, normedname, normedid
             self.find_setting(normedid)
 
             if normedname in settings.strip_settings_names:
-                pass#del field_list[i]
+                field.replace_self([])
 
-            elif settings.strip_settings_names:                
-                pass#del field_list[i]
+            elif normedname in settings.user_settings and \
+                    settings.strip_settings_names:                
+                field.replace_self([])
 
             else:
-                #assert normedid not in settings.spec_names
+                #assert normedid not in settings.user_settings
                 yield field
 
             if not getattr(settings, normedid, ''):
             # TODO: unset uptions are ignored for now
                 continue
           
-            print normedname, normedname in settings.spec_names
-            print normedid, normedid in settings.spec_names
+            #print normedname, normedname in settings.user_settings
+            #print normedid, normedid in settings.user_settings
 
-            if match_any or normedname in settings.spec_names:
+            if match_any or normedname in settings.user_settings:
                 self.find_setting(normedname)
                 tp = type(getattr(settings, normedid))
                 value = field[1][0][0]
@@ -149,7 +152,7 @@ class UserSettings(transforms.Transform):
         settings = self.document.settings
         names = [name for name in 
                 getattr(settings, attr) if ',' not in name]
-        print '_parse_names', names
+        #print '_parse_names', names
 
         [names.extend(name.split(',')) for name in 
                 getattr(settings, attr) if ',' in name]

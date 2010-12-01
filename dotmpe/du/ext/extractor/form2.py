@@ -1,10 +1,13 @@
 """
 Extractors and util to retrieve and validate user-data from a document.
 """
+import logging
 from nabu import extract
 from dotmpe.du import form
 from dotmpe.du.ext import extractor
 
+
+logger = logging.getLogger('dotmpe.du.ext.extractor.form2')
 
 class FormExtractor(extract.Extractor):
 
@@ -16,20 +19,37 @@ class FormExtractor(extract.Extractor):
 
     # See dotmpe.du.form for settings_spec
 
-    form_spec = {}
-
     def init_parser(cls):
         " do some env. massage if needed. "
 
+    fields_spec = []
+
     def apply(self, unid=None, storage=None, **kwds):
         " process and validate found entries. "
-        specs = self.form_spec or settings.get('form_spec', {})
-        pfrm = form.FormProcessor(self.document, specs)
+        if not unid or not storage: return
+        pfrm = form.FormProcessor.get_instance(self.document, self.fields_spec)
         pfrm.process_fields()
+        settings = self.document.settings
+        form_process = getattr(settings, 'form_process', 'validate')
+        if form_process == 'prepare':
+            return # not an extract task
+        if form_process == 'validate':
+            return # validation should be done
+        valid = getattr(settings, 'validated', False)
+        if not valid:
+            self.document.reporter.system_message(
+                    3, 'Invalid form cannot be applied to storage. ',)
+        elif form_process == 'submit':
+            logging.info('Applying FormExtractor. ')
+            storage.store(unid, pfrm.values)
+            #for fid, value in pfrm.values.items():
+            #    storage.store(unid, fid, value)
+        else:
+            raise KeyError, "Unknown action %r" % form_process
 
         return
-        #
-        # Old
+    #
+    # Old
         #v = util.FieldListVisitor(self.document)
         #v.apply()
         #settings = self.extract_fields(v.field_list)

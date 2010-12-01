@@ -1,5 +1,5 @@
 """
-Back `in 2004 there was a great post`__ on the mailing list about handling of
+Back `in 2004 there was a nice post`__ on the mailing list about handling of
 references in docutils. 
 
 .. __: http://thread.gmane.org/gmane.text.docutils.devel/2060/focus=2066
