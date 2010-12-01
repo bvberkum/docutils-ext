@@ -1,6 +1,7 @@
 """
 """
 from docutils.writers import latex2e
+from docutils.writers.latex2e import PreambleCmds
 
 
 class Writer(latex2e.Writer):
@@ -9,11 +10,13 @@ class Writer(latex2e.Writer):
         latex2e.Writer.__init__(self)
         self.translator_class = LaTeXTranslator
 
+
+import dotmpe.du.ext.parser.rst.directive.images
+
 class LaTeXTranslator(latex2e.LaTeXTranslator):
 
-
     def depart_figure(self, node):
-        if not node['label'] is None:
+        if 'label' in node and node['label']:
             self.out.append('\\label{fig:%s}\n' % node['label'])
         self.out.append('\\end{figure}\n')
 

@@ -16,6 +16,9 @@ __docformat__ = 'reStructuredText'
 
 
 import docutils
+import docutils.readers
+import docutils.writers
+import docutils.parsers
 from docutils.parsers.rst import directives
 
 import dotmpe.du.ext.writer
@@ -29,6 +32,13 @@ directives.register_directive('margin', Margin)
 # FIXME: better use another directive name
 #from dotmpe.du.ext.parser.rst.directive.include import Include
 #directives.register_directive('include', Include)
+
+"Override figure, enable 'label' for figure directive. "
+from dotmpe.du.ext.parser.rst.directive.images import Figure
+# XXX: ugly, ugly, ugly.. need to dream up new directive names..
+del directives._directive_registry['figure']
+directives.register_directive('figuur', Figure)
+directives.register_directive('figure', Figure)
 
 
 #from pub import Publisher

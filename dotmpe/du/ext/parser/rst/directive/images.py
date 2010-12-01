@@ -1,8 +1,13 @@
+from docutils import nodes
+from docutils.parsers.rst import directives
 from docutils.parsers.rst.directives import images
+
+#from dotmpe.du.ext.node import figureref
 
 
 class Figure(images.Figure):
 
+    option_spec = images.Figure.option_spec.copy()
     option_spec['label'] = directives.unchanged
 
     # XXX: override for 'label'
@@ -11,7 +16,7 @@ class Figure(images.Figure):
         figclasses = self.options.pop('figclass', None)
         align = self.options.pop('align', None)
         label = self.options.pop('label', None)
-        (image_node,) = Image.run(self)
+        (image_node,) = images.Figure.run(self)
         if isinstance(image_node, nodes.system_message):
             return [image_node]
         figure_node = nodes.figure('', image_node)
