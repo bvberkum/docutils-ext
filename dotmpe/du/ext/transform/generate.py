@@ -58,7 +58,8 @@ class PathBreadcrumb(Generator):
     default_priority = 200
 
     def apply(self):
-        if not hasattr(self.document.settings, 'breadcrumb'):
+        if not hasattr(self.document.settings, 'breadcrumb') \
+                or not getattr(self.document.settings, 'breadcrumb', None):
             return
 
         subrefname = nodes.fully_normalize_name(
