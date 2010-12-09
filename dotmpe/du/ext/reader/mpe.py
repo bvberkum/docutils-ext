@@ -1,4 +1,5 @@
 from docutils import Component, readers
+from docutils.readers import standalone
 from docutils.transforms import universal, frontmatter, references, misc
 from dotmpe.du.ext.transform import template, generate, include, user, clean,\
     debug
@@ -19,6 +20,7 @@ class Reader(readers.Reader):
             'Reader with extended set of transforms',
             None,
 
+            standalone.Reader.settings_spec[2] +
             user.UserSettings.settings_spec +
             include.Include.settings_spec +
             #include.RecordDependencies.settings_spec + 
@@ -32,10 +34,11 @@ class Reader(readers.Reader):
             debug.Options.settings_spec +
             debug.Settings.settings_spec,
     )
-    config_section = 'Template reader'
+    config_section = '.mpe extended standalone reader'
     config_section_dependencies = ('readers',)
 
     def get_transforms(self):
+        #return standalone.Reader.get_transforms(self) + [
         return Component.get_transforms(self) + [
             user.UserSettings,              # 20
             include.Include,                # 50

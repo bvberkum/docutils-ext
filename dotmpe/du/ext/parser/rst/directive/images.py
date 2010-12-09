@@ -12,6 +12,8 @@ class Figure(images.Figure):
 
     # XXX: override for 'label'
     def run(self):
+        return super(Figure, self).run()
+        # FIXME: somehow, this renders to a double caption/legend set
         figwidth = self.options.pop('figwidth', None)
         figclasses = self.options.pop('figclass', None)
         align = self.options.pop('align', None)
