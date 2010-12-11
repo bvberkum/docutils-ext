@@ -77,7 +77,8 @@ Other ToDo
   -  propose breadcrumb and other generate transforms on devel list
      Lea mentioned breadcrumbs.
   -  re-evaluate include, literal and raw dereferencing.
-     
+  - --use-bibtex=USE_BIBTEX of latex2e may be nice practical example of external
+    resource framework integration.
 
 What follows is some thoughts on document publishing.
 
