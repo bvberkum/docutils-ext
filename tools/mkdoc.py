@@ -12,36 +12,40 @@ except:
 
 from docutils.core import publish_cmdline
 
-import dotmpe.du.ext 
+from dotmpe.du import frontend
+import dotmpe.du.ext # register extensions
 import mkdoc
 
 
 description = ('')
+actions = ('proc','pub')
 
-tool, _names = sys.argv[0], []
-tool = tool.split(os.sep).pop()
-
+tool = os.path.basename(sys.argv[0]), 
 if '-' in tool:
     _names = tool.split('-')
-
-reader_name = 'mkdoc'    
-if _names:
-    if 'mkdoc' not in _names[0]:
-        reader_name = _names.pop(0)
-    else:
-        _names.pop(0)
-
-if _names:
-    writer_name = reader_name+_names.pop(0)
 else:
-    writer_name = reader_name+'html'
+    _names = [tool]
 
-#print >>sys.stderr, reader_name,writer_name
-publish_cmdline(
-        reader_name=reader_name, 
-        writer_name=writer_name, 
-        description=description)
+if len(_names) == 1 or _names[1] not in actions:
+    _names.insert(1, 'pub')
+
+reader_name = _names.pop(0)
+action = _names.pop(0)
 
 
+if action == 'proc':
+    frontend.cli_process('')
+
+elif action == 'pub':
+    if _names:
+        writer_name = reader_name+_names.pop(0)
+    else:
+        writer_name = reader_name+'html'
+
+    #print >>sys.stderr, reader_name,writer_name
+    frontend.cli_publisher(
+            reader_name=reader_name, 
+            writer_name=writer_name, 
+            description=description)
 
 #
