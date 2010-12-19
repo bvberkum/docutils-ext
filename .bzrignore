@@ -28,3 +28,4 @@ sandbox/cliechti/aafigure/benford.svg
 sandbox/cliechti/aafigure/*.
 sandbox/cliechti/aafigure/*.svg
 sandbox/cliechti/aafigure/*.head
+.build

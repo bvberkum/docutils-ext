@@ -1,7 +1,7 @@
 """:created: 2010-04-11
 :author: B. van Berkum
 
-Include chunks of data into the document.
+Insert raw data at location.
 
 Use to include external raw xml, latex or html data in the document
 at publication time. 
@@ -20,7 +20,7 @@ class Include(Transform):
 
     settings_spec = (
             (
-                'Provide unparsed, raw content to insert at location. '
+                'Provide raw literal content to insert at location. '
                 'Multiple values pairs are accepted. '
                 'Paths may be decorator names, otherwise the path must exist '
                 'in the document. Use index -1 for append and 0 for prepend. '

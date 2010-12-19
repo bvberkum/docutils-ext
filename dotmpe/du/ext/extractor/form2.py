@@ -92,13 +92,15 @@ class FormExtractor(extract.Extractor):
 
 
 class FormStorage(extractor.TransientStorage):
+
     """
-    Special storage for form values.
-    This keeps the form dict for each document. 
+    This is the default, in-memory storage for form values.
+    It keeps the form dict for each document indexed by source_id. 
     """
 
-    def __init__(self):
-        self.form_settings = {}
+    def __init__(self, init={}, specs=()):
+        super(self, FormStorage).__init__(init=init,
+            datakey='form_settings', specs=specs)
 
     def store(self, source_id, settings):
         self.form_settings[source_id] = settings

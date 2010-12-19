@@ -3,7 +3,7 @@ from dotmpe.du import util
 from dotmpe.du.ext.transform import include
 
 
-class TemplateSubstitutions(include.Include):
+class TemplateSubstitution(include.Include):
 
     "Insert raw nodes into the tree. "
 

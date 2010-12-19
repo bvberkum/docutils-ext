@@ -2,8 +2,8 @@ import sys
 from docutils.parsers.rst import states
 
 
-#debug = sys.stderr
-debug = open('log','w+')
+debug = sys.stderr
+#debug = open('log','w+')
 
 class Inliner(states.Inliner):
 

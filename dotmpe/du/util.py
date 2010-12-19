@@ -351,15 +351,15 @@ def regex_validator(pattern, failmsg="invalid value: %(value)s", force=False):
         return True
     return validate_regex
 
-#def validate_email(data, proc=None):
-#    if not data:
-#        raise ValueError, "expected mailto reference"
-#    href = data
-#    if isinstance(data, tuple):
-#        span, href = data
-#    if not href.startswith('mailto:'):
-#        raise ValueError, "expected mailto reference, not %r" % href
-#    return True
+def validate_email(data, proc=None):
+    if not data:
+        raise ValueError, "expected mailto reference"
+    href = data
+    if isinstance(data, tuple):
+        span, href = data
+    if not href.startswith('mailto:'):
+        raise ValueError, "expected mailto reference, not %r" % href
+    return True
 
 def validate_absolute_uriref(data, proc=None):
     if not data:

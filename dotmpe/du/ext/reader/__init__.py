@@ -1,5 +1,6 @@
 _readers = dict(
     mpe='mpe',
+    dotmpe='mpe',
     mkdoc='mkdoc',
 )
 
