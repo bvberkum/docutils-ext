@@ -1,21 +1,18 @@
 # $Id$
 """
 Builders are preconfigured sets of Reader, Parser, Extractor and Writer components.
-Its may be a bit of an antipattern but the first I came up with when starting to
-rewrite various Du bits I made.
 
 The goal was to have a component interface for multiple input and output formats,
-perhaps to experiment with content-negotiation later. But until then this serves as
-a convenient interface to the Du publisher framework. Actually the Blue-Lines server 
-is a pretty thin wrapper to these builder things.
+perhaps to experiment with content-negotiation later. Until then this serves as
+as a thin wrapper to the Du publisher framework.
 """
 import logging
 import types
 import StringIO
 import docutils.core
 
-import nabu
-import nabu.server
+#import nabu
+#import nabu.server
 import dotmpe
 from docutils import SettingsSpec, frontend, utils, transforms
 from dotmpe.du import comp, util
@@ -28,8 +25,8 @@ class Builder(SettingsSpec):
     """
     Each builder is a configuration of Docutils and Nabu components.
 
-    It is a facade to build document tree's from source, and to render or process
-    these. Behind it are the Du Publisher and Nabu's data extraction routines.
+    It is a facade to build document trees from source, and to render or process
+    these. Behind it are Du Publisher and Nabu data extraction routines.
     """
 
     Reader = comp.get_reader_class('standalone')

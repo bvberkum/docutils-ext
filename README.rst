@@ -1,21 +1,101 @@
 docutils-ext.mpe
 ================
 Extensions for Python docutils.
-Some functionality needs the latest docutils from SVN.
+May need latest docutils from SVN.
 
-Development targets:
-  - RSt parser directives for left- and right-margin decoration.
+Development targets
+  - reST directives for left- and right-margin decoration.
   - An ``html4css1`` writer with margin support.
-  - Testing experimental rst writer, see test/
-  - Some additional transforms with exposed settings are used in 
-    ``dotmpe.du.ext.reader.mpe``.
+  - Testing experimental rst re-writer, see test/.
+  - Additional document transforms and settings (``dotmpe.du.ext.transform``).
+
+    ``clean.``\ `StripSubstitutionDefs`
+      | ``--strip-substitution-definitions``
+    ``clean``.\ `StripAnonymousTargets`
+      | ``--strip-anonymous-targets``
+    ``debug.``\ `Settings`
+        Append document settings to document as a field-list
+        (``--expose-settings``).
+    ``debug.``\ `Options`  
+        Append all publisher options to document as an option-list
+        (``--expose-specs``).
+    ``form1.``\ `DuForm` 
+        See ``dotmpe.du.form``.
+    ``form1.``\ `GenerateForm` 
+        Append a (filled) form to a document given a `fields_spec`.
+    ``form1.``\ `FormMessages` 
+        TODO 
+    ``generate.``\
+      `Generator`
+        Abstract ``include.Include``.
+    ``generate.``\ `PathBreadcrumb`
+        | ``--breadcrumb``
+        | ``--no-breadcrumb``
+        | ``--breadcrumb-path=PATH``
+        | ``--breadcrumb-location=DECORATOR_OR_XPATH``
+        | ``--breadcrumb-substitution-reference=REFNAME``
+
+        Insert linked 'breadcrumb' path at location.
+    ``generate.``\ `CCLicenseLink`
+        | ``--cc``
+
+        TODO: docs
+    ``generate.``\ `Timestamp`  
+        TODO: docs
+    ``generate.``\ `SourceLink`
+        TODO: docs
+    ``include.``\ `Include`
+      Insert raw data at location (``--include=XPATH,IDX,DATA|file:..``).
+    ``template.``\ `TemplateSubstitutions` 
+        | ``--template-definitions``
+        | ``--template-definition=REF[,TYPE,TRIML,TRIMR],DATA]``
+        | ``--template-fields=NAME,..``
+
+        TODO: insert raw nodes at location.
+    ``user.``\ `UserSettings` 
+        | ``--user-settings=NAME,..``
+        | ``--strip-user-settings``, ``--strip-settings``
+        | ``--leave-user-settings``, ``--leave-settings``
+        | ``--strip-settings-names=NAME,..``
+
+        Override document settings by user data.
+
+        If allowed for two publisher phases, or when this transform runs early
+        enough, specific document settings can be overridden by values parsed from 
+        the document.
+
+  - These transforms are used by ``dotmpe.du.ext.reader.mpe.``\ `Reader`.
+  - Several Nabu `Extractor`, `Storage` pairs (``dotmpe.du.ext.extractor``).
+
+    ``form2.``\ `FormExtractor` and `FormStorage`
+      TODO docs
+    ``include.``\ `IncludeDoctree`
+      TODO w.i.p.
+    ``index.``\ `IndexRegistryExtractor`
+      TODO w.i.p.
+    ``inline.``\ `InlineExtractor`
+      TODO w.i.p.
+    ``reference.``\ `Extractor`
+      TODO w.i.p.
+
+  - ``dotmpe.du.form``\ `FormField`
   - ``dotmpe.du.builder`` has some packages with specific Reader/Parser/Writer
-    component configurations.
+    component configurations, but frontend is undergoing work.
 
-- Also in this project some `documentation on Du`__, and there are `some examples
-  of rSt and docutils`__ code.  
+These are currently working and maintained.
 
-  .. XXX: separate project? A first stab at a quick-reference chart for Du/rSt, based in rSt. See if combinable with sheet.
+To be completed
+  - extractor/form framework
+  - reST forms. TODO: docs. The ``dotmpe.du.form``\ `FormProcessor`, used in transforms (``form1``) and extractors (``form2``).
+    Forms allow for ``fields_spec`` which is used on the document tree like ``settings_spec`` is on argv. 
+    Enable validation, feedback and more structured definitions of extractors.
+  - reST directives for breadcrumbs.
+  - TODO: docs. An inliner for the reST parser ``dotmpe.du.ext.parser.inliner``.
+
+Also in this project some `documentation on Du`__, and there are `some examples of reST and docutils`__ code.  
+XXX: separate project? A first stab at a quick-reference chart for Du/reST, based in reST. See if combinable with sheet.
+
+
 
 .. __: doc/main.rst  
 .. __: examples
@@ -77,8 +157,9 @@ Other ToDo
   -  propose breadcrumb and other generate transforms on devel list
      Lea mentioned breadcrumbs.
   -  re-evaluate include, literal and raw dereferencing.
-  - --use-bibtex=USE_BIBTEX of latex2e may be nice practical example of external
-    resource framework integration.
+  -  ``--use-bibtex=USE_BIBTEX`` off latex2e may be nice practical example of external
+     resource framework integration.
+  -  directive options are not all i18n'd
 
 What follows is some thoughts on document publishing.
 

@@ -1,5 +1,6 @@
 _readers = dict(
-    mpe='mpe'
+    mpe='mpe',
+    mkdoc='mkdoc',
 )
 
 def get_reader_class(reader_name):

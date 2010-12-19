@@ -1,5 +1,7 @@
 """
 dotmpe.com v5 writer
+
+This is an aggregation and configuration of Du components.
 """
 from dotmpe.du import builder, util
 from dotmpe.du.ext.transform import include

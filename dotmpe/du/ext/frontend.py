@@ -4,10 +4,42 @@ from docutils import Component, core, SettingsSpec
 from docutils.frontend import OptionParser
 
 
-# old code for what would be an interface for du to run an HTTP server
-# main interface might be reused for Builder 
-#from gate import content, comp
 
+def run_publisher(reader_name='mpe', writer_name='pseudoxml'):
+    """
+    Simple wrapper for docutils.core.publish_cmdline
+    """
+    try:
+        import locale
+        locale.setlocale(locale.LC_ALL, '')
+    except:
+        pass
+
+    from docutils.core import publish_cmdline
+    from docutils.parsers.rst import Parser
+
+    import dotmpe.du.ext 
+    from dotmpe.du.ext.parser import Inliner
+
+
+    description = ('')
+
+    parser = Parser(inliner=Inliner())
+    publish_cmdline(
+            parser=parser, 
+            reader_name=reader_name, 
+            writer_name=writer_name, 
+            description=description)
+
+
+def run_extractor(reader_name='mpe'):
+    pass # TODO
+
+
+### XXX:BVB: rewrite Du ext frontend for builder
+# old code for what would be an interface for du to run an HTTP server
+# main interface and should be reused for Builder 
+#from gate import content, comp
 
 version = '0.1'
 dates = '2009',
@@ -80,18 +112,15 @@ default_usage = '%prog [options] [<source> [<destination>]]'
 
 def main(argv=[], usage=default_usage, description=default_description):
 
-    "Run the publisher."
+    " Run the publisher. "
 
-    option_parser = get_option_parser((), usage=usage,
-            description=description)
+    #option_parser = get_option_parser((), usage=usage,
+    #        description=description)
+    #settings = None
+    #if not argv:
+    #    option_parser.error('No arguments')
+    #settings = option_parser.parse_args(argv)
 
-    settings = None
-    if not argv:
-        option_parser.error('No arguments')
-
-    settings = option_parser.parse_args(argv)
-
-    # Publish from source to destination
 
 
 

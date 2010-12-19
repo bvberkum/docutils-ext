@@ -27,7 +27,7 @@ class Include(Transform):
                 'Data may be raw string prefixed by ``type:``. '
                 'Use a second ``file:`` prefix to read raw data from filename. ',
                 ['--include'], 
-                {'action':'append', 'default':[], 'metavar':'XPATH,IDX,DATA', 
+                {'action':'append', 'default':[], 'metavar':'XPATH,IDX,DATA|file:...', 
                     #TODO:'validate': util.xpath_insert
                 }
             ),)

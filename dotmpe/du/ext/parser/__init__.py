@@ -1,3 +1,6 @@
+from inliner import Inliner
+
+
 # No additional parser components,
 # directives are registered with std rST parser.
 _parsers = dict(
@@ -10,6 +13,3 @@ def get_parser_class(parser_name):
         parser_name = _parsers[parser_name]
     module = __import__(parser_name, globals(), locals())
     return module.Parser
-
-
-

@@ -86,6 +86,8 @@ class FormMessages(transforms.Transform):
     document and insert these into an appendix section of the class 'system-messages'.
 
     ``document.transform_messages`` is afterward left empty.
+
+    TEST: FormMessages should do the same for form_process.messages
     """
 
     default_priority = 855
