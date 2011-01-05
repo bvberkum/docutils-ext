@@ -69,7 +69,7 @@ docutils.parsers.get_parser_class = get_parser_class
 
 _du_get_writer_class = docutils.writers.get_writer_class
 def get_writer_class(writer_name):
-    assert writer_name in dotmpe.du.ext.writer._writers, writer_name
+    #assert writer_name in dotmpe.du.ext.writer._writers, writer_name
     if writer_name in dotmpe.du.ext.writer._writers:
         return dotmpe.du.ext.writer.get_writer_class(writer_name)
     else:

@@ -5,12 +5,14 @@ _writers = dict(
     dotmpehtml='html',
     #dotmpelatex='latex2e',
     dotmperst='rst',
+
+    brx_ws_html='brx_ws_html',
 )
 
 def get_writer_class(writer_name):
     """Return the Writer class from the `writer_name` module."""
     writer_name = writer_name.lower()
-    assert writer_name in _writers, writer_name
+    #assert writer_name in _writers, writer_name
     if writer_name in _writers:
         writer_name = _writers[writer_name]
     module = __import__(writer_name, globals(), locals())

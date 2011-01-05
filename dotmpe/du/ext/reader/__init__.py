@@ -2,6 +2,7 @@ _readers = dict(
     mpe='mpe',
     dotmpe='mpe',
     mkdoc='mkdoc',
+    mpe_brx_ws='brx_ws',
 )
 
 def get_reader_class(reader_name):
