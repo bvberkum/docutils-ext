@@ -1,0 +1,46 @@
+.PS
+copy "umlgraph-sequence.pic";
+
+# Define the objects
+pobject(M,"main:");
+object(O,"o:Builder");
+object(U,"dotmpe.du.util");
+#object(W,"w:Writer");
+#object(R,"r:Reader");
+#object(P,"p:Parser");
+#object(E,"e:Extractor");
+#object(s1,"sources:SourceStorage");
+#object(m1,"metastore:ExtractorStorage");
+placeholder_object(P);
+step();
+
+message(M,U,"get_builder");
+step();
+active(O);
+step();
+
+
+#message(M,O,"process");
+#step()
+
+#message(M,O,"publish");
+
+#active(O);
+#message(O,O,"callbackLoop()");
+#inactive(O);
+#create_message(O,P,"p:Peer");
+#message(O,P,"handleExpose()");
+#active(P);
+#return_message(P,O,"");
+#inactive(P);
+#destroy_message(O,P);
+inactive(O);
+
+
+
+# Complete the lifelines
+step();
+complete(O);
+.PE
+
+# vim:ft=conf:

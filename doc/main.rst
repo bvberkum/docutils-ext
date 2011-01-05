@@ -1,4 +1,21 @@
 
+:build: @MKBUILD
+:root: @MKROOT
+:build: @MK_BUILD
+:root: @MK_ROOT
+
+.. raw:: html
+
+    <a href='/.build/project/docutils-ext/doc/builder-sequence.svg'>
+    <object type="image/svg+xml"
+        data="/.build/project/docutils-ext/doc/builder-sequence.svg"
+        height="250" width="290"></object>
+    </a>
+    
+.. 
+.. .. figure:: /.build/project/docutils-ext/doc/builder-sequence.png
+  :target: /project/docutils-ext/doc/builder-sequence.pic
+
 - `sheet <sheet/du.rst>`_
 - `docutils-internals.rst   <docutils-internals.rst>`_
 - `docutils-suggestions.rst <docutils-suggestions.rst>`_

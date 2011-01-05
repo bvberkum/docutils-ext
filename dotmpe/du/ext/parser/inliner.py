@@ -12,8 +12,8 @@ class Inliner(states.Inliner):
 
     def init_customizations(self, settings):
         states.Inliner.init_customizations(self, settings)
-        if settings.title_directory:
-            self.titles = None # TODO: load indices
+        #if settings.title_directory:
+        #    self.titles = None # TODO: load indices
 
     def inline_obj(self, match, lineno, end_pattern, nodeclass,
                 restore_backslashes=0):

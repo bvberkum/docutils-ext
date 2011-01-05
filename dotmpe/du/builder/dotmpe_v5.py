@@ -12,32 +12,36 @@ from dotmpe.du.util import addClass
 class Builder(builder.Builder):
 
     settings_default_overrides = {
-            '_disable_config': True,
-            'stylesheet_path':'/media/style/default.css',
-            'script': 'http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js,/media/script/default.js',
-            'embed_stylesheet': False,
-            'embed_script': False,
-            'breadcrumb': True,
-            'generator': False,
-            'date': True,
-            'input_encoding': 'utf-8',
-            'output_encoding': 'utf-8',
-            #'file_insertion_enabled': False,
-            #'raw_enabled': False,
-            'cc_license': 'by nc sa',
-            'cc_embed': True,
-            # cleanup nice for tree-output, not needed for XHTML writer
-            'strip_substitution_definitions': True,
-            'strip_anonymous_targets': True,
-            'user_settings': [
-                'generator','timestamp'
-                'build', 'id', 'cc-license', 'strip_setting_names',
-            ],
-            'strip_settings_names': ['build', 'id', 'cc-license',],
-            'strip_user_settings': False,
-            'compact_lists': False,
-            'compact_field_lists': False,
-        }
+        '_disable_config': True,
+        'stylesheet_path':'/media/style/default.css',
+        'script': 'http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js,/media/script/default.js',
+        'embed_stylesheet': False,
+        'embed_script': False,
+        'breadcrumb': True,
+        'generator': False,
+        'date': True,
+        'input_encoding': 'utf-8',
+        'output_encoding': 'utf-8',
+        #'file_insertion_enabled': False,
+        #'raw_enabled': False,
+        'cc_license': 'by nc sa',
+        'cc_embed': True,
+        # cleanup nice for tree-output, not needed for XHTML writer
+        'strip_substitution_definitions': True,
+        'strip_anonymous_targets': True,
+        'user_settings': [
+            'generator','timestamp'
+            'build', 'id', 'cc-license', 'strip_setting_names',
+        ],
+        'strip_settings_names': ['build', 'id', 'cc-license',],
+        'strip_user_settings': False,
+        'compact_lists': False,
+        'compact_field_lists': False,
+    }
+
+    extractor_spec = [
+            ('DocInfo', )
+    ] 
 
     class Reader(mpe.Reader):
 

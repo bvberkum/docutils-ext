@@ -19,18 +19,26 @@ from dotmpe.du.ext.parser import Inliner
 
 
 
-def cli_process(builder_name='mpe'):
+def cli_process(builder_name='mpe',description=''):
+    module_name = builder_name
     Builder = get_builder_class(module_name, class_name='Builder')
-
     builder = Builder()
+    source = argv.pop()
     document = builder.build(source, source_id, overrides={})
-    builder.prepare(self, **store_params)
+    builder.prepare(**builder.store_params)
     builder.process(document, source_id, overrides={}, pickle_receiver=None)
-
     # TODO render messages as reST doc
 
 
-def cli_publisher(reader_name='mpe', writer_name='pseudoxml'):
+def cli_render(builder_name='mpe'):
+    module_name = builder_name
+    Builder = get_builder_class(module_name, class_name='Builder')
+    builder = Builder()
+    source = argv.pop()
+    print builder.render(source)
+
+
+def cli_du_publisher(reader_name='mpe', writer_name='pseudoxml',description=''):
     """
     Simple wrapper for docutils.core.publish_cmdline
     """
@@ -166,9 +174,5 @@ def cgi_main(usage=cgi_usage, description=cgi_description, argv=[]):
     "Invoke to run as HTTP resource in CGI envorionment."
 
     main(usage=usage, description=description, argv=[])
-
-
-
-
 
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-A minimal front end to the Docutils Publisher with mkdoc extensions and storage.
+A minimal front end for builder configurations.
 """
 import os
 import sys
@@ -14,13 +14,13 @@ from docutils.core import publish_cmdline
 
 from dotmpe.du import frontend
 import dotmpe.du.ext # register extensions
-import mkdoc
+#import mkdocs
 
 
 description = ('')
 actions = ('proc','pub')
 
-tool = os.path.basename(sys.argv[0]), 
+tool = os.path.basename(sys.argv[0])
 if '-' in tool:
     _names = tool.split('-')
 else:
@@ -31,10 +31,11 @@ if len(_names) == 1 or _names[1] not in actions:
 
 reader_name = _names.pop(0)
 action = _names.pop(0)
-
+print >>sys.stderr, reader_name, action
 
 if action == 'proc':
-    frontend.cli_process('')
+    print >>sys.stderr, 'proc', reader_name
+    frontend.cli_process(reader_name)
 
 elif action == 'pub':
     if _names:

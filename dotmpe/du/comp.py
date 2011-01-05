@@ -63,11 +63,13 @@ def get_writer_class(writer_name, klass='Writer'):
 
                 
 
+ERR_MISSING_BUILDER_MODNAME = "Missing builder module name. "
+
 builders = { }
 
 def get_builder_class(mod_name, class_name='Builder'):
     global builders
-    assert mod_name 
+    assert mod_name, ERR_MISSING_BUILDER_MODNAME
     #if not class_name or (restrict and class_name not in restrict):
     #    class_name = 'Builder'
     if mod_name not in builders:

@@ -99,7 +99,6 @@ class Builder(SettingsSpec):
                 except TypeError, e:
                     logger.error(e)
                     raise TypeError, "Error instantiating storage %r "  % xstore
-            # keep prepared extractor pairs:
             self.extractors[idx] = (xcls, xstore)
 
     def process(self, document, source_id='<process>', overrides={},
