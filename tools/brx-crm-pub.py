@@ -23,14 +23,96 @@ except:
     pass
 
 import docutils
-from docutils import io
+from docutils import utils, nodes, frontend, io, Component, readers, writers
 from docutils.core import Publisher, publish_cmdline
 from docutils.readers import doctree
+from docutils.readers import standalone
+from docutils.transforms import universal, frontmatter, references, misc
+from docutils.writers import docutils_xml, pseudoxml
 
-#import dotmpe.du.ext # register Du extensions
+import dotmpe.du.ext # register Du extensions
+from dotmpe.du.ext.writer import html, latex2e
+from dotmpe.du.ext.transform import template, generate, include, user, clean,\
+    debug
 
 
-# Determine output format from executable filename
+
+
+class Reader(readers.Reader):
+
+    """
+    Reader with many transforms in priority range of 20 to 900.
+    """
+
+    settings_spec = (
+            'Reader with extended set of transforms',
+            None,
+
+            standalone.Reader.settings_spec[2] +
+            user.UserSettings.settings_spec +
+            include.Include.settings_spec +
+            #include.RecordDependencies.settings_spec + 
+            #template.TemplateSubstitutions.settings_spec +
+            generate.PathBreadcrumb.settings_spec +
+            generate.Timestamp.settings_spec +
+            generate.CCLicenseLink.settings_spec +
+            generate.SourceLink.settings_spec +
+            clean.StripSubstitutionDefs.settings_spec +
+            clean.StripAnonymousTargets.settings_spec +
+            debug.Options.settings_spec +
+            debug.Settings.settings_spec,
+    )
+    config_section = 'brx-ws extended standalone reader'
+    config_section_dependencies = ('readers',)
+
+    def get_transforms(self):
+        #return standalone.Reader.get_transforms(self) + [
+        return Component.get_transforms(self) + [
+            user.UserSettings,              # 20
+            include.Include,                # 50
+            #include.RecordDependencies,     # 500
+            #template.TemplateSubstitutions, # 190
+            generate.PathBreadcrumb,        # 200
+            generate.Timestamp,             # 200
+            generate.SourceLink,            # 200
+            generate.CCLicenseLink,         # 200
+            #
+            references.Substitutions,       # 220
+            references.PropagateTargets,    # 260
+            frontmatter.DocTitle,           # 320
+            frontmatter.SectionSubTitle,    # 340
+            frontmatter.DocInfo,            # 340
+            references.AnonymousHyperlinks, # 440
+            references.IndirectHyperlinks,  # 460
+            debug.Settings,                 # 500
+            debug.Options,                  # 500
+            references.Footnotes,           # 620
+            references.ExternalTargets,     # 640
+            references.InternalTargets,     # 660
+            universal.StripComments,        # 740
+            universal.ExposeInternals,      # 840
+# Replaced by some generate.* transforms
+#            universal.Decorations,         # 820
+            misc.Transitions,               # 830
+            references.DanglingReferences,  # 850
+            clean.StripSubstitutionDefs,    # 900
+            clean.StripAnonymousTargets,    # 900
+        ]
+
+
+
+class HtmlWriter(html.Writer):
+    pass 
+
+class XmlWriter(docutils_xml.Writer):
+    pass 
+
+class LatexWriter(latex2e.Writer):
+    pass 
+
+
+## Determine output format from executable filename
+
 output_formats = ('pseudoxml', 'brx_ws_html', 'latex', 'html', 'xml') 
 # TODO: support pdf here would be nice
 
@@ -44,32 +126,41 @@ else:
 
 output_format = _names.pop()
 if output_format == 'pub':
-	output_format = 'pseudoxml'
+    output_format = 'pseudoxml'
 assert output_format in output_formats, "Cannot handle %s ouput" % output_format
+
+if output_format == 'pseudoxml':
+    Writer = pseudoxml.Writer
+elif output_format == 'xml':
+    Writer = XmlWriter
+elif output_format == 'latex':
+    Writer = LatexWriter
+elif output_format == 'html':
+#elif output_format == 'brx_ws_html':
+    Writer = HtmlWriter
 
 
 ### 1. Read main document and preprocess to doctree,
 ###    apply extraction/rewriter transforms.
 
-# Prepare publisher
+## Prepare publisher
 
 usage = "%prog [options] [<source> [<destination>]]"
 description = ('Reads main document from standalone reStructuredText '
                'from <source> (default is stdin). ')
-#reader_name='mpe_brx_ws'
-reader_name = 'standalone'
-writer_name = output_format
 
-pub = Publisher(None, None, None, 
+pub = Publisher(Reader(), None, Writer(), 
     settings=None,
     destination_class=io.NullOutput)
 
-# Get settings for components from command-line
-pub.set_components(reader_name, 'rst', writer_name) 
+## Get settings for components from command-line
+
+pub.set_components(None, 'rst', None) 
 pub.process_command_line(None, None, None, None, {})
 
-# Publish to doctree using reader/parser but without writing
-pub.set_components(reader_name, 'rst', 'null') 
+## Publish to doctree using reader/parser but without writing
+
+pub.set_writer('null')
 null_output = pub.publish(
     None, usage, description, None, None,
     config_section=None, enable_exit_status=1)
@@ -79,17 +170,16 @@ document = pub.document
 ### 2. Render doctree to output format, 
 ###    apply completion transforms.
 
-pub.reader = doctree.Reader(parser_name='null')
-pub.set_writer(output_format)
-pub.destination_class = io.FileOutput
-pub.set_destination() # reset null-out to file-out
-
-document.settings = pub.settings
 pub.source = io.DocTreeInput(document)
+pub.destination_class = io.FileOutput
+pub.set_destination()
+
+pub.reader = doctree.Reader(parser_name='null')
+pub.writer = Writer()
 
 pub.apply_transforms()
 output = pub.writer.write(pub.document, pub.destination)
-pub.writer.assemble_parts()
+#pub.writer.assemble_parts()
 
 
 # ----
