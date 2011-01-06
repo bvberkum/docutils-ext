@@ -32,11 +32,14 @@ from docutils.writers import docutils_xml, pseudoxml
 
 import dotmpe.du.ext # register Du extensions
 from dotmpe.du.ext.writer import html, latex2e
-from dotmpe.du.ext.transform import template, generate, include, user, clean,\
-    debug
+from dotmpe.du.ext.transform import generate, include, user, clean,\
+    debug # template
+from dotmpe.du.ext.extractor import reference
 
 
 
+# Brx/WS specific simple extractors
+ref_extractor = reference.Extractor            # 900
 
 class Reader(readers.Reader):
 
@@ -60,7 +63,8 @@ class Reader(readers.Reader):
             clean.StripSubstitutionDefs.settings_spec +
             clean.StripAnonymousTargets.settings_spec +
             debug.Options.settings_spec +
-            debug.Settings.settings_spec,
+            debug.Settings.settings_spec +
+            ref_extractor.settings_spec[2],
     )
     config_section = 'brx-ws extended standalone reader'
     config_section_dependencies = ('readers',)
@@ -97,18 +101,26 @@ class Reader(readers.Reader):
             references.DanglingReferences,  # 850
             clean.StripSubstitutionDefs,    # 900
             clean.StripAnonymousTargets,    # 900
+
+            ref_extractor, # 900
         ]
 
 
 
 class HtmlWriter(html.Writer):
-    pass 
+    def get_transforms(self):
+        return html.Writer.get_transforms(self) + [
+                ]
 
 class XmlWriter(docutils_xml.Writer):
-    pass 
+    def get_transforms(self):
+        return docutils_xml.Writer.get_transforms(self) + [
+                ]
 
 class LatexWriter(latex2e.Writer):
-    pass 
+    def get_transforms(self):
+        return latex2e.Writer.get_transforms(self) + [
+                ]
 
 
 ## Determine output format from executable filename

@@ -1,6 +1,23 @@
 """
 Extractor modules and misc.
 
+Interface::
+
+    class Extractor(docutils.transforms.Transform):
+        @classmethod
+        def init_parser(cls): 
+            pass
+        def apply(self, **kwargs):
+            pass
+
+    class ExtractorStorage:
+        def store(self, unid, *args):
+            pass
+        def clear(self, unid=None):
+            pass
+        def reset_schema(self):
+            pass
+
 One default storage implementation does not make much sense.
 Storage types depend on host system.
 

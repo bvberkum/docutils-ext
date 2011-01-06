@@ -8,13 +8,15 @@ Mainly convertors and validators, but needs some cleaning up.
 - Validators. Used for option or form validation... XXX: raises validation error?
 
 """
-import re, hashlib, urllib2, time, uriref
+import anydbm, hashlib, optparse, os, re, time, urllib2
 from pickle import loads
+
 from docutils import utils, nodes, frontend
 #from docutils.nodes import fully_normalize_name, make_id
-from dotmpe.du.ext.transform import include
 from docutils.parsers.rst import directives
 
+from dotmpe.du.ext.transform import include
+import uriref
 
 
 def new_document(source_path, settings=None):
@@ -186,6 +188,7 @@ def du_long(node):
 def du_complex(node):
     return complex(du_str(node))
 
+#XXX : du node convert (parse/validate)
 def du_uri_reference(node):
     rnode = find_first_element(node, nodes.reference)
     if not rnode:
@@ -198,6 +201,35 @@ def du_uri_reference(node):
         if not m:
             raise ValueError, "Not a valid URI reference: %s" % href
         return href
+
+# XXX: optparse validator
+def validate_absolute_uriref(setting, value, option_parser):
+    m = uriref.absoluteURI.match(value)
+    if not m:
+        raise ValueError, "Not a valid absolute URI reference: %s" % value
+    return value
+
+def validate_context(setting, value, option_parser):
+    m = uriref.absoluteURI.match(value)
+    if not m:
+        raise ValueError, "Not an absolute URI reference: %s" % value
+    gd = m.groupdict()
+    if 'host' not in gd or not gd['host']:
+        raise ValueError("Context is missing host name: %s" % value)
+    return value
+    
+# XXX: dotmpe du ext form validator    
+def v_absolute_uriref(data, proc=None):
+    if not data:
+        raise ValueError, "expected Absolute URI"
+    href = data
+    if isinstance(data, tuple):
+        span, href = data
+    m = uriref.match(href)
+    if not m:
+        raise ValueError, "does not match Absolute URI: %s" % href
+    return True
+
 
 def du_reference(node):
     rnode = find_first_element(node, nodes.reference)
@@ -333,7 +365,7 @@ def conv_iso8801date(data):
 def conv_rfc822date(data):
     pass
 
-
+# Unused
 def nonzero_validator(vdscr):
     def validate_nonzero(arg, proc=None):
         if not arg:
@@ -341,6 +373,7 @@ def nonzero_validator(vdscr):
         return True        
     return validate_nonzero        
 
+# Unused
 def regex_validator(pattern, failmsg="invalid value: %(value)s", force=False):
     P = re.compile(pattern)
     def validate_regex(data, proc=None):
@@ -351,7 +384,8 @@ def regex_validator(pattern, failmsg="invalid value: %(value)s", force=False):
         return True
     return validate_regex
 
-def validate_email(data, proc=None):
+# Form validators
+def v_email(data, proc=None):
     if not data:
         raise ValueError, "expected mailto reference"
     href = data
@@ -361,22 +395,26 @@ def validate_email(data, proc=None):
         raise ValueError, "expected mailto reference, not %r" % href
     return True
 
-def validate_absolute_uriref(data, proc=None):
-    if not data:
-        raise ValueError, "expected Absolute URI"
-    href = data
-    if isinstance(data, tuple):
-        span, href = data
-    m = uriref.match(href)
-    if not m:
-        raise ValueError, "does not match Absolute URI: %s" % href
-    return True
-
 """
 Corresponding Option parser validators.
 
 Raise any exception or optparse.OptionValueError if needed.
+
+XXX: would be nice to have some extended attributes based on settings_spec
 """
+
+# Unused
+def validate_path(setting, value, option_parser):
+    if not os.path.exists(value):
+        raise optparse.OptionValueError, "Path does not exist: %s" % value
+    return value
+
+def optparse_init_anydbm(setting, value, option_parser):
+    try:
+        db = anydbm.open(value, 'c')
+    except Exception, e:
+        raise optparse.OptionValueError, "Cannot read from %s: %s" % (value, e)
+    return db
 
 def validate_cs_list(setting, value, option_parser):
     ls = []
@@ -502,9 +540,9 @@ def get_convertor(type_name):
         return data_convertor[type_name]
 
 validators = {
-    'absolute-uri': validate_absolute_uriref,
+    'absolute-uri': v_absolute_uriref,
     #'href': du_reference,
-    'email': validate_email,
+    'email': v_email,
     #'timestamp': conv_timestamp, 
     #'isodate': conv_iso8801date,
     #'rfc822date': conv_rfc822date,
