@@ -145,9 +145,13 @@ class HTMLTranslator(html4css1.HTMLTranslator):
         # Note that html4css1 implements <caption /> for titles inside tables
         # authors for HTML5 are encouraged to used that element instead
         classes = ' '.join(['docutils', self.settings.table_style]).strip()
+        if 'summary' in node:
+            summary = node['summary']
+        else:
+            summary = "Docutils Table"
         self.body.append(
             self.starttag(node, 'table', CLASS=classes,
-                summary=node['summary'], border="1"))
+                summary=summary, border="1"))
 
 
 
