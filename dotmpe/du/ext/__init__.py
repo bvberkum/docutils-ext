@@ -28,6 +28,11 @@ import dotmpe.du.ext.writer
 from dotmpe.du.ext.parser.rst.directive.margin import Margin
 directives.register_directive('margin', Margin)
 
+"Register table summary directive. "
+from dotmpe.du.ext.parser.rst.directive.summary import Summary
+directives.register_directive('summary', Summary)
+# XXX: instead of summary attr, HTML5 suggest embedding <caption />
+
 #"Override include directive registration. "
 # FIXME: better use another directive name
 #from dotmpe.du.ext.parser.rst.directive.include import Include

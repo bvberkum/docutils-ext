@@ -2,7 +2,7 @@ from docutils import Component, readers
 from docutils.readers import standalone
 from docutils.transforms import universal, frontmatter, references, misc
 from dotmpe.du.ext.transform import template, generate, include, user, clean,\
-    debug
+    debug, tables
 
 
 #MyPHPTemplate = template.TemplateSubstitutions
@@ -50,6 +50,7 @@ class Reader(readers.Reader):
             generate.Timestamp,             # 200
             generate.SourceLink,            # 200
             generate.CCLicenseLink,         # 200
+            #tables.TableCaption,            # 210
             #
             references.Substitutions,       # 220
             references.PropagateTargets,    # 260

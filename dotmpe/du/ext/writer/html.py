@@ -141,6 +141,15 @@ class HTMLTranslator(html4css1.HTMLTranslator):
                          % (node['type'], node['level'],
                             self.encode(node['source']), line, backref_text))
 
+    def visit_table(self, node):
+        # Note that html4css1 implements <caption /> for titles inside tables
+        # authors for HTML5 are encouraged to used that element instead
+        classes = ' '.join(['docutils', self.settings.table_style]).strip()
+        self.body.append(
+            self.starttag(node, 'table', CLASS=classes,
+                summary=node['summary'], border="1"))
+
+
 
 
 class Writer(html4css1.Writer):
