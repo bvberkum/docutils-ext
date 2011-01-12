@@ -25,6 +25,15 @@ def get_script_list(settings):
         return []
 
 class HTMLTranslator(html4css1.HTMLTranslator):
+    """
+    This overrides some things on the html4css1 translator,
+    and adds visitors for:
+
+    - include
+    - left/right margin
+
+    Also adds functionality for lists of embedded or linked scripts.
+    """
 
     script_link = '<script src="%s" type="text/javascript"></script>\n'
     embedded_script = '<script type="text/css">\n\n%s\n</script>\n'
@@ -49,28 +58,7 @@ class HTMLTranslator(html4css1.HTMLTranslator):
             self.script = [self.script_link % self.encode(script)
                                for script in scripts]
 
-    def starttag(self, node, tagname, suffix='\n', empty=0, **attributes):
-        # XXX: dont allow frame(=void) or rules(=none)
-        if 'rules' in attributes:
-            del attributes['rules'] 
-        if 'frame' in attributes:
-            del attributes['frame'] 
-        return html4css1.HTMLTranslator.starttag(self, node, tagname, suffix=suffix,
-                empty=empty, **attributes)
-
-    # FIXME: should only allow in output for certain clients
-    def visit_include(self, node):
-        href = node['refuri']
-        # TODO: mediatype
-        obj=self.starttag(node, 'object', data=href, TYPE=MIME_HTML, CLASS='docutils include')
-        self.body.append(obj)
-        self.body.append(self.starttag(node, 'div', CLASS='unsupported'))
-        self.body.append('Warning: remote content missing (%s)</div>' % href)
-        self.body.append('</object>')
-
-    def depart_include(self, node):
-        pass
-
+    # New visitors
     def visit_left_margin(self, node):
         self.context.append(len(self.body))
 
@@ -97,7 +85,35 @@ class HTMLTranslator(html4css1.HTMLTranslator):
         self.right_margin.extend(margin)
         del self.body[start:]
 
+    # Overrides utils
+    def starttag(self, node, tagname, suffix='\n', empty=0, **attributes):
+        # XXX: dont allow frame(=void) or rules(=none)
+        if 'rules' in attributes:
+            del attributes['rules'] 
+        if 'frame' in attributes:
+            del attributes['frame'] 
+        return html4css1.HTMLTranslator.starttag(self, node, tagname, suffix=suffix,
+                empty=empty, **attributes)
+
+    # Override visitor
+    # FIXME: should only allow in output for certain clients
+    def visit_include(self, node):
+        href = node['refuri']
+        # TODO: mediatype
+        obj=self.starttag(node, 'object', data=href, TYPE=MIME_HTML, CLASS='docutils include')
+        self.body.append(obj)
+        self.body.append(self.starttag(node, 'div', CLASS='unsupported'))
+        self.body.append('Warning: remote content missing (%s)</div>' % href)
+        self.body.append('</object>')
+
+    def depart_include(self, node):
+        pass
+
     def visit_system_message(self, node):
+        """
+        Override: 
+        - ext. CLASS attr for DIV
+        """
         self.body.append(self.starttag(node, 'div', 
             CLASS='system-message level-%s %s'%(node['level'],
                 node['type'].lower())))
