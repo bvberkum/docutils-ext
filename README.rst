@@ -3,6 +3,8 @@ Docutils extensions
 Extensions for Python docutils.
 May need latest docutils from SVN.
 
+Docs below need a general clean up. Also see doc/.
+
 Development targets
   - Du nodes and an reST directive for left- and right-margin page decoration.
   - An reST directive for table summaries.
@@ -18,10 +20,8 @@ Development targets
   - ``dotmpe.du.builder`` has some packages with specific Reader/Parser/Writer
     component configurations, but frontend is undergoing work.
 
-These are currently working and maintained.
-
 To be completed
-  - extractor/form framework
+  - extractor/form framework (esp. documentation)
   - reST forms. TODO: docs. The ``dotmpe.du.form``\ `FormProcessor`, used in transforms (``form1``) and extractors (``form2``).
     Forms allow for ``fields_spec`` which is used on the document tree like ``settings_spec`` is on argv. 
     Enable validation, feedback and more structured definitions of extractors.
