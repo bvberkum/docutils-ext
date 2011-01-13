@@ -4,26 +4,22 @@
 :build: @MK_BUILD
 :root: @MK_ROOT
 
-.. raw:: html
-
-    <a href='/.build/project/docutils-ext/doc/builder-sequence.svg'>
-    <object type="image/svg+xml"
-        data="/.build/project/docutils-ext/doc/builder-sequence.svg"
-        height="250" width="290"></object>
-    </a>
-    
-.. 
-.. .. figure:: /.build/project/docutils-ext/doc/builder-sequence.png
+.. figure:: /.build/project/docutils-ext/doc/builder-sequence.svg
   :target: /project/docutils-ext/doc/builder-sequence.pic
 
-- `sheet <sheet/du.rst>`_
-- `docutils-internals.rst   <docutils-internals.rst>`_
-- `docutils-suggestions.rst <docutils-suggestions.rst>`_
-- `du-transforms.tmp.rst    <du-transforms.tmp.rst>`_
-- `main.rst                 <main.rst>`_
-- `rst-tree.py*             <rst-tree.py>`_
-- `third-party.rst          <third-party.rst>`__
-- `transforms.rst           <transforms.rst>`__
+- `Description of transforms in this package`__
+- `Description of extractors in this package`__
+- `About linking in HTML and reStructuredText`__
+
+.. __: transforms.rst
+.. __: extractors.rst
+.. __: links.rst
+
+- `Original Du docs by Googder on the transforms <du-transforms,cache.rst>`_
+- `Misc. unsorted thoughts  <docutils-suggestions.rst>`_
+- `A short overview of Du   <docutils-internals.rst>`_
+- `reStructuredText cheatsheet <sheet/du.rst>`_ a cheatsheet that could use some more cheats.
+- `Other uses of Du/rSt     <third-party.rst>`__
 
 ::
 
