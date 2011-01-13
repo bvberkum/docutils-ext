@@ -178,6 +178,38 @@ null_output = pub.publish(
     config_section=None, enable_exit_status=1)
 document = pub.document
 
+def dump(document):
+# these indices are rebuild every time for a document
+many of these inidices
+    from pprint import pformat
+    print "Dumping vars for doc ", document['source']
+    print 'current_line', pformat(document.current_line)
+    #print 'settings', pformat(document.settings)
+    print 'reporter', pformat(document.reporter)
+    print 'indirect_targets', pformat(document.indirect_targets)
+    #print 'substitution_defs', pformat(document.substitution_defs)
+    #print 'substitution_names', pformat(document.substitution_names)
+    print 'refnames', pformat(document.refnames)
+    print 'refids', pformat(document.refids)
+    print 'nameids', pformat(document.nameids)
+    print 'nametypes', pformat(document.nametypes)
+    print 'ids', pformat(document.ids)
+    print 'footnote_refs', pformat(document.footnote_refs)
+    print 'citation_refs', pformat(document.citation_refs)
+    print 'autofootnotes', pformat(document.autofootnotes)
+    print 'autofootnote_refs', pformat(document.autofootnote_refs)
+    print 'symbol_footnotes', pformat(document.symbol_footnotes)
+    print 'symbol_footnote_refs', pformat(document.symbol_footnote_refs)
+    print 'footnotes', pformat(document.footnotes)
+    print 'citations', pformat(document.citations)
+    print 'autofootnote_start', pformat(document.autofootnote_start)
+    print 'symbol_footnote_start', pformat(document.symbol_footnote_start)
+    print 'id_start', pformat(document.id_start)
+    print 'transform_messages', pformat(document.transform_messages)
+    print 'transformer', pformat(document.transformer)
+    print 'decoration', pformat(document.decoration)
+    sys.exit()
+#dump(document)
 
 ### 2. Render doctree to output format, 
 ###    apply completion transforms.

@@ -19,7 +19,7 @@ Source and destination are Input and Output components that work on encoded
 character streams. 
 
 Each Component is a SettingsSpec and TransformSpec.
-A TransformSpec list transforms and unknown reference resolvers.
+A TransformSpec lists transforms and unknown reference resolvers.
 A SettingsSpec may be loaded into OptionParser, but Input and Output are
 excluded right now. Path or id, and io encoding and codec error handlers are
 rather handled in the core and defined by frontend.
@@ -39,6 +39,8 @@ These are the most important inline markup constructs in Du.
 - `Title reference`: `Title`.
 - `Inline literal`: `Literal`
 - `Anonymous reference`: Reference__
+
+.. __: #anonymous?
 
 Title reference is the default inline interpreted text role.
 Roles may be defined in hierarchies, see _`More roles` for the Du core

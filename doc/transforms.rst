@@ -76,9 +76,6 @@ Transforms
    extractors, and do a second substitution round.
 
 
-.. .. remote-include:: http://docutils.sourceforge.net/docs/ref/transforms.txt
-   :cache: doc/du-transforms.rst
-
 These two tables list the extension transforms and the docutils standard transforms by package and priority.
 See `Docutils Transforms`__ for more info on the priority values.       
 
@@ -95,6 +92,9 @@ generate.SourceLink             mpe (r)                       200
 clean.StripAnonymousTargets     mpe (r)                       900
 clean.StripSubstitutionDefs     mpe (r)                       900
 ==============================  ============================  ========
+
+.. .. remote-include:: http://docutils.sourceforge.net/docs/ref/transforms.txt
+   :cache: doc/du-transforms.rst
 
 .. include std xforms
 

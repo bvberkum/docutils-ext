@@ -4,10 +4,11 @@ Extensions for Python docutils.
 May need latest docutils from SVN.
 
 Development targets
-  - reST directives for left- and right-margin decoration.
-  - An ``html4css1`` writer with margin support.
+  - Du nodes and an reST directive for left- and right-margin page decoration.
+  - An reST directive for table summaries.
+  - An extended ``html4css1`` writer able to write these new nodes.
   - Testing experimental rst re-writer, see test/.
-  - Additional document transforms and settings.
+  - Various document transforms and settings 
     See `Transforms`_ (``dotmpe.du.ext.transform``).
 
   - These transforms are used by ``dotmpe.du.ext.reader.mpe.``\ `Reader`.
@@ -29,7 +30,6 @@ To be completed
 
 Also in this project some `notes on Du`__, and there are `some examples of reST and docutils`__ code.  
 XXX: separate project? A first stab at a quick-reference chart for Du/reST, based in reST. See if combinable with sheet.
-
 
 
 .. __: doc/main.rst  
@@ -71,7 +71,9 @@ settings spec.
 
 .. start/end line requires du rev >= 6185
 
-Read more about them in `Transforms <doc/transforms.rst>`__.
+Read more about them in `Transforms`__
+
+.. __: doc/transforms.rst
 
 Extractors
 ''''''''''
@@ -143,11 +145,16 @@ Log
   He also has rst2gxl 'producing GXL which can be transformed to dot'
   and rst2diff 'comparing two input files producing a marked up difference
   output'.
-  See the `source directory <~/src/python-docutils>`__
+  See the `source directory`__
 
 2010-12-01
     Integrating figure label patch by Alex @ du mailinglist.
     Created subclass of latex2e writter for this.
 
-
+2011-01-12
+  - Added summary directive and table attribute to comply with HTML4.
+  - Made `write-up on link relations in reStructuredText`__.
+  
+.. __: src/python-docutils
+.. __: doc/links.rst  
 

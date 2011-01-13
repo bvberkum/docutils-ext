@@ -3,6 +3,7 @@ _writers = dict(
     #mpelatex='latex2e',
     #mperst='rst',
     dotmpehtml='html',
+    #dotmpepseudoxml='pseudoxml',
     #dotmpelatex='latex2e',
     #xhtml='xhtml',
     #blhtml='xhtml',

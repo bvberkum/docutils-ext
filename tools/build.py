@@ -39,7 +39,8 @@ if action == 'proc':
 
 elif action == 'pub':
     if _names:
-        writer_name = builder_name+_names.pop(0)
+        #writer_name = builder_name+_names.pop(0)
+        writer_name = _names.pop(0)
     else:
         writer_name = builder_name+'html'
 
