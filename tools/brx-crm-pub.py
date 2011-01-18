@@ -180,7 +180,6 @@ document = pub.document
 
 def dump(document):
 # these indices are rebuild every time for a document
-many of these inidices
     from pprint import pformat
     print "Dumping vars for doc ", document['source']
     print 'current_line', pformat(document.current_line)
