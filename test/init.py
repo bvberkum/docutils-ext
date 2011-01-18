@@ -1,6 +1,6 @@
 import sys, os, glob
 
-# allow import of dotmpe
+# add dotmpe to import path
 PROJ_ROOT = os.path.dirname(os.path.dirname(__file__))
 PROJ_LIB = os.path.join(PROJ_ROOT, 'lib')
 sys.path.insert(0, PROJ_LIB)

@@ -7,7 +7,7 @@ _writers = dict(
     #dotmpelatex='latex2e',
     #xhtml='xhtml',
     #blhtml='xhtml',
-    dotmperst='rst',
+    mperst='rst',
 )
 
 def get_writer_class(writer_name):

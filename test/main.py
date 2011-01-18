@@ -8,11 +8,11 @@ def gather_unittests():
     Gather all unittests into one suite.
     """
 
-    import du_test
+    import rstwriter
 
     tests = []
     for testcase in (
-                du_test.RstWriter,
+                rstwriter.RstWriterTest,
             ):
         tests.append(unittest.TestLoader().loadTestsFromTestCase(testcase))
 

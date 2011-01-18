@@ -38,7 +38,7 @@ def cli_render(builder_name='mpe'):
     print builder.render(source)
 
 
-def cli_du_publisher(reader_name='mpe', writer_name='pseudoxml',description=''):
+def cli_du_publisher(reader_name='mpe', writer_name='pseudoxml', description=''):
     """
     Simple wrapper for docutils.core.publish_cmdline
     """
