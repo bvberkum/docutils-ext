@@ -186,7 +186,7 @@ class CCLicenseLink(include.Include):
 
     def apply(self):
         settings = self.document.settings
-        if not hasattr(settings, 'cc_embed'):
+        if not hasattr(settings, 'cc_embed') or not settings.cc_embed:
             return
 
         subrefname = nodes.fully_normalize_name(
