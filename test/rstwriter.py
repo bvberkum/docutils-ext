@@ -63,8 +63,6 @@ class RstWriterTest(unittest.TestCase):
                     writer_name='pseudoxml')['whole']
             print "Equal doctree: ", original_tree == generated_tree
 
-
             #print (' ' + doc + ' END').rjust(70, '='), '\n'
             print (' END').rjust(70, '='), '\n'
 
-    

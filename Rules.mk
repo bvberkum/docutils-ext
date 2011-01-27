@@ -45,8 +45,8 @@ CLN 				+= \
 #clean-pyc:
 #	@-find ./ -iname "*.pyc" | while read c; do rm "$$c"; done;
 #
-#test:
-#	python test/main.py
+test::
+	python test/main.py
 
 
 

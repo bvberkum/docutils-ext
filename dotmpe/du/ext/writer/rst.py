@@ -92,8 +92,9 @@ class RstTranslator(nodes.NodeVisitor):
         pass
     def depart_subtitle(self, node):
         title = node.astext()
+        self.depth += 1
         self.body.append('\n' + "".rjust(len(title),
-        	self.title_markers[self.depth+1]) + '\n')
+        	self.title_markers[self.depth]) + '\n')
 
     def visit_section(self, node):
         self.depth += 1
@@ -268,27 +269,29 @@ class RstTranslator(nodes.NodeVisitor):
 
     def depart_enumerated_list(self, node):
         self.in_enumerated_list -= 1
+        self.body.append('\n')
 
     def visit_bullet_list(self, node):
         self.in_bullet_list += 1
 
     def depart_bullet_list(self, node):
         self.in_bullet_list -= 1
-        self.in_list_item = 0
+        self.body.append('\n')
 
     def visit_list_item(self, node):
         self.in_list_item += 1
 
         # @fixme: proper nesting
         if self.in_bullet_list:
-            pref = ' ' * (self.in_bullet_list-1)
+            pref = '  ' * (self.in_bullet_list-1)
             self.body.append(pref + '* ')
 
         elif self.in_enumerated_list:
-            pref = ' ' * (self.in_enumerated_list-1)
-            self.body.append(pref + '%s ' % self.in_list_item)
+            pref = '  ' * (self.in_enumerated_list-1)
+            self.body.append(pref + '%s. ' % self.in_list_item)
 
     def depart_list_item(self, node):
+        self.in_list_item -= 1
         self.body.append('\n')
 
     # Fields lists
@@ -405,5 +408,25 @@ class RstTranslator(nodes.NodeVisitor):
         self.level -= 1
 
 
-
+if __name__ == '__main__':
+    import os
+    import init
+    import docutils.core
+    for doc in init.TEST_DOC:
+        print (' ' + doc).rjust(70, '=')
+        rst = open(doc).read()
+        original_tree = docutils.core.publish_parts(
+                source=rst, 
+                writer_name='pseudoxml')['whole']#writer_name='dotmpe-rst')
+        result = docutils.core.publish_parts(
+                source=rst, 
+                writer=Writer())['whole']#writer_name='dotmpe-rst')
+        generated_tree = docutils.core.publish_parts(
+                source=result,
+                writer_name='pseudoxml')['whole']
+        print (doc).rjust(70, '=')
+        print rst.strip()
+        print
+        print result.strip()
+        print
 
