@@ -852,14 +852,13 @@ def classname(obj):
     return obj.__class__.__name__
 
 
-if __name__ == '__main__':
-    import os, sys
-    import docutils.core
 
-    doc = sys.argv[-1]
-    assert os.path.exists(doc) and doc.endswith('.rst'), doc
+## Main/test
 
-    print (' ' + doc).rjust(70, '=')
+import docutils.core
+
+def test(doc):
+    print (' ' + doc).rjust(79, '=')
     rst = open(doc).read()
     original_tree = docutils.core.publish_parts(
             source=rst, 
@@ -870,10 +869,36 @@ if __name__ == '__main__':
     generated_tree = docutils.core.publish_parts(
             source=result,
             writer_name='pseudoxml')['whole']
-    print (' Original' ).rjust(70, '=')
+    print (' Original').rjust(79, '-')
     print rst.strip()
     print
-    print (' Result').rjust(70, '=')
+    print (' Generated').rjust(79, '-')
     print result.strip()
+
+    print (' Result').rjust(79, '-')
+    print (rst == result) and "Lossless" or "Lossy"
+    print (generated_tree == original_tree) and "PXML OK" or "PXML Mismatch"
     print
+
+
+if __name__ == '__main__':
+    import os, sys, glob
+
+    if sys.argv[1:]:
+        for doc in sys.argv[1:]:
+            assert os.path.exists(doc) and doc.endswith('.rst'), doc
+            test(doc)
+    else:
+
+        p = os.path.realpath(__file__)
+        for i in range(0, 5):
+            p = os.path.dirname(p)
+        PROJ_ROOT = p
+            
+        TEST_DOC = filter(os.path.getsize,
+                glob.glob(os.path.join(PROJ_ROOT, 'var', '*.rst')))
+        TEST_DOC.sort()
+
+        for doc in TEST_DOC:
+            test(doc)
 
