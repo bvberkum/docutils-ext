@@ -1,5 +1,6 @@
 import docutils.core
 import unittest
+from StringIO import StringIO
 
 import init
 import dotmpe.du.ext
@@ -23,7 +24,7 @@ class RstWriterTest(unittest.TestCase):
             rst = open(doc).read()
             #print (rst, )
 
-            #print ' tree'.rjust(70, '-')
+            print ' tree'.rjust(70, '-')
             original_tree = docutils.core.publish_parts(
                     source=rst, 
                     writer_name='pseudoxml')['whole']#writer_name='dotmpe-rst')
@@ -31,19 +32,26 @@ class RstWriterTest(unittest.TestCase):
 
             ### Parse and re-produce rSt, lossless-branch
             print ' Sefan\'s branch'.rjust(70, '-')
+            warnings = StringIO()
             result = docutils.core.publish_parts(
                     source=rst, 
-                    writer=init.LOSSLESS_WRITER.Writer())['whole']#writer_name='dotmpe-rst')
+                    writer=init.LOSSLESS_WRITER.Writer(),
+                    settings_overrides={'warning_stream':warnings},
+                    )['whole']#writer_name='dotmpe-rst')
             #print (result, )
             print "Lossless: ",rst == result
+            if warnings.getvalue():
+                print "Warnings! "
 
             ## Compare parse trees
+            warnings = StringIO()
             result_tree = docutils.core.publish_parts(
                     source=result,
+                    settings_overrides={'warning_stream':warnings},
                     writer_name='pseudoxml')['whole']
-
             print "Equal doctree: ", original_tree == result_tree
-
+            if warnings.getvalue():
+                print "Warnings! "
 
             ### Parse and re-produce rSt, but non-lossless, ie. without complete 
             # whitespace and character equavalence but same textual and

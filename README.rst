@@ -6,10 +6,10 @@ May need latest docutils from SVN.
 Docs below need a general clean up. Also see doc/.
 
 Development targets
-  - Du nodes and an reST directive for left- and right-margin page decoration.
-  - An reST directive for table summaries.
+  - Du nodes and an rST directive for left- and right-margin page decoration.
+  - An rST directive for table summaries.
   - An extended ``html4css1`` writer able to write these new nodes.
-  - Testing experimental rst re-writer, see test/.
+  - Testing experimental rST re-writer, see test/.
   - Various document transforms and settings 
     See `Transforms`_ (``dotmpe.du.ext.transform``).
 
@@ -22,17 +22,17 @@ Development targets
 
 To be completed
   - extractor/form framework (esp. documentation)
-  - reST forms. TODO: docs. The ``dotmpe.du.form``\ `FormProcessor`, used in transforms (``form1``) and extractors (``form2``).
+  - rST forms. TODO: docs. The ``dotmpe.du.form``\ `FormProcessor`, used in transforms (``form1``) and extractors (``form2``).
     Forms allow for ``fields_spec`` which is used on the document tree like ``settings_spec`` is on argv. 
     Enable validation, feedback and more structured definitions of extractors.
-  - reST directives for breadcrumbs.
-  - TODO: docs. An inliner for the reST parser ``dotmpe.du.ext.parser.inliner``.
+  - rST directives for breadcrumbs.
+  - TODO: docs. An inliner for the rST parser ``dotmpe.du.ext.parser.inliner``.
 
-Also in this project some `notes on Du`__, and there are `some examples of reST and docutils`__ code.  
-XXX: separate project? A first stab at a quick-reference chart for Du/reST, based in reST. See if combinable with sheet.
+Also in this project some `notes on Du`__, and there are `some examples of rST and docutils`__ code.  
+XXX: separate project? A first stab at a quick-reference chart for Du/rST, based in rST. See if combinable with sheet.
 
 
-.. __: doc/main.rst  
+.. __: doc/main.rst
 .. __: examples
 
 dotmpe extensions
@@ -84,7 +84,7 @@ Extractors
 Overview
 --------
 Work in progress
-  - There is my own attempt at an rst writer, and in test/init.py the writer from
+  - There is my own attempt at an rST writer, and in test/init.py the writer from
     Stefan's docutils branch is included. Not under active development but i hope to pick
     it up.
 
@@ -141,9 +141,9 @@ Examples
 Log
 -----
 2010-11-04
-  Stefan Merten published his xml2rst and included an installer.
-  He also has rst2gxl 'producing GXL which can be transformed to dot'
-  and rst2diff 'comparing two input files producing a marked up difference
+  Stefan Merten published his xml2rST and included an installer.
+  He also has rST2gxl 'producing GXL which can be transformed to dot'
+  and rST2diff 'comparing two input files producing a marked up difference
   output'.
   See the `source directory`__
 
@@ -156,5 +156,5 @@ Log
   - Made `write-up on link relations in reStructuredText`__.
   
 .. __: src/python-docutils
-.. __: doc/links.rst  
+.. __: doc/links.rst
 

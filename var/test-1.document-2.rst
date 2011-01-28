@@ -8,6 +8,4 @@ Some paragraph.
 
 ..    comment
 
-:field: value
-
 

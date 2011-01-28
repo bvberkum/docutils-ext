@@ -1,5 +1,6 @@
 import sys, os, glob
 
+
 # add dotmpe to import path
 PROJ_ROOT = os.path.dirname(os.path.dirname(__file__))
 PROJ_LIB = os.path.join(PROJ_ROOT, 'lib')
@@ -8,7 +9,8 @@ sys.path.insert(0, PROJ_LIB)
 # list some resources for testing
 README = os.path.join(PROJ_ROOT, 'README.rst')
 
-TEST_DOC = glob.glob(os.path.join(PROJ_ROOT, 'var', '*.rst'))
+TEST_DOC = filter(os.path.getsize,
+        glob.glob(os.path.join(PROJ_ROOT, 'var', '*.rst')))
 TEST_DOC.sort()
 
 # XXX: have a look at lossless-rst-writer branch
