@@ -1,6 +1,8 @@
 import docutils.core
 import unittest
 from StringIO import StringIO
+from difflib import unified_diff
+from pprint import pformat
 
 from docutils.utils import SystemMessage
 
@@ -78,10 +80,14 @@ class AbstractRstWriterTestCase(unittest.TestCase):
             self.assertFalse(warnings.strip(), "Error re-parsing generated file\n "+
                     ("on <%s>" % self.RST_FILE )+"\n\n"+
                     warnings)
+
+        diff = "\n".join(list(unified_diff(original_tree.split('\n'), generated_tree.split('\n'))))
+
         self.assertEqual( original_tree, generated_tree, 
                     "pxml tree mismatch \n "+
                     ("on <%s>" % self.RST_FILE )+"\n\n"+
-                    original_tree+'\n'+(''.rjust(79,'='))+'\n'+generated_tree )
+                    diff )
+#                    original_tree+'\n'+(''.rjust(79,'='))+'\n'+generated_tree )
 
         if self.VERBOSE:
             print " Generated".ljust(79,'-')
