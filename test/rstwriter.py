@@ -2,75 +2,117 @@ import docutils.core
 import unittest
 from StringIO import StringIO
 
+from docutils.utils import SystemMessage
+
 import init
 import dotmpe.du.ext
 from dotmpe.du.ext.writer.rst import Writer
 
 
-class RstWriterTest(unittest.TestCase):
 
-    def setUp(self):
-        pass
+class AbstractRstWriterTestCase(unittest.TestCase):
 
-    def tearDown(self):
-        pass
+    RST_FILE = None
+    VERBOSE = 0
+    corrupt_sources = ()
 
-    def test_all(self):
-        # XXX: do comparison on tree's, ie reparse output rst too
-        # XXX: using writer alias is preferred above importing the class here
-        print
-        for doc in init.TEST_DOC:
-            print (' ' + doc).rjust(70, '=')
-            rst = open(doc).read()
-            #print (rst, )
+    def _test_writer(self, writer, lossy=True):
+        """Do comparison on trees generated from rST files.
 
-            print ' tree'.rjust(70, '-')
-            original_tree = docutils.core.publish_parts(
-                    source=rst, 
-                    writer_name='pseudoxml')['whole']#writer_name='dotmpe-rst')
-            #print original_tree
+        Tree comparison based on pseudoxml string (structure, attributes).
+        Failure on mismatch, or errors during re-parsing.
+        """
 
-            ### Parse and re-produce rSt, lossless-branch
-            print ' Sefan\'s branch'.rjust(70, '-')
-            warnings = StringIO()
-            result = docutils.core.publish_parts(
-                    source=rst, 
-                    writer=init.LOSSLESS_WRITER.Writer(),
-                    settings_overrides={'warning_stream':warnings},
-                    )['whole']#writer_name='dotmpe-rst')
-            #print (result, )
-            print "Lossless: ",rst == result
-            if warnings.getvalue():
-                print "Warnings! "
+        try:
+            self.__test_writer(writer, lossy=lossy)
+        except SystemMessage, e:
+            self.fail(e)
 
-            ## Compare parse trees
-            warnings = StringIO()
-            result_tree = docutils.core.publish_parts(
-                    source=result,
-                    settings_overrides={'warning_stream':warnings},
-                    writer_name='pseudoxml')['whole']
-            print "Equal doctree: ", original_tree == result_tree
-            if warnings.getvalue():
-                print "Warnings! "
+    def __test_writer(self, writer, lossy=True):
+        rst = open(self.RST_FILE).read()
+        if self.VERBOSE:
+            print self.RST_FILE.ljust(79,'=')
 
-            ### Parse and re-produce rSt, but non-lossless, ie. without complete 
-            # whitespace and character equavalence but same textual and
-            # structural
+        self.assertNotEqual(rst.strip(), '', "Empty test file. "+
+                    ("on <%s>" % self.RST_FILE ))
 
-            print ' Own development'.rjust(70, '-')
-            result = docutils.core.publish_parts(
-                    source=rst, 
-                    writer=Writer())['whole']#writer_name='dotmpe-rst')
-            #print (result, )
-            print "Lossless: ",rst == result
-            #self.assertEqual(rst, result)
+        # Generate pseudoxml from source
+        warnings = StringIO()
+        original_tree = docutils.core.publish_parts(
+                source=rst, 
+                settings_overrides={'warning_stream':warnings},
+                writer_name='pseudoxml')['whole']#writer_name='dotmpe-rst')
+        warnings = warnings.getvalue()
+        if warnings and self.RST_FILE not in self.corrupt_sources:
+            self.assertFalse(warnings.strip(), "Corrupt test source file: "+
+                    ("on <%s>" % self.RST_FILE )+"\n"+
+                    warnings)
+            return
 
-            ## Compare parse trees
-            generated_tree = docutils.core.publish_parts(
-                    source=result,
-                    writer_name='pseudoxml')['whole']
-            print "Equal doctree: ", original_tree == generated_tree
+        if self.VERBOSE:
+            print " Original".ljust(79,'-')
+            print original_tree
 
-            #print (' ' + doc + ' END').rjust(70, '='), '\n'
-            print (' END').rjust(70, '='), '\n'
+        # Publish the source file to rST, ie. regenerate the rST file
+        warnings = StringIO()
+        result = docutils.core.publish_parts(
+                source=rst, 
+                settings_overrides={'warning_stream':warnings},
+                writer=writer)['whole']#writer_name='dotmpe-rst')
+        if not lossy:
+            self.assertEqual( result, rst, 
+                    ("on <%s>" % self.RST_FILE )+"\n"+
+                    rst+'\n'+(''.rjust(79,'='))+'\n'+result )
 
+        self.assertNotEqual(result.strip(), '', "Empty generated file. "+
+                    ("on <%s>" % self.RST_FILE ))
+
+        ## Compare parse trees, generate pseudoxml representation
+        warnings = StringIO()
+        generated_tree = docutils.core.publish_parts(
+                source=result,
+                settings_overrides={'warning_stream':warnings},
+                writer_name='pseudoxml')['whole']
+        warnings = warnings.getvalue()
+        if warnings:
+            self.assertFalse(warnings.strip(), "Error re-parsing generated file\n "+
+                    ("on <%s>" % self.RST_FILE )+"\n\n"+
+                    warnings)
+        self.assertEqual( original_tree, generated_tree, 
+                    "pxml tree mismatch \n "+
+                    ("on <%s>" % self.RST_FILE )+"\n\n"+
+                    original_tree+'\n'+(''.rjust(79,'='))+'\n'+generated_tree )
+
+        if self.VERBOSE:
+            print " Generated".ljust(79,'-')
+            print generated_tree
+            print
+
+
+class LossyRstWriterTest(AbstractRstWriterTestCase):
+
+    #def test_dotmpe_doctree_pxml(self):
+    def runTest(self):
+        "Lossy doctree comparison for ``dotmpe.du.ext.rst.writer`` "
+
+        self._test_writer(Writer())
+
+    #def test_lossless_branch(self):
+    #    "Lossy doctree comparison for lossless-branch "
+
+    #    self._test_writer(init.LOSSLESS_WRITER.Writer())
+
+
+class LosslessRstWriterTest(AbstractRstWriterTestCase):
+
+    def test_dotmpe_doctree_pxml(self):
+        "Lossless doctree comparison for ``dotmpe.du.ext.rst.writer`` "
+
+        self._test_writer(Writer(), False)
+
+    def test_lossless_branch(self):
+        "Lossless doctree comparison for lossless-branch "
+
+        self._test_writer(init.LOSSLESS_WRITER.Writer(), False)
+
+    

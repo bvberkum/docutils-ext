@@ -363,7 +363,7 @@ class RstTranslator(nodes.NodeVisitor):
                 else:
                     self.body.append('`')
             elif 'refid' in node:
-                print node
+                self.debugprint(node)
     def depart_reference(self, node):
         self.increment_index()
         if self.in_figure:
@@ -779,8 +779,6 @@ class RstTranslator(nodes.NodeVisitor):
         self.context.indent += '   '
         # TODO: options
         # TODO: arguments/classes
-        if name == 'footer':
-            print 'footeR', self.context
     def depart_directive(self, node, name=None):
         del self.context.indent
         del self.context.index

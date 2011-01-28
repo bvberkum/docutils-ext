@@ -1,5 +1,6 @@
 import unittest
 
+import init
 
 
 def gather_unittests():
@@ -12,9 +13,22 @@ def gather_unittests():
 
     tests = []
     for testcase in (
-                rstwriter.RstWriterTest,
             ):
         tests.append(unittest.TestLoader().loadTestsFromTestCase(testcase))
+
+    for rst_file in init.TEST_DOC:
+
+        testcase = rstwriter.LossyRstWriterTest()
+        testcase.RST_FILE = rst_file
+        if rst_file.endswith('demo.rst'):
+            testcase.corrupt_sources = [rst_file]
+        tests.append(testcase)
+        #tests.append(unittest.TestLoader().loadTestsFromTestCase(testcase))
+
+        #testcase = rstwriter.LosslessRstWriterTest
+        #testcase.RST_FILE = rst_file
+        #tests.append(unittest.TestLoader().loadTestsFromTestCase(testcase))
+
 
     #from unit.Document import testcases as Doc_testcases
     #tests += Doc_testcases #+ SGML_testcases
@@ -30,7 +44,7 @@ def main():
 
     testsuite = unittest.TestSuite(
             gather_unittests() )
-    unittest.TextTestRunner(verbosity=2).run(testsuite)
+    unittest.TextTestRunner(verbosity=1).run(testsuite)
 
 
 if __name__ == '__main__': 
