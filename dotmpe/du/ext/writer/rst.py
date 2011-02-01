@@ -75,7 +75,7 @@ class RstTranslator(nodes.NodeVisitor):
         self.settings = settings = document.settings
         self.in_docinfo = None
         self.in_field_list = 0
-        self.in_block = True
+        self.block_level = True
         self.in_block_quote = 0
         self.in_figure = None
         self.in_image = None
@@ -182,8 +182,8 @@ class RstTranslator(nodes.NodeVisitor):
     def assure_newblock(self):
         if not self.body:
             return
-        #if (self.in_block and self.context.index == 0) or not \
-        #        self.in_block:
+        #if (self.block_level and self.context.index == 0) or not \
+        #        self.block_level:
         #    return
         ws = self.current_whitespace
         newlines = re.sub(r'[^\n]', '', ws) # XXX: unix
@@ -252,7 +252,7 @@ class RstTranslator(nodes.NodeVisitor):
         text = self.context.subtitle
         self.assure_newline()
         seca = self.context.section_adornment
-        subindex = self.section_adornments.index(seca) + 1
+        subindex = self.section_adornments.index(seca) + 2
         self.add_indented(self.section_adornments[subindex] * len(text))
         self.assure_newline()
         del self.context.subtitle
@@ -270,9 +270,9 @@ class RstTranslator(nodes.NodeVisitor):
         del self.context.section_adornment
 
     def visit_paragraph(self, node):
-        #print self.in_block, self.context.index, node
-        #if self.in_block and self.context.index:
-        #    self.assure_newblock()
+        #print self.block_level, self.context.index, node
+        if self.block_level and self.context.index:
+            self.assure_newblock()
         self.increment_index()
         self.context.index = 0            
         pass
@@ -289,7 +289,7 @@ class RstTranslator(nodes.NodeVisitor):
         #    pass
         #self.body.append(self.indentstring(source) + '\n')
         #raise nodes.SkipChildren
-        self.in_block = False
+        self.block_level = False
 
     def depart_paragraph(self, node):
         #self.assure_newline()
@@ -298,7 +298,7 @@ class RstTranslator(nodes.NodeVisitor):
         #else:
         #    self.body.append("\n\n")
         del self.context.index
-        self.in_block = True
+        self.block_level = True
 
     # Inline
     def visit_inline(self, node):
@@ -471,8 +471,8 @@ class RstTranslator(nodes.NodeVisitor):
     def depart_system_message(self, node): pass
 
     def visit_comment(self, node):
+        self.assure_newblock()
         self.increment_index()
-        self.assure_newline()
         self.add_indented('.. ')
         self.context.indent += u'   '
     def depart_comment(self, node):
@@ -507,14 +507,15 @@ class RstTranslator(nodes.NodeVisitor):
         del self.context.indent
 
     def visit_literal_block(self, node):
+        self.assure_newblock()
+        self.increment_index()
         self.add_indented(':: ')
-        self.assure_newblock()
         self.context.indent += '   '
-        self.in_block = True
+        self.block_level = True
     def depart_literal_block(self, node):
-        self.assure_newblock()
+        #self.assure_newblock()
         del self.context.indent
-        self.in_block = False
+        self.block_level = False
 
 #    def visit_attribution(self, node):
 #        # @fixme: indent
@@ -522,10 +523,10 @@ class RstTranslator(nodes.NodeVisitor):
 #    def depart_attribution(self, node):
 #        self.body.append('\n')
 
-    # XXX: what can likeblock contain
+    # XXX: what can lineblock contain
     def visit_line_block(self, node):
-        self.in_line_block = 1
         self.increment_index()
+        self.in_line_block = 1
         self.context.index = 0
     def depart_line_block(self, node):
         del self.context.index
@@ -535,7 +536,6 @@ class RstTranslator(nodes.NodeVisitor):
     def visit_line(self, node):
         self.increment_index()
         self.context.index = 0
-        self.increment_index()
         self.body.append(' | ')
     def depart_line(self, node):
         del self.context.index
@@ -552,12 +552,12 @@ class RstTranslator(nodes.NodeVisitor):
 
     # Lists
     def visit_enumerated_list(self, node):
-        if self.in_block and self.context.index:
+        if self.block_level and self.context.index:
             self.assure_newblock()
-        self.in_enumerated_list += 1
         self.increment_index()
         self.context.index = 0
         self.context.enumtype = node.attributes['enumtype']
+        self.in_enumerated_list += 1
     def depart_enumerated_list(self, node):
         self.in_enumerated_list -= 1
         del self.context.index
@@ -565,7 +565,7 @@ class RstTranslator(nodes.NodeVisitor):
         #self.assure_newblock()
 
     def visit_bullet_list(self, node):
-        if self.in_block and self.context.index:
+        if self.block_level and self.context.index:
             self.assure_newblock()
         self.increment_index()
         self.context.index = 0
@@ -595,16 +595,16 @@ class RstTranslator(nodes.NodeVisitor):
         else:
             raise Exception, "Illegal container for list item"
         self.context.indent += u' ' * lil
-        self.in_block = False
+        self.block_level = False
     def depart_list_item(self, node):
         self.assure_newline()
         del self.context.indent
         del self.context.index
-        self.in_block = True
+        self.block_level = True
 
     # Definition lists
     def visit_definition_list(self, node): 
-        if self.in_block and self.context.index:
+        if self.block_level and self.context.index:
             self.assure_newblock()
     def depart_definition_list(self, node): pass
 
@@ -612,40 +612,40 @@ class RstTranslator(nodes.NodeVisitor):
     def depart_definition_list_item(self, node): pass
 
     def visit_term(self, node):
-        self.in_block = False
+        self.block_level = False
     def depart_term(self, node): 
         self.add_newline()
-        self.in_block = True
+        self.block_level = True
 
     def visit_definition(self, node):
         self.context.indent += '  '
-        self.in_block = False
+        self.block_level = False
     def depart_definition(self, node):
         self.add_newline()
         del self.context.indent
-        self.in_block = True
+        self.block_level = True
 
 
     # Field lists
     def visit_field_list(self, node):
+        self.increment_index()
         self.in_field_list += 1
     def depart_field_list(self, node):
         self.in_field_list -= 1
         self.assure_newline()
 
     def visit_field(self, node):
-        pass#self.debugprint(node)
+        self.context.index = 0
     def depart_field(self, node):
-        pass #self.assure_newline()
+        del self.context.index
 
     def visit_field_name(self, node):
         self.add_indented(":")
-        #self.in_block = False
+        self.block_level = False
     def depart_field_name(self, node):
-        #self.indented += len(node.astext())
         #self.add_indented(": ")
         self.body.append(": ")
-        #self.in_block = True
+        self.block_level = True
 
     def visit_field_body(self, node):
         if 'start_after_newline' in node:
@@ -749,9 +749,11 @@ class RstTranslator(nodes.NodeVisitor):
     def unknown_visit(self, node):
         cn = classname(node)
         if cn in self.docinfo_fields:
-            self.add_indented(':%s: %s' % (cn, node.astext()))
+            self.increment_index()
+            self.add_indented(':%s: ' % (cn.title())) # XXX
             return
         elif cn in self.admonition_fields:
+            self.increment_index()
             return
         elif cn in self.directives:
             self.visit_directive(node)
