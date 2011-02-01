@@ -2,7 +2,7 @@ from docutils import Component, readers
 from docutils.readers import standalone
 from docutils.transforms import universal, frontmatter, references, misc
 from dotmpe.du.ext.transform import template, generate, include, user, clean,\
-    debug, tables
+    debug
 
 
 #MyPHPTemplate = template.TemplateSubstitutions

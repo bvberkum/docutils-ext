@@ -141,17 +141,19 @@ class HTMLTranslator(html4css1.HTMLTranslator):
                          % (node['type'], node['level'],
                             self.encode(node['source']), line, backref_text))
 
-    def visit_table(self, node):
-        # Note that html4css1 implements <caption /> for titles inside tables
-        # authors for HTML5 are encouraged to used that element instead
-        classes = ' '.join(['docutils', self.settings.table_style]).strip()
-        if 'summary' in node:
-            summary = node['summary']
-        else:
-            summary = "Docutils Table"
-        self.body.append(
-            self.starttag(node, 'table', CLASS=classes,
-                summary=summary, border="1"))
+# Use table directive instead
+# XXX: instead of summary attr, HTML5 suggest embedding <caption />
+#    def visit_table(self, node):
+#        # Note that html4css1 implements <caption /> for titles inside tables
+#        # authors for HTML5 are encouraged to used that element instead
+#        classes = ' '.join(['docutils', self.settings.table_style]).strip()
+#        if 'summary' in node:
+#            summary = node['summary']
+#        else:
+#            summary = "Docutils Table"
+#        self.body.append(
+#            self.starttag(node, 'table', CLASS=classes,
+#                summary=summary, border="1"))
 
 
 

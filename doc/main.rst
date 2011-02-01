@@ -31,3 +31,64 @@
       - :file: docutils-internals.rst
       - :file: transforms.rst
       - :file: third-party.rst
+
+
+
+
+dotmpe extensions
+-----------------
+
+.. _rST forms:
+
+rST Forms
+---------
+- `dotmpe.du.form``\ `FormField` 
+- rST forms. TODO: docs. The ``dotmpe.du.form``\ `FormProcessor`, used in transforms (``form1``) and extractors (``form2``).
+
+Forms allow for ``fields_spec`` which is used on the document tree like ``settings_spec`` is on argv. 
+Enable validation, feedback and more structured definitions of extractors.
+
+Directives
+''''''''''
+Left and right page margin are decoration blocks (in addition to page header and footer).
+There is at most one of each per page.
+
+::
+
+  .. margin:: left
+  
+     Margin contents left-side.
+  
+  .. margin:: right
+     :class: my-doc
+     
+     Margin contents right-side.
+  
+  .. margin:: left
+  
+     More contents left-side.
+
+Transforms
+''''''''''
+Docutils includes setting specs for some of its transforms into core and
+frontend. The ``dotmpe.du.ext.reader.mpe`` Reader replaces some of these 
+transforms with implementations that provide their own flexible 
+settings spec.
+
+.. include:: transforms.rst
+   :start-after: .. 1 ---- 8< -----
+   :end-before: .. 1 ---- >8 -----
+
+.. start/end line requires du rev >= 6185
+
+Read more about them in `Transforms`__
+
+.. __: doc/transforms.rst
+
+Extractors
+''''''''''
+.. include:: extractors.rst
+   :start-after: .. 1 ---- 8< -----
+   :end-before: .. 1 ---- >8 -----
+
+
