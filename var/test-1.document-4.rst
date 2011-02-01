@@ -26,8 +26,12 @@ Term
 
 :Field-name: Field-body
 :Field-name: 
-  - Field-body
-  - items  
+  Field-body
+:Field-name: 
+  :Field-name: 
+    Field-body
+  :Field-name: 
+    :Field-name: Field-body
 
 Section
 ^^^^^^^

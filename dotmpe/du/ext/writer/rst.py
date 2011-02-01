@@ -109,19 +109,30 @@ class RstTranslator(nodes.NodeVisitor):
         #    self.add_directive('class',*classes)
 
     def add_indented(self, *lines):
+        """
+        Write one or more lines. The indent on the context is used to prefix the
+        text. 
+        The 'indented' variable indicates the lenght the current line is padded.
+
+        FIXME: this looks wrong but I know this was behaving as expected for
+        def-lists
+        """
         _lines = list(lines)
         indent = self.context.indent
         while _lines:
+            # write line from indent and text
             text = _lines.pop(0)
             cindent = len(text)
             self.debugprint_indent()
             if self.indented:
+                # indent already satisfied
                 if len(indent) <= self.indented:
                     self.body.append(text)
+                # not at required indent level yet 
                 else:
                     cindent += len(indent)
                     self.body.append(indent[self.indented:] + text)
-            else:                
+            else:
                 cindent += len(indent)
                 self.body.append(indent + text)
             if _lines:
@@ -260,8 +271,8 @@ class RstTranslator(nodes.NodeVisitor):
 
     def visit_paragraph(self, node):
         #print self.in_block, self.context.index, node
-        if self.in_block and self.context.index:
-            self.assure_newblock()
+        #if self.in_block and self.context.index:
+        #    self.assure_newblock()
         self.increment_index()
         self.context.index = 0            
         pass
@@ -281,7 +292,7 @@ class RstTranslator(nodes.NodeVisitor):
         self.in_block = False
 
     def depart_paragraph(self, node):
-        self.assure_newline()
+        #self.assure_newline()
         #if self.in_field_list or self.in_docinfo or self.in_footnote \
         #    or self.in_enumerated_list or self.in_bullet_list: pass
         #else:
@@ -586,11 +597,7 @@ class RstTranslator(nodes.NodeVisitor):
         self.context.indent += u' ' * lil
         self.in_block = False
     def depart_list_item(self, node):
-        #self.body.append('\n')
-        #self.body.append(u'%s' %
-        #        self.context.parentrawsource[self.rawsourceindex:])
-        #self.rawsourceindex = 0
-        #del self.context.parentrawsource
+        self.assure_newline()
         del self.context.indent
         del self.context.index
         self.in_block = True
@@ -633,19 +640,20 @@ class RstTranslator(nodes.NodeVisitor):
 
     def visit_field_name(self, node):
         self.add_indented(":")
-        self.in_block = False
+        #self.in_block = False
     def depart_field_name(self, node):
         #self.indented += len(node.astext())
-        self.add_indented(": ")
-        self.in_block = True
+        #self.add_indented(": ")
+        self.body.append(": ")
+        #self.in_block = True
 
     def visit_field_body(self, node):
-        if self.in_block and self.context.index:
-            self.assure_newblock()
-        self.context.indent += u'  '# * len(source)
-        pass
+        if 'start_after_newline' in node:
+            self.add_newline()
+        self.context.indent += u'  '
     def depart_field_body(self, node):
-        del self.context.indent # which was setattr by field_name
+        self.assure_newline()
+        del self.context.indent
 
     # Docinfo field list
     def visit_docinfo(self, node):
