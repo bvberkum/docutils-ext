@@ -488,11 +488,11 @@ class RstTranslator(nodes.NodeVisitor):
         pass
 
     def visit_block_quote(self, node):
-        self.debugprint(node)
         if 'classes' in node:
             if 'epigraph' in node.attributes['classes']:
                 self.visit_directive(node, name='epigraph')
                 return
+        self.assure_newblock()            
         self.increment_index()
         self.context.index = 0
         self.in_block_quote += 1
@@ -511,6 +511,7 @@ class RstTranslator(nodes.NodeVisitor):
         self.increment_index()
         self.add_indented(':: ')
         self.context.indent += '   '
+        self.assure_newblock()
         self.block_level = True
     def depart_literal_block(self, node):
         #self.assure_newblock()
@@ -628,6 +629,8 @@ class RstTranslator(nodes.NodeVisitor):
 
     # Field lists
     def visit_field_list(self, node):
+        if self.block_level:
+            self.assure_newblock()
         self.increment_index()
         self.in_field_list += 1
     def depart_field_list(self, node):
@@ -869,7 +872,7 @@ import docutils.core
 
 def test(doc):
     print (' ' + doc).rjust(79, '=')
-    rst = open(doc).read()
+    rst = open(doc).read().decode('utf-8')
     original_tree = docutils.core.publish_parts(
             source=rst, 
             writer_name='pseudoxml')['whole']#writer_name='dotmpe-rst')
