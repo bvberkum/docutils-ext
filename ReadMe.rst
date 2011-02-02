@@ -10,11 +10,10 @@ rewrite any doctree to reStructuredText format and do all kinds of new stuff.
 
 Other development targets (done):
   - Left- and right-margin decoration.
-  - Testing experimental rST re-writer ``dotmpe.du.ext.writer.rst``.
   - Various document transforms and additional document settings (with
     command-line options). See `Transforms`_ (``dotmpe.du.ext.transform``).
   - These transforms are used by ``dotmpe.du.ext.reader.mpe.``\ `Reader`.
-  - Several Nabu `Extractor`, `Storage` pairs, see `Extractors`_ (``dotmpe.du.ext.extractor``).
+  - Several Nabu `Extractor`, `Storage` pairs, see `Extractors`_ (``dotmpe.du.ext.extractor``) but nothing complex yet.
   - `rST forms`_ framework.
     Use rST files as forms, but gotten a bit out of use and no unittests.
   - ``dotmpe.du.builder`` has some packages with specific Reader/Parser/Writer
