@@ -53,11 +53,11 @@ Log
   
 .. __: doc/links.rst
 
-.. _rST forms: `More docs`_
+.. _rST forms: `docs`_
 .. _Transforms: doc/transforms.rst
 .. _Extractors: doc/extractors.rst
 .. _Blue Lines: http://blue-lines.appspot.com/
-.. _More docs: doc/main.rst
+.. _docs: doc/main.rst
 .. _Du/rST examples: examples/main.rst
 
 
