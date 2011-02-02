@@ -5,7 +5,10 @@ Docutils extensions
 My collection of extensions for Python docutils.
 May need latest docutils from SVN.
 
-Development targets
+Current focus is on finishing an rST writer component to make it possibly to
+rewrite any doctree to reStructuredText format and do all kinds of new stuff.
+
+Other development targets (done):
   - Left- and right-margin decoration.
   - Testing experimental rST re-writer ``dotmpe.du.ext.writer.rst``.
   - Various document transforms and additional document settings (with
@@ -16,37 +19,21 @@ Development targets
     Use rST files as forms, but gotten a bit out of use and no unittests.
   - ``dotmpe.du.builder`` has some packages with specific Reader/Parser/Writer
     component configurations, but frontend is undergoing work.
-
-Overview
---------
-Work in progress
-  - There is my own attempt at an rST writer, and in test/init.py the writer from
-    Stefan's docutils branch is included. 
-
-  - Before that happens I'm cleaning up code from some other docutils related projects.
-    dotmpe.du.builder is shaping up nicely to be a collection of publishers for
-    running in an server-environment. Maybe these can wrap some Nabu stuff
-    (data-mining) later. 
-    
   - Front-end development in `Blue Lines`_.
 
-
-Other ToDo
-  -  propose breadcrumb and other generate transforms on devel list
+ToDo
+  -  propose breadcrumb and other generate transforms on devel list,
      Lea mentioned breadcrumbs.
   -  re-evaluate include, literal and raw dereferencing.
-  -  ``--use-bibtex=USE_BIBTEX`` off latex2e may be nice practical example of external
-     resource framework integration.
+  -  ``--use-bibtex=USE_BIBTEX`` from latex2e may be nice practical example of 
+     external resource framework/metadata integration.
   -  directive options are not all i18n'd
   -  example: form demonstration
   -  example: example rSt on inline references and roles
   -  example: breakcrumbs
   -  rST directives for breadcrumbs.
-  -  TODO: docs. 
-
-
-- `More docs`_
-- `Du/rST examples`_
+  - `Docs`_
+  - `Du/rST examples`_
 
 
 Log
