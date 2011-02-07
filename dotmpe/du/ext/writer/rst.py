@@ -85,6 +85,7 @@ class RstTranslator(nodes.NodeVisitor):
         self.in_line_block = None
         self.capture_text = None
         self.section_adornments = section_adornments        
+        self.roles = []
         #self.depth = 0 # count section nesting 
         #self.docinfo = {}
         self.body = []
@@ -220,6 +221,11 @@ class RstTranslator(nodes.NodeVisitor):
     def depart_document(self, node):
         del self.context.index
 
+        # clean up/finalize
+        for r in self.roles:
+            self.add_directive('role', r)
+            self.assure_newblock()
+
     def visit_Text(self, node):
         text = node.astext()
         #encoded = self.encode(text)
@@ -303,25 +309,29 @@ class RstTranslator(nodes.NodeVisitor):
     # Inline
     def visit_inline(self, node):
         self.increment_index()
-        self.body.append('`')
+        # XXX: which is the role?
+        role = node['classes'][0]
+        if role not in self.roles:
+            self.roles.append(role)
+        self.add_indented(':%s:`' % role)
     def depart_inline(self, node):
         self.body.append('`')
 
     def visit_emphasis(self, node):
         self.increment_index()
-        self.body.append('*')
+        self.add_indented('*')
     def depart_emphasis(self, node):
         self.body.append('*')
 
     def visit_strong(self, node):
         self.increment_index()
-        self.body.append('**')
+        self.add_indented('**')
     def depart_strong(self, node):
         self.body.append('**')
 
     def visit_literal(self, node):
         self.increment_index()
-        self.body.append('``')
+        self.add_indented('``')
     def depart_literal(self, node):
         self.body.append('``')
 
@@ -372,9 +382,11 @@ class RstTranslator(nodes.NodeVisitor):
                 if node.astext() == node['refuri']:
                     pass
                 else:
-                    self.body.append('`')
+                    self.add_indented('`')
             elif 'refid' in node:
-                self.debugprint(node)
+                self.add_indented('`')
+                #self.debugprint(node)
+
     def depart_reference(self, node):
         self.increment_index()
         if self.in_figure:
@@ -383,14 +395,16 @@ class RstTranslator(nodes.NodeVisitor):
             if 'refuri' in node:
                 if node.astext() == node['refuri']:
                     pass
+                elif 'anonymous' in node:
+                    self.body.append('`__')
                 else:
                     self.body.append('`_')
             elif 'refid' in node:
-                pass
+                self.body.append('`_')
 
     def visit_footnote_reference(self, node):
         self.increment_index()
-        self.body.append('[')
+        self.add_indented('[')
     def depart_footnote_reference(self, node):
         self.body.append(']_ ')
 
@@ -407,14 +421,25 @@ class RstTranslator(nodes.NodeVisitor):
         self.body.append(']_ ')
 
     def visit_target(self, node):
-        self.increment_index()
-        self.body.append(u'\n\n%s\n\n' % node.rawsource)
+        if 'refid' in node:
+            self.assure_newblock()
+            self.increment_index()
+            #self.add_indented('.. _')
+            self.add_indented(u'%s\n' % node.rawsource)
+            self.assure_newblock()
+        else:
+            self.add_indented('_`')
+        #self.body.append(u'\n\n%s\n\n' % node.rawsource)
         #if 'refuri' in node:
         #    self.body.append(".. _%s:: %s\n" % (node['ids'][0], node['refuri']))
         #else:
         #    pass #@fixme
-        self.body.append(u'\n\n%s\n\n' % node.rawsource)
-    depart_target = passvisit
+        #self.body.append(u'\n\n%s\n\n' % node.rawsource)
+    def depart_target(self, node):
+        if 'refid' in node:
+            pass #self.debugprint(node)
+        else:
+            self.add_indented('`')
 
     def visit_title_reference(self, node):
         self.increment_index()
