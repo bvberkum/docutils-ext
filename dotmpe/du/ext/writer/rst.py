@@ -728,6 +728,7 @@ class RstTranslator(nodes.NodeVisitor):
     depart_tgroup = passvisit
 
     def visit_table(self, node):
+        #print node
         self.debugprint(node)
     depart_table = passvisit
 
