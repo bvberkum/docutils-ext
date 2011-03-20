@@ -19,6 +19,11 @@
 
 import docutils
 
-du_version = map(int,docutils.__version__.split('.'))
-if (du_version[0] != 0 or (du_version[0] == 0 and du_version[1] != 8)):
-    raise Exception("Unkown version: "+docutils.__version__)
+# 0.7
+# 0.8
+#
+#du_version = map(int,docutils.__version__.split('.'))
+#if (du_version[0] != 0 or (du_version[0] == 0 and du_version[1] != 8)):
+#    raise Exception("Unkown version: "+docutils.__version__)
+
+
