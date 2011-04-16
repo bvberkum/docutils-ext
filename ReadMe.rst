@@ -5,8 +5,12 @@ Docutils extensions
 My collection of extensions for Python docutils.
 May need latest docutils from SVN.
 
-Current focus is on finishing an rST writer component to make it possibly to
-rewrite any doctree to reStructuredText format and do all kinds of new stuff.
+For some automated tasks on this project package use ``make [help|..]``.
+There is no setup script yet.
+
+Current focus is on finishing an rST writer component to make it possible to
+rewrite any doctree to reStructuredText format and do all kinds of new stuff
+with docutils.
 
 Other development targets (done):
   - Left- and right-margin decoration.
@@ -35,6 +39,12 @@ ToDo
   - `Du/rST examples`_
 
 
+rST writer
+----------
+An experimental writer. The module can be invoked as script using a rST filename
+as argument, and will print some lossy and lossless testing results.
+Currently only lossy rST writing is tested by 'make test'.
+
 Log
 -----
 2010-11-04
@@ -56,6 +66,7 @@ Log
     usual by unittest.main, no more need to aggregate testsuites.
     Lossless testing is disabled for now.
 
+- `Issues <Issues.rst>`_
 
 .. __: doc/links.rst
 

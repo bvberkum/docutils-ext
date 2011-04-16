@@ -5,6 +5,7 @@ XXX: This is a heavy work in progress.
 - I don't think rawsource should be used, however convenient.
   
 """
+import math
 import re
 import roman
 
@@ -483,6 +484,7 @@ class RstTranslator(nodes.NodeVisitor):
         self.index = 0
         self.in_figure = True
         self.body.append("\n.. figure:: ")
+        self.context.indent += u'   '
     def depart_figure(self, node):
         self.body.append("\n\n")
         self.in_figure = None
@@ -497,6 +499,7 @@ class RstTranslator(nodes.NodeVisitor):
 
     def visit_comment(self, node):
         self.assure_newblock()
+        #self.assure_newline()
         self.increment_index()
         self.add_indented('.. ')
         self.context.indent += u'   '
@@ -539,7 +542,8 @@ class RstTranslator(nodes.NodeVisitor):
         self.assure_newblock()
         self.block_level = True
     def depart_literal_block(self, node):
-        #self.assure_newblock()
+        self.assure_newblock()
+        #self.assure_newline()
         del self.context.indent
         self.block_level = False
 
@@ -551,21 +555,27 @@ class RstTranslator(nodes.NodeVisitor):
 
     # XXX: what can lineblock contain
     def visit_line_block(self, node):
+        self.assure_newblock()
+        #self.assure_newline()
         self.increment_index()
         self.in_line_block = 1
         self.context.index = 0
     def depart_line_block(self, node):
         del self.context.index
         self.in_line_block = None
-        self.body.append('\n')
+        #self.body.append('\n')
+        self.assure_newline()
 
     def visit_line(self, node):
         self.increment_index()
+        self.add_indented('| ')
+        self.context.indent += '  '
         self.context.index = 0
-        self.body.append(' | ')
     def depart_line(self, node):
+        del self.context.indent
         del self.context.index
-        self.body.append('\n')
+        #self.body.append('\n')
+        self.assure_newline()
 
     def visit_transition(self, node):
         self.increment_index()
@@ -737,9 +747,20 @@ class RstTranslator(nodes.NodeVisitor):
     depart_colspec = passvisit
 
     def visit_caption(self, node):
+        # first paragraph in figure
         self.assure_newline()
+        #self.assure_newblock()
     def depart_caption(self, node):
-        self.assure_newline()
+        pass
+    #    self.assure_newline()
+
+    def visit_legend(self, node):
+        pass
+        # other paragraphs in figure
+        #self.debugprint(node)
+        #self.assure_newline()
+        #self.assure_newblock()
+    depart_legend = passvisit        
 
     # Decoration
     def visit_decoration(self, node):
@@ -766,10 +787,6 @@ class RstTranslator(nodes.NodeVisitor):
     def visit_citation(self, node):
         self.debugprint(node)
     depart_citation = passvisit        
-
-    def visit_legend(self, node):
-        self.debugprint(node)
-    depart_legend = passvisit        
 
     directives = ('raw','epigraph','header','footer','sidebar','rubric','compound',
             )
@@ -894,10 +911,11 @@ def classname(obj):
 
 ## Main/test
 
-import docutils.core
+def print_compare(doc, width=79):
+    import docutils.core
 
-def test(doc):
-    print (' ' + doc).rjust(79, '=')
+    out = []
+    out += [ (' ' + doc).rjust(width, '=')]
     rst = open(doc).read().decode('utf-8')
     original_tree = docutils.core.publish_parts(
             source=rst, 
@@ -908,17 +926,57 @@ def test(doc):
     generated_tree = docutils.core.publish_parts(
             source=result,
             writer_name='pseudoxml')['whole']
-    print (' Original').rjust(79, '-')
-    print rst.strip()
-    print
-    print (' Generated').rjust(79, '-')
-    print result.strip()
 
-    print (' Result').rjust(79, '-')
-    print (rst == result) and "Lossless" or "Lossy"
-    print (generated_tree == original_tree) and "PXML OK" or "PXML Mismatch"
-    print
 
+    if width >= 79*2+1:
+
+        original_out = original_tree.strip().split('\n')
+        generated_out = generated_tree.strip().split('\n')
+        out += [ ('Original Tree ').ljust(79, '-') +' '+ ('Generated Tree ').ljust(79, '-') ] 
+        while original_out or generated_out:
+            p1 = ''
+            p2 = ''
+            if original_out:
+                p1 = original_out.pop(0)
+            if generated_out:
+                p2 = generated_out.pop(0)
+            out += [ p1.ljust(79) +' '+ p2.ljust(79) ]
+        out += [''] 
+
+        # print side-by-side view
+        original_out = rst.strip().split('\n')
+        generated_out = result.strip().split('\n')
+        out += [ ('Original ').ljust(79, '-') +' '+ ('rST rewriter ').ljust(79, '-') ] 
+        while original_out or generated_out:
+            p1 = ''
+            p2 = ''
+            if original_out:
+                p1 = original_out.pop(0)
+            if generated_out:
+                p2 = generated_out.pop(0)
+            out += [ p1.ljust(79) +' '+ p2.ljust(79) ]
+        out += [''] 
+
+    else:
+
+        out += [ ('Original ').ljust(width, '-') ]
+        out += [ rst.strip(), '']
+
+        out += [ ('Generated ').ljust(width, '-') ] 
+        out += [ result.strip(), '' ]
+
+    out += [ ('Result ').ljust(width, '-')]
+    listwidth = int(width * 0.25)
+    out += [ 'File:'.rjust(listwidth, ' ') +' '+ doc ]
+    if generated_tree == original_tree:
+        out += [ 'Doctree Comparison:'.rjust(listwidth, ' ') +" PXML match" ]
+        out += [ 'Source Comparison:'.rjust(listwidth, ' ') +' '+ \
+                ((rst == result) and "Lossless" or "Lossy")]
+    else:
+        out += [ 'Doctree Comparison:'.rjust(listwidth, ' ') +" Error: PXML mismatch" ]
+    out += ['']
+
+    print "\n".join(out)
 
 if __name__ == '__main__':
     import os, sys, glob
@@ -926,7 +984,7 @@ if __name__ == '__main__':
     if sys.argv[1:]:
         for doc in sys.argv[1:]:
             assert os.path.exists(doc) and doc.endswith('.rst'), doc
-            test(doc)
+            print_compare(doc, width=159)
     else:
 
         p = os.path.realpath(__file__)
@@ -939,5 +997,5 @@ if __name__ == '__main__':
         TEST_DOC.sort()
 
         for doc in TEST_DOC:
-            test(doc)
+            print_compare(doc, width=159)
 

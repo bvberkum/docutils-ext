@@ -1,58 +1,4 @@
-.F.FFFFFFF...FF.....F...F...FF...........
-======================================================================
-FAIL: runTest (rstwriter.Test10_LiteralBlock2LossyRstWriterTestCase)
-Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
-    warnings)
-AssertionError: Error re-parsing generated file
- on </media/Pandora2/project/docutils-ext.git/var/test-10.literal-block-2.rst>
-
-<string>:13: (WARNING/2) Literal block ends without a blank line; unexpected unindent.
-<string>:21: (WARNING/2) Literal block ends without a blank line; unexpected unindent.
-<string>:30: (WARNING/2) Literal block ends without a blank line; unexpected unindent.
-
-
-======================================================================
-FAIL: runTest (rstwriter.Test12_FigureLossyRstWriterTestCase)
-Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
- on </media/Pandora2/project/docutils-ext.git/var/test-12.figure.rst>
-
---- 
-
-+++ 
-
-@@ -2,9 +2,9 @@
-
-     <figure>
-         <reference refuri="document">
-             <image uri="image.file">
--        <caption>
--            caption
--        <legend>
--            <paragraph>
--                legend
-+    <paragraph>
-+        caption
-+        [XXX:legend {'index': [4]}]
-+    <paragraph>
-+        legend
- 
-
+.....FFFF.F...FF.....F...F...FF...........
 ======================================================================
 FAIL: runTest (rstwriter.Test13_TableLossyRstWriterTestCase)
 Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
@@ -275,7 +221,7 @@ AssertionError: Error re-parsing generated file
 
 
 ======================================================================
-FAIL: runTest (rstwriter.Test14_LineBlockLossyRstWriterTestCase)
+FAIL: runTest (rstwriter.Test14_LineBlock2LossyRstWriterTestCase)
 Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
 ----------------------------------------------------------------------
 Traceback (most recent call last):
@@ -286,49 +232,40 @@ Traceback (most recent call last):
   File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
     diff )
 AssertionError: pxml tree mismatch 
- on </media/Pandora2/project/docutils-ext.git/var/test-14.line-block.rst>
+ on </media/Pandora2/project/docutils-ext.git/var/test-14.line-block-2.rst>
 
 --- 
 
 +++ 
 
-@@ -1,11 +1,10 @@
+@@ -9,17 +9,15 @@
 
- <document source="<string>">
--    <line_block>
--        <line>
--            line 1
--        <line>
--            line 2
+             Each new line begins with a
+         <line>
+             vertical bar ("|").
+-    <definition_list>
+-        <definition_list_item>
+-            <term>
+-                block
+-            <definition>
+-                <line_block>
+-                    <line>
+-                        block line 1
+-                    <line>
+-                        block line 2
+-                        and still in line 2..
++    <paragraph>
++        block
 +    <block_quote>
 +        <line_block>
 +            <line>
-+                line 1
++                block line 1
 +            <line>
-+                line 2
-     <comment xml:space="preserve">
--    <line_block>
--        <line>
--            line
-+        | line
- 
-
-======================================================================
-FAIL: runTest (rstwriter.Test14_LineBlock2LossyRstWriterTestCase)
-Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
-    warnings)
-AssertionError: Error re-parsing generated file
- on </media/Pandora2/project/docutils-ext.git/var/test-14.line-block-2.rst>
-
-<string>:10: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
-
++                block line 2
++                and still in line 2..
+     <line_block>
+         <line>
+             Line breaks and initial indents
 
 ======================================================================
 FAIL: runTest (rstwriter.Test17_Tables1LossyRstWriterTestCase)
@@ -504,6 +441,6 @@ AssertionError: pxml tree mismatch
  
 
 ----------------------------------------------------------------------
-Ran 41 tests in 1.411s
+Ran 42 tests in 1.428s
 
-FAILED (failures=14)
+FAILED (failures=11)

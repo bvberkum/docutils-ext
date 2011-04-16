@@ -15,8 +15,8 @@
 .. __: extractors.rst
 .. __: links.rst
 
-- `Original Du docs by Googder on the transforms <du-transforms,cache.rst>`_
-- `Misc. unsorted thoughts  <docutils-suggestions.rst>`_
+- `Original Du docs by Goodger on the transforms <du-transforms,cache.rst>`_
+- `Misc. unsorted thoughts on docutils <docutils-suggestions.rst>`_
 - `A short overview of Du   <docutils-internals.rst>`_
 - `reStructuredText cheatsheet <sheet/du.rst>`_ a cheatsheet that could use some more cheats.
 - `Other uses of Du/rSt     <third-party.rst>`__
