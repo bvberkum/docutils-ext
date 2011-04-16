@@ -504,6 +504,6 @@ AssertionError: pxml tree mismatch
  
 
 ----------------------------------------------------------------------
-Ran 41 tests in 1.362s
+Ran 41 tests in 1.411s
 
 FAILED (failures=14)
