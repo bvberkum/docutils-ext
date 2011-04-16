@@ -72,11 +72,11 @@ AssertionError: pxml tree mismatch
 
 +++ 
 
-@@ -9,17 +9,15 @@
+@@ -38,15 +38,13 @@
 
-             Each new line begins with a
-         <line>
-             vertical bar ("|").
+                         line 1
+                     <line>
+                         line 2
 -    <definition_list>
 -        <definition_list_item>
 -            <term>
@@ -97,9 +97,7 @@ AssertionError: pxml tree mismatch
 +            <line>
 +                block line 2
 +                and still in line 2..
-     <line_block>
-         <line>
-             Line breaks and initial indents
+ 
 
 ======================================================================
 FAIL: runTest (rstwriter.Test1_Document5_FullRstDemoLossyRstWriterTestCase)
@@ -205,6 +203,6 @@ AssertionError: pxml tree mismatch
  
 
 ----------------------------------------------------------------------
-Ran 36 tests in 1.244s
+Ran 36 tests in 1.266s
 
 FAILED (failures=7)
