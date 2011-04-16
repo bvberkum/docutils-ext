@@ -1,39 +1,16 @@
-import unittest
+"""dotmpe docutils extensions test scripts
+
+Usage (see pydoc unittest.main)
+    | python test/main.py [module[.testcase[.test]]]
+
+Ie.
+    | python test/main.py rstwriter.Test14_LineBlock2
+"""
+import os, re, unittest
 
 import init
+import rstwriter
 
-
-def gather_unittests():
-
-    """
-    Gather all unittests into one suite.
-    """
-
-    import rstwriter
-
-    tests = []
-    for testcase in (
-            ):
-        tests.append(unittest.TestLoader().loadTestsFromTestCase(testcase))
-
-    for rst_file in init.TEST_DOC:
-
-        testcase = rstwriter.LossyRstWriterTest()
-        testcase.RST_FILE = rst_file
-        if rst_file.endswith('demo.rst'):
-            testcase.corrupt_sources = [rst_file]
-        tests.append(testcase)
-        #tests.append(unittest.TestLoader().loadTestsFromTestCase(testcase))
-
-        #testcase = rstwriter.LosslessRstWriterTest
-        #testcase.RST_FILE = rst_file
-        #tests.append(unittest.TestLoader().loadTestsFromTestCase(testcase))
-
-
-    #from unit.Document import testcases as Doc_testcases
-    #tests += Doc_testcases #+ SGML_testcases
-
-    return tests
 
 
 def main():
@@ -41,22 +18,15 @@ def main():
     """
     Run all tests.
     """
+   
+    rstwriter.create_tests(init.TEST_DOC)
+    # XXX:BVB: fixme: Form
 
-    testsuite = unittest.TestSuite(
-            gather_unittests() )
-    unittest.TextTestRunner(verbosity=1).run(testsuite)
+    unittest.main()
 
 
 if __name__ == '__main__': 
     import sys
-    if sys.argv[1:]:
-        if sys.argv[1]=='scroll':
-            scrolltest_main()
-        elif sys.argv[1]=='unit':
-            unittest_main()
-        else:
-            main()
-    else:
-        main()
+    main()
 
 

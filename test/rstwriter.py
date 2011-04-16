@@ -1,4 +1,6 @@
 import docutils.core
+import os, re
+import sys
 import unittest
 from StringIO import StringIO
 from difflib import unified_diff
@@ -12,7 +14,8 @@ from dotmpe.du.ext.writer.rst import Writer
 
 
 
-class AbstractRstWriterTestCase(unittest.TestCase):
+
+class AbstractRstWriterTestCase(object):#unittest.TestCase):
 
     RST_FILE = None
     VERBOSE = 0
@@ -121,4 +124,43 @@ class LosslessRstWriterTest(AbstractRstWriterTestCase):
 
         self._test_writer(init.LOSSLESS_WRITER.Writer(), False)
 
+
+
+def new_rstwriter_testcase(testcase_name, rst_file, lossy=False):
+    if lossy:
+        class TestCase(LossyRstWriterTest, unittest.TestCase):
+            RST_FILE = rst_file
+        TestCase.__name__ = testcase_name +'LossyRstWriterTestCase'
+    else:
+        class TestCase(LosslessRstWriterTest, unittest.TestCase):
+            RST_FILE = rst_file
+        TestCase.__name__ = testcase_name +'LosslessRstWriterTestCase'
+    return TestCase
+
+
+def mkclassname(filename):
+    name = os.path.splitext(os.path.basename(filename))[0].replace('.','_')
+    name = name.replace('-', ' ').title().replace(' ','')
+    assert re.match('^[A-Za-z_][A-Za-z0-9_]+$', name), (name, filename)
+    return name
+
+def create_tests(files):
+    for rst_file in files:
     
+        testcase_name = mkclassname(rst_file)
+
+        # Lossy
+        TestCase = new_rstwriter_testcase(testcase_name, rst_file, True)
+        if rst_file.endswith('demo.rst'):
+            TestCase.corrupt_sources = [rst_file]
+        setattr(sys.modules[__name__], testcase_name, TestCase)
+
+        # Lossless
+
+# XXX:BVB: reinstate lossless tests
+        #TestCase = new_rstwriter_testcase(testcase_name, rst_file, False)
+        #if rst_file.endswith('demo.rst'):
+        #    TestCase.corrupt_sources = [rst_file]
+        #setattr(sys.modules[__name__], testcase_name, TestCase)
+
+

@@ -50,7 +50,13 @@ Log
 2011-01-12
   - Added summary directive and table attribute to comply with HTML4.
   - Made `write-up on link relations in reStructuredText`__.
-  
+
+2011-04-16
+  - Updated testing so dynamic test cases (generated from file) are handled as
+    usual by unittest.main, no more need to aggregate testsuites.
+    Lossless testing is disabled for now.
+
+
 .. __: doc/links.rst
 
 .. _rST forms: `docs`_

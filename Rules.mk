@@ -1,6 +1,8 @@
+# dotmpe docutils extension Makefile rules
+#
 include                $(MK_SHARE)Core/Main.dirstack.mk
-
 MK                  += $/Rules.mk
+#      ------------ -- 
 
 
 PIC_$d 				:= $(wildcard $/doc/*.pic)
@@ -25,7 +27,8 @@ CLN 				+= \
 					   $(XHT_$d) \
 					   $(XML_$d) \
 					   $(PIC_PNG_$d) \
-					   $(PIC_SVG_$d)
+					   $(PIC_SVG_$d) \
+					   $(shell find ./test ./dotmpe -iname '*.pyc')
 
 
 #.PHONY: build clean clean-pyc test
@@ -44,24 +47,16 @@ CLN 				+= \
 #
 #clean-pyc:
 #	@-find ./ -iname "*.pyc" | while read c; do rm "$$c"; done;
-#
+
 test::
-	python test/main.py
-
-
+	@-python test/main.py rstwriter 2> test.log
+	@if [ -n "$$(tail -1 test.log|grep OK)" ]; then \
+	    $(ll) Success "$@" "see" test.log; \
+    else \
+	    $(ll) Errors "$@" see test.log; \
+    fi
 
 
 #      ------------ -- 
-# ^3   ------------ --        ------------ -- # 1    ------------ -- 
-# ^2   ------------ -- # 1    ------------ -- 
-# 6    ----------------------------------- -- 
-# 5    ------------------------------- -- 
-# 4    --------------------------- -- 
-# 3    ----------------------- -- 
-# 2    ------------------- -- 
-# 1    ------------ -- 
-# -1   -------- -- 
-# -2   ---- -- 
-# -2    -- 
 include                $(MK_SHARE)Core/Main.dirstack-pop.mk
 # vim:noet:
