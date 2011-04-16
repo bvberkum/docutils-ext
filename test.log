@@ -1,6 +1,6 @@
-.....FFFF.F...FF.....F...F...FF...........
+..F.F.F........F...F...FF...........
 ======================================================================
-FAIL: runTest (rstwriter.Test13_TableLossyRstWriterTestCase)
+FAIL: runTest (rstwriter.Test10_LiteralBlock3LossyRstWriterTestCase)
 Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
 ----------------------------------------------------------------------
 Traceback (most recent call last):
@@ -11,57 +11,26 @@ Traceback (most recent call last):
   File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
     diff )
 AssertionError: pxml tree mismatch 
- on </media/Pandora2/project/docutils-ext.git/var/test-13.table.rst>
+ on </media/Pandora2/project/docutils-ext.git/var/test-10.literal-block-3.rst>
 
 --- 
 
 +++ 
 
-@@ -1,28 +1,14 @@
+@@ -7,8 +7,7 @@
 
- <document source="<string>">
--    <table>
--        <tgroup cols="2">
--            <colspec colwidth="6">
--            <colspec colwidth="8">
--            <tbody>
--                <row>
--                    <entry>
--                        <paragraph>
--                            Simple
--                    <entry>
--                        <paragraph>
--                            Table
--                <row>
--                    <entry>
--                        <paragraph>
--                            001
--                    <entry>
--                        <paragraph>
--                            AAA
--                <row>
--                    <entry>
--                        <paragraph>
--                            001
--                    <entry>
--                        <paragraph>
--                            AAB
-+    <paragraph>
-+        [XXX:table {'index': [0]}][XXX:tgroup {'index': [0]}][XXX:colspec {'index': [0]}][XXX:colspec {'index': [0]}][XXX:tbody {'index': [0]}][XXX:row {'index': [0]}][XXX:entry {'index': [0]}]Simple[XXX:entry {'index': [1]}]
-+    <paragraph>
-+        Table[XXX:row {'index': [2]}][XXX:entry {'index': [2]}]
-+    <paragraph>
-+        001[XXX:entry {'index': [3]}]
-+    <paragraph>
-+        AAA[XXX:row {'index': [4]}][XXX:entry {'index': [4]}]
-+    <paragraph>
-+        001[XXX:entry {'index': [5]}]
-+    <paragraph>
-+        AAB
- 
+         Whitespace, newlines, blank lines, and
+         all kinds of markup (like *this* or
+         \this) is preserved by literal blocks.
+-        
+-        The paragraph containing only '::'
++           The paragraph containing only '::'
+         will be omitted from the result.
+     <paragraph>
+         The 
 
 ======================================================================
-FAIL: runTest (rstwriter.Test13_Table2LossyRstWriterTestCase)
+FAIL: runTest (rstwriter.Test12_FigureLossyRstWriterTestCase)
 Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
 ----------------------------------------------------------------------
 Traceback (most recent call last):
@@ -72,152 +41,17 @@ Traceback (most recent call last):
   File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
     warnings)
 AssertionError: Error re-parsing generated file
- on </media/Pandora2/project/docutils-ext.git/var/test-13.table-2.rst>
+ on </media/Pandora2/project/docutils-ext.git/var/test-12.figure.rst>
 
-<string>:10: (WARNING/2) Explicit markup ends without a blank line; unexpected unindent.
-<string>:13: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
-<string>:20: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
-<string>:23: (WARNING/2) Enumerated list ends without a blank line; unexpected unindent.
-<string>:27: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
-<string>:30: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
+<string>:2: (ERROR/3) Error in "figure" directive:
+invalid option block.
 
+.. figure:: image.file
+   :target: document
+   caption
 
-======================================================================
-FAIL: runTest (rstwriter.Test13_Table3LossyRstWriterTestCase)
-Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
- on </media/Pandora2/project/docutils-ext.git/var/test-13.table-3.rst>
+   legend
 
---- 
-
-+++ 
-
-@@ -1,66 +1,36 @@
-
- <document source="<string>">
--    <table>
--        <tgroup cols="3">
--            <colspec colwidth="5">
--            <colspec colwidth="5">
--            <colspec colwidth="6">
--            <thead>
--                <row>
--                    <entry morecols="1">
--                        <paragraph>
--                            Inputs
--                    <entry>
--                        <paragraph>
--                            Output
--                <row>
--                    <entry>
--                        <paragraph>
--                            A
--                    <entry>
--                        <paragraph>
--                            B
--                    <entry>
--                        <paragraph>
--                            A or B
--            <tbody>
--                <row>
--                    <entry>
--                        <paragraph>
--                            False
--                    <entry>
--                        <paragraph>
--                            False
--                    <entry>
--                        <paragraph>
--                            False
--                <row>
--                    <entry>
--                        <paragraph>
--                            True
--                    <entry>
--                        <paragraph>
--                            False
--                    <entry>
--                        <paragraph>
--                            True
--                <row>
--                    <entry>
--                        <paragraph>
--                            False
--                    <entry>
--                        <paragraph>
--                            True
--                    <entry>
--                        <paragraph>
--                            True
--                <row>
--                    <entry>
--                        <paragraph>
--                            True
--                    <entry>
--                        <paragraph>
--                            True
--                    <entry>
--                        <paragraph>
--                            True
-+    <paragraph>
-+        [XXX:table {'index': [0]}][XXX:tgroup {'index': [0]}][XXX:colspec {'index': [0]}][XXX:colspec {'index': [0]}][XXX:colspec {'index': [0]}][XXX:thead {'index': [0]}][XXX:row {'index': [0]}][XXX:entry {'index': [0]}]Inputs[XXX:entry {'index': [1]}]
-+    <paragraph>
-+        Output[XXX:row {'index': [2]}][XXX:entry {'index': [2]}]
-+    <paragraph>
-+        A[XXX:entry {'index': [3]}]
-+    <paragraph>
-+        B[XXX:entry {'index': [4]}]
-+    <paragraph>
-+        A or B[XXX:tbody {'index': [5]}][XXX:row {'index': [5]}][XXX:entry {'index': [5]}]
-+    <paragraph>
-+        False[XXX:entry {'index': [6]}]
-+    <paragraph>
-+        False[XXX:entry {'index': [7]}]
-+    <paragraph>
-+        False[XXX:row {'index': [8]}][XXX:entry {'index': [8]}]
-+    <paragraph>
-+        True[XXX:entry {'index': [9]}]
-+    <paragraph>
-+        False[XXX:entry {'index': [10]}]
-+    <paragraph>
-+        True[XXX:row {'index': [11]}][XXX:entry {'index': [11]}]
-+    <paragraph>
-+        False[XXX:entry {'index': [12]}]
-+    <paragraph>
-+        True[XXX:entry {'index': [13]}]
-+    <paragraph>
-+        True[XXX:row {'index': [14]}][XXX:entry {'index': [14]}]
-+    <paragraph>
-+        True[XXX:entry {'index': [15]}]
-+    <paragraph>
-+        True[XXX:entry {'index': [16]}]
-+    <paragraph>
-+        True
- 
-
-======================================================================
-FAIL: runTest (rstwriter.Test13_Table4LossyRstWriterTestCase)
-Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
-    warnings)
-AssertionError: Error re-parsing generated file
- on </media/Pandora2/project/docutils-ext.git/var/test-13.table-4.rst>
-
-<string>:25: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
 
 
 ======================================================================
@@ -268,76 +102,6 @@ AssertionError: pxml tree mismatch
              Line breaks and initial indents
 
 ======================================================================
-FAIL: runTest (rstwriter.Test17_Tables1LossyRstWriterTestCase)
-Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
- on </media/Pandora2/project/docutils-ext.git/var/test-17.tables-1.rst>
-
---- 
-
-+++ 
-
-@@ -1,21 +1,10 @@
-
- <document source="<string>">
--    <table>
--        <tgroup cols="2">
--            <colspec colwidth="5">
--            <colspec colwidth="5">
--            <tbody>
--                <row>
--                    <entry>
--                        <paragraph>
--                            d1
--                    <entry>
--                        <paragraph>
--                            d2
--                <row>
--                    <entry>
--                        <paragraph>
--                            d3
--                    <entry>
--                        <paragraph>
--                            d4
-+    <paragraph>
-+        [XXX:table {'index': [0]}][XXX:tgroup {'index': [0]}][XXX:colspec {'index': [0]}][XXX:colspec {'index': [0]}][XXX:tbody {'index': [0]}][XXX:row {'index': [0]}][XXX:entry {'index': [0]}]d1[XXX:entry {'index': [1]}]
-+    <paragraph>
-+        d2[XXX:row {'index': [2]}][XXX:entry {'index': [2]}]
-+    <paragraph>
-+        d3[XXX:entry {'index': [3]}]
-+    <paragraph>
-+        d4
- 
-
-======================================================================
-FAIL: runTest (rstwriter.Test17_Tables2LossyRstWriterTestCase)
-Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
-    warnings)
-AssertionError: Error re-parsing generated file
- on </media/Pandora2/project/docutils-ext.git/var/test-17.tables-2.rst>
-
-<string>:2: (WARNING/2) Title underline too short.
-
-[XXX:table {'index': [0]}]Caption/Summary
-===============
-
-
-======================================================================
 FAIL: runTest (rstwriter.Test1_Document5_FullRstDemoLossyRstWriterTestCase)
 Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
 ----------------------------------------------------------------------
@@ -346,7 +110,7 @@ Traceback (most recent call last):
     self._test_writer(Writer())
   File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 34, in _test_writer
     self.fail(e)
-AssertionError: <string>:40: (SEVERE/4) Title level inconsistent:
+AssertionError: <string>:36: (SEVERE/4) Title level inconsistent:
 
 1\xa0\xa0\xa0Structural Elements
 -------------------
@@ -360,7 +124,7 @@ Traceback (most recent call last):
     self._test_writer(Writer())
   File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 34, in _test_writer
     self.fail(e)
-AssertionError: <string>:15: (SEVERE/4) Title level inconsistent:
+AssertionError: <string>:12: (SEVERE/4) Title level inconsistent:
 
 Title
 ^^^^^
@@ -441,6 +205,6 @@ AssertionError: pxml tree mismatch
  
 
 ----------------------------------------------------------------------
-Ran 42 tests in 1.428s
+Ran 36 tests in 1.230s
 
-FAILED (failures=11)
+FAILED (failures=7)

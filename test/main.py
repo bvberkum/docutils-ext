@@ -10,7 +10,7 @@ import os, re, unittest
 
 import init
 import rstwriter
-
+import rstwriter_util
 
 
 def main():

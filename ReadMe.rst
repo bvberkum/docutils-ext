@@ -43,7 +43,9 @@ rST writer
 ----------
 An experimental writer. The module can be invoked as script using a rST filename
 as argument, and will print some lossy and lossless testing results.
+
 Currently only lossy rST writing is tested by 'make test'.
+rST writer testcases are generated for all files matching 'var/test-*.rst'.
 
 Log
 -----

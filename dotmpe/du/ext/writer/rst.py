@@ -164,14 +164,16 @@ class RstTranslator(nodes.NodeVisitor):
         "The bodies' trailing whitespace. "
         if not self.body:
             return
-        idx = 0
+        idx = len(self.body)-1
         ws = ''
-        while idx <= len(self.body):
-            str_part = self.body[-idx]
-            idx += 1
-            ws += get_trailing_ws(str_part)
-            if not is_all_ws(str_part):
-                return ws
+        while idx > -1:
+            str_part = self.body[idx]
+            ws = get_trailing_ws(str_part) + ws
+            if str_part and not is_all_ws(str_part):
+                break
+            idx -= 1
+        ws2 = list(ws); ws2.reverse()
+        return ''.join(ws)
 
     def assure_newline(self):
         if not self.body:
@@ -188,10 +190,10 @@ class RstTranslator(nodes.NodeVisitor):
         #        self.block_level:
         #    return
         ws = self.current_whitespace
-        newlines = re.sub(r'[^\n]', '', ws) # XXX: unix
-        if len(newlines) < 2:
+        newlines = len(re.sub(r'[^\n]', '', ws)) # XXX: unix
+        if newlines < 2:
             self.add_newline()
-        if len(newlines) < 1:
+        if newlines < 1:
             self.add_newline()
 
 #    @property
@@ -644,7 +646,9 @@ class RstTranslator(nodes.NodeVisitor):
             self.assure_newblock()
     def depart_definition_list(self, node): pass
 
-    def visit_definition_list_item(self, node): pass
+    def visit_definition_list_item(self, node):
+        #self.assure_newline()
+        pass
     def depart_definition_list_item(self, node): pass
 
     def visit_term(self, node):
@@ -842,7 +846,7 @@ class RstTranslator(nodes.NodeVisitor):
     def debugprint(self, node):
         self.body.append("[XXX:%s %s]" % (node.tagname, self.context))
 
-trailing_ws = re.compile('\S*(\s+)$')
+trailing_ws = re.compile('^.*(?<!\s)(\s+)$')
 
 def get_trailing_ws(string):
     m = trailing_ws.match(string)
