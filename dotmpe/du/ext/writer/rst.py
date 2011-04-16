@@ -954,6 +954,8 @@ def print_compare(doc, width=79):
                 p1 = original_out.pop(0)
             if generated_out:
                 p2 = generated_out.pop(0)
+            # TODO: wrap lines
+            #if len(p1) > 79 or len(p2) > 79:
             out += [ p1.ljust(79) +' '+ p2.ljust(79) ]
         out += [''] 
 
@@ -977,6 +979,7 @@ def print_compare(doc, width=79):
     out += ['']
 
     print "\n".join(out)
+
 
 if __name__ == '__main__':
     import os, sys, glob
