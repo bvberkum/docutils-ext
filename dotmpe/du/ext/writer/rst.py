@@ -921,9 +921,12 @@ class RstTranslator(nodes.NodeVisitor):
     # Catch all
     def unknown_visit(self, node):
         cn = classname(node)
+        self.sub_tree(cn)
         if cn in self.docinfo_fields:
             self.increment_index()
             self.add_indented(':%s: ' % (cn.title())) # XXX
+            self.context.index = 0
+            self.context.indent += '  '
             return
         elif cn in self.admonition_fields:
             self.increment_index()
@@ -939,7 +942,11 @@ class RstTranslator(nodes.NodeVisitor):
 
     def unknown_departure(self, node):
         cn = classname(node)
+        self.pop_tree()
         if cn in self.docinfo_fields:
+            del self.context.index
+            del self.context.indent
+            self.assure_emptyline()
             return
         elif cn in self.admonition_fields:
             return

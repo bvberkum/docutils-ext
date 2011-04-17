@@ -140,7 +140,9 @@ def new_rstwriter_testcase(testcase_name, rst_file, lossy=False):
 
 def mkclassname(filename):
     name = os.path.splitext(os.path.basename(filename))[0].replace('.','_')
-    name = name.replace('-', ' ').title().replace(' ','')
+    name = name.replace('-', ' ').title().replace(' ','').replace('+','_')
+    if name[0].isdigit():
+        name = '_'+name
     assert re.match('^[A-Za-z_][A-Za-z0-9_]+$', name), (name, filename)
     return name
 
