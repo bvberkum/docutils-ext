@@ -1,104 +1,4 @@
-..F.F.F........F...F...FF...........
-======================================================================
-FAIL: runTest (rstwriter.Test10_LiteralBlock3LossyRstWriterTestCase)
-Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
- on </media/Pandora2/project/docutils-ext.git/var/test-10.literal-block-3.rst>
-
---- 
-
-+++ 
-
-@@ -7,8 +7,7 @@
-
-         Whitespace, newlines, blank lines, and
-         all kinds of markup (like *this* or
-         \this) is preserved by literal blocks.
--        
--        The paragraph containing only '::'
-+           The paragraph containing only '::'
-         will be omitted from the result.
-     <paragraph>
-         The 
-
-======================================================================
-FAIL: runTest (rstwriter.Test12_FigureLossyRstWriterTestCase)
-Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
-    warnings)
-AssertionError: Error re-parsing generated file
- on </media/Pandora2/project/docutils-ext.git/var/test-12.figure.rst>
-
-<string>:2: (ERROR/3) Error in "figure" directive:
-invalid option block.
-
-.. figure:: image.file
-   :target: document
-   caption
-
-   legend
-
-
-
-======================================================================
-FAIL: runTest (rstwriter.Test14_LineBlock2LossyRstWriterTestCase)
-Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
- on </media/Pandora2/project/docutils-ext.git/var/test-14.line-block-2.rst>
-
---- 
-
-+++ 
-
-@@ -38,15 +38,13 @@
-
-                         line 1
-                     <line>
-                         line 2
--    <definition_list>
--        <definition_list_item>
--            <term>
--                block
--            <definition>
--                <line_block>
--                    <line>
--                        block line 1
--                    <line>
--                        block line 2
--                        and still in line 2..
-+    <paragraph>
-+        block
-+    <block_quote>
-+        <line_block>
-+            <line>
-+                block line 1
-+            <line>
-+                block line 2
-+                and still in line 2..
- 
-
+................F...F...FF...........
 ======================================================================
 FAIL: runTest (rstwriter.Test1_Document5_FullRstDemoLossyRstWriterTestCase)
 Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
@@ -108,7 +8,7 @@ Traceback (most recent call last):
     self._test_writer(Writer())
   File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 34, in _test_writer
     self.fail(e)
-AssertionError: <string>:36: (SEVERE/4) Title level inconsistent:
+AssertionError: <string>:34: (SEVERE/4) Title level inconsistent:
 
 1\xa0\xa0\xa0Structural Elements
 -------------------
@@ -144,6 +44,15 @@ AssertionError: Error re-parsing generated file
 <string>:3: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
 <string>:3: (WARNING/2) Inline target start-string without end-string.
 <string>:3: (WARNING/2) Inline interpreted text or phrase reference start-string without end-string.
+<string>:17: (WARNING/2) Literal block ends without a blank line; unexpected unindent.
+<string>:19: (WARNING/2) Inline target start-string without end-string.
+<string>:19: (WARNING/2) Inline interpreted text or phrase reference start-string without end-string.
+<string>:23: (WARNING/2) Inline target start-string without end-string.
+<string>:23: (WARNING/2) Inline interpreted text or phrase reference start-string without end-string.
+<string>:29: (WARNING/2) Inline target start-string without end-string.
+<string>:29: (WARNING/2) Inline interpreted text or phrase reference start-string without end-string.
+<string>:: (ERROR/3) Anonymous hyperlink mismatch: 2 references but 0 targets.
+See "backrefs" attribute for IDs.
 <string>:1: (ERROR/3) Unknown target name: "a ref in term".
 <string>:5: (ERROR/3) Unknown target name: "reference".
 
@@ -194,15 +103,8 @@ AssertionError: pxml tree mismatch
              test
      <paragraph>
          Cf.
-@@ -33,4 +33,5 @@
-
-          
-         <literal>
-             literal
-+        .. role:: strong
- 
 
 ----------------------------------------------------------------------
-Ran 36 tests in 1.266s
+Ran 37 tests in 1.458s
 
-FAILED (failures=7)
+FAILED (failures=4)
