@@ -1,4 +1,12 @@
-.....FFFF.F...FF....FFFF....F...FF.......FFFF
+E.....FFFF.F...FF....FFFF....F...FF.......FFFF
+======================================================================
+ERROR: test_1 (form.FormTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/media/Pandora2/project/docutils-ext.git/test/form.py", line 162, in test_1
+    builder.initialize(strip_comments=True)
+AttributeError: MyFormPage instance has no attribute 'initialize'
+
 ======================================================================
 FAIL: runTest (rstwriter.Test13_TableLossyRstWriterTestCase)
 Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
@@ -730,6 +738,6 @@ AssertionError: pxml tree mismatch
  
 
 ----------------------------------------------------------------------
-Ran 45 tests in 1.328s
+Ran 46 tests in 1.224s
 
-FAILED (failures=18)
+FAILED (failures=18, errors=1)

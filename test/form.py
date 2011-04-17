@@ -159,7 +159,7 @@ class FormTest(unittest.TestCase):
         source_id = os.path.join(example_dir, 'form.rst')
         source = open(source_id).read()
         builder = MyFormPage()
-        builder.initialize(strip_comments=True)
+        #builder.initialize(strip_comments=True)
         document = builder.build(source, source_id)
         for field_id, value in document.settings.form_values.items():
             assert expected[field_id] == value, "Value error for %s: %r" % (field_id, value)

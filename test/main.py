@@ -11,6 +11,7 @@ import os, re, unittest
 import init
 import rstwriter
 import rstwriter_util
+import form
 
 
 def main():
@@ -20,7 +21,6 @@ def main():
     """
    
     rstwriter.create_tests(init.TEST_DOC)
-    # XXX:BVB: fixme: Form
 
     unittest.main()
 

@@ -49,7 +49,7 @@ CLN 				+= \
 #	@-find ./ -iname "*.pyc" | while read c; do rm "$$c"; done;
 
 test::
-	@-python test/main.py rstwriter 2> test.log
+	@-python test/main.py form rstwriter 2> test.log
 	@if [ -n "$$(tail -1 test.log|grep OK)" ]; then \
 	    $(ll) Success "$@" "see" test.log; \
     else \
