@@ -84,6 +84,7 @@ class RstTranslator(nodes.NodeVisitor):
         self.block_level = True
         self.preserve_ws = False
         self.capture_text = None
+        self.skip_content = None
         self.section_adornments = section_adornments        
         self.roles = []
         #self.depth = 0 # count section nesting 
@@ -91,7 +92,7 @@ class RstTranslator(nodes.NodeVisitor):
         self.body = []
         #self.references = []
         self.context = ContextStack(defaults={
-        	    'tree': [],
+                'tree': [],
                 'bullet': u'',
                 'indent': u'',
                 'section_adornment': self.section_adornments[0],
@@ -169,9 +170,13 @@ class RstTranslator(nodes.NodeVisitor):
         indent = self.context.indent
         while _lines:
             text = _lines.pop(0)
+            #if self.in_tag('title_reference'):
+            #print self.current_path, self.indented, len(self.context.indent)
+            #print 'l',(self.current_path, self.indented, len(indent), text,)
 
             if self.preserve_ws:
-                self.body.append(indent + text + '\n')
+                self.body.append(indent + text)
+                self.add_newline()
                 continue
 
             #self.body.append("<%s>"%self.current_path)
@@ -195,6 +200,7 @@ class RstTranslator(nodes.NodeVisitor):
                 self.indented += cindent
 
     def add_directive(self, name, *args):
+        self.assure_newblock()
         self.add_indented(
                 u".. %s:: %s" % (name, ' '.join(args)))
 
@@ -245,7 +251,7 @@ class RstTranslator(nodes.NodeVisitor):
                     self.assure_emptyline()
                     return
         if self.context.index == 0:
-        	return
+            return
         #if (self.block_level and self.context.index == 0) or not \
         #        self.block_level:
         #    return
@@ -300,21 +306,21 @@ class RstTranslator(nodes.NodeVisitor):
             captured = getattr(self.context, self.capture_text, '')
             setattr(self.context, self.capture_text, text)
         lines = text.split('\n') # XXX: unix
-        self.add_indented(*lines)
-
+        if not self.skip_content:
+            self.add_indented(*lines)
     def depart_Text(self, node):
         pass
 
     def visit_title(self, node):
         self.sub_tree(node)
+        self.increment_index()
         self.capture_text = 'title'
     def depart_title(self, node):
         self.pop_tree()
         self.capture_text = None
         text = self.context.title
         self.assure_emptyline()
-        self.add_indented( 
-                            self.context.section_adornment * len(text))
+        self.add_indented( self.context.section_adornment * len(text))
         self.assure_emptyline()
         del self.context.title
 
@@ -348,9 +354,10 @@ class RstTranslator(nodes.NodeVisitor):
 
     def visit_paragraph(self, node):
         self.sub_tree(node)
-        if self.block_level and self.context.index:
-            self.assure_newblock()
+        #if self.block_level and self.context.index:
+        #    self.assure_newblock()
         self.increment_index()
+        self.assure_newblock()
         self.context.index = 0            
         #source = node.rawsource
         #try:
@@ -387,7 +394,7 @@ class RstTranslator(nodes.NodeVisitor):
         self.add_indented(':%s:`' % role)
     def depart_inline(self, node):
         self.pop_tree()
-        self.body.append('`')
+        self.add_indented('`')
 
     def visit_emphasis(self, node):
         self.sub_tree(node)
@@ -395,13 +402,12 @@ class RstTranslator(nodes.NodeVisitor):
         self.add_indented('*')
     def depart_emphasis(self, node):
         self.pop_tree()
-        self.body.append('*')
+        self.add_indented('*')
 
     def visit_strong(self, node):
         self.sub_tree(node)
         self.increment_index()
         self.add_indented('**')
-
     def depart_strong(self, node):
         self.pop_tree()
         self.body.append('**')
@@ -420,8 +426,14 @@ class RstTranslator(nodes.NodeVisitor):
     visit_superscript = passvisit
     depart_superscript = passvisit
 
-    visit_attribution = passvisit
-    depart_attribution = passvisit
+    def visit_attribution(self, node):
+        self.sub_tree(node)
+        self.increment_index()
+        self.assure_newblock()
+        self.add_indented('-- ')
+    def depart_attribution(self, node):
+        self.pop_tree()
+        self.assure_newblock()
 
     visit_description = passvisit
     depart_description = passvisit
@@ -466,7 +478,8 @@ class RstTranslator(nodes.NodeVisitor):
 
     def depart_reference(self, node):
         if self.in_tag('figure', '*'):
-            self.body.append("   :target: %s\n\n" %node['refuri'])
+            self.add_indented(":target: %s\n\n" %node['refuri'])
+            self.indented = 0
         else:
             if 'refuri' in node:
                 if node.astext() == node['refuri']:
@@ -490,10 +503,12 @@ class RstTranslator(nodes.NodeVisitor):
     def visit_substitution_definition(self, node):
         self.sub_tree(node)
         self.increment_index()
-        self.body.append('.. |%s| ::' % node['names'][0])
+        #print 'substitution_definition', node
+        #TODO: unicode
+        self.body.append('.. |%s| replace:: ' % node['names'][0])
     def depart_substitution_definition(self, node):
         self.pop_tree()
-        self.body.append('\n')
+        self.add_newline()
 
     def visit_citation_reference(self, node):
         self.sub_tree(node)
@@ -510,6 +525,7 @@ class RstTranslator(nodes.NodeVisitor):
             self.increment_index()
             #self.add_indented('.. _')
             self.add_indented(u'%s\n' % node.rawsource)
+            self.indented = 0
             self.assure_newblock()
         else:
             self.add_indented('_`')
@@ -531,38 +547,52 @@ class RstTranslator(nodes.NodeVisitor):
         self.increment_index()
         self.body.append('`')
     def depart_title_reference(self, node):
-        self.pop_tree()
         self.body.append('`')
+        self.pop_tree()
 
     def visit_footnote(self, node):
         self.sub_tree(node)
+        self.assure_newblock()
         if 'auto' in node:
             if node.attributes['auto']:
                 self.body.append(u'.. [#] ')
-                self.context.indent = self.context.indent + u'   '
-                self.context.parentrawsource = node.rawsource
+                #self.context.parentrawsource = node.rawsource
+                self.context.indent += u'   '
                 self.rawsourceindex = 0
+                self.skip_label = True
                 return
         #self.default_visit(node) #TODO
         self.body.append(".. [")
     def depart_footnote(self, node):
         self.pop_tree()
-        self.body.append("\n")
+        if 'auto' in node:
+            if node.attributes['auto']:
+                del self.context.indent
 
     def visit_label(self, node):
         self.sub_tree(node)
-        self.debugprint(node)
+        if self.in_tag('footnote', 1):
+            if self.body[-1][-3:] == '#] ':
+                self.skip_content = True
+        #self.debugprint(node)
     def depart_label(self, node):
         self.pop_tree()
-        if self.in_tag('footnote', 1):
-            self.body.append("] ")
+        if self.in_tag('footnote'):
+            if self.skip_content:
+                #self.debugprint(node)
+                self.skip_content = False
+            else:
+                self.body.append("] ")
+        elif self.in_tag('citation'):
+            self.body.append('] ')
 
     # Images
     def visit_image(self, node):
         self.sub_tree(node)
         self.increment_index()
         if self.in_tag('figure', '*'):
-            self.body.append(node['uri'] +'\n')
+            self.body.append(node['uri'])
+            self.add_newline()
         else:
             self.assure_newblock()
             self.add_directive('image', node['uri'])
@@ -573,11 +603,11 @@ class RstTranslator(nodes.NodeVisitor):
         self.sub_tree(node)
         self.increment_index()
         self.index = 0
-        self.body.append("\n.. figure:: ")
+        self.assure_newblock()
+        self.body.append(".. figure:: ")
         self.context.indent += u'   '
     def depart_figure(self, node):
         self.pop_tree()
-        self.body.append("\n\n")
         del self.index
 
     # Misc. block level
@@ -609,21 +639,23 @@ class RstTranslator(nodes.NodeVisitor):
         self.pop_tree()
 
     def visit_block_quote(self, node):
-        self.sub_tree(node)
+        #self.debugprint(node)
         if 'classes' in node:
             if 'epigraph' in node.attributes['classes']:
                 self.visit_directive(node, name='epigraph')
                 return
+        self.sub_tree(node)
         self.assure_newblock()            
         self.increment_index()
         self.context.index = 0
-        self.context.indent += '   '
+        self.context.indent += '  '
     def depart_block_quote(self, node):
-        self.pop_tree()
         if 'classes' in node:
             if 'epigraph' in node.attributes['classes']:
                 self.depart_directive(node, name='epigraph')
+                #print self.current_path, self.indented, len(self.context.indent)
                 return
+        self.pop_tree()
         del self.context.index
         del self.context.indent
 
@@ -646,19 +678,17 @@ class RstTranslator(nodes.NodeVisitor):
 #        # @fixme: indent
 #        self.body.append('---')
 #    def depart_attribution(self, node):
-#        self.body.append('\n')
 
     # XXX: what can lineblock contain
     def visit_line_block(self, node):
         self.sub_tree(node)
-        self.assure_newblock()
+        self.assure_emptyline(2)
         self.increment_index()
         self.context.index = 0
     def depart_line_block(self, node):
         del self.context.index
         self.pop_tree()
         self.assure_newblock()
-        #self.body.append('\n')
         self.assure_emptyline()
 
     def visit_line(self, node):
@@ -671,13 +701,12 @@ class RstTranslator(nodes.NodeVisitor):
         del self.context.indent
         del self.context.index
         self.pop_tree()
-        #self.body.append('\n')
         self.assure_emptyline()
 
     def visit_transition(self, node):
         self.increment_index()
-        #self.body.append("\n----\n\n")
         self.body.append(u'%s\n\n' %node.rawsource)
+        self.indented = 0
     depart_transition = passvisit
 
     visit_problematic = passvisit
@@ -874,20 +903,20 @@ class RstTranslator(nodes.NodeVisitor):
     depart_colspec = passvisit
 
     def visit_caption(self, node):
+        self.sub_tree(node)
         # first paragraph in figure
-        self.assure_emptyline()
-        #self.assure_newblock()
+        self.assure_newblock()
+        self.increment_index()
     def depart_caption(self, node):
-        pass
-    #    self.assure_emptyline()
+        self.pop_tree()
 
     def visit_legend(self, node):
-        pass
         # other paragraphs in figure
-        #self.debugprint(node)
-        #self.assure_emptyline()
-        #self.assure_newblock()
-    depart_legend = passvisit        
+        self.sub_tree(node)
+        self.assure_newblock()
+        self.increment_index()
+    def depart_legend(self, node):
+        self.pop_tree()
 
     # Decoration
     def visit_decoration(self, node):
@@ -912,8 +941,12 @@ class RstTranslator(nodes.NodeVisitor):
             'hint', 'important', 'note', 'tip', 'admonition')
 
     def visit_citation(self, node):
-        self.debugprint(node)
-    depart_citation = passvisit        
+        self.sub_tree(node)
+        self.add_indented('.. [')
+        self.context.indent += u'  '
+    def depart_citation(self, node):
+        del self.context.indent
+        self.pop_tree()
 
     directives = ('raw','epigraph','header','footer','sidebar','rubric','compound',
             )
@@ -921,7 +954,7 @@ class RstTranslator(nodes.NodeVisitor):
     # Catch all
     def unknown_visit(self, node):
         cn = classname(node)
-        self.sub_tree(cn)
+        self.sub_tree(node)
         if cn in self.docinfo_fields:
             self.increment_index()
             self.add_indented(':%s: ' % (cn.title())) # XXX
@@ -934,8 +967,6 @@ class RstTranslator(nodes.NodeVisitor):
         elif cn in self.directives:
             self.visit_directive(node)
             return
-        #print "not visiting", node.__class__.__name__
-        #return
         raise NotImplementedError(
             '%s visiting unknown node type: %s'
             % (self.__class__, node.__class__.__name__))
@@ -961,6 +992,7 @@ class RstTranslator(nodes.NodeVisitor):
 
     # Generic handlers        
     def visit_directive(self, node, name=None):
+        self.assure_newblock()
         self.sub_tree(node)
         if not name:
             name = classname(node)
@@ -976,7 +1008,8 @@ class RstTranslator(nodes.NodeVisitor):
         del self.context.index
 
     def debugprint(self, node):
-        self.body.append("[XXX:%s %s]" % (node.tagname, self.context))
+        self.body.append("[XXX:%s %r %r %r]" % (node.tagname, self.context.index,
+            self.indented, self.context.indent))
 
 trailing_ws = re.compile('^.*(?<!\s)(\s+)$')
 
@@ -1058,55 +1091,62 @@ def print_compare(doc, width=79):
     out = []
     out += [ (' ' + doc).rjust(width, '=')]
     rst = open(doc).read().decode('utf-8')
+    assert isinstance(rst, unicode)
+
     original_tree = docutils.core.publish_parts(
             source=rst, 
             writer_name='pseudoxml')['whole']#writer_name='dotmpe-rst')
+    assert isinstance(original_tree, unicode)
     result = docutils.core.publish_parts(
             source=rst, 
             writer=Writer())['whole']#writer_name='dotmpe-rst')
-    generated_tree = docutils.core.publish_parts(
-            source=result,
-            writer_name='pseudoxml')['whole']
-
+    assert isinstance(result, unicode)
+    try:
+        generated_tree = docutils.core.publish_parts(
+                source=result,
+                writer_name='pseudoxml')['whole']
+    except Exception, e:
+        generated_tree = u''
+    assert isinstance(generated_tree, unicode)
 
     if width >= 79*2+1:
 
         original_out = original_tree.strip().split('\n')
         generated_out = generated_tree.strip().split('\n')
-        out += [ ('Original Tree ').ljust(79, '-') +' '+ ('Generated Tree ').ljust(79, '-') ] 
+        out += [ (u'Original Tree ').ljust(79, '-') +u' '+ (u'Generated Tree ').ljust(79, '-') ] 
         while original_out or generated_out:
-            p1 = ''
-            p2 = ''
+            p1 = u''
+            p2 = u''
             if original_out:
                 p1 = original_out.pop(0)
             if generated_out:
                 p2 = generated_out.pop(0)
-            out += [ p1.ljust(79) +' '+ p2.ljust(79) ]
-        out += [''] 
+            out += [ p1.ljust(79) +u' '+ p2.ljust(79) ]
+        out += [u''] 
 
         # print side-by-side view
         original_out = rst.strip().split('\n')
         generated_out = result.strip().split('\n')
-        out += [ ('Original ').ljust(79, '-') +' '+ ('rST rewriter ').ljust(79, '-') ] 
+        out += [ (u'Original ').ljust(79, '-') +u' '+ (u'rST rewriter ').ljust(79, '-') ] 
         while original_out or generated_out:
-            p1 = ''
-            p2 = ''
+            p1 = u''
+            p2 = u''
             if original_out:
                 p1 = original_out.pop(0)
             if generated_out:
                 p2 = generated_out.pop(0)
             # TODO: wrap lines
             #if len(p1) > 79 or len(p2) > 79:
-            out += [ p1.ljust(79) +' '+ p2.ljust(79) ]
-        out += [''] 
+            out += [ p1.ljust(79) +u' '+ p2.ljust(79) ]
+        out += [u''] 
 
     else:
 
         out += [ ('Original ').ljust(width, '-') ]
-        out += [ rst.strip(), '']
+        out += [ rst.strip(), u'']
 
         out += [ ('Generated ').ljust(width, '-') ] 
-        out += [ result.strip(), '' ]
+        out += [ result.strip(), u'' ]
 
     out += [ ('Result ').ljust(width, '-')]
     listwidth = int(width * 0.25)
@@ -1117,9 +1157,9 @@ def print_compare(doc, width=79):
                 ((rst == result) and "Lossless" or "Lossy")]
     else:
         out += [ 'Doctree Comparison:'.rjust(listwidth, ' ') +" Error: PXML mismatch" ]
-    out += ['']
+    out += [u'']
 
-    print "\n".join(out)
+    print u"\n".join(out)
 
 
 if __name__ == '__main__':

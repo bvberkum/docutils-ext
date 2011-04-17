@@ -53,6 +53,7 @@ test::
 	@if [ -n "$$(tail -1 test.log|grep OK)" ]; then \
 	    $(ll) Success "$@" "see" test.log; \
     else \
+	    $(ll) Errors "$@" "$$(tail -1 test.log)"; \
 	    $(ll) Errors "$@" see test.log; \
     fi
 

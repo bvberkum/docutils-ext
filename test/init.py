@@ -11,8 +11,8 @@ README = os.path.join(PROJ_ROOT, 'README.rst')
 
 TEST_DOC = filter(os.path.getsize,
         glob.glob(os.path.join(PROJ_ROOT, 'var', 'test-*.rst'))
-            +
-        glob.glob(os.path.join('/srv', 'htdocs-mpe', 'note', '*.rst'))
+#            +
+#        glob.glob(os.path.join('/srv', 'htdocs-mpe', 'note', '*.rst'))
     )
 TEST_DOC.sort()
 
