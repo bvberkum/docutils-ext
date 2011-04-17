@@ -401,6 +401,7 @@ class RstTranslator(nodes.NodeVisitor):
         self.sub_tree(node)
         self.increment_index()
         self.add_indented('**')
+
     def depart_strong(self, node):
         self.pop_tree()
         self.body.append('**')

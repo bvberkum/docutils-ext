@@ -1,4 +1,295 @@
-................F...F...FF...........
+.....FFFF.....FF......F...F...FF...........
+======================================================================
+FAIL: runTest (rstwriter.Test13_TableLossyRstWriterTestCase)
+Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
+    self._test_writer(Writer())
+  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
+    diff )
+AssertionError: pxml tree mismatch 
+ on </media/Pandora2/project/docutils-ext.git/var/test-13.table.rst>
+
+--- 
+
++++ 
+
+@@ -1,28 +1,14 @@
+
+ <document source="<string>">
+-    <table>
+-        <tgroup cols="2">
+-            <colspec colwidth="6">
+-            <colspec colwidth="8">
+-            <tbody>
+-                <row>
+-                    <entry>
+-                        <paragraph>
+-                            Simple
+-                    <entry>
+-                        <paragraph>
+-                            Table
+-                <row>
+-                    <entry>
+-                        <paragraph>
+-                            001
+-                    <entry>
+-                        <paragraph>
+-                            AAA
+-                <row>
+-                    <entry>
+-                        <paragraph>
+-                            001
+-                    <entry>
+-                        <paragraph>
+-                            AAB
++    <paragraph>
++        [XXX:table {'index': [0], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>]}][XXX:tgroup {'index': [0], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>]}][XXX:colspec {'index': [0], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>]}][XXX:colspec {'index': [0], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>]}][XXX:tbody {'index': [0], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>]}][XXX:row {'index': [0], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>]}][XXX:entry {'index': [0], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>]}]Simple[XXX:entry {'index': [1], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'Simple'>>]}]
++    <paragraph>
++        Table[XXX:row {'index': [2], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'Simple'>>, <paragraph: <#text: 'Table'>>]}][XXX:entry {'index': [2], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'Simple'>>, <paragraph: <#text: 'Table'>>]}]
++    <paragraph>
++        001[XXX:entry {'index': [3], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'Simple'>>, <paragraph: <#text: 'Table'>>, <paragraph: <#text: '001'>>]}]
++    <paragraph>
++        AAA[XXX:row {'index': [4], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'Simple'>>, <paragraph: <#text: 'Table'>>, <paragraph: <#text: '001'>>, <paragraph: <#text: 'AAA'>>]}][XXX:entry {'index': [4], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'Simple'>>, <paragraph: <#text: 'Table'>>, <paragraph: <#text: '001'>>, <paragraph: <#text: 'AAA'>>]}]
++    <paragraph>
++        001[XXX:entry {'index': [5], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'Simple'>>, <paragraph: <#text: 'Table'>>, <paragraph: <#text: '001'>>, <paragraph: <#text: 'AAA'>>, <paragraph: <#text: '001'>>]}]
++    <paragraph>
++        AAB
+ 
+
+======================================================================
+FAIL: runTest (rstwriter.Test13_Table2LossyRstWriterTestCase)
+Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
+    self._test_writer(Writer())
+  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
+    warnings)
+AssertionError: Error re-parsing generated file
+ on </media/Pandora2/project/docutils-ext.git/var/test-13.table-2.rst>
+
+<string>:12: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
+<string>:15: (WARNING/2) Field list ends without a blank line; unexpected unindent.
+<string>:18: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
+<string>:21: (WARNING/2) Enumerated list ends without a blank line; unexpected unindent.
+<string>:25: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
+<string>:28: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
+
+
+======================================================================
+FAIL: runTest (rstwriter.Test13_Table3LossyRstWriterTestCase)
+Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
+    self._test_writer(Writer())
+  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
+    diff )
+AssertionError: pxml tree mismatch 
+ on </media/Pandora2/project/docutils-ext.git/var/test-13.table-3.rst>
+
+--- 
+
++++ 
+
+@@ -1,66 +1,36 @@
+
+ <document source="<string>">
+-    <table>
+-        <tgroup cols="3">
+-            <colspec colwidth="5">
+-            <colspec colwidth="5">
+-            <colspec colwidth="6">
+-            <thead>
+-                <row>
+-                    <entry morecols="1">
+-                        <paragraph>
+-                            Inputs
+-                    <entry>
+-                        <paragraph>
+-                            Output
+-                <row>
+-                    <entry>
+-                        <paragraph>
+-                            A
+-                    <entry>
+-                        <paragraph>
+-                            B
+-                    <entry>
+-                        <paragraph>
+-                            A or B
+-            <tbody>
+-                <row>
+-                    <entry>
+-                        <paragraph>
+-                            False
+-                    <entry>
+-                        <paragraph>
+-                            False
+-                    <entry>
+-                        <paragraph>
+-                            False
+-                <row>
+-                    <entry>
+-                        <paragraph>
+-                            True
+-                    <entry>
+-                        <paragraph>
+-                            False
+-                    <entry>
+-                        <paragraph>
+-                            True
+-                <row>
+-                    <entry>
+-                        <paragraph>
+-                            False
+-                    <entry>
+-                        <paragraph>
+-                            True
+-                    <entry>
+-                        <paragraph>
+-                            True
+-                <row>
+-                    <entry>
+-                        <paragraph>
+-                            True
+-                    <entry>
+-                        <paragraph>
+-                            True
+-                    <entry>
+-                        <paragraph>
+-                            True
++    <paragraph>
++        [XXX:table {'index': [0], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>]}][XXX:tgroup {'index': [0], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>]}][XXX:colspec {'index': [0], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>]}][XXX:colspec {'index': [0], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>]}][XXX:colspec {'index': [0], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>]}][XXX:thead {'index': [0], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>]}][XXX:row {'index': [0], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>]}][XXX:entry {'index': [0], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>]}]Inputs[XXX:entry {'index': [1], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'Inputs'>>]}]
++    <paragraph>
++        Output[XXX:row {'index': [2], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'Inputs'>>, <paragraph: <#text: 'Output'>>]}][XXX:entry {'index': [2], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'Inputs'>>, <paragraph: <#text: 'Output'>>]}]
++    <paragraph>
++        A[XXX:entry {'index': [3], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'Inputs'>>, <paragraph: <#text: 'Output'>>, <paragraph: <#text: 'A'>>]}]
++    <paragraph>
++        B[XXX:entry {'index': [4], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'Inputs'>>, <paragraph: <#text: 'Output'>>, <paragraph: <#text: 'A'>>, <paragraph: <#text: 'B'>>]}]
++    <paragraph>
++        A or B[XXX:tbody {'index': [5], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'Inputs'>>, <paragraph: <#text: 'Output'>>, <paragraph: <#text: 'A'>>, <paragraph: <#text: 'B'>>, <paragraph: <#text: 'A or B'>>]}][XXX:row {'index': [5], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'Inputs'>>, <paragraph: <#text: 'Output'>>, <paragraph: <#text: 'A'>>, <paragraph: <#text: 'B'>>, <paragraph: <#text: 'A or B'>>]}][XXX:entry {'index': [5], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'Inputs'>>, <paragraph: <#text: 'Output'>>, <paragraph: <#text: 'A'>>, <paragraph: <#text: 'B'>>, <paragraph: <#text: 'A or B'>>]}]
++    <paragraph>
++        False[XXX:entry {'index': [6], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'Inputs'>>, <paragraph: <#text: 'Output'>>, <paragraph: <#text: 'A'>>, <paragraph: <#text: 'B'>>, <paragraph: <#text: 'A or B'>>, <paragraph: <#text: 'False'>>]}]
++    <paragraph>
++        False[XXX:entry {'index': [7], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'Inputs'>>, <paragraph: <#text: 'Output'>>, <paragraph: <#text: 'A'>>, <paragraph: <#text: 'B'>>, <paragraph: <#text: 'A or B'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'False'>>]}]
++    <paragraph>
++        False[XXX:row {'index': [8], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'Inputs'>>, <paragraph: <#text: 'Output'>>, <paragraph: <#text: 'A'>>, <paragraph: <#text: 'B'>>, <paragraph: <#text: 'A or B'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'False'>>]}][XXX:entry {'index': [8], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'Inputs'>>, <paragraph: <#text: 'Output'>>, <paragraph: <#text: 'A'>>, <paragraph: <#text: 'B'>>, <paragraph: <#text: 'A or B'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'False'>>]}]
++    <paragraph>
++        True[XXX:entry {'index': [9], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'Inputs'>>, <paragraph: <#text: 'Output'>>, <paragraph: <#text: 'A'>>, <paragraph: <#text: 'B'>>, <paragraph: <#text: 'A or B'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'True'>>]}]
++    <paragraph>
++        False[XXX:entry {'index': [10], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'Inputs'>>, <paragraph: <#text: 'Output'>>, <paragraph: <#text: 'A'>>, <paragraph: <#text: 'B'>>, <paragraph: <#text: 'A or B'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'True'>>, <paragraph: <#text: 'False'>>]}]
++    <paragraph>
++        True[XXX:row {'index': [11], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'Inputs'>>, <paragraph: <#text: 'Output'>>, <paragraph: <#text: 'A'>>, <paragraph: <#text: 'B'>>, <paragraph: <#text: 'A or B'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'True'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'True'>>]}][XXX:entry {'index': [11], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'Inputs'>>, <paragraph: <#text: 'Output'>>, <paragraph: <#text: 'A'>>, <paragraph: <#text: 'B'>>, <paragraph: <#text: 'A or B'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'True'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'True'>>]}]
++    <paragraph>
++        False[XXX:entry {'index': [12], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'Inputs'>>, <paragraph: <#text: 'Output'>>, <paragraph: <#text: 'A'>>, <paragraph: <#text: 'B'>>, <paragraph: <#text: 'A or B'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'True'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'True'>>, <paragraph: <#text: 'False'>>]}]
++    <paragraph>
++        True[XXX:entry {'index': [13], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'Inputs'>>, <paragraph: <#text: 'Output'>>, <paragraph: <#text: 'A'>>, <paragraph: <#text: 'B'>>, <paragraph: <#text: 'A or B'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'True'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'True'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'True'>>]}]
++    <paragraph>
++        True[XXX:row {'index': [14], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'Inputs'>>, <paragraph: <#text: 'Output'>>, <paragraph: <#text: 'A'>>, <paragraph: <#text: 'B'>>, <paragraph: <#text: 'A or B'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'True'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'True'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'True'>>, <paragraph: <#text: 'True'>>]}][XXX:entry {'index': [14], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'Inputs'>>, <paragraph: <#text: 'Output'>>, <paragraph: <#text: 'A'>>, <paragraph: <#text: 'B'>>, <paragraph: <#text: 'A or B'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'True'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'True'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'True'>>, <paragraph: <#text: 'True'>>]}]
++    <paragraph>
++        True[XXX:entry {'index': [15], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'Inputs'>>, <paragraph: <#text: 'Output'>>, <paragraph: <#text: 'A'>>, <paragraph: <#text: 'B'>>, <paragraph: <#text: 'A or B'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'True'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'True'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'True'>>, <paragraph: <#text: 'True'>>, <paragraph: <#text: 'True'>>]}]
++    <paragraph>
++        True[XXX:entry {'index': [16], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'Inputs'>>, <paragraph: <#text: 'Output'>>, <paragraph: <#text: 'A'>>, <paragraph: <#text: 'B'>>, <paragraph: <#text: 'A or B'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'True'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'True'>>, <paragraph: <#text: 'False'>>, <paragraph: <#text: 'True'>>, <paragraph: <#text: 'True'>>, <paragraph: <#text: 'True'>>, <paragraph: <#text: 'True'>>]}]
++    <paragraph>
++        True
+ 
+
+======================================================================
+FAIL: runTest (rstwriter.Test13_Table4LossyRstWriterTestCase)
+Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
+    self._test_writer(Writer())
+  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
+    warnings)
+AssertionError: Error re-parsing generated file
+ on </media/Pandora2/project/docutils-ext.git/var/test-13.table-4.rst>
+
+<string>:25: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
+
+
+======================================================================
+FAIL: runTest (rstwriter.Test17_Tables1LossyRstWriterTestCase)
+Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
+    self._test_writer(Writer())
+  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
+    diff )
+AssertionError: pxml tree mismatch 
+ on </media/Pandora2/project/docutils-ext.git/var/test-17.tables-1.rst>
+
+--- 
+
++++ 
+
+@@ -1,21 +1,10 @@
+
+ <document source="<string>">
+-    <table>
+-        <tgroup cols="2">
+-            <colspec colwidth="5">
+-            <colspec colwidth="5">
+-            <tbody>
+-                <row>
+-                    <entry>
+-                        <paragraph>
+-                            d1
+-                    <entry>
+-                        <paragraph>
+-                            d2
+-                <row>
+-                    <entry>
+-                        <paragraph>
+-                            d3
+-                    <entry>
+-                        <paragraph>
+-                            d4
++    <paragraph>
++        [XXX:table {'index': [0], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>]}][XXX:tgroup {'index': [0], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>]}][XXX:colspec {'index': [0], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>]}][XXX:colspec {'index': [0], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>]}][XXX:tbody {'index': [0], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>]}][XXX:row {'index': [0], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>]}][XXX:entry {'index': [0], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>]}]d1[XXX:entry {'index': [1], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'd1'>>]}]
++    <paragraph>
++        d2[XXX:row {'index': [2], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'd1'>>, <paragraph: <#text: 'd2'>>]}][XXX:entry {'index': [2], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'd1'>>, <paragraph: <#text: 'd2'>>]}]
++    <paragraph>
++        d3[XXX:entry {'index': [3], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>, <paragraph: <#text: 'd1'>>, <paragraph: <#text: 'd2'>>, <paragraph: <#text: 'd3'>>]}]
++    <paragraph>
++        d4
+ 
+
+======================================================================
+FAIL: runTest (rstwriter.Test17_Tables2LossyRstWriterTestCase)
+Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
+    self._test_writer(Writer())
+  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
+    warnings)
+AssertionError: Error re-parsing generated file
+ on </media/Pandora2/project/docutils-ext.git/var/test-17.tables-2.rst>
+
+<string>:2: (WARNING/2) Title underline too short.
+
+[XXX:table {'index': [0], 'tree': [[<document: <table...>>]], 'previous': [<document: <table...>>]}]Caption/Summary
+===============
+
+
 ======================================================================
 FAIL: runTest (rstwriter.Test1_Document5_FullRstDemoLossyRstWriterTestCase)
 Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
@@ -105,6 +396,6 @@ AssertionError: pxml tree mismatch
          Cf.
 
 ----------------------------------------------------------------------
-Ran 37 tests in 1.458s
+Ran 43 tests in 1.918s
 
-FAILED (failures=4)
+FAILED (failures=10)
