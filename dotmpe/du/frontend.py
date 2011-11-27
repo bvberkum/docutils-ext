@@ -1,3 +1,7 @@
+"""
+A simple front end for dotmpe.du Builder configurations.
+"""
+
 try:
     import locale
     locale.setlocale(locale.LC_ALL, '')
@@ -19,23 +23,45 @@ from dotmpe.du.ext.parser import Inliner
 
 
 
-def cli_process(builder_name='mpe',description=''):
+def cli_process(sources, builder_name='mpe',description=''):
     module_name = builder_name
     Builder = get_builder_class(module_name, class_name='Builder')
     builder = Builder()
-    source = argv.pop()
-    document = builder.build(source, source_id, overrides={})
-    builder.prepare(**builder.store_params)
-    builder.process(document, source_id, overrides={}, pickle_receiver=None)
-    # TODO render messages as reST doc
+    if not sources:
+        print >>sys.stderr, "No sources. "
+    for source in sources:
+        if source.startswith('-'):
+            continue
+        assert os.path.exists(source), "source description "\
+                "must be existing local path for now (not '%s')" % source
+        source_id = source
+
+        document = builder.build(source, source_id, overrides={})
+        builder.prepare(**builder.store_params)
+        builder.process(document, source_id, overrides={}, pickle_receiver=None)
+        # TODO render messages as reST doc
+        for msg_list in document.parse_messages, document.transform_messages:
+            for msg in msg_list:
+                #print type(msg), dir(msg)
+                #print msg.asdom()
+                print msg.astext()
 
 
-def cli_render(builder_name='mpe'):
+def cli_render(sources, builder_name='mpe'):
     module_name = builder_name
     Builder = get_builder_class(module_name, class_name='Builder')
     builder = Builder()
-    source = argv.pop()
-    print builder.render(source)
+    for source in sources:
+        if source.startswith('-'):
+            continue
+        assert os.path.exists(source), "source description "\
+                "must be existing local path for now (not '%s')" % source
+        source_id = source
+        
+        # FIXME: cli_render
+        print builder.render(source)
+        print document.parse_messages
+        print document.transform_messages
 
 
 def cli_du_publisher(reader_name='mpe', writer_name='pseudoxml', description=''):

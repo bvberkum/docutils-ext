@@ -1,9 +1,8 @@
 ﻿"""Parse and serialize docutils documents from and to reStructuredText.
 
-XXX: This is a heavy work in progress.
+XXX: This is a heavy work in progress. RstTranslator has some issues with
+     inline nodes and does not do tables.
 
-- I don't think rawsource should be used, however convenient.
-  
 """
 import math
 import re
@@ -20,7 +19,14 @@ class Writer(writers.Writer):
 
     """
     docutils Writer that writes a doc-tree 'back' to rSt.
+    This implementation is lossy.
     """
+
+    settings_spec = (
+        'rST writer',
+        None,
+        ()
+    )
 
     def __init__(self):
         writers.Writer.__init__(self)
@@ -32,12 +38,13 @@ class Writer(writers.Writer):
         self.output = visitor.astext()
 
 
-section_adornments = ['=', '-', '~', '^', '+', "\"", "'"]
+INDENT = u'  '
+section_adornments = ['=', '-', '~', '^', '+', "\"", "'", "_"]
 
 class RstTranslator(nodes.NodeVisitor):
 
-    """Visit docutils tree and serialize to rSt.
-    TODO: RstTranslator(nodes.NodeVisitor)
+    """
+    Visit docutils tree and serialize to rSt.
     """
 
     context = None
@@ -70,18 +77,18 @@ class RstTranslator(nodes.NodeVisitor):
             
         ] # + directives
 
-    #depth = 0
-    #"The section level. "
-
     body = []
     "The list of document strings, concatenated to final file. "
     #docinfo = {}
     #references = []
 
+    anonymous_role_count = 0 
+
     def __init__(self, document):
         nodes.NodeVisitor.__init__(self, document)
         self.settings = settings = document.settings
-        self.block_level = True
+        self.force_block_level = False
+        """Prevent blank line insert, allows override by previous sibling. """
         self.preserve_ws = False
         self.capture_text = None
         self.skip_content = None
@@ -101,13 +108,31 @@ class RstTranslator(nodes.NodeVisitor):
                 'subtitle': None,
                 'index': None,
                 'block': None,
+                'offset': None,
             })
 
     def sub_tree(self, node):
-        self.context.previous = node
         self.context.append('tree', node)
 
+    @property
+    def block_level(self):
+        if self.force_block_level:
+            return True
+        if self.context.index:
+            return False
+        return self.context.tree[-2].tagname in (
+                'document', 
+                'section', 
+                'footnote',
+                'list_item',
+                'definition', 
+                'field_body')
+
     def pop_tree(self):
+        if self.context.tree[-1].tagname in ('title', 'label'):
+            self.force_block_level = True
+        elif self.force_block_level:
+            self.force_block_level = False
         del self.context.tree
 
     @property
@@ -155,9 +180,9 @@ class RstTranslator(nodes.NodeVisitor):
         # TODO: handle all that support the class option, and others
         #classes = node.attributes['classes']
         #if classes:
-        #    self.add_directive('class',*classes)
+        #    self._write_directive('class',*classes)
 
-    def add_indented(self, *lines):
+    def _write_indented(self, *lines):
         """
         Write one or more lines. The indent on the context is used to prefix the
         text. 
@@ -176,7 +201,7 @@ class RstTranslator(nodes.NodeVisitor):
 
             if self.preserve_ws:
                 self.body.append(indent + text)
-                self.add_newline()
+                self._write_newline()
                 continue
 
             #self.body.append("<%s>"%self.current_path)
@@ -195,14 +220,40 @@ class RstTranslator(nodes.NodeVisitor):
                 cindent += len(indent)
                 self.body.append(indent + text)
             if _lines:
-                self.assure_emptyline()
+                self._assure_emptyline()
             else:
                 self.indented += cindent
 
-    def add_directive(self, name, *args):
-        self.assure_newblock()
-        self.add_indented(
+    def _write_directive(self, name, *args, **kwds):
+        self._assure_newblock()
+        self._write_indented(
                 u".. %s:: %s" % (name, ' '.join(args)))
+        if kwds:
+            self._write_options(kwds)
+            
+    def _write_options(self, opts):
+        self.context.indent += INDENT
+        for name in opts:
+            self._assure_emptyline()
+            value = opts[name]
+            self._write_indented(":%s:" % name)
+            self.context.indent += INDENT
+            if isinstance(value, list):
+                self._write_indented(' '+" ".join(value))
+            del self.context.indent
+        del self.context.indent
+   
+    def _write_role(self, name, inherit, opts):
+        #self._write_newline
+        if not name:
+            self.anonymous_role_count += 1
+            name = 'inline_role%i'% self.anonymous_role_count
+        arg = name
+        if inherit:
+            arg += "(%s)" % inherit
+        self._write_directive('role', arg, **opts)
+        self._assure_newblock()
+        return name
 
     def debugprint_indent(self):                        
         if self.debug or self.debug_indent:
@@ -213,7 +264,7 @@ class RstTranslator(nodes.NodeVisitor):
                 self.body.append("(%i)" % 
                     len(self.context.indent))
 
-    def add_newline(self):
+    def _write_newline(self):
         self.body.append('\n') # XXX: unix
         self.indented = 0
 
@@ -226,29 +277,30 @@ class RstTranslator(nodes.NodeVisitor):
         ws = ''
         while idx > -1:
             str_part = self.body[idx]
-            ws = get_trailing_ws(str_part) + ws
+            if str_part:
+                ws = get_trailing_ws(str_part) + ws
             if str_part and not is_all_ws(str_part):
                 break
             idx -= 1
         ws2 = list(ws); ws2.reverse()
         return ''.join(ws)
 
-    def assure_emptyline(self, cnt=1):
+    def _assure_emptyline(self, cnt=1):
         if not self.body:
             return
         ws = self.current_whitespace
         newlines = re.sub(r'[^\n]', '', ws) # XXX: unix
         while len(newlines) < cnt:
-            self.add_newline()
+            self._write_newline()
             cnt -= 1
 
-    def assure_newblock(self):
+    def _assure_newblock(self):
         if not self.body:
             return
         if self.context.index > 0 and self.previous_sibling:
             if self.in_tag(self.previous_sibling.tagname):
                 if self.in_tag() in self.allow_body_adjacent:
-                    self.assure_emptyline()
+                    self._assure_emptyline()
                     return
         if self.context.index == 0:
             return
@@ -259,28 +311,20 @@ class RstTranslator(nodes.NodeVisitor):
         newlines = len(re.sub(r'[^\n]', '', ws)) # XXX: unix
         #if not self.block_level:
         if newlines < 2:
-            self.add_newline()
+            self._write_newline()
         if newlines < 1:
-            self.add_newline()
-
-#    @property
-#    def in_container(self):
-#        """
-#        Wether body currently is not at an inline state, and new blocks may be
-#        added with current indented/context.indent values.
-#        """
-#        return \
-#                self.in_bullet_list or \
-#                self.in_enumerated_list 
-#                self.in_topic or \
-#                self.in_literal_block or \
+            self._write_newline()
 
     def increment_index(self):
         idx = self.context.index + 1
         del self.context.index
         self.context.index = idx
 
-    def passvisit(self, node): pass
+    def passvisit(self, node):
+        """
+        No-op to prevent catch-all handlers.
+        """
+        pass
 
     # NodeVisitor hooks
 
@@ -292,11 +336,6 @@ class RstTranslator(nodes.NodeVisitor):
         self.pop_tree()
         del self.context.index
 
-        # clean up/finalize
-        for r in self.roles:
-            self.add_directive('role', r)
-            self.assure_newblock()
-
     def visit_Text(self, node):
         text = node.astext()
         #encoded = self.encode(text)
@@ -307,22 +346,33 @@ class RstTranslator(nodes.NodeVisitor):
             setattr(self.context, self.capture_text, text)
         lines = text.split('\n') # XXX: unix
         if not self.skip_content:
-            self.add_indented(*lines)
+            self._write_indented(*lines)
     def depart_Text(self, node):
         pass
 
     def visit_title(self, node):
         self.sub_tree(node)
         self.increment_index()
-        self.capture_text = 'title'
+        previous_tree = self.context.previous('tree')
+        if previous_tree and previous_tree[-1].tagname == 'topic':
+            if not self.block_level:
+                self._assure_newblock()
+            self.visit_field_name(node)
+        else:
+            self.capture_text = 'title'
     def depart_title(self, node):
         self.pop_tree()
-        self.capture_text = None
-        text = self.context.title
-        self.assure_emptyline()
-        self.add_indented( self.context.section_adornment * len(text))
-        self.assure_emptyline()
-        del self.context.title
+        prev_tree = self.context.previous('tree')
+        if prev_tree and prev_tree[-1].tagname == 'topic':
+            self.depart_field_name(node)
+            self.context.indent += '   '
+        else:
+            self.capture_text = None
+            text = self.context.title
+            del self.context.title
+            self._assure_emptyline()
+            self._write_indented( self.context.section_adornment * len(text))
+        self._assure_emptyline()
 
     def visit_subtitle(self, node):
         self.sub_tree(node)
@@ -331,56 +381,38 @@ class RstTranslator(nodes.NodeVisitor):
         self.pop_tree()
         self.capture_text = None
         text = self.context.subtitle
-        self.assure_emptyline()
+        self._assure_emptyline()
         seca = self.context.section_adornment
         subindex = self.section_adornments.index(seca) + 2
-        self.add_indented(self.section_adornments[subindex] * len(text))
-        self.assure_emptyline()
+        assert len(self.section_adornments) >= subindex, subindex
+        self._write_indented(self.section_adornments[subindex] * len(text))
+        self._assure_emptyline()
         del self.context.subtitle
 
     def visit_section(self, node):
         self.sub_tree(node)
+        if not self.block_level:
+            self._assure_newblock()
         self.increment_index()
-        self.assure_newblock()
         self.context.index = 0
         newlevel = self.context.depth('index')
         self.context.section_adornment = self.section_adornments[newlevel]
     def depart_section(self, node):
         self.pop_tree()
-        #self.depth += 1
-        self.assure_emptyline()
+        self._assure_emptyline()
         del self.context.index
         del self.context.section_adornment
 
     def visit_paragraph(self, node):
         self.sub_tree(node)
-        #if self.block_level and self.context.index:
-        #    self.assure_newblock()
+        if not self.block_level:
+            self._assure_newblock()
         self.increment_index()
-        self.assure_newblock()
         self.context.index = 0            
-        #source = node.rawsource
-        #try:
-        #    parentsource = self.context.parentrawsource
-        #    #print '\n%r\n%r\n%r\n' % (parentsource, source, self.rawsourceindex)
-        #    newindex = parentsource.index(source, self.rawsourceindex)
-        #    endsourceindex = newindex + len(source)
-        #    source = parentsource[self.rawsourceindex:endsourceindex]
-        #    self.rawsourceindex = endsourceindex
-        #except AttributeError:
-        #    pass
-        #self.body.append(self.indentstring(source) + '\n')
-        #raise nodes.SkipChildren
-        self.block_level = False
 
     def depart_paragraph(self, node):
-        self.assure_newblock()
-        #if self.in_field_list or self.in_docinfo or self.in_footnote \
-        #    or self.in_enumerated_list or self.in_bullet_list: pass
-        #else:
-        #    self.body.append("\n\n")
+        self._assure_newblock()
         del self.context.index
-        self.block_level = True
         self.pop_tree()
 
     # Inline
@@ -388,26 +420,25 @@ class RstTranslator(nodes.NodeVisitor):
         self.sub_tree(node)
         self.increment_index()
         # XXX: which is the role?
-        role = node['classes'][0]
-        if role not in self.roles:
-            self.roles.append(role)
-        self.add_indented(':%s:`' % role)
+        if len(node['classes']) > 0:
+            role = self._write_role(None, None, {'class':node['classes']})
+        self._write_indented(':%s:`' % role)
     def depart_inline(self, node):
         self.pop_tree()
-        self.add_indented('`')
+        self._write_indented('`')
 
     def visit_emphasis(self, node):
         self.sub_tree(node)
         self.increment_index()
-        self.add_indented('*')
+        self._write_indented('*')
     def depart_emphasis(self, node):
         self.pop_tree()
-        self.add_indented('*')
+        self._write_indented('*')
 
     def visit_strong(self, node):
         self.sub_tree(node)
         self.increment_index()
-        self.add_indented('**')
+        self._write_indented('**')
     def depart_strong(self, node):
         self.pop_tree()
         self.body.append('**')
@@ -415,7 +446,7 @@ class RstTranslator(nodes.NodeVisitor):
     def visit_literal(self, node):
         self.sub_tree(node)
         self.increment_index()
-        self.add_indented('``')
+        self._write_indented('``')
     def depart_literal(self, node):
         self.pop_tree()
         self.body.append('``')
@@ -429,11 +460,11 @@ class RstTranslator(nodes.NodeVisitor):
     def visit_attribution(self, node):
         self.sub_tree(node)
         self.increment_index()
-        self.assure_newblock()
-        self.add_indented('-- ')
+        self._assure_newblock()
+        self._write_indented('-- ')
     def depart_attribution(self, node):
         self.pop_tree()
-        self.assure_newblock()
+        self._assure_newblock()
 
     visit_description = passvisit
     depart_description = passvisit
@@ -442,8 +473,18 @@ class RstTranslator(nodes.NodeVisitor):
     depart_doctest_block = passvisit
 
     # Option lists
-    visit_option_list = passvisit
-    depart_option_list = passvisit
+    def visit_option_list(self, node):
+        self.sub_tree(node)
+        if not self.block_level:
+            self._assure_newblock()
+        self.increment_index()
+        self.context.index = 0
+        #self.context.indent += 5 * INDENT
+    def depart_option_list(self, node):
+        self.pop_tree()
+        del self.context.index
+        #del self.context.indent
+        self._assure_emptyline()
 
     visit_option_list_item = passvisit
     depart_option_list_item = passvisit
@@ -471,14 +512,14 @@ class RstTranslator(nodes.NodeVisitor):
                 if node.astext() == node['refuri']:
                     pass
                 else:
-                    self.add_indented('`')
+                    self._write_indented('`')
             elif 'refid' in node:
-                self.add_indented('`')
+                self._write_indented('`')
                 #self.debugprint(node)
 
     def depart_reference(self, node):
         if self.in_tag('figure', '*'):
-            self.add_indented(":target: %s\n\n" %node['refuri'])
+            self._write_indented(":target: %s\n\n" %node['refuri'])
             self.indented = 0
         else:
             if 'refuri' in node:
@@ -495,7 +536,7 @@ class RstTranslator(nodes.NodeVisitor):
     def visit_footnote_reference(self, node):
         self.sub_tree(node)
         self.increment_index()
-        self.add_indented('[')
+        self._write_indented('[')
     def depart_footnote_reference(self, node):
         self.pop_tree()
         self.body.append(']_ ')
@@ -508,7 +549,7 @@ class RstTranslator(nodes.NodeVisitor):
         self.body.append('.. |%s| replace:: ' % node['names'][0])
     def depart_substitution_definition(self, node):
         self.pop_tree()
-        self.add_newline()
+        self._write_newline()
 
     def visit_citation_reference(self, node):
         self.sub_tree(node)
@@ -520,50 +561,64 @@ class RstTranslator(nodes.NodeVisitor):
 
     def visit_target(self, node):
         self.sub_tree(node)
-        if 'refid' in node:
-            self.assure_newblock()
-            self.increment_index()
-            #self.add_indented('.. _')
-            self.add_indented(u'%s\n' % node.rawsource)
-            self.indented = 0
-            self.assure_newblock()
+        target_id = None
+        ref_id = None
+        if 'refuri' in node and node['refuri']:
+            ref_id = node['refuri']
+        if 'refid' in node and node['refid']:
+            target_id = node['refid']
+        if target_id or ref_id:
+            if not self.block_level:
+                self._assure_newblock()
+        self.increment_index()
+        if target_id:
+            # XXX: what about multiple names as resolved by transform?
+            if 'names' in node and node['names']:
+                self._write_indented(".. _`%s`: `%s`_" % (node['names'][0],
+                    target_id))
+            else:
+                self._write_indented("`")
+        elif ref_id:
+            if 'names' in node and node['names']:
+                self._write_indented(".. _`%s`: %s" % (node['names'][0],
+                    ref_id))
+            else:
+                self._write_indented("`")
         else:
-            self.add_indented('_`')
-        #self.body.append(u'\n\n%s\n\n' % node.rawsource)
-        #if 'refuri' in node:
-        #    self.body.append(".. _%s:: %s\n" % (node['ids'][0], node['refuri']))
-        #else:
-        #    pass #@fixme
-        #self.body.append(u'\n\n%s\n\n' % node.rawsource)
+            self._write_indented('_`')
     def depart_target(self, node):
         self.pop_tree()
-        if 'refid' in node:
-            pass #self.debugprint(node)
-        else:
-            self.add_indented('`')
+        if 'refuri' not in node or not node['refuri']:
+            pass
+        if 'refid' not in node or not node['refid']:
+            self._write_indented('`')
 
     def visit_title_reference(self, node):
         self.sub_tree(node)
         self.increment_index()
-        self.body.append('`')
+        self._write_indented('`')
     def depart_title_reference(self, node):
-        self.body.append('`')
+        self._write_indented('`')
         self.pop_tree()
 
     def visit_footnote(self, node):
         self.sub_tree(node)
-        self.assure_newblock()
+        if not self.block_level:
+            self._assure_newblock()
+        self.increment_index()
+        self.context.index = 0
         if 'auto' in node:
             if node.attributes['auto']:
-                self.body.append(u'.. [#] ')
+                self._write_indented(u'.. [#] ')
                 #self.context.parentrawsource = node.rawsource
-                self.context.indent += u'   '
+                self.context.indent += INDENT
                 self.rawsourceindex = 0
                 self.skip_label = True
                 return
         #self.default_visit(node) #TODO
-        self.body.append(".. [")
+        self._write_indented(".. [")
     def depart_footnote(self, node):
+        del self.context.index
         self.pop_tree()
         if 'auto' in node:
             if node.attributes['auto']:
@@ -592,10 +647,10 @@ class RstTranslator(nodes.NodeVisitor):
         self.increment_index()
         if self.in_tag('figure', '*'):
             self.body.append(node['uri'])
-            self.add_newline()
+            self._write_newline()
         else:
-            self.assure_newblock()
-            self.add_directive('image', node['uri'])
+            self._assure_newblock()
+            self._write_directive('image', node['uri'])
     def depart_image(self, node):
         self.pop_tree()
 
@@ -603,9 +658,9 @@ class RstTranslator(nodes.NodeVisitor):
         self.sub_tree(node)
         self.increment_index()
         self.index = 0
-        self.assure_newblock()
+        self._assure_newblock()
         self.body.append(".. figure:: ")
-        self.context.indent += u'   '
+        self.context.indent += INDENT
     def depart_figure(self, node):
         self.pop_tree()
         del self.index
@@ -619,23 +674,31 @@ class RstTranslator(nodes.NodeVisitor):
 
     def visit_comment(self, node):
         self.sub_tree(node)
-        self.assure_newblock()
-        #self.assure_emptyline()
+        self._assure_newblock()
+        #self._assure_emptyline()
         self.increment_index()
-        self.add_indented('.. ')
-        self.context.indent += u'   '
+        self._write_indented('.. ')
+        self.context.indent += INDENT
     def depart_comment(self, node):
         self.pop_tree()
-        self.assure_emptyline()
+        self._assure_emptyline()
         del self.context.indent
 
     def visit_topic(self, node):
         self.sub_tree(node)
-        self.debugprint(node)
+        #self.debugprint(node)
         if 'classes' in node:
             if 'contents' in node.attributes['classes']:
                 raise nodes.SkipChildren
+            for node_name in 'abstract', 'dedication':
+                if node_name in node.attributes['classes']:
+                    return
+        self.visit_directive(node, name='topic')
     def depart_topic(self, node):
+        if 'classes' in node:
+            for node_name in 'abstract', 'dedication':
+                if node_name in node.attributes['classes']:
+                    del self.context.indent
         self.pop_tree()
 
     def visit_block_quote(self, node):
@@ -645,7 +708,7 @@ class RstTranslator(nodes.NodeVisitor):
                 self.visit_directive(node, name='epigraph')
                 return
         self.sub_tree(node)
-        self.assure_newblock()            
+        self._assure_newblock()            
         self.increment_index()
         self.context.index = 0
         self.context.indent += '  '
@@ -660,18 +723,18 @@ class RstTranslator(nodes.NodeVisitor):
         del self.context.indent
 
     def visit_literal_block(self, node):
-        self.assure_newblock()
+        self._assure_newblock()
         self.increment_index()
-        self.add_indented(':: ')
+        if 'xml:space' in node and node['xml:space'] == 'preserve':
+            self._write_directive('parsed-literal')
+        else:
+            self._write_indented(':: ')
         self.context.indent += '   '
-        self.assure_newblock()
-        self.block_level = False
+        self._assure_newblock()
         self.preserve_ws = True
     def depart_literal_block(self, node):
-        self.assure_newblock()
-        #self.assure_emptyline()
+        self._assure_newblock()
         del self.context.indent
-        self.block_level = True
         self.preserve_ws = False
 
 #    def visit_attribution(self, node):
@@ -682,28 +745,34 @@ class RstTranslator(nodes.NodeVisitor):
     # XXX: what can lineblock contain
     def visit_line_block(self, node):
         self.sub_tree(node)
-        self.assure_emptyline(2)
+        if not self.block_level:
+            self._assure_newblock()
         self.increment_index()
+        #self._assure_emptyline(2)
         self.context.index = 0
     def depart_line_block(self, node):
         del self.context.index
         self.pop_tree()
-        self.assure_newblock()
-        self.assure_emptyline()
+        self._assure_newblock()
+        self._assure_emptyline()
 
     def visit_line(self, node):
         self.sub_tree(node)
         self.increment_index()
-        self.add_indented('| ')
+        self._write_indented('| ')
         self.context.indent += '  '
         self.context.index = 0
     def depart_line(self, node):
         del self.context.indent
         del self.context.index
         self.pop_tree()
-        self.assure_emptyline()
+        self._assure_emptyline()
 
     def visit_transition(self, node):
+        while self.context.tree[-1].tagname not in ('section', 'document'):
+            self.pop_tree()
+        if not self.block_level:
+            self._assure_newblock()
         self.increment_index()
         self.body.append(u'%s\n\n' %node.rawsource)
         self.indented = 0
@@ -715,29 +784,31 @@ class RstTranslator(nodes.NodeVisitor):
     # Lists
     def visit_enumerated_list(self, node):
         self.sub_tree(node)
-        if self.block_level and self.context.index:
-            self.assure_newblock()
+        if not self.block_level or self.context.index:
+            self._assure_newblock()
         self.increment_index()
         self.context.index = 0
+        if 'start' in node:
+            self.context.offset = node.attributes['start']
         self.context.enumtype = node.attributes['enumtype']
     def depart_enumerated_list(self, node):
         self.pop_tree()
+        if 'start' in node:
+            self.context.offset
         del self.context.index
         del self.context.enumtype
-        #self.assure_newblock()
+        #self._assure_newblock()
 
     def visit_bullet_list(self, node):
         self.sub_tree(node)
-        if self.block_level and self.context.index:
-            self.assure_newblock()
+        if not self.block_level:
+            self._assure_newblock()
         self.increment_index()
         self.context.index = 0
         self.context.bullet = node.attributes['bullet']
     def depart_bullet_list(self, node):
         del self.context.index
         del self.context.bullet
-        #self.assure_newblock()
-        #self.add_newline()
         self.pop_tree()
 
     def visit_list_item(self, node):
@@ -747,30 +818,29 @@ class RstTranslator(nodes.NodeVisitor):
         self.context.index = 0
         if self.in_tag('bullet_list', 1):
             bullet_instance = u'%s ' % self.context.bullet
-            self.add_indented(bullet_instance)
+            self._write_indented(bullet_instance)
             lil = len(bullet_instance)
         elif self.in_tag('enumerated_list', 1):
             enum_instance = u'%s. ' % \
                     self.enumeration_symbol[self.context.enumtype]\
                                                    (self.context.previous('index'))
-            self.add_indented(enum_instance)
+            self._write_indented(enum_instance)
             lil = len(enum_instance)
         else:
             raise Exception, "Illegal container for %s %s, %s" % (self.in_tag(),
                     self.current_path, self.in_tag(None, 1))
         self.context.indent += u' ' * lil
-        self.block_level = False
     def depart_list_item(self, node):
-        self.assure_emptyline()
+        self._assure_emptyline()
         del self.context.indent
         self.pop_tree()
         del self.context.index
-        self.block_level = True
 
     # Definition lists
     def visit_definition_list(self, node): 
         self.sub_tree(node)
-        self.assure_newblock()
+        if not self.block_level:
+            self._assure_newblock()
         self.increment_index()
         #self.expect('definition_list_item')
         self.context.index = 0
@@ -784,13 +854,13 @@ class RstTranslator(nodes.NodeVisitor):
         self.increment_index()
     def depart_definition_list_item(self, node):
         self.pop_tree()
-        self.assure_emptyline()
+        self._assure_emptyline()
 
     def visit_term(self, node):
         self.sub_tree(node)
         #self.block_level = False
     def depart_term(self, node): 
-        self.assure_emptyline()
+        self._assure_emptyline()
         #self.block_level = True
         self.pop_tree()
 
@@ -803,7 +873,7 @@ class RstTranslator(nodes.NodeVisitor):
         self.context.indent += '  '
         #self.block_level = False
     def depart_definition(self, node):
-        self.add_newline()
+        self._write_newline()
         self.pop_tree()
         del self.context.index
         del self.context.indent
@@ -813,14 +883,14 @@ class RstTranslator(nodes.NodeVisitor):
     # Field lists
     def visit_field_list(self, node):
         self.sub_tree(node)
-        if self.block_level:
-            self.assure_newblock()
+        if not self.block_level:
+            self._assure_newblock()
         self.increment_index()
         self.context.index = 0
     def depart_field_list(self, node):
         self.pop_tree()
         del self.context.index
-        self.assure_emptyline()
+        self._assure_emptyline()
 
     def visit_field(self, node):
         self.sub_tree(node)
@@ -830,23 +900,21 @@ class RstTranslator(nodes.NodeVisitor):
 
     def visit_field_name(self, node):
         self.sub_tree(node)
-        self.add_indented(":")
-        self.block_level = False
+        self._write_indented(":")
     def depart_field_name(self, node):
         self.pop_tree()
-        #self.add_indented(": ")
+        #self._write_indented(": ")
         self.body.append(": ")
-        self.block_level = True
 
     def visit_field_body(self, node):
         self.sub_tree(node)
         #XXX: fmt opts: if 'start_after_newline' in node:
-        #    self.add_newline()
+        #    self._write_newline()
         self.context.index = 0
-        self.context.indent += u'  '
+        self.context.indent += INDENT
     def depart_field_body(self, node):
         self.pop_tree()
-        self.assure_emptyline()
+        self._assure_emptyline()
         del self.context.index
         del self.context.indent
 
@@ -871,7 +939,7 @@ class RstTranslator(nodes.NodeVisitor):
 
     def depart_docinfo(self, node):
         self.pop_tree()
-        self.add_indented('')
+        self._write_indented('')
 
     # Tables
     def visit_entry(self, node):
@@ -905,7 +973,7 @@ class RstTranslator(nodes.NodeVisitor):
     def visit_caption(self, node):
         self.sub_tree(node)
         # first paragraph in figure
-        self.assure_newblock()
+        self._assure_newblock()
         self.increment_index()
     def depart_caption(self, node):
         self.pop_tree()
@@ -913,7 +981,7 @@ class RstTranslator(nodes.NodeVisitor):
     def visit_legend(self, node):
         # other paragraphs in figure
         self.sub_tree(node)
-        self.assure_newblock()
+        self._assure_newblock()
         self.increment_index()
     def depart_legend(self, node):
         self.pop_tree()
@@ -942,8 +1010,8 @@ class RstTranslator(nodes.NodeVisitor):
 
     def visit_citation(self, node):
         self.sub_tree(node)
-        self.add_indented('.. [')
-        self.context.indent += u'  '
+        self._write_indented('.. [')
+        self.context.indent += INDENT
     def depart_citation(self, node):
         del self.context.indent
         self.pop_tree()
@@ -957,7 +1025,7 @@ class RstTranslator(nodes.NodeVisitor):
         self.sub_tree(node)
         if cn in self.docinfo_fields:
             self.increment_index()
-            self.add_indented(':%s: ' % (cn.title())) # XXX
+            self._write_indented(':%s: ' % (cn.title())) # XXX
             self.context.index = 0
             self.context.indent += '  '
             return
@@ -977,7 +1045,7 @@ class RstTranslator(nodes.NodeVisitor):
         if cn in self.docinfo_fields:
             del self.context.index
             del self.context.indent
-            self.assure_emptyline()
+            self._assure_emptyline()
             return
         elif cn in self.admonition_fields:
             return
@@ -992,13 +1060,13 @@ class RstTranslator(nodes.NodeVisitor):
 
     # Generic handlers        
     def visit_directive(self, node, name=None):
-        self.assure_newblock()
+        self._assure_newblock()
         self.sub_tree(node)
         if not name:
             name = classname(node)
         self.increment_index()
         self.context.index = 0
-        self.add_directive(name)
+        self._write_directive(name)
         self.context.indent += '   '
         # TODO: options
         # TODO: arguments/classes
@@ -1014,6 +1082,7 @@ class RstTranslator(nodes.NodeVisitor):
 trailing_ws = re.compile('^.*(?<!\s)(\s+)$')
 
 def get_trailing_ws(string):
+    assert isinstance(string, str) or isinstance(string, unicode), string
     m = trailing_ws.match(string)
     if m:
         return m.group(1)
@@ -1072,7 +1141,8 @@ class ContextStack(object):
             return l-1
 
     def previous(self, name):
-        return self._stack[name][-2]
+        if len(self._stack[name]) > 1:
+            return self._stack[name][-2]
 
     def __repr__(self):
         return repr(self._stack)
@@ -1175,9 +1245,18 @@ if __name__ == '__main__':
         for i in range(0, 5):
             p = os.path.dirname(p)
         PROJ_ROOT = p
-            
-        TEST_DOC = filter(os.path.getsize,
-                glob.glob(os.path.join(PROJ_ROOT, 'var', '*.rst')))
+        
+        TEST_DOC = [
+#            'var/test-1.document-6.rst',
+#            'var/test-1.document-7.rst',
+            'var/test-5.inline-2.rst',
+#            'var/test-5.inline-3.rst',
+#            'var/test-22.docinfo.rst',
+#            'var/test-23.option-lists.rst',
+#            'var/_test-1.document-5.full-rst-demo.rst'
+        ]
+        #TEST_DOC = filter(os.path.getsize,
+        #        glob.glob(os.path.join(PROJ_ROOT, 'var', '*.rst')))
         TEST_DOC.sort()
 
         for doc in TEST_DOC:

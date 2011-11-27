@@ -10,7 +10,7 @@ import docutils
 logger = logging.getLogger(__name__)
 
 readers = {
-    'dotmpe': 'dotmpe.du.reader.mpe',
+    'dotmpe': 'dotmpe.du.ext.reader.mpe',
     #    'dotmpe-v5': mpe,
 }
 _readers = {}
@@ -79,6 +79,46 @@ def get_builder_class(mod_name, class_name='Builder'):
     else:
         module = builders[mod_name]
     return getattr(module, class_name)
+
+
+ERR_MISSING_EXTRACTOR_MODNAME = "Missing extractor module name. "
+
+extractors = { }
+
+def get_extractor_class(mod_name, class_name='Extractor'):
+    global extractors
+    assert mod_name, ERR_MISSING_EXTRACTOR_MODNAME
+    #if not class_name or (restrict and class_name not in restrict):
+    #    class_name = 'Extractor'
+    if mod_name not in extractors:
+        logger.debug("Loading extractor package %s ", mod_name)
+        module = load_module(mod_name)
+        extractors[mod_name] = module
+    else:
+        module = extractors[mod_name]
+    return getattr(module, class_name)
+
+
+ERR_MISSING_EXTRACTOR_STORAGE_MODNAME = "Missing extractor_storage module name. "
+
+extractor_storages = { }
+
+def get_extractor_storage_class(mod_name, class_name='Storage'):
+    global extractor_storages
+    assert mod_name, ERR_MISSING_EXTRACTOR_STORAGE_MODNAME
+    #if not class_name or (restrict and class_name not in restrict):
+    #    class_name = 'Storage'
+    if mod_name not in extractor_storages:
+        logger.debug("Loading extractor_storage package %s ", mod_name)
+        module = load_module(mod_name)
+        extractor_storages[mod_name] = module
+    else:
+        module = extractor_storages[mod_name]
+    return getattr(module, class_name)
+
+
+def get_extractor_pair(mod_name):
+    return get_extractor_class(mod_name), get_extractor_storage_class(mod_name)
 
 
 ## Util

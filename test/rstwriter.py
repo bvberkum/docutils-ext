@@ -153,8 +153,8 @@ def create_tests(files):
 
         # Lossy
         TestCase = new_rstwriter_testcase(testcase_name, rst_file, True)
-        if rst_file.endswith('demo.rst'):
-            TestCase.corrupt_sources = [rst_file]
+        #if rst_file.endswith('demo.rst'):
+        #    TestCase.corrupt_sources = [rst_file]
         setattr(sys.modules[__name__], testcase_name, TestCase)
 
         # Lossless

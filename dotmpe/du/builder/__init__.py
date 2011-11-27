@@ -2,7 +2,7 @@
 """
 Builders are preconfigured sets of Reader, Parser, Extractor and Writer components.
 
-The goal was to have a component interface for multiple input and output formats,
+The goal is to have a component interface for multiple input and output formats,
 perhaps to experiment with content-negotiation later. Until then this serves as
 as a thin wrapper to the Du publisher framework.
 """
@@ -35,6 +35,7 @@ class Builder(SettingsSpec):
     """
     Both Du Reader and Parser Component classes are set/described here and can
     be overridden in builder subclasses. 
+
     The writer is accessed directly by name for now.
     """
     default_writer = 'dotmpe-html'
@@ -42,8 +43,8 @@ class Builder(SettingsSpec):
     settings_spec = (
     )
     """
-    Additional frontend settings-spec used besides those on Reader, Parser and
-    Writer by Du Publisher. Use e.g. for those defined by extractors.
+    Additional frontend settings-spec used *besides* those on Reader, Parser and
+    Writer by Du Publisher. E.g. those used by extractors.
     """
 
     settings_defaults = {
@@ -67,6 +68,12 @@ class Builder(SettingsSpec):
     The stores may be left uninitialized until `prepare`.
     """
 
+    def init_extractors(self):
+        import dotmpe.du.ext.extractor
+        for spec in self.extractor_spec:
+            self.extractors.append((comp.get_extractor_class(spec[0]),dotmpe.du.ext.extractor.TransientStorage))
+            #self.extractors.append(comp.get_extractor_pair(spec[0]))
+
     def build(self, source, source_id='<build>', overrides={}):
         """
         Build document from source, returns the document.
@@ -80,9 +87,11 @@ class Builder(SettingsSpec):
         """
         Initialize or reset the extractors and storages. `store_params` provides
         arguments for constructing the storages by type. Note that storages per
-        definition work on multiple documents. So only use this to reset in-memory
+        definition work on multiple documents. Only use this to reset in-memory
         stores or before calling `process` the first time.
         """
+        if not self.extractors and self.extractor_spec:
+            self.init_extractors()
         logger.debug("Builder prepare.")
         self.process_messages = u''
         for idx, (xcls, xstore) in enumerate(self.extractors):
@@ -98,14 +107,14 @@ class Builder(SettingsSpec):
                     xstore = xstore(*args, **kwds)
                 except TypeError, e:
                     logger.error(e)
-                    raise TypeError, "Error instantiating storage %r "  % xstore
+                    raise TypeError, "Error instantiating storage %r,  "  % xstore
             self.extractors[idx] = (xcls, xstore)
 
     def process(self, document, source_id='<process>', overrides={},
             pickle_receiver=None):
         """
         If there are extractors for this builder, apply them to the document. 
-        Return messages.
+        TODO: Return messages.
 
         `prepare` should have been run to initialize storages. 
         """
@@ -138,6 +147,8 @@ class Builder(SettingsSpec):
         document.transform = document.reporter = document.form_processor = None
         # FIXME: what about when FP needs run during process i.o. build?
         # what about values from FP then..
+        #print 'Extractor messages:', map(str,document.transform_messages)
+
 
     def render(self, source, source_id='<render>', writer_name=None,
             overrides={}, parts=['whole']):
@@ -165,7 +176,7 @@ class Builder(SettingsSpec):
         return self.render(source, source_id, writer_name=None,
                 parts=['html_title', 'body'], overrides=overrides)
 
-    # HTML-writer parts:                                                         #
+    # for reference, HTML-writer parts:
     ['subtitle', 'version', 'encoding', 'html_prolog', 'header', 'meta',
      'html_title', 'title', 'stylesheet', 'html_subtitle',
      'html_body', 'body', 'head', 'body_suffix', 'fragment',

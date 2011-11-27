@@ -1,31 +1,83 @@
-E.....FFFF.F...FF....FFFF....F...FF.......FFFF
+F..F..FFFF.....FF......FF....FF.F..FFF...........
 ======================================================================
-ERROR: test_1 (form.FormTest)
+FAIL: test_1 (form.FormTest)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/media/Pandora2/project/docutils-ext.git/test/form.py", line 162, in test_1
-    builder.initialize(strip_comments=True)
-AttributeError: MyFormPage instance has no attribute 'initialize'
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/form.py", line 163, in test_1
+    document = builder.build(source, source_id)
+  File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/builder/__init__.py", line 83, in build
+    overrides)
+  File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/builder/__init__.py", line 231, in __publish
+    overrides, config_section=None, enable_exit_status=False)
+  File "/Volumes/Pandora-2/project/docutils-ext.git/lib/docutils/core.py", line 647, in publish_programmatically
+    output = pub.publish(enable_exit_status=enable_exit_status)
+  File "/Volumes/Pandora-2/project/docutils-ext.git/lib/docutils/core.py", line 210, in publish
+    self.apply_transforms()
+  File "/Volumes/Pandora-2/project/docutils-ext.git/lib/docutils/core.py", line 191, in apply_transforms
+    self.document.transformer.apply_transforms()
+  File "/Volumes/Pandora-2/project/docutils-ext.git/lib/docutils/transforms/__init__.py", line 171, in apply_transforms
+    transform.apply(**kwargs)
+  File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/ext/transform/form1.py", line 43, in apply
+    fp.process_fields()
+  File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/form.py", line 227, in process_fields
+    value = self[field_id]
+  File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/form.py", line 245, in __getitem__
+    v = self.__process_field(field_id)
+  File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/form.py", line 408, in __process_field
+    assert not isinstance(node, list), "Multiple fields not supported. "
+AssertionError: Multiple fields not supported. 
 
 ======================================================================
-FAIL: runTest (rstwriter.Test13_TableLossyRstWriterTestCase)
-Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
     self._test_writer(Writer())
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
     diff )
 AssertionError: pxml tree mismatch 
- on </media/Pandora2/project/docutils-ext.git/var/test-13.table.rst>
+ on </Volumes/Pandora-2/project/docutils-ext.git/var/test-10.literal-block-3.rst>
 
---- 
+---  
 
-+++ 
++++  
 
-@@ -1,28 +1,16 @@
+@@ -5,8 +5,11 @@
+
+         or quoted text is a literal block.
+     <literal_block xml:space="preserve">
+         Whitespace, newlines, blank lines, and
+-        all kinds of markup (like *this* or
+-        \this) is preserved by literal blocks.
++        all kinds of markup (like 
++        <emphasis>
++            this
++         or
++        this) is preserved by literal blocks.
+         
+         The paragraph containing only '::'
+         will be omitted from the result.
+
+======================================================================
+FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
+    self._test_writer(Writer())
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
+    diff )
+AssertionError: pxml tree mismatch 
+ on </Volumes/Pandora-2/project/docutils-ext.git/var/test-13.table.rst>
+
+---  
+
++++  
+
+@@ -1,28 +1,14 @@
 
  <document source="<string>">
 -    <table>
@@ -55,9 +107,7 @@ AssertionError: pxml tree mismatch
 -                        <paragraph>
 -                            AAB
 +    <paragraph>
-+        [XXX:table 0 0 u''][XXX:tgroup 0 0 u''][XXX:colspec 0 0 u''][XXX:colspec 0 0 u''][XXX:tbody 0 0 u''][XXX:row 0 0 u''][XXX:entry 0 0 u'']
-+    <paragraph>
-+        Simple[XXX:entry 1 6 u'']
++        [XXX:table 0 0 u''][XXX:tgroup 0 0 u''][XXX:colspec 0 0 u''][XXX:colspec 0 0 u''][XXX:tbody 0 0 u''][XXX:row 0 0 u''][XXX:entry 0 0 u'']Simple[XXX:entry 1 6 u'']
 +    <paragraph>
 +        Table[XXX:row 2 5 u''][XXX:entry 2 5 u'']
 +    <paragraph>
@@ -71,46 +121,44 @@ AssertionError: pxml tree mismatch
  
 
 ======================================================================
-FAIL: runTest (rstwriter.Test13_Table2LossyRstWriterTestCase)
-Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
     self._test_writer(Writer())
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
     warnings)
 AssertionError: Error re-parsing generated file
- on </media/Pandora2/project/docutils-ext.git/var/test-13.table-2.rst>
+ on </Volumes/Pandora-2/project/docutils-ext.git/var/test-13.table-2.rst>
 
-<string>:16: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
-<string>:21: (WARNING/2) Field list ends without a blank line; unexpected unindent.
-<string>:26: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
-<string>:34: (WARNING/2) Enumerated list ends without a blank line; unexpected unindent.
-<string>:39: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
-<string>:44: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
+<string>:12: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
+<string>:15: (WARNING/2) Field list ends without a blank line; unexpected unindent.
+<string>:18: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
+<string>:21: (WARNING/2) Enumerated list ends without a blank line; unexpected unindent.
+<string>:25: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
+<string>:28: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
 
 
 ======================================================================
-FAIL: runTest (rstwriter.Test13_Table3LossyRstWriterTestCase)
-Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
     self._test_writer(Writer())
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
     diff )
 AssertionError: pxml tree mismatch 
- on </media/Pandora2/project/docutils-ext.git/var/test-13.table-3.rst>
+ on </Volumes/Pandora-2/project/docutils-ext.git/var/test-13.table-3.rst>
 
---- 
+---  
 
-+++ 
++++  
 
-@@ -1,66 +1,38 @@
+@@ -1,66 +1,36 @@
 
  <document source="<string>">
 -    <table>
@@ -178,9 +226,7 @@ AssertionError: pxml tree mismatch
 -                        <paragraph>
 -                            True
 +    <paragraph>
-+        [XXX:table 0 0 u''][XXX:tgroup 0 0 u''][XXX:colspec 0 0 u''][XXX:colspec 0 0 u''][XXX:colspec 0 0 u''][XXX:thead 0 0 u''][XXX:row 0 0 u''][XXX:entry 0 0 u'']
-+    <paragraph>
-+        Inputs[XXX:entry 1 6 u'']
++        [XXX:table 0 0 u''][XXX:tgroup 0 0 u''][XXX:colspec 0 0 u''][XXX:colspec 0 0 u''][XXX:colspec 0 0 u''][XXX:thead 0 0 u''][XXX:row 0 0 u''][XXX:entry 0 0 u'']Inputs[XXX:entry 1 6 u'']
 +    <paragraph>
 +        Output[XXX:row 2 6 u''][XXX:entry 2 6 u'']
 +    <paragraph>
@@ -216,86 +262,39 @@ AssertionError: pxml tree mismatch
  
 
 ======================================================================
-FAIL: runTest (rstwriter.Test13_Table4LossyRstWriterTestCase)
-Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
     self._test_writer(Writer())
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
     warnings)
 AssertionError: Error re-parsing generated file
- on </media/Pandora2/project/docutils-ext.git/var/test-13.table-4.rst>
+ on </Volumes/Pandora-2/project/docutils-ext.git/var/test-13.table-4.rst>
 
-<string>:33: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
+<string>:25: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
 
-
-======================================================================
-FAIL: runTest (rstwriter.Test14_LineBlock2LossyRstWriterTestCase)
-Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
- on </media/Pandora2/project/docutils-ext.git/var/test-14.line-block-2.rst>
-
---- 
-
-+++ 
-
-@@ -38,15 +38,13 @@
-
-                         line 1
-                     <line>
-                         line 2
--    <definition_list>
--        <definition_list_item>
--            <term>
--                block
--            <definition>
--                <line_block>
--                    <line>
--                        block line 1
--                    <line>
--                        block line 2
--                        and still in line 2..
-+    <paragraph>
-+        block
-+    <block_quote>
-+        <line_block>
-+            <line>
-+                block line 1
-+            <line>
-+                block line 2
-+                and still in line 2..
- 
 
 ======================================================================
-FAIL: runTest (rstwriter.Test17_Tables1LossyRstWriterTestCase)
-Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
     self._test_writer(Writer())
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
     diff )
 AssertionError: pxml tree mismatch 
- on </media/Pandora2/project/docutils-ext.git/var/test-17.tables-1.rst>
+ on </Volumes/Pandora-2/project/docutils-ext.git/var/test-17.tables-1.rst>
 
---- 
+---  
 
-+++ 
++++  
 
-@@ -1,21 +1,12 @@
+@@ -1,21 +1,10 @@
 
  <document source="<string>">
 -    <table>
@@ -318,9 +317,7 @@ AssertionError: pxml tree mismatch
 -                        <paragraph>
 -                            d4
 +    <paragraph>
-+        [XXX:table 0 0 u''][XXX:tgroup 0 0 u''][XXX:colspec 0 0 u''][XXX:colspec 0 0 u''][XXX:tbody 0 0 u''][XXX:row 0 0 u''][XXX:entry 0 0 u'']
-+    <paragraph>
-+        d1[XXX:entry 1 2 u'']
++        [XXX:table 0 0 u''][XXX:tgroup 0 0 u''][XXX:colspec 0 0 u''][XXX:colspec 0 0 u''][XXX:tbody 0 0 u''][XXX:row 0 0 u''][XXX:entry 0 0 u'']d1[XXX:entry 1 2 u'']
 +    <paragraph>
 +        d2[XXX:row 2 2 u''][XXX:entry 2 2 u'']
 +    <paragraph>
@@ -330,18 +327,17 @@ AssertionError: pxml tree mismatch
  
 
 ======================================================================
-FAIL: runTest (rstwriter.Test17_Tables2LossyRstWriterTestCase)
-Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
     self._test_writer(Writer())
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
     warnings)
 AssertionError: Error re-parsing generated file
- on </media/Pandora2/project/docutils-ext.git/var/test-17.tables-2.rst>
+ on </Volumes/Pandora-2/project/docutils-ext.git/var/test-17.tables-2.rst>
 
 <string>:2: (WARNING/2) Title underline too short.
 
@@ -350,92 +346,40 @@ AssertionError: Error re-parsing generated file
 
 
 ======================================================================
-FAIL: runTest (rstwriter.Test1_Document3LossyRstWriterTestCase)
-Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
     self._test_writer(Writer())
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
     warnings)
 AssertionError: Error re-parsing generated file
- on </media/Pandora2/project/docutils-ext.git/var/test-1.document-3.rst>
+ on </Volumes/Pandora-2/project/docutils-ext.git/var/test-1.document-6.rst>
 
-<string>:51: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+<string>:8: (WARNING/2) Bibliographic field "Authors" incompatible with extraction: it must contain either a single paragraph (with authors separated by one of ";,"), multiple paragraphs (one per author), or a bullet list with one paragraph (one author) per item.
+<string>:: (ERROR/3) Unknown target name: "goodger@python.org".
 
 
 ======================================================================
-FAIL: runTest (rstwriter.Test1_Document4LossyRstWriterTestCase)
-Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
     self._test_writer(Writer())
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
-    warnings)
-AssertionError: Error re-parsing generated file
- on </media/Pandora2/project/docutils-ext.git/var/test-1.document-4.rst>
-
-<string>:33: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
-
-
-======================================================================
-FAIL: runTest (rstwriter.Test1_Document6LossyRstWriterTestCase)
-Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
-    warnings)
-AssertionError: Error re-parsing generated file
- on </media/Pandora2/project/docutils-ext.git/var/test-1.document-6.rst>
-
-<string>:31: (WARNING/2) Field list ends without a blank line; unexpected unindent.
-<string>:32: (WARNING/2) Title underline too short.
-
-[XXX:topic 13 0 u'']Dedication
-==========
-<string>:32: (WARNING/2) Title underline too short.
-
-[XXX:topic 13 0 u'']Dedication
-==========
-<string>:35: (WARNING/2) Title underline too short.
-
-For Docutils users & co-developers.[XXX:topic 15 35 u'']Abstract
-========
-<string>:35: (WARNING/2) Title underline too short.
-
-For Docutils users & co-developers.[XXX:topic 15 35 u'']Abstract
-========
-<string>:7: (ERROR/3) Unknown target name: "goodger@python.org".
-
-
-======================================================================
-FAIL: runTest (rstwriter.Test1_Document7LossyRstWriterTestCase)
-Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
     diff )
 AssertionError: pxml tree mismatch 
- on </media/Pandora2/project/docutils-ext.git/var/test-1.document-7.rst>
+ on </Volumes/Pandora-2/project/docutils-ext.git/var/test-1.document-7.rst>
 
---- 
+---  
 
-+++ 
++++  
 
-@@ -11,20 +11,18 @@
+@@ -11,16 +11,16 @@
 
                  The fanatics going straight forward and openly, the politicians by the surer mode of zigzag.
          <attribution>
@@ -455,289 +399,278 @@ AssertionError: pxml tree mismatch
 +    <footnote auto="1" ids="id2" names="1">
          <label>
              1
--        <paragraph>
--            <title_reference>
--                Webster's Unabridged Dictionary
--             (1913)
-+    <paragraph>
-+        `   Webster's Unabridged Dictionary` (1913)
- 
+         <paragraph>
 
 ======================================================================
-FAIL: runTest (rstwriter.Test2_Title1LossyRstWriterTestCase)
-Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
     self._test_writer(Writer())
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 34, in _test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
+    warnings)
+AssertionError: Error re-parsing generated file
+ on </Volumes/Pandora-2/project/docutils-ext.git/var/test-22.docinfo.rst>
+
+<string>:8: (WARNING/2) Bibliographic field "Authors" incompatible with extraction: it must contain either a single paragraph (with authors separated by one of ";,"), multiple paragraphs (one per author), or a bullet list with one paragraph (one author) per item.
+<string>:: (ERROR/3) Unknown target name: "goodger@python.org".
+
+
+======================================================================
+FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
+    self._test_writer(Writer())
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
+    diff )
+AssertionError: pxml tree mismatch 
+ on </Volumes/Pandora-2/project/docutils-ext.git/var/test-23.option-lists.rst>
+
+---  
+
++++  
+
+@@ -3,109 +3,29 @@
+
+         Option Lists
+     <paragraph>
+         For listing command-line options:
+-    <option_list>
+-        <option_list_item>
+-            <option_group>
+-                <option>
+-                    <option_string>
+-                        -a
+-            <description>
+-                <paragraph>
+-                    command-line option "a"
+-        <option_list_item>
+-            <option_group>
+-                <option>
+-                    <option_string>
+-                        -b
+-                    <option_argument delimiter=" ">
+-                        file
+-            <description>
+-                <paragraph>
+-                    options can have arguments
+-                    and long descriptions
+-        <option_list_item>
+-            <option_group>
+-                <option>
+-                    <option_string>
+-                        --long
+-            <description>
+-                <paragraph>
+-                    options can be long also
+-        <option_list_item>
+-            <option_group>
+-                <option>
+-                    <option_string>
+-                        --input
+-                    <option_argument delimiter="=">
+-                        file
+-            <description>
+-                <paragraph>
+-                    long options can also have
+-                    arguments
+-        <option_list_item>
+-            <option_group>
+-                <option>
+-                    <option_string>
+-                        --very-long-option
+-            <description>
+-                <paragraph>
+-                    The description can also start on the next line.
+-                <paragraph>
+-                    The description may contain multiple body elements,
+-                    regardless of where it starts.
+-        <option_list_item>
+-            <option_group>
+-                <option>
+-                    <option_string>
+-                        -x
+-                <option>
+-                    <option_string>
+-                        -y
+-                <option>
+-                    <option_string>
+-                        -z
+-            <description>
+-                <paragraph>
+-                    Multiple options are an "option group".
+-        <option_list_item>
+-            <option_group>
+-                <option>
+-                    <option_string>
+-                        -v
+-                <option>
+-                    <option_string>
+-                        --verbose
+-            <description>
+-                <paragraph>
+-                    Commonly-seen: short & long options.
+-        <option_list_item>
+-            <option_group>
+-                <option>
+-                    <option_string>
+-                        -1
+-                    <option_argument delimiter=" ">
+-                        file
+-                <option>
+-                    <option_string>
+-                        --one
+-                    <option_argument delimiter="=">
+-                        file
+-                <option>
+-                    <option_string>
+-                        --two
+-                    <option_argument delimiter=" ">
+-                        file
+-            <description>
+-                <paragraph>
+-                    Multiple options with arguments.
+-        <option_list_item>
+-            <option_group>
+-                <option>
+-                    <option_string>
+-                        /V
+-            <description>
+-                <paragraph>
+-                    DOS/VMS-style options too
++    <paragraph>
++        -acommand-line option "a"-bfile
++    <paragraph>
++        options can have arguments
++        and long descriptions--long
++    <paragraph>
++        options can be long also--inputfile
++    <paragraph>
++        long options can also have
++        arguments--very-long-option
++    <paragraph>
++        The description can also start on the next line.
++    <paragraph>
++        The description may contain multiple body elements,
++        regardless of where it starts.-x-y-z
++    <paragraph>
++        Multiple options are an "option group".-v--verbose
++    <paragraph>
++        Commonly-seen: short & long options.-1file--onefile--twofile
++    <paragraph>
++        Multiple options with arguments./V
++    <paragraph>
++        DOS/VMS-style options too
+     <paragraph>
+         There must be at least two spaces between the option and the
+         description.
+
+======================================================================
+FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
+    self._test_writer(Writer())
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 34, in _test_writer
     self.fail(e)
-AssertionError: <string>:12: (SEVERE/4) Title level inconsistent:
+AssertionError: <string>:10: (SEVERE/4) Title level inconsistent:
 
 Title
 ^^^^^
 
 ======================================================================
-FAIL: runTest (rstwriter.Test5_Inline2LossyRstWriterTestCase)
-Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
     self._test_writer(Writer())
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
-    warnings)
-AssertionError: Error re-parsing generated file
- on </media/Pandora2/project/docutils-ext.git/var/test-5.inline-2.rst>
-
-<string>:4: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
-<string>:4: (WARNING/2) Inline target start-string without end-string.
-<string>:4: (WARNING/2) Inline interpreted text or phrase reference start-string without end-string.
-<string>:20: (WARNING/2) Inline target start-string without end-string.
-<string>:20: (WARNING/2) Inline interpreted text or phrase reference start-string without end-string.
-<string>:24: (WARNING/2) Inline target start-string without end-string.
-<string>:24: (WARNING/2) Inline interpreted text or phrase reference start-string without end-string.
-<string>:30: (WARNING/2) Inline target start-string without end-string.
-<string>:30: (WARNING/2) Inline interpreted text or phrase reference start-string without end-string.
-<string>:: (ERROR/3) Anonymous hyperlink mismatch: 2 references but 0 targets.
-See "backrefs" attribute for IDs.
-<string>:1: (ERROR/3) Unknown target name: "a ref in term".
-<string>:6: (ERROR/3) Unknown target name: "reference".
-
-
-======================================================================
-FAIL: runTest (rstwriter.Test5_Inline3LossyRstWriterTestCase)
-Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
     diff )
 AssertionError: pxml tree mismatch 
- on </media/Pandora2/project/docutils-ext.git/var/test-5.inline-3.rst>
+ on </Volumes/Pandora-2/project/docutils-ext.git/var/test-5.inline-1.rst>
 
---- 
+---  
 
-+++ 
++++  
 
-@@ -5,22 +5,22 @@
+@@ -17,7 +17,7 @@
 
-         <emphasis>
-             emphasis
-         
--        <emphasis classes="role">
-+        <emphasis>
-             emphasis2
-         
-         <strong>
-             emphasis
-         
--        <strong classes="role">
-+        <strong>
-             emphasis2
          
          <literal>
              literal
-         
+-        
++    <paragraph>
+         <inline classes="my-role">
+             role-fu
+     <target ids="reference" names="reference" refid="target">
+
+======================================================================
+FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
+    self._test_writer(Writer())
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
+    warnings)
+AssertionError: Error re-parsing generated file
+ on </Volumes/Pandora-2/project/docutils-ext.git/var/test-5.inline-2.rst>
+
+<string>:28: (WARNING/2) Inline literal start-string without end-string.
+<string>:34: (WARNING/2) Inline literal start-string without end-string.
+<string>:40: (ERROR/3) Anonymous hyperlink mismatch: 2 references but 0 targets.
+See "backrefs" attribute for IDs.
+
+
+======================================================================
+FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
+    self._test_writer(Writer())
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
+    diff )
+AssertionError: pxml tree mismatch 
+ on </Volumes/Pandora-2/project/docutils-ext.git/var/test-5.inline-3.rst>
+
+---  
+
++++  
+
+@@ -11,16 +11,16 @@
+
+         <literal>
+             literal
+     <paragraph>
+-        <emphasis classes="emphasis2">
++        <emphasis>
+             emphasis2
+     <paragraph>
+-        <emphasis classes="role">
++        <emphasis>
+             emphasis3
+     <paragraph>
+-        <strong classes="role">
++        <strong>
+             strong2
+     <paragraph>
 -        <literal classes="role">
 +        <literal>
              literal2
-         
--        <inline classes="strong emphasis literal">
-+        <strong>
-             test
+     <transition>
      <paragraph>
-         Cf.
-
-======================================================================
-FAIL: runTest (rstwriter.Test8_FieldList3LossyRstWriterTestCase)
-Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
- on </media/Pandora2/project/docutils-ext.git/var/test-8.field-list-3.rst>
-
---- 
-
-+++ 
-
-@@ -31,6 +31,6 @@
-
-                         <field_name>
-                             test
-                         <field_body>
--                            <paragraph>
--                                foo
-+                <paragraph>
-+                    foo
- 
-
-======================================================================
-FAIL: runTest (rstwriter.Test8_FieldList4LossyRstWriterTestCase)
-Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
- on </media/Pandora2/project/docutils-ext.git/var/test-8.field-list-4.rst>
-
---- 
-
-+++ 
-
-@@ -46,16 +46,16 @@
-
-                                     <field_name>
-                                         Field-name
-                                     <field_body>
--                                        <paragraph>
--                                            Field-body
-+                            <paragraph>
-+                                Field-body
-         <field>
-             <field_name>
-                 Field-name
-             <field_body>
-                 <bullet_list bullet="*">
-                     <list_item>
--                        <paragraph>
--                            Item 1
-+                <paragraph>
-+                    Item 1
-         <field>
-             <field_name>
-                 Field-name
-@@ -87,6 +87,6 @@
-
-                                     <field_name>
-                                         Field-name
-                                     <field_body>
--                                        <paragraph>
--                                            Field-body
-+                            <paragraph>
-+                                Field-body
- 
-
-======================================================================
-FAIL: runTest (rstwriter.Test9_DefinitionList1LossyRstWriterTestCase)
-Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
-    warnings)
-AssertionError: Error re-parsing generated file
- on </media/Pandora2/project/docutils-ext.git/var/test-9.definition-list-1.rst>
-
-<string>:4: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
-
-
-======================================================================
-FAIL: runTest (rstwriter.Test9_DefinitionList2LossyRstWriterTestCase)
-Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/media/Pandora2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
- on </media/Pandora2/project/docutils-ext.git/var/test-9.definition-list-2.rst>
-
---- 
-
-+++ 
-
-@@ -4,39 +4,32 @@
-
-             <term>
-                 Term
-             <definition>
--                <definition_list>
--                    <definition_list_item>
--                        <term>
--                            Term
--                        <definition>
--                            <paragraph>
--                                Definition
-+                <paragraph>
-+                    Term
-+                <block_quote>
-+                    <paragraph>
-+                        Definition
-     <comment xml:space="preserve">
--    <definition_list>
--        <definition_list_item>
--            <term>
--                Term
--            <definition>
--                <paragraph>
--                    Prologue
--                <definition_list>
--                    <definition_list_item>
--                        <term>
--                            Term
--                        <definition>
--                            <definition_list>
--                                <definition_list_item>
--                                    <term>
--                                        Term
--                                    <definition>
--                                        <paragraph>
--                                            Definition
--                    <definition_list_item>
--                        <term>
--                            Term
--                        <definition>
--                            <paragraph>
--                                Definition
--                <paragraph>
--                    Epilogue
-+    <paragraph>
-+        Term
-+    <block_quote>
-+        <paragraph>
-+            Prologue
-+        <definition_list>
-+            <definition_list_item>
-+                <term>
-+                    Term
-+                <definition>
-+                    <paragraph>
-+                        Term
-+                    <block_quote>
-+                        <paragraph>
-+                            Definition
-+        <paragraph>
-+            Term
-+        <block_quote>
-+            <paragraph>
-+                Definition
-+        <paragraph>
-+            Epilogue
- 
 
 ----------------------------------------------------------------------
-Ran 46 tests in 1.224s
+Ran 49 tests in 2.043s
 
-FAILED (failures=18, errors=1)
+FAILED (failures=16)

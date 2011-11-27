@@ -19,8 +19,6 @@ TEST_DOC.sort()
 
 
 # XXX: have a look at lossless-rst-writer branch
-#print os.path.join(PROJ_LIB, 'docutils-branches',
-#	'lossless-rst-writer', 'docutils', 'writers')
 sys.path.insert(0, os.path.join(PROJ_LIB, 'docutils-branches',
 	'lossless-rst-writer', 'docutils', 'writers'))
 # access extension module directly

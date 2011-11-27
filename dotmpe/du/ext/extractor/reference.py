@@ -169,9 +169,13 @@ def run_refdb_cli():
     prsr = RefDbOptionParser()
     settings = prsr.parse_args()
     refdb = settings.reference_database
-    # Iter contents
-    for link in refdb:
-        print link, pickle.loads(refdb[link])
+    if refdb:
+        # Iter contents
+        for link in refdb:
+            print link, pickle.loads(refdb[link])
+    else:
+        import sys
+        print >>sys.stderr, "No references"
 
 if __name__ == '__main__':
     run_refdb_cli()

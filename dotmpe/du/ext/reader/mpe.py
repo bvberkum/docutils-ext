@@ -1,3 +1,7 @@
+"""
+An Du Reader component with all settings and transforms of the 
+normal standalone reader, plus new extensions. 
+"""
 from docutils import Component, readers
 from docutils.readers import standalone
 from docutils.transforms import universal, frontmatter, references, misc

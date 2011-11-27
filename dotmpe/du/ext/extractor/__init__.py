@@ -34,7 +34,7 @@ from nabu import extract
 
 
 class TransientStorage(extract.ExtractorStorage):
-    "This keeps all settings on the instance. "
+    "This keeps all extracted data on the instance. "
 
     def __init__(self, init={}, datakey='_storage', specs=None):
         assert datakey not in self.__dict__
@@ -62,6 +62,7 @@ class TransientStorage(extract.ExtractorStorage):
 
 class SimpleSourceMap(extract.ExtractorStorage): pass # TODO
     # define source_id -> value_blob storages
+
 class ComplexDictSourceMap(extract.ExtractorStorage): pass
     # define source_id -> key, value mapping storages
 

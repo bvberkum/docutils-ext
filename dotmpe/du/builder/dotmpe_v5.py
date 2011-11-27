@@ -39,9 +39,15 @@ class Builder(builder.Builder):
         'compact_field_lists': False,
     }
 
+    # TODO: integrate with CLI/settings_spec
     extractor_spec = [
-            ('DocInfo', )
-    ] 
+            ('nabu.extractors.document', ),
+            ('dotmpe.du.ext.extractor.settings', 'dotmpe.du.extractor.SettingsStorage')
+        ] 
+
+    store_params = {
+            'nabu.extractors.document': ((),{}),
+        }
 
     class Reader(mpe.Reader):
 

@@ -12,22 +12,38 @@ Current focus is on finishing an rST writer component to make it possible to
 rewrite any doctree to reStructuredText format and do all kinds of new stuff
 with docutils.
 
-Other development targets (done):
+This document attempts to present an overview of the project tree.
+First a description is given of the command-line utilities in tools/,
+second a list summary is given of the source code, whose main files will be
+documented themselves. Lastly a global log and list of further references is
+follows.
+
+Utilities
+---------
+- tools/build.py can be symlinked to any publisher wanted, ie. rst2latex, etc.  
+
+Development targets
+--------------------
+Completed:
   - Left- and right-margin decoration.
   - Various document transforms and additional document settings (with
     command-line options). See `Transforms`_ (``dotmpe.du.ext.transform``).
   - These transforms are used by ``dotmpe.du.ext.reader.mpe.``\ `Reader`.
   - Several Nabu `Extractor`, `Storage` pairs, see `Extractors`_ (``dotmpe.du.ext.extractor``) but nothing complex yet.
   - `rST forms`_ framework.
-    Use rST files as forms, but gotten a bit out of use and no unittests.
+    Use rST documents as forms, but gotten a bit out of use and no unittests.
+    The implementation includes retrieving data from a document according to the
+    `form specification`, which includes type conversion and value validation.
+
+In progress:
   - ``dotmpe.du.builder`` has some packages with specific Reader/Parser/Writer
     component configurations, but frontend is undergoing work.
   - Front-end development in `Blue Lines`_.
 
 ToDo
-  -  propose breadcrumb and other generate transforms on devel list,
-     Lea mentioned breadcrumbs.
   -  re-evaluate include, literal and raw dereferencing.
+  -  expose extractor and storage parameters on command line
+  -  create a storage context that can provide Nabu stores. see extractors.rst_
   -  ``--use-bibtex=USE_BIBTEX`` from latex2e may be nice practical example of 
      external resource framework/metadata integration.
   -  directive options are not all i18n'd
@@ -38,6 +54,12 @@ ToDo
   - `Docs`_
   - `Du/rST examples`_
 
+Devel
+  -  propose breadcrumb and other generate transforms on devel list,
+     Lea mentioned breadcrumbs.
+  -  Is the XML tree the complete representation whereof the rST is a variant,
+     a perhaps lossy representation? 
+     Attributes of Du's DOM (``docutiles.nodes``) maybe hidden.
 
 rST writer
 ----------

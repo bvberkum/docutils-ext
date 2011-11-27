@@ -1,5 +1,6 @@
-
 """
+XXX: this can probably go, it does not mean much in the current project.
+
 mkdocs Reader for Du publisher
 """
 
