@@ -1,12 +1,12 @@
-.. role:: my-role
-
 `inline1`
 *inline2*
 **inline3**
-_`target`
-`reference`_
 ``literal``
 :my-role:`role-fu`
+_`target`
+reference_
 
-.. _reference: `target`_
+.. _reference: target_
+
+.. role:: my-role(strong)
 

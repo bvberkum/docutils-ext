@@ -1,0 +1,63 @@
+Inline Markup
+`````````````
+
+Paragraphs contain text and may contain inline markup: *emphasis*,
+**strong emphasis**, ``inline literals``, standalone hyperlinks
+(http://www.python.org), external hyperlinks (Python_), internal
+cross-references (example_), external hyperlinks with embedded URIs
+(`Python web site <http://www.python.org>`__), footnote references
+(manually numbered [1]_, anonymous auto-numbered [#]_, labeled
+auto-numbered [#label]_, or symbolic [*]_), citation references
+([CIT2002]_), substitution references (|example|), and _`inline
+hyperlink targets` (see Targets_ below for a reference back to here).
+Character-level inline markup is also possible (although exceedingly
+ugly!) in *re*\ ``Structured``\ *Text*.  
+
+The default role for interpreted text is `Title Reference`.  Here are
+some explicit interpreted text roles: a PEP reference (:PEP:`287`); an
+RFC reference (:RFC:`2822`); a :sub:`subscript`; a :sup:`superscript`;
+and explicit roles for :emphasis:`standard` :strong:`inline`
+:literal:`markup`.
+
+.. DO NOT RE-WRAP THE FOLLOWING PARAGRAPH!
+
+Let's test wrapping and whitespace significance in inline literals:
+``This is an example of --inline-literal --text, --including some--
+strangely--hyphenated-words.  Adjust-the-width-of-your-browser-window
+to see how the text is wrapped.  -- ---- --------  Now note    the
+spacing    between the    words of    this sentence    (words
+should    be grouped    in pairs).``
+
+If the ``--pep-references`` option was supplied, there should be a
+live link to PEP 258 here.
+
+
+Targets
+-------
+
+.. _example:
+
+.. |EXAMPLE| image:: images/biohazard.png
+
+.. _Python: http://www.python.org/
+
+.. [CIT2002] Citations are text-labeled footnotes. They may be
+   rendered separately and differently from footnotes.
+
+.. [1] A footnote contains body elements, consistently indented by at
+   least 3 spaces.
+
+   This is the footnote's second paragraph.
+
+.. [#label] Footnotes may be numbered, either manually (as in [1]_) or
+   automatically using a "#"-prefixed label.  This footnote has a
+   label so it can be referred to from multiple places, both as a
+   footnote reference ([#label]_) and as a hyperlink reference
+   (label_).
+
+.. [#] This footnote is numbered automatically and anonymously using a
+   label of "#" only.
+
+.. [*] Footnotes may also use symbols, specified with a "*" label.
+
+

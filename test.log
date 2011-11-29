@@ -1,4 +1,38 @@
-F..F..FFFF.....FF......FF....FF.F..FFF...........
+F..F..FFFF.....FF......FF..E.FF.F..FFFF...........
+======================================================================
+ERROR: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
+    self._test_writer(Writer())
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 66, in __test_writer
+    writer=writer)['whole']#writer_name='dotmpe-rst')
+  File "/Volumes/Pandora-2/project/docutils-ext.git/lib/docutils/core.py", line 433, in publish_parts
+    enable_exit_status=enable_exit_status)
+  File "/Volumes/Pandora-2/project/docutils-ext.git/lib/docutils/core.py", line 647, in publish_programmatically
+    output = pub.publish(enable_exit_status=enable_exit_status)
+  File "/Volumes/Pandora-2/project/docutils-ext.git/lib/docutils/core.py", line 211, in publish
+    output = self.writer.write(self.document, self.destination)
+  File "/Volumes/Pandora-2/project/docutils-ext.git/lib/docutils/writers/__init__.py", line 77, in write
+    self.translate()
+  File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/ext/writer/rst.py", line 37, in translate
+    self.document.walkabout(visitor)
+  File "/Volumes/Pandora-2/project/docutils-ext.git/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/Volumes/Pandora-2/project/docutils-ext.git/lib/docutils/nodes.py", line 165, in walkabout
+    visitor.dispatch_visit(self)
+  File "/Volumes/Pandora-2/project/docutils-ext.git/lib/docutils/nodes.py", line 1604, in dispatch_visit
+    return method(node)
+  File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/ext/writer/rst.py", line 699, in visit_block_quote
+    self.visit_directive(node, name='epigraph')
+  File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/ext/writer/rst.py", line 1053, in visit_directive
+    if not self.block_level:
+  File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/ext/writer/rst.py", line 124, in block_level
+    return self.context.tree[-2].tagname in (
+IndexError: list index out of range
+
 ======================================================================
 FAIL: test_1 (form.FormTest)
 ----------------------------------------------------------------------
@@ -429,7 +463,7 @@ Traceback (most recent call last):
   File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
     diff )
 AssertionError: pxml tree mismatch 
- on </Volumes/Pandora-2/project/docutils-ext.git/var/test-23.option-lists.rst>
+ on </Volumes/Pandora-2/project/docutils-ext.git/var/test-23.option-list-1.rst>
 
 ---  
 
@@ -591,25 +625,13 @@ Traceback (most recent call last):
     self._test_writer(Writer())
   File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
+    warnings)
+AssertionError: Error re-parsing generated file
  on </Volumes/Pandora-2/project/docutils-ext.git/var/test-5.inline-1.rst>
 
----  
+<string>:8: (ERROR/3) Unexpected indentation.
 
-+++  
-
-@@ -17,7 +17,7 @@
-
-         
-         <literal>
-             literal
--        
-+    <paragraph>
-         <inline classes="my-role">
-             role-fu
-     <target ids="reference" names="reference" refid="target">
 
 ======================================================================
 FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
@@ -624,9 +646,10 @@ Traceback (most recent call last):
 AssertionError: Error re-parsing generated file
  on </Volumes/Pandora-2/project/docutils-ext.git/var/test-5.inline-2.rst>
 
-<string>:28: (WARNING/2) Inline literal start-string without end-string.
-<string>:34: (WARNING/2) Inline literal start-string without end-string.
-<string>:40: (ERROR/3) Anonymous hyperlink mismatch: 2 references but 0 targets.
+<string>:13: (ERROR/3) Unexpected indentation.
+<string>:25: (WARNING/2) Inline literal start-string without end-string.
+<string>:31: (WARNING/2) Inline literal start-string without end-string.
+<string>:37: (ERROR/3) Anonymous hyperlink mismatch: 2 references but 0 targets.
 See "backrefs" attribute for IDs.
 
 
@@ -638,39 +661,41 @@ Traceback (most recent call last):
     self._test_writer(Writer())
   File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
+    warnings)
+AssertionError: Error re-parsing generated file
  on </Volumes/Pandora-2/project/docutils-ext.git/var/test-5.inline-3.rst>
 
----  
+<string>:20: (ERROR/3) At least one body element must separate transitions; adjacent transitions are not allowed.
 
-+++  
 
-@@ -11,16 +11,16 @@
+======================================================================
+FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
+    self._test_writer(Writer())
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
+    warnings)
+AssertionError: Error re-parsing generated file
+ on </Volumes/Pandora-2/project/docutils-ext.git/var/test-5.inline-4.rst>
 
-         <literal>
-             literal
-     <paragraph>
--        <emphasis classes="emphasis2">
-+        <emphasis>
-             emphasis2
-     <paragraph>
--        <emphasis classes="role">
-+        <emphasis>
-             emphasis3
-     <paragraph>
--        <strong classes="role">
-+        <strong>
-             strong2
-     <paragraph>
--        <literal classes="role">
-+        <literal>
-             literal2
-     <transition>
-     <paragraph>
+<string>:13: (WARNING/2) Explicit markup ends without a blank line; unexpected unindent.
+<string>:37: (WARNING/2) Inline target start-string without end-string.
+<string>:37: (WARNING/2) Inline interpreted text or phrase reference start-string without end-string.
+<string>:37: (ERROR/3) Undefined substitution referenced: "EXAMPLE".
+<string>:3: (ERROR/3) Too many symbol footnote references: only 0 corresponding footnotes available.
+<string>:3: (ERROR/3) Unknown target name: "example".
+<string>:3: (ERROR/3) Unknown target name: "python web site".
+<string>:3: (ERROR/3) Unknown target name: "cit2002".
+<string>:17: (ERROR/3) Unknown target name: "pep 287".
+<string>:17: (ERROR/3) Unknown target name: "rfc 2822".
+<string>:48: (ERROR/3) Unknown target name: "label".
+
 
 ----------------------------------------------------------------------
-Ran 49 tests in 2.043s
+Ran 50 tests in 1.792s
 
-FAILED (failures=16)
+FAILED (failures=17, errors=1)
