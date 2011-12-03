@@ -1,5 +1,6 @@
 """
-A simple front end for dotmpe.du Builder configurations.
+A simple front end for dotmpe.du Builder configurations and extensions to the
+standard Docutils publisher.
 """
 
 try:
@@ -17,7 +18,7 @@ from docutils.frontend import OptionParser
 #import nabu.server
 #import nabu.process
 
-from dotmpe.du.comp import get_builder_class
+from dotmpe.du import comp
 import dotmpe.du.ext 
 from dotmpe.du.ext.parser import Inliner
 
@@ -49,7 +50,7 @@ def cli_process(sources, builder_name='mpe',description=''):
 
 def cli_render(sources, builder_name='mpe'):
     module_name = builder_name
-    Builder = get_builder_class(module_name, class_name='Builder')
+    Builder = comp.get_builder_class(module_name, class_name='Builder')
     builder = Builder()
     for source in sources:
         if source.startswith('-'):
@@ -64,16 +65,26 @@ def cli_render(sources, builder_name='mpe'):
         print document.transform_messages
 
 
-def cli_du_publisher(reader_name='mpe', writer_name='pseudoxml', description=''):
+def cli_du_publisher(reader_name='mpe', parser=None, parser_name='rst', writer_name='pseudoxml', description=''):
     """
-    Simple wrapper for docutils.core.publish_cmdline
+    Simple wrapper for ``docutils.core.publish_cmdline``.
     """
     description = ('')
 
-    parser = Parser(inliner=Inliner())
+    # FIXME: parser = Parser(inliner=Inliner())
+    reader_class = comp.get_reader_class(reader_name)
+    parser_class = None
+    if not parser:
+        parser_class = comp.get_parser_class(parser_name)
+        parser = parser_class()
+    writer_class = comp.get_writer_class(writer_name)
+
     publish_cmdline(
             parser=parser, 
+            parser_name=parser_name,
+            reader=reader_class(parser), 
             reader_name=reader_name, 
+            writer=writer_class(), 
             writer_name=writer_name, 
             description=description)
 
@@ -155,6 +166,7 @@ default_usage = '%prog [options] [<source> [<destination>]]'
 def main(argv=[], usage=default_usage, description=default_description):
 
     " Run the publisher. "
+# TODO: frontend.main, offer adapted version of ``docutils.core.publish_cmdline``.
 
     #option_parser = get_option_parser((), usage=usage,
     #        description=description)

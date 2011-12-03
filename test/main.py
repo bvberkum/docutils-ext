@@ -9,8 +9,11 @@ Ie.
 import os, re, unittest
 
 import init
-import rstwriter
+import util
 import rstwriter_util
+# to run unittest, use testmodule name for argument:
+import rstwriter
+import atlassianwriter
 import form
 
 
@@ -19,8 +22,6 @@ def main():
     """
     Run all tests.
     """
-   
-    rstwriter.create_tests(init.TEST_DOC)
 
     unittest.main()
 
@@ -28,5 +29,4 @@ def main():
 if __name__ == '__main__': 
     import sys
     main()
-
 

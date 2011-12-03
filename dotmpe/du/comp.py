@@ -1,65 +1,95 @@
 """
-Registry of component names, for lazy loading, caching.
+Registry of component names, for lazy loading, caching, and more flexible (and
+insecure) module import.
 """
 import logging
+import glob
+import os
+import sys
+
 import docutils
-#from dotmpe.du.ext.reader import mpe
-#from dotmpe.du.ext.writer import xhtml, html, htmlform
 
 
 logger = logging.getLogger(__name__)
 
-readers = {
-    'dotmpe': 'dotmpe.du.ext.reader.mpe',
-    #    'dotmpe-v5': mpe,
-}
+
+def load_module(module_path):
+
+    """
+    Import the module indicated by `module_path`.
+    """
+
+    p = module_path.rfind('.')+1
+    super_module = module_path[p:]
+    try:
+        module = __import__(module_path, fromlist=[super_module], level=0)
+        return module    
+    except ImportError, e:
+        logger.critical('Failed importing module %s from %s.  ',
+                super_module, module_path)
+        raise e
+
+
+def component_loader(component_type):
+    """
+    Create a `get_<component_type>_class` function for `component_type`.
+    """
+    component_type = component_type.lower()
+    component_group = component_type + 's'
+    ext_component_aliases = getattr(sys.modules[__name__], component_group)
+    ext_component_modules = getattr(sys.modules[__name__], '_'+component_group)
+    def get_component_class(component_alias, klass=component_type.title()):
+        "Import `klass` from the module registered with `%s_name`." % component_type
+        if component_alias not in ext_component_modules:
+            #print "Loading %s_name" % component_type, component_alias, klass
+            if component_alias in ext_component_aliases:
+                ext_component_module = ext_component_aliases[component_alias]
+                ext_component_modules[component_alias] = load_module(ext_component_module)
+            else:
+                assert klass == component_type.title(), \
+                        "Du `get_%s_class` can only load %s component classes named '%s'." \
+                                % (component_type, component_group, component_type.title())
+                du_component_loader = getattr(
+                        getattr(docutils, component_group), 
+                        "get_%s_class" % component_type)
+                return du_component_loader(component_alias)
+        return getattr(ext_component_modules[component_alias], klass)
+    return get_component_class
+
+
+readers = {}
+"Alias, module mapping. "
 _readers = {}
+"Class object cache. "
 
-def get_reader_class(reader_name, klass='Reader'):
-    if reader_name not in _readers:
-        reader_mod = reader_name
-        if reader_mod in readers:
-            reader_mod = readers[reader_mod]
-            _readers[reader_name] = load_module(reader_mod)
-        else:
-            assert klass == 'Reader'
-            return docutils.readers.get_reader_class(reader_name)
-    return getattr(_readers[reader_name], klass)
+get_reader_class = component_loader('Reader')
+
+#def get_reader_class(reader_name, klass='Reader'):
+#    if reader_name not in _readers:
+#        reader_mod = reader_name
+#        if reader_mod in readers:
+#            reader_mod = readers[reader_mod]
+#            _readers[reader_name] = load_module(reader_mod)
+#        else:
+#            assert klass == 'Reader'
+#            return docutils.readers.get_reader_class(reader_name)
+#    return getattr(_readers[reader_name], klass)
 
 
-parsers = {
-}
+parsers = {}
+"Alias, module mapping. "
 _parsers = {}
+"Class object cache. "
 
-def get_parser_class(parser_name, klass='Parser'):
-    if parser_name not in _parsers:
-        parser_mod = parser_name
-        if parser_mod in parsers:
-            parser_mod = parsers[parser_mod]
-            _parsers[parser_name] = load_module(parser_mod)
-        else:
-            assert klass == 'Parser'
-            return docutils.parsers.get_parser_class(parser_name)
-    return getattr(_parsers[parser_name], klass)
+get_parser_class = component_loader('Parser')
 
 
-writers = {
-    'xhtml': 'dotmpe.du.ext.writer.xhtml',
-    'dotmpe-html': 'dotmpe.du.ext.writer.html',
-    'htmlform': 'dotmpe.du.ext.writer.htmlform',
-}
+writers = {}
+"Alias, module mapping. "
 _writers = {}
+"Class object cache. "
 
-def get_writer_class(writer_name, klass='Writer'):
-    if writer_name not in _writers:
-        writer_mod = writer_name
-        if writer_mod in writers:
-            writer_mod = writers[writer_mod]
-            _writers[writer_name] = load_module(writer_mod)
-        else:
-            assert klass == 'Writer'
-            return docutils.writers.get_writer_class(writer_name)
-    return getattr(_writers[writer_name], klass)
+get_writer_class = component_loader('Writer')
 
                 
 
@@ -123,16 +153,41 @@ def get_extractor_pair(mod_name):
 
 ## Util
 
-def load_module(mod_name):
-    p = mod_name.rfind('.')+1
-    builder_name = mod_name[p:]
-    try:
-        module = __import__(mod_name, fromlist=[builder_name], level=0)
-        return module    
-    except ImportError, e:
-        logger.critical('Failed importing builder module %s from %s.  ',
-                builder_name, mod_name)
-        raise e
+def register_extension_components(ext_module_prefix, ext_tag, ext_type, ext_dir):
 
+    """
+    Helper function to register all submodules in `ext_module_prefix` (at
+    system directory `ext_dir`) as `ext_type` components. This type is either
+    'Reader', 'Writer' or 'Parser'. Each submodule's filename is used as the
+    alias, but only if the alias is not a known component of this `ext_type` to 
+    standard docutils. The extension is always aliased using `ext_tag` as a
+    suffix (separated by '-').
 
+    Ie., custom Writer component 'html' with `ext_tag` 'test' registers under alias 
+    'html-test', but not 'html' since it already exists. On the other hand 'rst'
+    aliases to both 'rst' and 'rst-test'.
+    """
+
+    if (os.path.isfile(ext_dir)):
+        ext_dir = os.path.dirname(ext_dir)
+
+    du_comp_mod = getattr(docutils, ext_type.lower()+'s')
+    du_comp_reg = getattr(du_comp_mod, "_%s_aliases" % ext_type.lower())
+    
+    du_ext_comp_reg = getattr(sys.modules[__name__], ext_type.lower()+'s')
+
+    ext_names = \
+        map(lambda x:x.split('.')[0],
+            map(
+                os.path.basename,
+                glob.glob(os.path.join(ext_dir, '[!_]*.py'))))
+
+    for ext_name in ext_names:
+        ext_module = ext_module_prefix + '.' + ext_name
+        tagged_name = ext_name +'-'+ ext_tag
+
+        # register name with ``dotmpe.du.comp``
+        if ext_name not in du_comp_reg:
+            du_ext_comp_reg[ext_name] = ext_module
+        du_ext_comp_reg[tagged_name] = ext_module
 

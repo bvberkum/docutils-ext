@@ -1,55 +1,417 @@
-F..F..FFFF.....FF......FF..E.FF.F..FFFF...........
+FF..F..FEFF.....FF....EEFE....FF.F..FFFF..EEE...E..
 ======================================================================
-ERROR: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+ERROR: Test13_Table2; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 240, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 159, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 66, in __test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 195, in __test_writer
     writer=writer)['whole']#writer_name='dotmpe-rst')
-  File "/Volumes/Pandora-2/project/docutils-ext.git/lib/docutils/core.py", line 433, in publish_parts
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/core.py", line 433, in publish_parts
     enable_exit_status=enable_exit_status)
-  File "/Volumes/Pandora-2/project/docutils-ext.git/lib/docutils/core.py", line 647, in publish_programmatically
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/core.py", line 647, in publish_programmatically
     output = pub.publish(enable_exit_status=enable_exit_status)
-  File "/Volumes/Pandora-2/project/docutils-ext.git/lib/docutils/core.py", line 211, in publish
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/core.py", line 211, in publish
     output = self.writer.write(self.document, self.destination)
-  File "/Volumes/Pandora-2/project/docutils-ext.git/lib/docutils/writers/__init__.py", line 77, in write
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/writers/__init__.py", line 77, in write
     self.translate()
-  File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/ext/writer/rst.py", line 37, in translate
+  File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/ext/writer/rst.py", line 40, in translate
     self.document.walkabout(visitor)
-  File "/Volumes/Pandora-2/project/docutils-ext.git/lib/docutils/nodes.py", line 173, in walkabout
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
     if child.walkabout(visitor):
-  File "/Volumes/Pandora-2/project/docutils-ext.git/lib/docutils/nodes.py", line 165, in walkabout
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 165, in walkabout
     visitor.dispatch_visit(self)
-  File "/Volumes/Pandora-2/project/docutils-ext.git/lib/docutils/nodes.py", line 1604, in dispatch_visit
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 1604, in dispatch_visit
     return method(node)
-  File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/ext/writer/rst.py", line 699, in visit_block_quote
-    self.visit_directive(node, name='epigraph')
-  File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/ext/writer/rst.py", line 1053, in visit_directive
-    if not self.block_level:
-  File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/ext/writer/rst.py", line 124, in block_level
-    return self.context.tree[-2].tagname in (
-IndexError: list index out of range
+  File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/ext/writer/rst.py", line 892, in visit_list_item
+    index = self.context.offset + self.context.previous('index')
+TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'
+
+======================================================================
+ERROR: Test1_Document3; Lossy doctree comparison; Writer 'rst-mpe'
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 240, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 159, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 195, in __test_writer
+    writer=writer)['whole']#writer_name='dotmpe-rst')
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/core.py", line 433, in publish_parts
+    enable_exit_status=enable_exit_status)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/core.py", line 647, in publish_programmatically
+    output = pub.publish(enable_exit_status=enable_exit_status)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/core.py", line 211, in publish
+    output = self.writer.write(self.document, self.destination)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/writers/__init__.py", line 77, in write
+    self.translate()
+  File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/ext/writer/rst.py", line 40, in translate
+    self.document.walkabout(visitor)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 165, in walkabout
+    visitor.dispatch_visit(self)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 1604, in dispatch_visit
+    return method(node)
+  File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/ext/writer/rst.py", line 892, in visit_list_item
+    index = self.context.offset + self.context.previous('index')
+TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'
+
+======================================================================
+ERROR: Test1_Document4; Lossy doctree comparison; Writer 'rst-mpe'
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 240, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 159, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 195, in __test_writer
+    writer=writer)['whole']#writer_name='dotmpe-rst')
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/core.py", line 433, in publish_parts
+    enable_exit_status=enable_exit_status)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/core.py", line 647, in publish_programmatically
+    output = pub.publish(enable_exit_status=enable_exit_status)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/core.py", line 211, in publish
+    output = self.writer.write(self.document, self.destination)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/writers/__init__.py", line 77, in write
+    self.translate()
+  File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/ext/writer/rst.py", line 40, in translate
+    self.document.walkabout(visitor)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 165, in walkabout
+    visitor.dispatch_visit(self)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 1604, in dispatch_visit
+    return method(node)
+  File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/ext/writer/rst.py", line 892, in visit_list_item
+    index = self.context.offset + self.context.previous('index')
+TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'
+
+======================================================================
+ERROR: Test1_Document7; Lossy doctree comparison; Writer 'rst-mpe'
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 240, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 159, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 195, in __test_writer
+    writer=writer)['whole']#writer_name='dotmpe-rst')
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/core.py", line 433, in publish_parts
+    enable_exit_status=enable_exit_status)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/core.py", line 647, in publish_programmatically
+    output = pub.publish(enable_exit_status=enable_exit_status)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/core.py", line 211, in publish
+    output = self.writer.write(self.document, self.destination)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/writers/__init__.py", line 77, in write
+    self.translate()
+  File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/ext/writer/rst.py", line 40, in translate
+    self.document.walkabout(visitor)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 165, in walkabout
+    visitor.dispatch_visit(self)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 1604, in dispatch_visit
+    return method(node)
+  File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/ext/writer/rst.py", line 892, in visit_list_item
+    index = self.context.offset + self.context.previous('index')
+TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'
+
+======================================================================
+ERROR: Test7_EnumeratedList1; Lossy doctree comparison; Writer 'rst-mpe'
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 240, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 159, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 195, in __test_writer
+    writer=writer)['whole']#writer_name='dotmpe-rst')
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/core.py", line 433, in publish_parts
+    enable_exit_status=enable_exit_status)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/core.py", line 647, in publish_programmatically
+    output = pub.publish(enable_exit_status=enable_exit_status)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/core.py", line 211, in publish
+    output = self.writer.write(self.document, self.destination)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/writers/__init__.py", line 77, in write
+    self.translate()
+  File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/ext/writer/rst.py", line 40, in translate
+    self.document.walkabout(visitor)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 165, in walkabout
+    visitor.dispatch_visit(self)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 1604, in dispatch_visit
+    return method(node)
+  File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/ext/writer/rst.py", line 892, in visit_list_item
+    index = self.context.offset + self.context.previous('index')
+TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'
+
+======================================================================
+ERROR: Test7_EnumeratedList2; Lossy doctree comparison; Writer 'rst-mpe'
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 240, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 159, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 195, in __test_writer
+    writer=writer)['whole']#writer_name='dotmpe-rst')
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/core.py", line 433, in publish_parts
+    enable_exit_status=enable_exit_status)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/core.py", line 647, in publish_programmatically
+    output = pub.publish(enable_exit_status=enable_exit_status)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/core.py", line 211, in publish
+    output = self.writer.write(self.document, self.destination)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/writers/__init__.py", line 77, in write
+    self.translate()
+  File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/ext/writer/rst.py", line 40, in translate
+    self.document.walkabout(visitor)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 165, in walkabout
+    visitor.dispatch_visit(self)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 1604, in dispatch_visit
+    return method(node)
+  File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/ext/writer/rst.py", line 892, in visit_list_item
+    index = self.context.offset + self.context.previous('index')
+TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'
+
+======================================================================
+ERROR: Test7_EnumeratedList3; Lossy doctree comparison; Writer 'rst-mpe'
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 240, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 159, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 195, in __test_writer
+    writer=writer)['whole']#writer_name='dotmpe-rst')
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/core.py", line 433, in publish_parts
+    enable_exit_status=enable_exit_status)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/core.py", line 647, in publish_programmatically
+    output = pub.publish(enable_exit_status=enable_exit_status)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/core.py", line 211, in publish
+    output = self.writer.write(self.document, self.destination)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/writers/__init__.py", line 77, in write
+    self.translate()
+  File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/ext/writer/rst.py", line 40, in translate
+    self.document.walkabout(visitor)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 165, in walkabout
+    visitor.dispatch_visit(self)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 1604, in dispatch_visit
+    return method(node)
+  File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/ext/writer/rst.py", line 892, in visit_list_item
+    index = self.context.offset + self.context.previous('index')
+TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'
+
+======================================================================
+ERROR: Test8_FieldList4; Lossy doctree comparison; Writer 'rst-mpe'
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 240, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 159, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 195, in __test_writer
+    writer=writer)['whole']#writer_name='dotmpe-rst')
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/core.py", line 433, in publish_parts
+    enable_exit_status=enable_exit_status)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/core.py", line 647, in publish_programmatically
+    output = pub.publish(enable_exit_status=enable_exit_status)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/core.py", line 211, in publish
+    output = self.writer.write(self.document, self.destination)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/writers/__init__.py", line 77, in write
+    self.translate()
+  File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/ext/writer/rst.py", line 40, in translate
+    self.document.walkabout(visitor)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 165, in walkabout
+    visitor.dispatch_visit(self)
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/nodes.py", line 1604, in dispatch_visit
+    return method(node)
+  File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/ext/writer/rst.py", line 892, in visit_list_item
+    index = self.context.offset + self.context.previous('index')
+TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'
+
+======================================================================
+FAIL: Test1_DocumentAtlassian; Lossy doctree comparison; Parser 'atlassian-mpe'
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 138, in runTest
+    self._test_parser(parser_class(), lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 56, in _test_parser
+    self.__test_parser(parser, lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 80, in __test_parser
+    warnings)
+AssertionError: Corrupt test source file: on </Volumes/Pandora-2/project/docutils-ext/var/test-1.document-atlassian.txt>
+<string>:132: (ERROR/3) Unexpected indentation.
+<string>:142: (ERROR/3) Unexpected indentation.
+<string>:200: (ERROR/3) Unexpected indentation.
+<string>:202: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+<string>:233: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
+<string>:237: (ERROR/3) Unexpected indentation.
+<string>:233: (WARNING/2) Inline emphasis start-string without end-string.
+<string>:233: (WARNING/2) Inline emphasis start-string without end-string.
+<string>:233: (WARNING/2) Inline emphasis start-string without end-string.
+<string>:243: (ERROR/3) Unexpected indentation.
+<string>:246: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+<string>:251: (ERROR/3) Unexpected indentation.
+<string>:254: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+<string>:388: (ERROR/3) Unexpected indentation.
+<string>:389: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+<string>:394: (ERROR/3) Unexpected indentation.
+<string>:395: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+<string>:397: (ERROR/3) Unexpected indentation.
+<string>:405: (ERROR/3) Unexpected indentation.
+<string>:406: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+<string>:411: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+<string>:491: (ERROR/3) Unexpected indentation.
+<string>:529: (ERROR/3) Unexpected indentation.
+<string>:533: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+<string>:542: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+<string>:554: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+<string>:643: (ERROR/3) Unexpected indentation.
+<string>:645: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+<string>:646: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+<string>:656: (ERROR/3) Unexpected indentation.
+<string>:658: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+<string>:659: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+<string>:664: (ERROR/3) Unexpected indentation.
+<string>:666: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+<string>:667: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+<string>:677: (ERROR/3) Unexpected indentation.
+<string>:679: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+<string>:680: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+<string>:690: (ERROR/3) Unexpected indentation.
+<string>:692: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+<string>:693: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+<string>:703: (ERROR/3) Unexpected indentation.
+<string>:705: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+<string>:706: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+<string>:716: (ERROR/3) Unexpected indentation.
+<string>:718: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+<string>:719: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+<string>:729: (ERROR/3) Unexpected indentation.
+<string>:731: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+<string>:732: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+<string>:742: (ERROR/3) Unexpected indentation.
+<string>:744: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+<string>:745: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+<string>:907: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+<string>:965: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+<string>:967: (ERROR/3) Unexpected indentation.
+<string>:969: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+<string>:972: (ERROR/3) Unexpected indentation.
+<string>:979: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+<string>:994: (ERROR/3) Unexpected indentation.
+<string>:996: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+<string>:998: (ERROR/3) Unexpected indentation.
+<string>:1000: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+<string>:1003: (ERROR/3) Unexpected indentation.
+<string>:1010: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+<string>:1034: (ERROR/3) Unexpected indentation.
+<string>:1044: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+<string>:1049: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+<string>:1059: (ERROR/3) Unexpected indentation.
+<string>:1062: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+<string>:1065: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+<string>:1068: (ERROR/3) Unexpected indentation.
+<string>:1092: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+<string>:1095: (ERROR/3) Unexpected indentation.
+<string>:1097: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+<string>:1106: (ERROR/3) Unexpected indentation.
+<string>:1109: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+<string>:1112: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+<string>:1115: (ERROR/3) Unexpected indentation.
+<string>:1199: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+<string>:1243: (ERROR/3) Unexpected indentation.
+<string>:1243: (WARNING/2) Inline emphasis start-string without end-string.
+<string>:1253: (ERROR/3) Unexpected indentation.
+<string>:1266: (ERROR/3) Unexpected indentation.
+<string>:1269: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+<string>:1308: (ERROR/3) Unexpected indentation.
+<string>:1325: (ERROR/3) Unexpected indentation.
+<string>:1325: (WARNING/2) Inline emphasis start-string without end-string.
+<string>:1336: (ERROR/3) Unexpected indentation.
+<string>:1339: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+<string>:1358: (ERROR/3) Unexpected indentation.
+<string>:1358: (WARNING/2) Inline emphasis start-string without end-string.
+<string>:1370: (ERROR/3) Unexpected indentation.
+<string>:1438: (ERROR/3) Unexpected indentation.
+<string>:1446: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+<string>:1661: (ERROR/3) Unexpected indentation.
+<string>:1663: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+<string>:1670: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+<string>:1686: (ERROR/3) Unexpected indentation.
+<string>:1689: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+<string>:1691: (ERROR/3) Unexpected indentation.
+<string>:1696: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+<string>:1724: (WARNING/2) Inline emphasis start-string without end-string.
+<string>:1724: (WARNING/2) Inline emphasis start-string without end-string.
+<string>:1724: (WARNING/2) Inline emphasis start-string without end-string.
+<string>:1724: (WARNING/2) Inline emphasis start-string without end-string.
+<string>:337: (ERROR/3) Undefined substitution referenced: "col A1|col A2|col A3".
+<string>:337: (ERROR/3) Undefined substitution referenced: "col B1|col B2|col B3".
+<string>:420: (ERROR/3) Undefined substitution referenced: "dataDisplay=true|dataOrientation=vertical} |".
+
 
 ======================================================================
 FAIL: test_1 (form.FormTest)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/form.py", line 163, in test_1
+  File "/Volumes/Pandora-2/project/docutils-ext/test/form.py", line 163, in test_1
     document = builder.build(source, source_id)
   File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/builder/__init__.py", line 83, in build
     overrides)
   File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/builder/__init__.py", line 231, in __publish
     overrides, config_section=None, enable_exit_status=False)
-  File "/Volumes/Pandora-2/project/docutils-ext.git/lib/docutils/core.py", line 647, in publish_programmatically
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/core.py", line 647, in publish_programmatically
     output = pub.publish(enable_exit_status=enable_exit_status)
-  File "/Volumes/Pandora-2/project/docutils-ext.git/lib/docutils/core.py", line 210, in publish
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/core.py", line 210, in publish
     self.apply_transforms()
-  File "/Volumes/Pandora-2/project/docutils-ext.git/lib/docutils/core.py", line 191, in apply_transforms
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/core.py", line 191, in apply_transforms
     self.document.transformer.apply_transforms()
-  File "/Volumes/Pandora-2/project/docutils-ext.git/lib/docutils/transforms/__init__.py", line 171, in apply_transforms
+  File "/Volumes/Pandora-2/project/docutils-ext/lib/docutils/transforms/__init__.py", line 171, in apply_transforms
     transform.apply(**kwargs)
   File "/Volumes/Pandora-2/project/conf-mpe.git/lib/py/dotmpe/du/ext/transform/form1.py", line 43, in apply
     fp.process_fields()
@@ -62,17 +424,17 @@ Traceback (most recent call last):
 AssertionError: Multiple fields not supported. 
 
 ======================================================================
-FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+FAIL: Test10_LiteralBlock3; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 240, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 159, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 222, in __test_writer
     diff )
 AssertionError: pxml tree mismatch 
- on </Volumes/Pandora-2/project/docutils-ext.git/var/test-10.literal-block-3.rst>
+ on </Volumes/Pandora-2/project/docutils-ext/var/test-10.literal-block-3.rst>
 
 ---  
 
@@ -95,17 +457,17 @@ AssertionError: pxml tree mismatch
          will be omitted from the result.
 
 ======================================================================
-FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+FAIL: Test13_Table; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 240, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 159, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 222, in __test_writer
     diff )
 AssertionError: pxml tree mismatch 
- on </Volumes/Pandora-2/project/docutils-ext.git/var/test-13.table.rst>
+ on </Volumes/Pandora-2/project/docutils-ext/var/test-13.table.rst>
 
 ---  
 
@@ -141,52 +503,31 @@ AssertionError: pxml tree mismatch
 -                        <paragraph>
 -                            AAB
 +    <paragraph>
-+        [XXX:table 0 0 u''][XXX:tgroup 0 0 u''][XXX:colspec 0 0 u''][XXX:colspec 0 0 u''][XXX:tbody 0 0 u''][XXX:row 0 0 u''][XXX:entry 0 0 u'']Simple[XXX:entry 1 6 u'']
++        [XXX:table 0 0 u'' []][XXX:tgroup 0 0 u'' []][XXX:colspec 0 0 u'' []][XXX:colspec 0 0 u'' []][XXX:tbody 0 0 u'' []][XXX:row 0 0 u'' []][XXX:entry 0 0 u'' []]Simple[XXX:entry 1 6 u'' []]
 +    <paragraph>
-+        Table[XXX:row 2 5 u''][XXX:entry 2 5 u'']
++        Table[XXX:row 2 5 u'' []][XXX:entry 2 5 u'' []]
 +    <paragraph>
-+        001[XXX:entry 3 3 u'']
++        001[XXX:entry 3 3 u'' []]
 +    <paragraph>
-+        AAA[XXX:row 4 3 u''][XXX:entry 4 3 u'']
++        AAA[XXX:row 4 3 u'' []][XXX:entry 4 3 u'' []]
 +    <paragraph>
-+        001[XXX:entry 5 3 u'']
++        001[XXX:entry 5 3 u'' []]
 +    <paragraph>
 +        AAB
  
 
 ======================================================================
-FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+FAIL: Test13_Table3; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 240, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 159, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
-    warnings)
-AssertionError: Error re-parsing generated file
- on </Volumes/Pandora-2/project/docutils-ext.git/var/test-13.table-2.rst>
-
-<string>:12: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
-<string>:15: (WARNING/2) Field list ends without a blank line; unexpected unindent.
-<string>:18: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
-<string>:21: (WARNING/2) Enumerated list ends without a blank line; unexpected unindent.
-<string>:25: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
-<string>:28: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
-
-
-======================================================================
-FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 222, in __test_writer
     diff )
 AssertionError: pxml tree mismatch 
- on </Volumes/Pandora-2/project/docutils-ext.git/var/test-13.table-3.rst>
+ on </Volumes/Pandora-2/project/docutils-ext/var/test-13.table-3.rst>
 
 ---  
 
@@ -260,69 +601,69 @@ AssertionError: pxml tree mismatch
 -                        <paragraph>
 -                            True
 +    <paragraph>
-+        [XXX:table 0 0 u''][XXX:tgroup 0 0 u''][XXX:colspec 0 0 u''][XXX:colspec 0 0 u''][XXX:colspec 0 0 u''][XXX:thead 0 0 u''][XXX:row 0 0 u''][XXX:entry 0 0 u'']Inputs[XXX:entry 1 6 u'']
++        [XXX:table 0 0 u'' []][XXX:tgroup 0 0 u'' []][XXX:colspec 0 0 u'' []][XXX:colspec 0 0 u'' []][XXX:colspec 0 0 u'' []][XXX:thead 0 0 u'' []][XXX:row 0 0 u'' []][XXX:entry 0 0 u'' []]Inputs[XXX:entry 1 6 u'' []]
 +    <paragraph>
-+        Output[XXX:row 2 6 u''][XXX:entry 2 6 u'']
++        Output[XXX:row 2 6 u'' []][XXX:entry 2 6 u'' []]
 +    <paragraph>
-+        A[XXX:entry 3 1 u'']
++        A[XXX:entry 3 1 u'' []]
 +    <paragraph>
-+        B[XXX:entry 4 1 u'']
++        B[XXX:entry 4 1 u'' []]
 +    <paragraph>
-+        A or B[XXX:tbody 5 6 u''][XXX:row 5 6 u''][XXX:entry 5 6 u'']
++        A or B[XXX:tbody 5 6 u'' []][XXX:row 5 6 u'' []][XXX:entry 5 6 u'' []]
 +    <paragraph>
-+        False[XXX:entry 6 5 u'']
++        False[XXX:entry 6 5 u'' []]
 +    <paragraph>
-+        False[XXX:entry 7 5 u'']
++        False[XXX:entry 7 5 u'' []]
 +    <paragraph>
-+        False[XXX:row 8 5 u''][XXX:entry 8 5 u'']
++        False[XXX:row 8 5 u'' []][XXX:entry 8 5 u'' []]
 +    <paragraph>
-+        True[XXX:entry 9 4 u'']
++        True[XXX:entry 9 4 u'' []]
 +    <paragraph>
-+        False[XXX:entry 10 5 u'']
++        False[XXX:entry 10 5 u'' []]
 +    <paragraph>
-+        True[XXX:row 11 4 u''][XXX:entry 11 4 u'']
++        True[XXX:row 11 4 u'' []][XXX:entry 11 4 u'' []]
 +    <paragraph>
-+        False[XXX:entry 12 5 u'']
++        False[XXX:entry 12 5 u'' []]
 +    <paragraph>
-+        True[XXX:entry 13 4 u'']
++        True[XXX:entry 13 4 u'' []]
 +    <paragraph>
-+        True[XXX:row 14 4 u''][XXX:entry 14 4 u'']
++        True[XXX:row 14 4 u'' []][XXX:entry 14 4 u'' []]
 +    <paragraph>
-+        True[XXX:entry 15 4 u'']
++        True[XXX:entry 15 4 u'' []]
 +    <paragraph>
-+        True[XXX:entry 16 4 u'']
++        True[XXX:entry 16 4 u'' []]
 +    <paragraph>
 +        True
  
 
 ======================================================================
-FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+FAIL: Test13_Table4; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 240, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 159, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 215, in __test_writer
     warnings)
 AssertionError: Error re-parsing generated file
- on </Volumes/Pandora-2/project/docutils-ext.git/var/test-13.table-4.rst>
+ on </Volumes/Pandora-2/project/docutils-ext/var/test-13.table-4.rst>
 
 <string>:25: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
 
 
 ======================================================================
-FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+FAIL: Test17_Tables1; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 240, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 159, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 222, in __test_writer
     diff )
 AssertionError: pxml tree mismatch 
- on </Volumes/Pandora-2/project/docutils-ext.git/var/test-17.tables-1.rst>
+ on </Volumes/Pandora-2/project/docutils-ext/var/test-17.tables-1.rst>
 
 ---  
 
@@ -351,119 +692,80 @@ AssertionError: pxml tree mismatch
 -                        <paragraph>
 -                            d4
 +    <paragraph>
-+        [XXX:table 0 0 u''][XXX:tgroup 0 0 u''][XXX:colspec 0 0 u''][XXX:colspec 0 0 u''][XXX:tbody 0 0 u''][XXX:row 0 0 u''][XXX:entry 0 0 u'']d1[XXX:entry 1 2 u'']
++        [XXX:table 0 0 u'' []][XXX:tgroup 0 0 u'' []][XXX:colspec 0 0 u'' []][XXX:colspec 0 0 u'' []][XXX:tbody 0 0 u'' []][XXX:row 0 0 u'' []][XXX:entry 0 0 u'' []]d1[XXX:entry 1 2 u'' []]
 +    <paragraph>
-+        d2[XXX:row 2 2 u''][XXX:entry 2 2 u'']
++        d2[XXX:row 2 2 u'' []][XXX:entry 2 2 u'' []]
 +    <paragraph>
-+        d3[XXX:entry 3 2 u'']
++        d3[XXX:entry 3 2 u'' []]
 +    <paragraph>
 +        d4
  
 
 ======================================================================
-FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+FAIL: Test17_Tables2; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 240, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 159, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 215, in __test_writer
     warnings)
 AssertionError: Error re-parsing generated file
- on </Volumes/Pandora-2/project/docutils-ext.git/var/test-17.tables-2.rst>
+ on </Volumes/Pandora-2/project/docutils-ext/var/test-17.tables-2.rst>
 
 <string>:2: (WARNING/2) Title underline too short.
 
-[XXX:table 0 0 u'']Caption/Summary
+[XXX:table 0 0 u'' []]Caption/Summary
 ===============
 
 
 ======================================================================
-FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+FAIL: Test1_Document6; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 240, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 159, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 215, in __test_writer
     warnings)
 AssertionError: Error re-parsing generated file
- on </Volumes/Pandora-2/project/docutils-ext.git/var/test-1.document-6.rst>
+ on </Volumes/Pandora-2/project/docutils-ext/var/test-1.document-6.rst>
 
 <string>:8: (WARNING/2) Bibliographic field "Authors" incompatible with extraction: it must contain either a single paragraph (with authors separated by one of ";,"), multiple paragraphs (one per author), or a bullet list with one paragraph (one author) per item.
 <string>:: (ERROR/3) Unknown target name: "goodger@python.org".
 
 
 ======================================================================
-FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+FAIL: Test22_Docinfo; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 240, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 159, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
- on </Volumes/Pandora-2/project/docutils-ext.git/var/test-1.document-7.rst>
-
----  
-
-+++  
-
-@@ -11,16 +11,16 @@
-
-                 The fanatics going straight forward and openly, the politicians by the surer mode of zigzag.
-         <attribution>
-             Burke.
--    <enumerated_list enumtype="arabic" prefix="" start="2" suffix=".">
-+    <enumerated_list enumtype="arabic" prefix="" suffix=".">
-         <list_item>
-             <paragraph>
-                 (Arch.) A molding running in a zigzag line; a chevron, or series of chevrons.
-         <list_item>
-             <paragraph>
-                 (Fort.) See Boyau. 
--                <footnote_reference auto="1" ids="id1" refid="id2">
-+                <footnote_reference ids="id1" refid="id2">
-                     1
--    <footnote auto="1" backrefs="id1" ids="id2" names="1">
-+    <footnote auto="1" ids="id2" names="1">
-         <label>
-             1
-         <paragraph>
-
-======================================================================
-FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 215, in __test_writer
     warnings)
 AssertionError: Error re-parsing generated file
- on </Volumes/Pandora-2/project/docutils-ext.git/var/test-22.docinfo.rst>
+ on </Volumes/Pandora-2/project/docutils-ext/var/test-22.docinfo.rst>
 
 <string>:8: (WARNING/2) Bibliographic field "Authors" incompatible with extraction: it must contain either a single paragraph (with authors separated by one of ";,"), multiple paragraphs (one per author), or a bullet list with one paragraph (one author) per item.
 <string>:: (ERROR/3) Unknown target name: "goodger@python.org".
 
 
 ======================================================================
-FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+FAIL: Test23_OptionList1; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 240, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 159, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 92, in __test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 222, in __test_writer
     diff )
 AssertionError: pxml tree mismatch 
- on </Volumes/Pandora-2/project/docutils-ext.git/var/test-23.option-list-1.rst>
+ on </Volumes/Pandora-2/project/docutils-ext/var/test-23.option-list-1.rst>
 
 ---  
 
@@ -605,12 +907,12 @@ AssertionError: pxml tree mismatch
          description.
 
 ======================================================================
-FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+FAIL: Test2_Title1; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 34, in _test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 240, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 161, in _test_writer
     self.fail(e)
 AssertionError: <string>:10: (SEVERE/4) Title level inconsistent:
 
@@ -618,74 +920,85 @@ Title
 ^^^^^
 
 ======================================================================
-FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+FAIL: Test5_Inline1; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 240, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 159, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 215, in __test_writer
     warnings)
 AssertionError: Error re-parsing generated file
- on </Volumes/Pandora-2/project/docutils-ext.git/var/test-5.inline-1.rst>
+ on </Volumes/Pandora-2/project/docutils-ext/var/test-5.inline-1.rst>
 
-<string>:8: (ERROR/3) Unexpected indentation.
+<string>:9: (ERROR/3) Indirect hyperlink target "reference" (id="reference") refers to target "target", which does not exist.
 
 
 ======================================================================
-FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+FAIL: Test5_Inline2; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 240, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 159, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 215, in __test_writer
     warnings)
 AssertionError: Error re-parsing generated file
- on </Volumes/Pandora-2/project/docutils-ext.git/var/test-5.inline-2.rst>
+ on </Volumes/Pandora-2/project/docutils-ext/var/test-5.inline-2.rst>
 
-<string>:13: (ERROR/3) Unexpected indentation.
-<string>:25: (WARNING/2) Inline literal start-string without end-string.
-<string>:31: (WARNING/2) Inline literal start-string without end-string.
-<string>:37: (ERROR/3) Anonymous hyperlink mismatch: 2 references but 0 targets.
+<string>:5: (WARNING/2) Explicit markup ends without a blank line; unexpected unindent.
+<string>:7: (WARNING/2) malformed hyperlink target.
+<string>:25: (WARNING/2) Explicit markup ends without a blank line; unexpected unindent.
+<string>:30: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
+<string>:31: (WARNING/2) Inline interpreted text or phrase reference start-string without end-string.
+<string>:33: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+<string>:33: (WARNING/2) Inline interpreted text or phrase reference start-string without end-string.
+<string>:35: (WARNING/2) malformed hyperlink target.
+<string>:37: (WARNING/2) malformed hyperlink target.
+<string>:: (ERROR/3) Anonymous hyperlink mismatch: 1 references but 0 targets.
 See "backrefs" attribute for IDs.
+<string>:5: (ERROR/3) Unknown target name: "anonymous inline reference".
 
 
 ======================================================================
-FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+FAIL: Test5_Inline3; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 240, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 159, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 215, in __test_writer
     warnings)
 AssertionError: Error re-parsing generated file
- on </Volumes/Pandora-2/project/docutils-ext.git/var/test-5.inline-3.rst>
+ on </Volumes/Pandora-2/project/docutils-ext/var/test-5.inline-3.rst>
 
-<string>:20: (ERROR/3) At least one body element must separate transitions; adjacent transitions are not allowed.
+<string>:9: (ERROR/3) Unknown interpreted text role "role".
+<string>:11: (ERROR/3) Unknown interpreted text role "role".
+<string>:13: (ERROR/3) Unknown interpreted text role "role".
 
 
 ======================================================================
-FAIL: Lossy doctree comparison for ``dotmpe.du.ext.rst.writer``
+FAIL: Test5_Inline4; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 107, in runTest
-    self._test_writer(Writer())
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 32, in _test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 240, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 159, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/Volumes/Pandora-2/project/docutils-ext.git/test/rstwriter.py", line 85, in __test_writer
+  File "/Volumes/Pandora-2/project/docutils-ext/test/util.py", line 215, in __test_writer
     warnings)
 AssertionError: Error re-parsing generated file
- on </Volumes/Pandora-2/project/docutils-ext.git/var/test-5.inline-4.rst>
+ on </Volumes/Pandora-2/project/docutils-ext/var/test-5.inline-4.rst>
 
 <string>:13: (WARNING/2) Explicit markup ends without a blank line; unexpected unindent.
-<string>:37: (WARNING/2) Inline target start-string without end-string.
-<string>:37: (WARNING/2) Inline interpreted text or phrase reference start-string without end-string.
-<string>:37: (ERROR/3) Undefined substitution referenced: "EXAMPLE".
+<string>:37: (ERROR/3) Content block expected for the "replace" directive; none found.
+<string>:37: (WARNING/2) Substitution definition "EXAMPLE" empty or invalid.
+
+.. |EXAMPLE| replace::
+
 <string>:3: (ERROR/3) Too many symbol footnote references: only 0 corresponding footnotes available.
 <string>:3: (ERROR/3) Unknown target name: "example".
 <string>:3: (ERROR/3) Unknown target name: "python web site".
@@ -696,6 +1009,6 @@ AssertionError: Error re-parsing generated file
 
 
 ----------------------------------------------------------------------
-Ran 50 tests in 1.792s
+Ran 51 tests in 1.870s
 
-FAILED (failures=17, errors=1)
+FAILED (failures=16, errors=8)

@@ -57,17 +57,17 @@ class Reader(readers.Reader):
             #tables.TableCaption,            # 210
             #
             references.Substitutions,       # 220
-            references.PropagateTargets,    # 260
+            #XXX:rstwriter dev:references.PropagateTargets,    # 260
             frontmatter.DocTitle,           # 320
             frontmatter.SectionSubTitle,    # 340
             frontmatter.DocInfo,            # 340
-            references.AnonymousHyperlinks, # 440
-            references.IndirectHyperlinks,  # 460
+            #XXX:rstwriter dev:references.AnonymousHyperlinks, # 440
+            #XXX:rstwriter dev:references.IndirectHyperlinks,  # 460
             debug.Settings,                 # 500
             debug.Options,                  # 500
             references.Footnotes,           # 620
-            references.ExternalTargets,     # 640
-            references.InternalTargets,     # 660
+            #XXX:rstwriter dev:references.ExternalTargets,     # 640
+            #XXX:rstwriter dev:references.InternalTargets,     # 660
             universal.StripComments,        # 740
             universal.ExposeInternals,      # 840
 # Replaced by some generate.* transforms
@@ -75,7 +75,7 @@ class Reader(readers.Reader):
             misc.Transitions,               # 830
             references.DanglingReferences,  # 850
             clean.StripSubstitutionDefs,    # 900
-            clean.StripAnonymousTargets,    # 900
+            #XXX:rstwriter dev:clean.StripAnonymousTargets,    # 900
         ]
 
 

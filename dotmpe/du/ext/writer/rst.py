@@ -67,7 +67,7 @@ class RstPreTranslator(RstTranslatorCommon):
         ref_id = self._attr(node, 'refid')
         if ref_id:
             self.id_references[ref_id] = node
-        print node['names'], locals()
+        #print node['names'], locals()
 
     def unknown_visit(self, node): pass
     def unknown_departure(self, node): pass
@@ -158,6 +158,8 @@ class RstTranslator(RstTranslatorCommon):
         if self.force_block_level:
             return True
         if self.context.index:
+            return False
+        if len(self.context.tree) < 2:
             return False
         return self.context.tree[-2].tagname in (
                 'document', 
@@ -470,7 +472,11 @@ class RstTranslator(RstTranslatorCommon):
             # First next classname is role-name; best we can do
             if classes:
                 name = classes.pop(0)
-        print 'role', name, inherit, classes
+            # XXX: use first super-role, after name is retrieved
+            if len(inherit) > 1:
+                classes.extend(inherit[1:])
+            inherit = inherit[:1]
+        #print 'role', name, inherit, classes
         role = self.add_role(name, " ".join(inherit), {'class': classes})
         self._write_indented(':%s:`' % role)
     def depart_inline(self, node):
@@ -883,9 +889,9 @@ class RstTranslator(RstTranslatorCommon):
             self._write_indented(bullet_instance)
             lil = len(bullet_instance)
         elif self.in_tag('enumerated_list', 1):
+            index = self.context.offset + self.context.previous('index')
             enum_instance = u'%s. ' % \
-                    self.enumeration_symbol[self.context.enumtype]\
-                                                   (self.context.previous('index'))
+                    self.enumeration_symbol[self.context.enumtype](index)
             self._write_indented(enum_instance)
             lil = len(enum_instance)
         else:
@@ -1218,90 +1224,21 @@ def classname(obj):
 
 ## Main/test
 
-def print_compare(doc, width=79):
-    import docutils.core
-
-    out = []
-    out += [ (' ' + doc).rjust(width, '=')]
-    rst = open(doc).read().decode('utf-8')
-    assert isinstance(rst, unicode)
-
-    original_tree = docutils.core.publish_parts(
-            source=rst, 
-            writer_name='pseudoxml')['whole']#writer_name='dotmpe-rst')
-    assert isinstance(original_tree, unicode)
-    result = docutils.core.publish_parts(
-            source=rst, 
-            writer=Writer())['whole']#writer_name='dotmpe-rst')
-    assert isinstance(result, unicode)
-    try:
-        generated_tree = docutils.core.publish_parts(
-                source=result,
-                writer_name='pseudoxml')['whole']
-    except Exception, e:
-        generated_tree = u''
-    assert isinstance(generated_tree, unicode)
-
-    if width >= 79*2+1:
-
-        original_out = original_tree.strip().split('\n')
-        generated_out = generated_tree.strip().split('\n')
-        out += [ (u'Original Tree ').ljust(79, '-') +u' '+ (u'Generated Tree ').ljust(79, '-') ] 
-        while original_out or generated_out:
-            p1 = u''
-            p2 = u''
-            if original_out:
-                p1 = original_out.pop(0)
-            if generated_out:
-                p2 = generated_out.pop(0)
-            out += [ p1.ljust(79) +u' '+ p2.ljust(79) ]
-        out += [u''] 
-
-        # print side-by-side view
-        original_out = rst.strip().split('\n')
-        generated_out = result.strip().split('\n')
-        out += [ (u'Original ').ljust(79, '-') +u' '+ (u'rST rewriter ').ljust(79, '-') ] 
-        while original_out or generated_out:
-            p1 = u''
-            p2 = u''
-            if original_out:
-                p1 = original_out.pop(0)
-            if generated_out:
-                p2 = generated_out.pop(0)
-            # TODO: wrap lines
-            #if len(p1) > 79 or len(p2) > 79:
-            out += [ p1.ljust(79) +u' '+ p2.ljust(79) ]
-        out += [u''] 
-
-    else:
-
-        out += [ ('Original ').ljust(width, '-') ]
-        out += [ rst.strip(), u'']
-
-        out += [ ('Generated ').ljust(width, '-') ] 
-        out += [ result.strip(), u'' ]
-
-    out += [ ('Result ').ljust(width, '-')]
-    listwidth = int(width * 0.25)
-    out += [ 'File:'.rjust(listwidth, ' ') +' '+ doc ]
-    if generated_tree == original_tree:
-        out += [ 'Doctree Comparison:'.rjust(listwidth, ' ') +" PXML match" ]
-        out += [ 'Source Comparison:'.rjust(listwidth, ' ') +' '+ \
-                ((rst == result) and "Lossless" or "Lossy")]
-    else:
-        out += [ 'Doctree Comparison:'.rjust(listwidth, ' ') +" Error: PXML mismatch" ]
-    out += [u'']
-
-    print u"\n".join(out)
-
-
 if __name__ == '__main__':
     import os, sys, glob
+
+    import curses;v=curses.initscr();x=v.getmaxyx();curses.endwin();
+    max_width = x[1]
+
+    print " Test run".rjust(max_width, '_')
+
+    sys.path.insert(0, 'test')
+    util = __import__('util')
 
     if sys.argv[1:]:
         for doc in sys.argv[1:]:
             assert os.path.exists(doc) and doc.endswith('.rst'), doc
-            print_compare(doc, width=159)
+            util.print_compare_writer(doc, writer_class=Writer, max_width=max_width)
     else:
 
         p = os.path.realpath(__file__)
@@ -1313,8 +1250,8 @@ if __name__ == '__main__':
 #            'var/test-10.literal-block-1.rst',
 #            'var/test-1.document-6.rst',
 #            'var/test-1.document-7.rst',
-#            'var/test-5.inline-1.rst',
-            'var/test-5.inline-2.rst',
+            'var/test-5.inline-1.rst',
+#            'var/test-5.inline-2.rst',
 #            'var/test-5.inline-3.rst',
 #            'var/test-5.inline-4.rst',
 #            'var/test-22.docinfo.rst',
@@ -1326,5 +1263,5 @@ if __name__ == '__main__':
         TEST_DOC.sort()
 
         for doc in TEST_DOC:
-            print_compare(doc, width=159)
+            util.print_compare_writer(doc, writer_class=Writer, max_width=max_width)
 

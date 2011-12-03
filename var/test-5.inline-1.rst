@@ -1,3 +1,5 @@
+.. role:: my-role(strong)
+
 `inline1`
 *inline2*
 **inline3**
@@ -7,6 +9,4 @@ _`target`
 reference_
 
 .. _reference: target_
-
-.. role:: my-role(strong)
 
