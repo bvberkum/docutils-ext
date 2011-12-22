@@ -12,9 +12,13 @@ import init
 import util
 import rstwriter_util
 # to run unittest, use testmodule name for argument:
-import rstwriter
-import atlassianwriter
-import form
+import sys
+test_modules = filter(lambda x:not x.startswith('#'),
+        filter(len,
+            map(lambda x:x.strip(),
+                open('test/main.list').readlines())))
+for name in test_modules:
+    setattr(sys.modules[__name__], name, __import__(name, locals(), globals()))
 
 
 def main():

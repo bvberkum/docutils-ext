@@ -1,18 +1,19 @@
 import sys
 
-import dotmpe.du.ext.writer
+import dotmpe.du.ext.parser
 
 import init
-from util import mkclassname, new_writer_testcase
+from util import mkclassname, new_parser_testcase
 
 
 def create_tests(files):
 
-    for acw_file in files:
+    for acw_file, pxml_file in files:
         testcase_name = mkclassname(acw_file)
 
         # Lossy
-        TestCase = new_writer_testcase('atlassian-mpe', testcase_name, acw_file, True)
+        TestCase = new_parser_testcase('atlassian-mpe', testcase_name, acw_file,
+                pxml_file, True)
         TestCase.__module__ = __name__
         setattr(sys.modules[__name__], testcase_name, TestCase)
   

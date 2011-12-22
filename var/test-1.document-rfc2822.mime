@@ -1,8 +1,10 @@
+Subject: subject
+Title: title
+Author: me
 From: envelope...
-
 Header: This is an RFC 2822 formatted document with embedded reStructuredText.
-
-X-Header: 1. Headers are treated as `rST` blocks. 
+X-Header: 
+  1. Headers are treated as `rST` blocks. 
   2. This means not `every` RFC 2822 
      message is a *valid document*.
 

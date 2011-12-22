@@ -1,4 +1,3 @@
-
 """
 Test utils for re-writer, intended to be the reverse of the given parser.
 """
@@ -58,74 +57,46 @@ class AbstractParserTestCase(object):
             self.fail(e)
 
     def __test_parser(self, parser, lossy=True):
-        doc = open(self.DOC_FILE).read()
+        doc = open(self.DOC_FILE).read().decode('utf-8')
+        assert isinstance(doc, unicode)
+
+        expected_pxml = open(self.DOC_PXML_FILE).read().decode('utf-8')
 
         if self.VERBOSE:
             print self.DOC_FILE.ljust(width,'=')
 
-        #self.assertNotEqual(doc.strip(), '', "Empty test file. "+
-        #            ("on <%s>" % self.DOC_FILE ))
-
-        # Generate pseudoxml from source
-        warnings = StringIO()
-        original_tree = docutils.core.publish_parts(
-                source=doc,
-                #reader_name=self.TAG,
-                settings_overrides={'warning_stream':warnings},
-                writer_name='pseudoxml')['whole']
-        warnings = warnings.getvalue()
-        if warnings and self.DOC_FILE not in self.corrupt_sources:
-            self.assertFalse(warnings.strip(), "Corrupt test source file: "+
-                    ("on <%s>" % self.DOC_FILE )+"\n"+
-                    warnings)
-            return
-
-        if self.VERBOSE:
-            print " Original".ljust(width,'-')
-            print original_tree
-
-        # Publish the source file to rST, ie. regenerate the rST file
-        warnings = StringIO()
-        result = docutils.core.publish_parts(
-                source=doc, 
-                reader_name=reader_name,
-                settings_overrides={'warning_stream':warnings},
-                parser=parser)['whole']#parser_name='dotmpe-doc')
-        if not lossy:
-            self.assertEqual( result, doc, 
-                    ("on <%s>" % self.DOC_FILE )+"\n"+
-                    doc+'\n'+(''.rjust(width,'='))+'\n'+result )
-
-        self.assertNotEqual(result.strip(), '', "Empty generated file. "+
+        self.assertNotEqual(doc.strip(), u'', "Empty test file. "+
                     ("on <%s>" % self.DOC_FILE ))
 
-        ## Compare parse trees, generate pseudoxml representation
+        ## Compare parse trees, using pprint/pseudoxml representation
         warnings = StringIO()
         generated_tree = docutils.core.publish_parts(
-                source=result,
-                reader_name=reader_name,
-                settings_overrides={'warning_stream':warnings},
-                parser_name='pseudoxml')['whole']
+                source=doc,
+                parser=parser,
+                settings_overrides={
+                    'warning_stream': warnings,
+                    #'input_encoding': 'unicode',
+                    #'output_encoding': 'unicode',
+                    #'error_encoding': 'unicode',
+                    #'error_encoding_error_handler': 'replace',
+                    #'warnings': 'test.log',
+                },
+                writer_name='pprint')['whole']
         warnings = warnings.getvalue()
         if warnings:
-            self.assertFalse(warnings.strip(), "Error re-parsing generated file\n "+
+            self.assertFalse(warnings.strip(), 
+                    "Error parsing test document\n "+
                     ("on <%s>" % self.DOC_FILE )+"\n\n"+
                     warnings)
 
-        diff = "\n".join(list(unified_diff(original_tree.split('\n'), generated_tree.split('\n'))))
-
+        # print unified diff for PXML mismatch
+        diff = "\n".join(list(unified_diff(expected_pxml.split('\n'), generated_tree.split('\n'))))
         self.assertEqual( original_tree, generated_tree, 
                     "pxml tree mismatch \n "+
                     ("on <%s>" % self.DOC_FILE )+"\n\n"+
                     diff )
-#                    original_tree+'\n'+(''.rjust(width,'='))+'\n'+generated_tree )
 
-        if self.VERBOSE:
-            print " Generated".ljust(width,'-')
-            print generated_tree
-            print
-
-def new_parser_testcase(tag, testcase_name, doc_file, lossy=False):
+def new_parser_testcase(tag, testcase_name, doc_file, pxml_file, lossy=False):
     lossy_str = 'Lossy'
     if not lossy:
         lossy_str = 'Lossless'
@@ -133,6 +104,7 @@ def new_parser_testcase(tag, testcase_name, doc_file, lossy=False):
     parser_class = dotmpe.du.comp.get_parser_class(tag)
     class TestCase(unittest.TestCase, AbstractParserTestCase):
         DOC_FILE = doc_file 
+        DOC_PXML_FILE = pxml_file
         TAG = tag
         def runTest(self):
             self._test_parser(parser_class(), lossy=lossy)
@@ -161,7 +133,7 @@ class AbstractWriterTestCase(object):
             self.fail(e)
 
     def __test_writer(self, writer, lossy=True):
-        rst = open(self.DOC_FILE).read()
+        rst = open(self.DOC_FILE).read().decode('utf-8')
         if self.VERBOSE:
             print self.DOC_FILE.ljust(79,'=')
 
@@ -173,7 +145,10 @@ class AbstractWriterTestCase(object):
         original_tree = docutils.core.publish_parts(
                 source=rst, 
                 #reader_name=self.TAG,
-                settings_overrides={'warning_stream':warnings},
+                settings_overrides={
+                    'warning_stream': warnings,
+                    'input_encoding': 'unicode',
+                },
                 writer_name='pseudoxml')['whole']#writer_name='dotmpe-rst')
         warnings = warnings.getvalue()
         if warnings and self.DOC_FILE not in self.corrupt_sources:
@@ -191,7 +166,10 @@ class AbstractWriterTestCase(object):
         result = docutils.core.publish_parts(
                 source=rst, 
                 #reader_name=reader_name,
-                settings_overrides={'warning_stream':warnings},
+                settings_overrides={
+                    'warning_stream': warnings,
+                    'input_encoding': 'unicode',
+                },
                 writer=writer)['whole']#writer_name='dotmpe-rst')
         if not lossy:
             self.assertEqual( result, rst, 
@@ -206,7 +184,10 @@ class AbstractWriterTestCase(object):
         generated_tree = docutils.core.publish_parts(
                 source=result,
                 #reader_name=reader_name,
-                settings_overrides={'warning_stream':warnings},
+                settings_overrides={
+                    'warning_stream': warnings,
+                    'input_encoding': 'unicode',
+                },
                 writer_name='pseudoxml')['whole']
         warnings = warnings.getvalue()
         if warnings:

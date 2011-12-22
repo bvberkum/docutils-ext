@@ -23,10 +23,12 @@ sys.path.insert(0, os.path.join(PROJ_LIB, 'docutils-branches',
 # XXX: access extension module directly
 LOSSLESS_WRITER = __import__('rst') 
 
-ACW_DOC = filter(os.path.getsize,
+ACW_DOC_FILES = filter(os.path.getsize,
         glob.glob(os.path.join(PROJ_ROOT, 'var', 'test-*-atlassian.txt'))
     )
-"Atlassian Confluence Wiki"
+ACW_DOC = [ (doc_file, doc_file.replace(".txt", ".pxml")) 
+        for doc_file in ACW_DOC_FILES]
+"Atlassian Confluence Wiki documents and expected PXML. "
 
 WIKI_DOC = filter(os.path.getsize,
         glob.glob(os.path.join(PROJ_ROOT, 'var', 'test-*-wiki.txt'))

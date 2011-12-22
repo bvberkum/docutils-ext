@@ -49,7 +49,8 @@ CLN 				+= \
 #	@-find ./ -iname "*.pyc" | while read c; do rm "$$c"; done;
 
 test::
-	@-python test/main.py atlassianwriter form rstwriter 2> test.log
+	@-test_mods=$$(cat test/main.list|grep -v '^#'|grep -v '^$$');\
+		python test/main.py $$test_mods 2> test.log
 	@if [ -n "$$(tail -1 test.log|grep OK)" ]; then \
 	    $(ll) Success "$@" "see" test.log; \
     else \

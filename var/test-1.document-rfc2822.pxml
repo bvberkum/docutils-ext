@@ -1,0 +1,54 @@
+<document source="var/test-1.document-1.mime">
+    <docinfo>
+        <field>
+            <field_name>
+                Subject
+            <field_body>
+                <paragraph>
+                    subject
+        <field>
+            <field_name>
+                Title
+            <field_body>
+                <paragraph>
+                    title
+        <author>
+            me
+        <field>
+            <field_name>
+                From
+            <field_body>
+                <paragraph>
+                    envelope...
+        <field>
+            <field_name>
+                Header
+            <field_body>
+                <paragraph>
+                    This is an RFC 2822 formatted document with embedded reStructuredText.
+        <field>
+            <field_name>
+                X-Header
+            <field_body>
+                <enumerated_list enumtype="arabic" prefix="" suffix=".">
+                    <list_item>
+                        <paragraph>
+                            Headers are treated as 
+                            <title_reference>
+                                rST
+                             blocks.
+                    <list_item>
+                        <paragraph>
+                            This means not 
+                            <title_reference>
+                                every
+                             RFC 2822
+                            message is a 
+                            <emphasis>
+                                valid document
+                            .
+    <section ids="test-document" names="test\ document">
+        <title>
+            Test Document
+        <paragraph>
+            Some paragraph.
