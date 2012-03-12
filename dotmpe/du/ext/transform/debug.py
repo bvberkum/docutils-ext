@@ -64,6 +64,10 @@ class Options(transforms.Transform):
         self.__expose_options(buildername)
 
     def __expose_options(self, buildername):
+        """
+        Add a section to the document containing an optiongroup with options
+        provided by the builder/reader/parser combo.
+        """
         p = buildername.rfind('.')
         assert p>-1, "Illegal build-line: %s" % buildername
         package_name, class_name = buildername[:p], buildername[p+1:]
