@@ -3,10 +3,6 @@ Docutils extensions
 :author: Berend (dotmpe)
 
 My collection of extensions for Python docutils.
-May need latest docutils from SVN.
-
-For some automated tasks on this project package use ``make [help|..]``.
-There is no setup script yet.
 
 Current focus is on finishing an rST writer component to make it possible to
 rewrite any doctree to reStructuredText format and do all kinds of new stuff
@@ -21,6 +17,8 @@ follows.
 Utilities
 ---------
 - tools/build.py can be symlinked to any publisher wanted, ie. rst2latex, etc.  
+
+  This is the main entry point. 
 
 Development targets
 --------------------
@@ -68,6 +66,13 @@ as argument, and will print some lossy and lossless testing results.
 
 Currently only lossy rST writing is tested by 'make test'.
 rST writer testcases are generated for all files matching 'var/test-*.rst'.
+
+Getting Started
+---------------
+May need latest docutils from SVN.
+
+For some automated tasks on this project package use ``make [help|..]``.
+There is no setup script yet.
 
 Log
 -----
