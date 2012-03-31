@@ -42,13 +42,15 @@ class Writer(writers.Writer):
         self.output = visitor.astext()
 
 
-class RstTranslatorCommon(nodes.NodeVisitor):
+class AbstractTranslator(nodes.NodeVisitor):
     def _attr(self, node, name):
+        """
+        Helper function. Return attribute from dict if set.
+        """
         if name in node and node[name]:
             return node[name]
 
-
-class RstPreTranslator(RstTranslatorCommon):
+class RstPreTranslator(AbstractTranslator):
 
     """
     """
@@ -76,7 +78,7 @@ class RstPreTranslator(RstTranslatorCommon):
 INDENT = u'  '
 section_adornments = ['=', '-', '~', '^', '+', "\"", "'", "_"]
 
-class RstTranslator(RstTranslatorCommon):
+class RstTranslator(AbstractTranslator):
 
     """
     Visit docutils tree and serialize to rSt.
@@ -889,7 +891,8 @@ class RstTranslator(RstTranslatorCommon):
             self._write_indented(bullet_instance)
             lil = len(bullet_instance)
         elif self.in_tag('enumerated_list', 1):
-            index = self.context.offset + self.context.previous('index')
+            prev_index = self.context.previous('index') or 0
+            index = self.context.offset or 0 + prev_index
             enum_instance = u'%s. ' % \
                     self.enumeration_symbol[self.context.enumtype](index)
             self._write_indented(enum_instance)
@@ -1215,6 +1218,30 @@ class ContextStack(object):
 
     def __repr__(self):
         return repr(self._stack)
+
+class RstPreTranslator(AbstractTranslator):
+    """
+    Pre-pass document visitor. Accumulates indices.
+    """
+    pass
+
+class RstDocumentTranslator(AbstractTranslator):
+    """
+    Main document visitor. This defers to the other subtranslators.
+    """
+    pass
+
+class RstSectionTranslator(AbstractTranslator):
+    """
+    Subtranslaters for sections. Sections may contain subsections.
+    """
+    pass
+
+class RstTableTranslator(AbstractTranslator):
+    """
+    Tables may contain anything a section can but not subsections.
+    """
+    pass
 
 
 def classname(obj):

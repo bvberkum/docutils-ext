@@ -1,11 +1,12 @@
 """
 Extensions for docutils reStructuredText.
 
-Upon import registers:
+Upon import, this module registers:
 
 - Margin directive with rSt parser.
-- Updated inlcude directive for use with dotmpe.du.builder
-- Register additional writers
+- If 'mwlib' is available the 'mediawiki' directive for rST.
+- Updated include directive, for use with dotmpe.du.builder
+- Register additional writers for use with dotmpe.du.builder
 
 TODO:
 - 'dotmpe-htdocs' writer alias for XHTML output with margin support.
@@ -38,9 +39,18 @@ docutils.parsers.rst.directives.register_directive('margin', Margin)
 from dotmpe.du.ext.parser.rst.directive.images import Figure
 # FIXME: ugly.. need to dream up new directive names..
 del docutils.parsers.rst.directives._directive_registry['figure']
+# FIXME: i18n
 docutils.parsers.rst.directives.register_directive('figuur', Figure)
 docutils.parsers.rst.directives.register_directive('figure', Figure)
 
+
+try:
+    import mwlib
+
+    from dotmpe.du.ext.parser.rst.directive.mediawiki import MediaWiki
+    docutils.parsers.rst.directives.register_directive('mediawiki', MediaWiki)
+except ImportError, e:
+    pass
 
 #from pub import Publisher
 "XXX: see blue-lines.appspot.com"
