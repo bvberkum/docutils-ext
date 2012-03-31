@@ -50,9 +50,11 @@ class AbstractTranslator(nodes.NodeVisitor):
         if name in node and node[name]:
             return node[name]
 
+
 class RstPreTranslator(AbstractTranslator):
 
     """
+    Pre-pass document visitor. Accumulates indices.
     """
 
     def __init__(self, document):
@@ -126,8 +128,10 @@ class RstTranslator(AbstractTranslator):
 
     def __init__(self, document, pretranslator):
         nodes.NodeVisitor.__init__(self, document)
+        # fetch indices from RstPreTranslator
         for attr in 'id_references', 'uri_references', 'anonymous_references':
             setattr(self, attr, getattr(pretranslator, attr))
+
         self.settings = settings = document.settings
         self.force_block_level = False
         """Prevent blank line insert, allows override by previous sibling. """
@@ -1218,12 +1222,6 @@ class ContextStack(object):
 
     def __repr__(self):
         return repr(self._stack)
-
-class RstPreTranslator(AbstractTranslator):
-    """
-    Pre-pass document visitor. Accumulates indices.
-    """
-    pass
 
 class RstDocumentTranslator(AbstractTranslator):
     """
