@@ -59,6 +59,12 @@ Devel
      a perhaps lossy representation? 
      Attributes of Du's DOM (``docutiles.nodes``) maybe hidden.
 
+Branches
+  - master, all development happened here until dev was branched.
+  - dev, all development now here.
+  - dev_rstwriterobjects, separate development branch for rstwriter
+    restructuring.  
+
 rST writer
 ----------
 An experimental writer. The module can be invoked as script using a rST filename
