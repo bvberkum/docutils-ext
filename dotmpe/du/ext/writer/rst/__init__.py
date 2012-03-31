@@ -10,6 +10,7 @@ import roman
 
 from docutils import nodes, writers
 
+from rstobjects import *
 
 
 __docformat__ = 'reStructuredText'
@@ -143,6 +144,7 @@ class RstTranslator(AbstractTranslator):
         #self.docinfo = {}
         self.body = []
         #self.targets = {}
+        # old stack
         self.context = ContextStack(defaults={
                 'tree': [],
                 'bullet': u'',
@@ -155,12 +157,18 @@ class RstTranslator(AbstractTranslator):
                 'block': None,
                 'offset': None,
             })
+        # new stack
+        self.stack = ContextStack(defaults=dict(
+                objects=[]
+            ))
 
     def sub_tree(self, node):
+        "Util"
         self.context.append('tree', node)
 
     @property
     def block_level(self):
+        "Util"
         if self.force_block_level:
             return True
         if self.context.index:
@@ -176,6 +184,7 @@ class RstTranslator(AbstractTranslator):
                 'field_body')
 
     def pop_tree(self):
+        "Util"
         if self.context.tree[-1].tagname in ('title', 'label'):
             self.force_block_level = True
         elif self.force_block_level:
@@ -184,15 +193,33 @@ class RstTranslator(AbstractTranslator):
 
     @property
     def current_path(self):
+        "Util"
         return "/".join([n.tagname for n in self.context.tree])
 
     @property
     def current_node(self):
+        "Util"
         return self.context.tree[-1]
 
     def in_tag(self, other_name=None, sup=0):
+        """
+        Util, traverse tree stack upward to find wether current node is
+        enclosed by tag 'other_name'. This method has several modes:
+
+        - sup may be '*' to find the first parent node matching 'other_name'.
+        - sup may be a number to check wether the tag of exactly the n-th 
+          parent matches 'other_name'
+        - sup by default is 0 and so checks wether the current node matches
+          'other_name'. 
+        - If other_name is None, it will return the tag name. sup must be a
+          number.
+        """
         node = self.current_node
         tagname = node.tagname
+        if sup == '*':
+            assert other_name
+        else:
+            assert isinstance(sup, int)
         while sup and node.parent:
             if sup == '*':
                 if other_name and (tagname == other_name):
@@ -209,10 +236,12 @@ class RstTranslator(AbstractTranslator):
 
     @property
     def root(self):
+        "Util"
         return not self.current_node.parent
 
     @property
     def previous_sibling(self):
+        "Util"
         assert self.context.index > 0
         #prev_idx = self.context.previous('index')
         node = self.current_node
@@ -369,14 +398,28 @@ class RstTranslator(AbstractTranslator):
     def _pass_visit(self, node):
         "No-op to prevent catch-all handlers. "
 
+
+    # New stack methods
+    def push(self, duobj):
+        self.stack.objects = duobj
+        self.context.index = 0
+
+    def pop(self):
+        duobj = self.stack.objects
+        del self.context.index
+        del self.stack.objects
+        return duobj
+
     # NodeVisitor hooks
 
     def visit_document(self, node):
+        self.push(RstDocument(node))
         self.sub_tree(node)
         self.context.index = 0
 
     def depart_document(self, node):
         # finalize
+        # FIXME: role declarations should precede usage!
         for name, inherit, opts in self.roles:
             self._write_role(name, inherit, opts)
 
@@ -398,6 +441,7 @@ class RstTranslator(AbstractTranslator):
         pass
 
     def visit_title(self, node):
+        self.push(RstTitle(node))
         self.sub_tree(node)
         self.increment_index()
         previous_tree = self.context.previous('tree')
