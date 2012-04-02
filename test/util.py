@@ -227,6 +227,7 @@ def new_writer_testcase(tag, testcase_name, doc_file, lossy=False):
 
 
 def mkclassname(filename):
+    assert isinstance(filename, basestring), filename
     name = os.path.splitext(os.path.basename(filename))[0].replace('.','_')
     name = name.replace('-', ' ').title().replace(' ','').replace('+','_')
     if name[0].isdigit():

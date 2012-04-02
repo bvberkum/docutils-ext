@@ -1,5 +1,4 @@
-#form
+form
 rstwriter
-#atlassianparser
-#atlassianwriter
-#wikireader
+atlassianparser
+atlassianwriter

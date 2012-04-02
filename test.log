@@ -1,4 +1,118 @@
-..F..FFFF.....FF......FF....FF.F..FFFF...........
+F..F..FFFF.....FF......FF....FF.F..FFFF...........
+StateMachine.run: input_lines (line_offset=-1):
+| {quote}
+| h1. Notation Guide
+| 
+| For Atlassian Confluence.
+| 
+| {quote}
+
+StateMachine.run: bof transition
+
+StateMachine.run: line (source='<string>', offset=0):
+| {quote}
+
+StateMachine.check_line: state="Body", transitions=['blank', 'indent', 'explicit_markup', 'text'].
+
+StateMachine.check_line: Matched transition "text" in state "Body".
+
+StateMachine.get_state: Changing state from "Body" to "Text" (input line 1).
+
+StateMachine.run: line (source='<string>', offset=1):
+| h1. Notation Guide
+
+StateMachine.check_line: state="Text", transitions=['blank', 'indent', 'text'].
+
+StateMachine.check_line: Matched transition "text" in state "Text".
+
+StateMachine.get_state: Changing state from "Text" to "Body" (input line 2).
+
+StateMachine.run: line (source='<string>', offset=2):
+| 
+
+StateMachine.check_line: state="Body", transitions=['blank', 'indent', 'explicit_markup', 'text'].
+
+StateMachine.check_line: Matched transition "blank" in state "Body".
+
+StateMachine.run: line (source='<string>', offset=3):
+| For Atlassian Confluence.
+
+StateMachine.check_line: state="Body", transitions=['blank', 'indent', 'explicit_markup', 'text'].
+
+StateMachine.check_line: Matched transition "text" in state "Body".
+
+StateMachine.get_state: Changing state from "Body" to "Text" (input line 4).
+
+StateMachine.run: line (source='<string>', offset=4):
+| 
+
+StateMachine.check_line: state="Text", transitions=['blank', 'indent', 'text'].
+
+StateMachine.check_line: Matched transition "blank" in state "Text".
+
+StateMachine.get_state: Changing state from "Text" to "Body" (input line 5).
+
+StateMachine.run: line (source='<string>', offset=5):
+| {quote}
+
+StateMachine.check_line: state="Body", transitions=['blank', 'indent', 'explicit_markup', 'text'].
+
+StateMachine.check_line: Matched transition "text" in state "Body".
+
+StateMachine.get_state: Changing state from "Body" to "Text" (input line 6).
+
+StateMachine.run: Text.eof transition
+FE
+======================================================================
+ERROR: Test1_DocumentAtlassian; Lossy doctree comparison; Writer 'atlassian-mpe'
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 223, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 133, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 175, in __test_writer
+    writer=writer)['whole']#writer_name='dotmpe-rst')
+  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 433, in publish_parts
+    enable_exit_status=enable_exit_status)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 647, in publish_programmatically
+    output = pub.publish(enable_exit_status=enable_exit_status)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 211, in publish
+    output = self.writer.write(self.document, self.destination)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/writers/__init__.py", line 77, in write
+    self.translate()
+  File "/srv/project-mpe/docutils-ext/lib/docutils/writers/__init__.py", line 93, in translate
+    raise NotImplementedError('subclass must override this method')
+NotImplementedError: subclass must override this method
+
+======================================================================
+FAIL: test_1 (form.FormTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/srv/project-mpe/docutils-ext/test/form.py", line 163, in test_1
+    document = builder.build(source, source_id)
+  File "/srv/project-mpe/conf-mpe/lib/py/dotmpe/du/builder/__init__.py", line 83, in build
+    overrides)
+  File "/srv/project-mpe/conf-mpe/lib/py/dotmpe/du/builder/__init__.py", line 231, in __publish
+    overrides, config_section=None, enable_exit_status=False)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 647, in publish_programmatically
+    output = pub.publish(enable_exit_status=enable_exit_status)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 210, in publish
+    self.apply_transforms()
+  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 191, in apply_transforms
+    self.document.transformer.apply_transforms()
+  File "/srv/project-mpe/docutils-ext/lib/docutils/transforms/__init__.py", line 171, in apply_transforms
+    transform.apply(**kwargs)
+  File "/srv/project-mpe/conf-mpe/lib/py/dotmpe/du/ext/transform/form1.py", line 43, in apply
+    fp.process_fields()
+  File "/srv/project-mpe/conf-mpe/lib/py/dotmpe/du/form.py", line 227, in process_fields
+    value = self[field_id]
+  File "/srv/project-mpe/conf-mpe/lib/py/dotmpe/du/form.py", line 245, in __getitem__
+    v = self.__process_field(field_id)
+  File "/srv/project-mpe/conf-mpe/lib/py/dotmpe/du/form.py", line 408, in __process_field
+    assert not isinstance(node, list), "Multiple fields not supported. "
+AssertionError: Multiple fields not supported. 
+
 ======================================================================
 FAIL: Test10_LiteralBlock3; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
@@ -512,7 +626,24 @@ AssertionError: Error re-parsing generated file
 <string>:48: (ERROR/3) Unknown target name: "label".
 
 
+======================================================================
+FAIL: Test1_DocumentAtlassian; Lossy doctree comparison; Parser 'atlassian-mpe'
 ----------------------------------------------------------------------
-Ran 49 tests in 3.496s
+Traceback (most recent call last):
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 112, in runTest
+    self._test_parser(parser_class(), lossy=lossy)
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 55, in _test_parser
+    self.__test_parser(parser, lossy=lossy)
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 92, in __test_parser
+    warnings)
+AssertionError: Error parsing test document
+ on </srv/project-mpe/docutils-ext/var/test-1.document-atlassian.txt>
 
-FAILED (failures=16)
+<string>:1: (WARNING/2) Inline strong start-string without end-string.
+<string>:6: (WARNING/2) Inline strong start-string without end-string.
+
+
+----------------------------------------------------------------------
+Ran 52 tests in 3.652s
+
+FAILED (failures=18, errors=1)
