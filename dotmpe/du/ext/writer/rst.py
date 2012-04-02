@@ -1,27 +1,86 @@
-"""
-Experimenting with more OO oriented rST writer.
+﻿"""Parse and serialize docutils documents from and to reStructuredText.
 
-Goals:
-    - Enable per element preferences.
-    - Better support for complex nesting, especially table writing.
-    - Hopefully per element whitespace preservation to enable 
-      lossless rST read/writes.
-
-May be need to depart from NodeVisitor pattern.
+XXX: This is a heavy work in progress. RstTranslator has some issues with
+     inline nodes and does not do tables.
 
 """
+import math
+import re
 import roman
-from docutils import nodes
 
-from rstwriterutil import *
+from docutils import nodes, writers
 
+
+
+__docformat__ = 'reStructuredText'
+
+
+class Writer(writers.Writer):
+
+    """
+    docutils Writer that writes a doc-tree 'back' to rSt.
+    This implementation is lossy.
+    """
+
+    settings_spec = (
+        'rST writer',
+        None,
+        ()
+    )
+
+    def __init__(self):
+        writers.Writer.__init__(self)
+
+    def translate(self):
+
+        visitor = RstPreTranslator(self.document)
+        self.document.walkabout(visitor)
+
+        visitor = RstTranslator(self.document, visitor)
+        self.document.walkabout(visitor)
+
+        self.output = visitor.astext()
+
+
+class AbstractTranslator(nodes.NodeVisitor):
+    def _attr(self, node, name):
+        """
+        Helper function. Return attribute from dict if set.
+        """
+        if name in node and node[name]:
+            return node[name]
+
+
+class RstPreTranslator(AbstractTranslator):
+
+    """
+    Pre-pass document visitor. Accumulates indices.
+    """
+
+    def __init__(self, document):
+        nodes.NodeVisitor.__init__(self, document)
+        #self.settings = settings = document.settings
+        self.id_references = {}
+        self.uri_references = {}
+        self.anonymous_references = {}
+
+    def visit_reference(self, node):
+        anonymous = self._attr(node, 'anonymous')
+        classes = self._attr(node, 'classes')
+        ref_uri = self._attr(node, 'refuri')
+        ref_id = self._attr(node, 'refid')
+        if ref_id:
+            self.id_references[ref_id] = node
+        #print node['names'], locals()
+
+    def unknown_visit(self, node): pass
+    def unknown_departure(self, node): pass
 
 
 INDENT = u'  '
 section_adornments = ['=', '-', '~', '^', '+', "\"", "'", "_"]
 
-
-class AbstractRstFormatter(nodes.NodeVisitor):
+class RstTranslator(AbstractTranslator):
 
     """
     Visit docutils tree and serialize to rSt.
@@ -67,9 +126,13 @@ class AbstractRstFormatter(nodes.NodeVisitor):
 
     anonymous_role_count = 0 
 
-    def __init__(self, document, settings):
+    def __init__(self, document, pretranslator):
         nodes.NodeVisitor.__init__(self, document)
-        self.settings = settings
+        # fetch indices from RstPreTranslator
+        for attr in 'id_references', 'uri_references', 'anonymous_references':
+            setattr(self, attr, getattr(pretranslator, attr))
+
+        self.settings = settings = document.settings
         self.force_block_level = False
         """Prevent blank line insert, allows override by previous sibling. """
         self.preserve_ws = False
@@ -80,7 +143,6 @@ class AbstractRstFormatter(nodes.NodeVisitor):
         #self.docinfo = {}
         self.body = []
         #self.targets = {}
-        # old stack
         self.context = ContextStack(defaults={
                 'tree': [],
                 'bullet': u'',
@@ -93,25 +155,12 @@ class AbstractRstFormatter(nodes.NodeVisitor):
                 'block': None,
                 'offset': None,
             })
-        # new stack
-        self.stack = ContextStack(defaults=dict(
-                objects=[]
-            ))
 
     def sub_tree(self, node):
-        """
-        Util. Append a node to the stack, which is a list kept at
-        self.context.tree. 
-        """
         self.context.append('tree', node)
 
     @property
     def block_level(self):
-        """
-        Util, return true if current node stack is at block level.
-        Meaning a block can be written. Otherwise a blank line is needed,
-        see _assure_newblock. 
-        """
         if self.force_block_level:
             return True
         if self.context.index:
@@ -127,9 +176,6 @@ class AbstractRstFormatter(nodes.NodeVisitor):
                 'field_body')
 
     def pop_tree(self):
-        """
-        Util. Re-set force_block_level state and pop 'tree' index of stack.
-        """
         if self.context.tree[-1].tagname in ('title', 'label'):
             self.force_block_level = True
         elif self.force_block_level:
@@ -138,39 +184,15 @@ class AbstractRstFormatter(nodes.NodeVisitor):
 
     @property
     def current_path(self):
-        """"
-        Util. Join tagnames of all nodes on the current stack with '/'
-        (see self.context.tree).
-        """
         return "/".join([n.tagname for n in self.context.tree])
 
     @property
     def current_node(self):
-        """
-        Util, return the lastmost node on the stack (the 'tree' 
-        index of self.context).
-        """
         return self.context.tree[-1]
 
     def in_tag(self, other_name=None, sup=0):
-        """
-        Util, traverse tree stack upward to find wether current node is
-        enclosed by tag 'other_name'. This method has several modes:
-
-        - sup may be '*' to find the first parent node matching 'other_name'.
-        - sup may be a number to check wether the tag of exactly the n-th 
-          parent matches 'other_name'
-        - sup by default is 0 and so checks wether the current node matches
-          'other_name'. 
-        - If other_name is None, it will return the tag name. sup must be a
-          number.
-        """
         node = self.current_node
         tagname = node.tagname
-        if sup == '*':
-            assert other_name
-        else:
-            assert isinstance(sup, int)
         while sup and node.parent:
             if sup == '*':
                 if other_name and (tagname == other_name):
@@ -187,12 +209,10 @@ class AbstractRstFormatter(nodes.NodeVisitor):
 
     @property
     def root(self):
-        "Util, return wether current node is 'rootless'."
         return not self.current_node.parent
 
     @property
     def previous_sibling(self):
-        "Util. Return preceding sibling node. "
         assert self.context.index > 0
         #prev_idx = self.context.previous('index')
         node = self.current_node
@@ -202,7 +222,6 @@ class AbstractRstFormatter(nodes.NodeVisitor):
         return node.parent.children[pi-1]
 
     def astext(self):
-        "Util. Return string of current accumulated body text. "
         return "".join(self.body)
 
         # TODO: handle all that support the class option, and others
@@ -212,11 +231,10 @@ class AbstractRstFormatter(nodes.NodeVisitor):
 
     def _write_indented(self, *lines):
         """
-        Write one or more lines. The current indent is kept on the context
-        and is used to prefix any text appended to self.body.
+        Write one or more lines. The indent on the context is used to prefix the
+        text. 
 
-        The 'indented' variable indicates the length the current line is 
-        left-padded.
+        The 'indented' variable indicates the lenght the current line is padded.
         """
         _lines = list(lines)
         indent = self.context.indent
@@ -351,28 +369,14 @@ class AbstractRstFormatter(nodes.NodeVisitor):
     def _pass_visit(self, node):
         "No-op to prevent catch-all handlers. "
 
-
-    # New stack methods
-    def push(self, duobj):
-        self.stack.objects = duobj
-        self.context.index = 0
-
-    def pop(self):
-        duobj = self.stack.objects
-        del self.context.index
-        del self.stack.objects
-        return duobj
-
     # NodeVisitor hooks
 
     def visit_document(self, node):
-        #self.push(RstDocument(node))
         self.sub_tree(node)
         self.context.index = 0
 
     def depart_document(self, node):
-        # astext
-        # FIXME: role declarations should precede usage!
+        # finalize
         for name, inherit, opts in self.roles:
             self._write_role(name, inherit, opts)
 
@@ -486,7 +490,7 @@ class AbstractRstFormatter(nodes.NodeVisitor):
         self._write_indented('`')
 
     def _visit_simple_inline(self, klass, decoration, node):
-        if attr(node, 'classes'):
+        if self._attr(node, 'classes'):
             if klass:
                 node['classes'].append(klass)
             self.visit_inline(node)
@@ -496,7 +500,7 @@ class AbstractRstFormatter(nodes.NodeVisitor):
             self._write_indented(decoration)
 
     def _depart_simple_inline(self, klass, decoration, node):
-        if attr(node, 'classes'):
+        if self._attr(node, 'classes'):
             self.depart_inline(node)
         else:
             self.pop_tree()
@@ -627,8 +631,8 @@ class AbstractRstFormatter(nodes.NodeVisitor):
 
     def visit_target(self, node):
         self.sub_tree(node)
-        ref_uri = attr(node, 'refuri')
-        ref_id = attr(node, 'refid')
+        ref_uri = self._attr(node, 'refuri')
+        ref_id = self._attr(node, 'refid')
         if ref_uri or ref_id:
             if not self.block_level:
                 self._assure_newblock()
@@ -1149,25 +1153,140 @@ class AbstractRstFormatter(nodes.NodeVisitor):
         self.body.append("[XXX:%s %r %r %r %s]" % (node.tagname, self.context.index,
             self.indented, self.context.indent, node['classes']))
 
-class RstDocumentFormatter(AbstractRstFormatter):
-    """
-    Main document visitor. This defers to the other sub-translators.
-    """
-    def flush(self, node):
-        return self.astext()
+trailing_ws = re.compile('^.*(?<!\s)(\s+)$')
 
-class RstSectionFormatter(AbstractRstFormatter):
+def get_trailing_ws(string):
+    assert isinstance(string, str) or isinstance(string, unicode), string
+    m = trailing_ws.match(string)
+    if m:
+        return m.group(1)
+    return ''
+
+is_all_ws = re.compile('^\s+$').match
+
+class ContextStack(object):
+    """A stack of states. Setting an attribute overwrites the last
+    value, but deleting the value reactivates the old one.
+    Default values can be set on construction.
+    
+    This is used for important states during output of rst,
+    e.g. indent level, last bullet type.
+    """
+    
+    def __init__(self, defaults=None):
+        '''Initialise _defaults and _stack, but avoid calling __setattr__'''
+        if defaults is None:
+            
+            
+            object.__setattr__(self, '_defaults', {})
+        else:
+            object.__setattr__(self, '_defaults', dict(defaults))
+        object.__setattr__(self, '_stack', {})
+
+    def __getattr__(self, name):
+        '''Return last value of name in stack, or default.'''
+        if name in self._stack:
+            return self._stack[name][-1]
+        if name in self._defaults:
+            return self._defaults[name]
+        raise AttributeError
+
+    def append(self, name, value):
+        l = list(getattr(self, name))
+        l.append(value)
+        setattr(self, name, l)
+
+    def __setattr__(self, name, value):
+        '''Pushes a new value for name onto the stack.'''
+        if name in self._stack:
+            self._stack[name].append(value)
+        else:
+            self._stack[name] = [value]
+
+    def __delattr__(self, name):
+        '''Remove a value of name from the stack.'''
+        if name not in self._stack:
+            raise AttributeError
+        del self._stack[name][-1]
+        if not self._stack[name]:
+            del self._stack[name]
+   
+    def depth(self, name):
+        l = len(self._stack[name])
+        if l:
+            return l-1
+
+    def previous(self, name):
+        if len(self._stack[name]) > 1:
+            return self._stack[name][-2]
+
+    def __repr__(self):
+        return repr(self._stack)
+
+class RstDocumentTranslator(AbstractTranslator):
+    """
+    Main document visitor. This defers to the other subtranslators.
+    """
+    pass
+
+class RstSectionTranslator(AbstractTranslator):
     """
     Subtranslaters for sections. Sections may contain subsections.
     """
-    def flush(self, node):
-        return self.astext()
+    pass
 
-class RstTableFormatter(AbstractRstFormatter):
+class RstTableTranslator(AbstractTranslator):
     """
     Tables may contain anything a section can but not subsections.
     """
-    def flush(self, node):
-        return self.astext()
+    pass
 
+
+def classname(obj):
+    return obj.__class__.__name__
+
+
+
+## Main/test
+
+if __name__ == '__main__':
+    import os, sys, glob
+
+    import curses;v=curses.initscr();x=v.getmaxyx();curses.endwin();
+    max_width = x[1]
+
+    print " Test run".rjust(max_width, '_')
+
+    sys.path.insert(0, 'test')
+    util = __import__('util')
+
+    if sys.argv[1:]:
+        for doc in sys.argv[1:]:
+            assert os.path.exists(doc) and doc.endswith('.rst'), doc
+            util.print_compare_writer(doc, writer_class=Writer, max_width=max_width)
+    else:
+
+        p = os.path.realpath(__file__)
+        for i in range(0, 5):
+            p = os.path.dirname(p)
+        PROJ_ROOT = p
+        
+        TEST_DOC = [
+#            'var/test-10.literal-block-1.rst',
+#            'var/test-1.document-6.rst',
+#            'var/test-1.document-7.rst',
+            'var/test-5.inline-1.rst',
+#            'var/test-5.inline-2.rst',
+#            'var/test-5.inline-3.rst',
+#            'var/test-5.inline-4.rst',
+#            'var/test-22.docinfo.rst',
+#            'var/test-23.option-lists.rst',
+#            'var/_test-1.document-5.full-rst-demo.rst'
+        ]
+        #TEST_DOC = filter(os.path.getsize,
+        #        glob.glob(os.path.join(PROJ_ROOT, 'var', '*.rst')))
+        TEST_DOC.sort()
+
+        for doc in TEST_DOC:
+            util.print_compare_writer(doc, writer_class=Writer, max_width=max_width)
 

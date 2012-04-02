@@ -1,13 +1,49 @@
-..F..FFFF.....FF......FF....FF.F..FFFF...........
+..F..FFFF.....FE...FFFFF...FFFFF..FFFF...........
+======================================================================
+ERROR: Test17_Tables2; Lossy doctree comparison; Writer 'rst-mpe'
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 223, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 133, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 175, in __test_writer
+    writer=writer)['whole']#writer_name='dotmpe-rst')
+  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 433, in publish_parts
+    enable_exit_status=enable_exit_status)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 647, in publish_programmatically
+    output = pub.publish(enable_exit_status=enable_exit_status)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 211, in publish
+    output = self.writer.write(self.document, self.destination)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/writers/__init__.py", line 77, in write
+    self.translate()
+  File "/srv/project-mpe/conf-mpe/lib/py/dotmpe/du/ext/writer/rst/__init__.py", line 41, in translate
+    self.document.walkabout(visitor)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 186, in walkabout
+    visitor.dispatch_departure(self)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 1617, in dispatch_departure
+    return method(node)
+  File "/srv/project-mpe/conf-mpe/lib/py/dotmpe/du/ext/writer/rst/__init__.py", line 127, in flush
+    departor(node)
+  File "/srv/project-mpe/conf-mpe/lib/py/dotmpe/du/ext/writer/rst/rstobjects.py", line 408, in depart_title
+    prev_tree = self.context.previous('tree')
+  File "/srv/project-mpe/conf-mpe/lib/py/dotmpe/du/ext/writer/rst/rstwriterutil.py", line 73, in previous
+    if len(self._stack[name]) > 1:
+KeyError: 'tree'
+
 ======================================================================
 FAIL: Test10_LiteralBlock3; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 221, in runTest
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 223, in runTest
     self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 131, in _test_writer
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 133, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 203, in __test_writer
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 205, in __test_writer
     diff )
 AssertionError: pxml tree mismatch 
  on </srv/project-mpe/docutils-ext/var/test-10.literal-block-3.rst>
@@ -36,313 +72,282 @@ AssertionError: pxml tree mismatch
 FAIL: Test13_Table; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 221, in runTest
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 223, in runTest
     self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 131, in _test_writer
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 133, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 203, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
- on </srv/project-mpe/docutils-ext/var/test-13.table.rst>
-
----  
-
-+++  
-
-@@ -1,28 +1,14 @@
-
- <document source="<string>">
--    <table>
--        <tgroup cols="2">
--            <colspec colwidth="6">
--            <colspec colwidth="8">
--            <tbody>
--                <row>
--                    <entry>
--                        <paragraph>
--                            Simple
--                    <entry>
--                        <paragraph>
--                            Table
--                <row>
--                    <entry>
--                        <paragraph>
--                            001
--                    <entry>
--                        <paragraph>
--                            AAA
--                <row>
--                    <entry>
--                        <paragraph>
--                            001
--                    <entry>
--                        <paragraph>
--                            AAB
-+    <paragraph>
-+        [XXX:table 0 0 u'' []][XXX:tgroup 0 0 u'' []][XXX:colspec 0 0 u'' []][XXX:colspec 0 0 u'' []][XXX:tbody 0 0 u'' []][XXX:row 0 0 u'' []][XXX:entry 0 0 u'' []]Simple[XXX:entry 1 6 u'' []]
-+    <paragraph>
-+        Table[XXX:row 2 5 u'' []][XXX:entry 2 5 u'' []]
-+    <paragraph>
-+        001[XXX:entry 3 3 u'' []]
-+    <paragraph>
-+        AAA[XXX:row 4 3 u'' []][XXX:entry 4 3 u'' []]
-+    <paragraph>
-+        001[XXX:entry 5 3 u'' []]
-+    <paragraph>
-+        AAB
- 
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 182, in __test_writer
+    ("on <%s>" % self.DOC_FILE ))
+AssertionError: Empty generated file. on </srv/project-mpe/docutils-ext/var/test-13.table.rst>
 
 ======================================================================
 FAIL: Test13_Table2; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 221, in runTest
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 223, in runTest
     self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 131, in _test_writer
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 133, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 196, in __test_writer
-    warnings)
-AssertionError: Error re-parsing generated file
- on </srv/project-mpe/docutils-ext/var/test-13.table-2.rst>
-
-<string>:12: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
-<string>:15: (WARNING/2) Field list ends without a blank line; unexpected unindent.
-<string>:18: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
-<string>:21: (WARNING/2) Enumerated list ends without a blank line; unexpected unindent.
-<string>:25: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
-<string>:28: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
-
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 175, in __test_writer
+    writer=writer)['whole']#writer_name='dotmpe-rst')
+  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 433, in publish_parts
+    enable_exit_status=enable_exit_status)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 647, in publish_programmatically
+    output = pub.publish(enable_exit_status=enable_exit_status)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 211, in publish
+    output = self.writer.write(self.document, self.destination)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/writers/__init__.py", line 77, in write
+    self.translate()
+  File "/srv/project-mpe/conf-mpe/lib/py/dotmpe/du/ext/writer/rst/__init__.py", line 41, in translate
+    self.document.walkabout(visitor)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 165, in walkabout
+    visitor.dispatch_visit(self)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 1604, in dispatch_visit
+    return method(node)
+  File "/srv/project-mpe/conf-mpe/lib/py/dotmpe/du/ext/writer/rst/__init__.py", line 114, in append
+    assert hasattr(self.stack.formatter, visitor_name), visitor_name
+AssertionError: visit_rubric
 
 ======================================================================
 FAIL: Test13_Table3; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 221, in runTest
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 223, in runTest
     self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 131, in _test_writer
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 133, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 203, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
- on </srv/project-mpe/docutils-ext/var/test-13.table-3.rst>
-
----  
-
-+++  
-
-@@ -1,66 +1,36 @@
-
- <document source="<string>">
--    <table>
--        <tgroup cols="3">
--            <colspec colwidth="5">
--            <colspec colwidth="5">
--            <colspec colwidth="6">
--            <thead>
--                <row>
--                    <entry morecols="1">
--                        <paragraph>
--                            Inputs
--                    <entry>
--                        <paragraph>
--                            Output
--                <row>
--                    <entry>
--                        <paragraph>
--                            A
--                    <entry>
--                        <paragraph>
--                            B
--                    <entry>
--                        <paragraph>
--                            A or B
--            <tbody>
--                <row>
--                    <entry>
--                        <paragraph>
--                            False
--                    <entry>
--                        <paragraph>
--                            False
--                    <entry>
--                        <paragraph>
--                            False
--                <row>
--                    <entry>
--                        <paragraph>
--                            True
--                    <entry>
--                        <paragraph>
--                            False
--                    <entry>
--                        <paragraph>
--                            True
--                <row>
--                    <entry>
--                        <paragraph>
--                            False
--                    <entry>
--                        <paragraph>
--                            True
--                    <entry>
--                        <paragraph>
--                            True
--                <row>
--                    <entry>
--                        <paragraph>
--                            True
--                    <entry>
--                        <paragraph>
--                            True
--                    <entry>
--                        <paragraph>
--                            True
-+    <paragraph>
-+        [XXX:table 0 0 u'' []][XXX:tgroup 0 0 u'' []][XXX:colspec 0 0 u'' []][XXX:colspec 0 0 u'' []][XXX:colspec 0 0 u'' []][XXX:thead 0 0 u'' []][XXX:row 0 0 u'' []][XXX:entry 0 0 u'' []]Inputs[XXX:entry 1 6 u'' []]
-+    <paragraph>
-+        Output[XXX:row 2 6 u'' []][XXX:entry 2 6 u'' []]
-+    <paragraph>
-+        A[XXX:entry 3 1 u'' []]
-+    <paragraph>
-+        B[XXX:entry 4 1 u'' []]
-+    <paragraph>
-+        A or B[XXX:tbody 5 6 u'' []][XXX:row 5 6 u'' []][XXX:entry 5 6 u'' []]
-+    <paragraph>
-+        False[XXX:entry 6 5 u'' []]
-+    <paragraph>
-+        False[XXX:entry 7 5 u'' []]
-+    <paragraph>
-+        False[XXX:row 8 5 u'' []][XXX:entry 8 5 u'' []]
-+    <paragraph>
-+        True[XXX:entry 9 4 u'' []]
-+    <paragraph>
-+        False[XXX:entry 10 5 u'' []]
-+    <paragraph>
-+        True[XXX:row 11 4 u'' []][XXX:entry 11 4 u'' []]
-+    <paragraph>
-+        False[XXX:entry 12 5 u'' []]
-+    <paragraph>
-+        True[XXX:entry 13 4 u'' []]
-+    <paragraph>
-+        True[XXX:row 14 4 u'' []][XXX:entry 14 4 u'' []]
-+    <paragraph>
-+        True[XXX:entry 15 4 u'' []]
-+    <paragraph>
-+        True[XXX:entry 16 4 u'' []]
-+    <paragraph>
-+        True
- 
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 182, in __test_writer
+    ("on <%s>" % self.DOC_FILE ))
+AssertionError: Empty generated file. on </srv/project-mpe/docutils-ext/var/test-13.table-3.rst>
 
 ======================================================================
 FAIL: Test13_Table4; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 221, in runTest
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 223, in runTest
     self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 131, in _test_writer
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 133, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 196, in __test_writer
-    warnings)
-AssertionError: Error re-parsing generated file
- on </srv/project-mpe/docutils-ext/var/test-13.table-4.rst>
-
-<string>:25: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
-
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 182, in __test_writer
+    ("on <%s>" % self.DOC_FILE ))
+AssertionError: Empty generated file. on </srv/project-mpe/docutils-ext/var/test-13.table-4.rst>
 
 ======================================================================
 FAIL: Test17_Tables1; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 221, in runTest
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 223, in runTest
     self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 131, in _test_writer
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 133, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 203, in __test_writer
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 182, in __test_writer
+    ("on <%s>" % self.DOC_FILE ))
+AssertionError: Empty generated file. on </srv/project-mpe/docutils-ext/var/test-17.tables-1.rst>
+
+======================================================================
+FAIL: Test1_Document2; Lossy doctree comparison; Writer 'rst-mpe'
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 223, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 133, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 205, in __test_writer
     diff )
 AssertionError: pxml tree mismatch 
- on </srv/project-mpe/docutils-ext/var/test-17.tables-1.rst>
+ on </srv/project-mpe/docutils-ext/var/test-1.document-2.rst>
 
 ---  
 
 +++  
 
-@@ -1,21 +1,10 @@
+@@ -3,11 +3,4 @@
 
- <document source="<string>">
--    <table>
--        <tgroup cols="2">
--            <colspec colwidth="5">
--            <colspec colwidth="5">
--            <tbody>
--                <row>
--                    <entry>
--                        <paragraph>
--                            d1
--                    <entry>
--                        <paragraph>
--                            d2
--                <row>
--                    <entry>
--                        <paragraph>
--                            d3
--                    <entry>
--                        <paragraph>
--                            d4
-+    <paragraph>
-+        [XXX:table 0 0 u'' []][XXX:tgroup 0 0 u'' []][XXX:colspec 0 0 u'' []][XXX:colspec 0 0 u'' []][XXX:tbody 0 0 u'' []][XXX:row 0 0 u'' []][XXX:entry 0 0 u'' []]d1[XXX:entry 1 2 u'' []]
-+    <paragraph>
-+        d2[XXX:row 2 2 u'' []][XXX:entry 2 2 u'' []]
-+    <paragraph>
-+        d3[XXX:entry 3 2 u'' []]
-+    <paragraph>
-+        d4
+         Test Document
+     <paragraph>
+         Some paragraph.
+-    <section ids="section" names="section">
+-        <title>
+-            Section
+-        <paragraph>
+-            Some paragraph.
+-        <comment xml:space="preserve">
+-            comment
  
 
 ======================================================================
-FAIL: Test17_Tables2; Lossy doctree comparison; Writer 'rst-mpe'
+FAIL: Test1_Document3; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 221, in runTest
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 223, in runTest
     self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 131, in _test_writer
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 133, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 196, in __test_writer
-    warnings)
-AssertionError: Error re-parsing generated file
- on </srv/project-mpe/docutils-ext/var/test-17.tables-2.rst>
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 205, in __test_writer
+    diff )
+AssertionError: pxml tree mismatch 
+ on </srv/project-mpe/docutils-ext/var/test-1.document-3.rst>
 
-<string>:2: (WARNING/2) Title underline too short.
+---  
 
-[XXX:table 0 0 u'' []]Caption/Summary
-===============
++++  
 
+@@ -5,68 +5,4 @@
+
+         Some paragraph.
+     <comment xml:space="preserve">
+         Comment
+-    <section ids="section" names="section">
+-        <title>
+-            Section
+-        <paragraph>
+-            Some paragraph.
+-        <field_list>
+-            <field>
+-                <field_name>
+-                    field
+-                <field_body>
+-                    <paragraph>
+-                        value
+-            <field>
+-                <field_name>
+-                    field
+-                <field_body>
+-                    <paragraph>
+-                        value
+-        <enumerated_list enumtype="arabic" prefix="" suffix=".">
+-            <list_item>
+-                <paragraph>
+-                    List item 1
+-            <list_item>
+-                <paragraph>
+-                    List item 2
+-        <enumerated_list enumtype="loweralpha" prefix="" suffix=".">
+-            <list_item>
+-                <paragraph>
+-                    List item a.
+-            <list_item>
+-                <paragraph>
+-                    List item b.
+-        <enumerated_list enumtype="upperalpha" prefix="" suffix=".">
+-            <list_item>
+-                <paragraph>
+-                    List item A.
+-            <list_item>
+-                <paragraph>
+-                    List item B.
+-        <enumerated_list enumtype="upperroman" prefix="" suffix=".">
+-            <list_item>
+-                <paragraph>
+-                    List item I.
+-            <list_item>
+-                <paragraph>
+-                    List item II.
+-        <definition_list>
+-            <definition_list_item>
+-                <term>
+-                    Term
+-                <definition>
+-                    <paragraph>
+-                        Definition
+-            <definition_list_item>
+-                <term>
+-                    Term
+-                <definition>
+-                    <paragraph>
+-                        Definition
+-        <section ids="subsection" names="subsection">
+-            <title>
+-                Subsection
+-            <paragraph>
+-                Some paragraph in 3.1
+ 
+
+======================================================================
+FAIL: Test1_Document4; Lossy doctree comparison; Writer 'rst-mpe'
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 223, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 133, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 175, in __test_writer
+    writer=writer)['whole']#writer_name='dotmpe-rst')
+  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 433, in publish_parts
+    enable_exit_status=enable_exit_status)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 647, in publish_programmatically
+    output = pub.publish(enable_exit_status=enable_exit_status)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 211, in publish
+    output = self.writer.write(self.document, self.destination)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/writers/__init__.py", line 77, in write
+    self.translate()
+  File "/srv/project-mpe/conf-mpe/lib/py/dotmpe/du/ext/writer/rst/__init__.py", line 41, in translate
+    self.document.walkabout(visitor)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 165, in walkabout
+    visitor.dispatch_visit(self)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 1604, in dispatch_visit
+    return method(node)
+  File "/srv/project-mpe/conf-mpe/lib/py/dotmpe/du/ext/writer/rst/__init__.py", line 114, in append
+    assert hasattr(self.stack.formatter, visitor_name), visitor_name
+AssertionError: visit_author
 
 ======================================================================
 FAIL: Test1_Document6; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 221, in runTest
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 223, in runTest
     self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 131, in _test_writer
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 133, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 196, in __test_writer
-    warnings)
-AssertionError: Error re-parsing generated file
- on </srv/project-mpe/docutils-ext/var/test-1.document-6.rst>
-
-<string>:8: (WARNING/2) Bibliographic field "Authors" incompatible with extraction: it must contain either a single paragraph (with authors separated by one of ";,"), multiple paragraphs (one per author), or a bullet list with one paragraph (one author) per item.
-<string>:: (ERROR/3) Unknown target name: "goodger@python.org".
-
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 175, in __test_writer
+    writer=writer)['whole']#writer_name='dotmpe-rst')
+  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 433, in publish_parts
+    enable_exit_status=enable_exit_status)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 647, in publish_programmatically
+    output = pub.publish(enable_exit_status=enable_exit_status)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 211, in publish
+    output = self.writer.write(self.document, self.destination)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/writers/__init__.py", line 77, in write
+    self.translate()
+  File "/srv/project-mpe/conf-mpe/lib/py/dotmpe/du/ext/writer/rst/__init__.py", line 41, in translate
+    self.document.walkabout(visitor)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 165, in walkabout
+    visitor.dispatch_visit(self)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 1604, in dispatch_visit
+    return method(node)
+  File "/srv/project-mpe/conf-mpe/lib/py/dotmpe/du/ext/writer/rst/__init__.py", line 114, in append
+    assert hasattr(self.stack.formatter, visitor_name), visitor_name
+AssertionError: visit_author
 
 ======================================================================
 FAIL: Test1_Document7; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 221, in runTest
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 223, in runTest
     self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 131, in _test_writer
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 133, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 203, in __test_writer
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 205, in __test_writer
     diff )
 AssertionError: pxml tree mismatch 
  on </srv/project-mpe/docutils-ext/var/test-1.document-7.rst>
@@ -377,31 +382,62 @@ AssertionError: pxml tree mismatch
          <paragraph>
 
 ======================================================================
+FAIL: Test21_Transition1; Lossy doctree comparison; Writer 'rst-mpe'
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 223, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 133, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 198, in __test_writer
+    warnings)
+AssertionError: Error re-parsing generated file
+ on </srv/project-mpe/docutils-ext/var/test-21.transition-1.rst>
+
+<string>:5: (ERROR/3) Document may not end with a transition.
+
+
+======================================================================
 FAIL: Test22_Docinfo; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 221, in runTest
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 223, in runTest
     self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 131, in _test_writer
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 133, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 196, in __test_writer
-    warnings)
-AssertionError: Error re-parsing generated file
- on </srv/project-mpe/docutils-ext/var/test-22.docinfo.rst>
-
-<string>:8: (WARNING/2) Bibliographic field "Authors" incompatible with extraction: it must contain either a single paragraph (with authors separated by one of ";,"), multiple paragraphs (one per author), or a bullet list with one paragraph (one author) per item.
-<string>:: (ERROR/3) Unknown target name: "goodger@python.org".
-
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 175, in __test_writer
+    writer=writer)['whole']#writer_name='dotmpe-rst')
+  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 433, in publish_parts
+    enable_exit_status=enable_exit_status)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 647, in publish_programmatically
+    output = pub.publish(enable_exit_status=enable_exit_status)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 211, in publish
+    output = self.writer.write(self.document, self.destination)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/writers/__init__.py", line 77, in write
+    self.translate()
+  File "/srv/project-mpe/conf-mpe/lib/py/dotmpe/du/ext/writer/rst/__init__.py", line 41, in translate
+    self.document.walkabout(visitor)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
+    if child.walkabout(visitor):
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 165, in walkabout
+    visitor.dispatch_visit(self)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 1604, in dispatch_visit
+    return method(node)
+  File "/srv/project-mpe/conf-mpe/lib/py/dotmpe/du/ext/writer/rst/__init__.py", line 114, in append
+    assert hasattr(self.stack.formatter, visitor_name), visitor_name
+AssertionError: visit_author
 
 ======================================================================
 FAIL: Test23_OptionList1; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 221, in runTest
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 223, in runTest
     self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 131, in _test_writer
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 133, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 157, in __test_writer
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 159, in __test_writer
     warnings)
 AssertionError: Corrupt test source file: on </srv/project-mpe/docutils-ext/var/test-23.option-list-1.rst>
 <string>:2: (WARNING/2) Title underline too short.
@@ -411,27 +447,62 @@ AssertionError: Corrupt test source file: on </srv/project-mpe/docutils-ext/var/
 
 
 ======================================================================
+FAIL: Test2_Sections; Lossy doctree comparison; Writer 'rst-mpe'
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 223, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 133, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 182, in __test_writer
+    ("on <%s>" % self.DOC_FILE ))
+AssertionError: Empty generated file. on </srv/project-mpe/docutils-ext/var/test-2.sections.rst>
+
+======================================================================
 FAIL: Test2_Title1; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 221, in runTest
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 223, in runTest
     self._test_writer(writer_class(), lossy=lossy)
   File "/srv/project-mpe/docutils-ext/test/util.py", line 133, in _test_writer
-    self.fail(e)
-AssertionError: <string>:10: (SEVERE/4) Title level inconsistent:
+    self.__test_writer(writer, lossy=lossy)
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 205, in __test_writer
+    diff )
+AssertionError: pxml tree mismatch 
+ on </srv/project-mpe/docutils-ext/var/test-2.title-1.rst>
 
-Title
-^^^^^
+---  
+
++++  
+
+@@ -3,16 +3,4 @@
+
+         Title
+     <subtitle dupnames="title" ids="id1">
+         Title
+-    <section dupnames="title" ids="id2">
+-        <title>
+-            Title
+-        <section dupnames="title" ids="id3">
+-            <title>
+-                Title
+-            <section dupnames="title" ids="id4">
+-                <title>
+-                    Title
+-                <section dupnames="title" ids="id5">
+-                    <title>
+-                        Title
+ 
 
 ======================================================================
 FAIL: Test5_Inline1; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 221, in runTest
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 223, in runTest
     self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 131, in _test_writer
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 133, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 196, in __test_writer
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 198, in __test_writer
     warnings)
 AssertionError: Error re-parsing generated file
  on </srv/project-mpe/docutils-ext/var/test-5.inline-1.rst>
@@ -443,11 +514,11 @@ AssertionError: Error re-parsing generated file
 FAIL: Test5_Inline2; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 221, in runTest
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 223, in runTest
     self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 131, in _test_writer
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 133, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 196, in __test_writer
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 198, in __test_writer
     warnings)
 AssertionError: Error re-parsing generated file
  on </srv/project-mpe/docutils-ext/var/test-5.inline-2.rst>
@@ -470,11 +541,11 @@ See "backrefs" attribute for IDs.
 FAIL: Test5_Inline3; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 221, in runTest
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 223, in runTest
     self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 131, in _test_writer
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 133, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 196, in __test_writer
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 198, in __test_writer
     warnings)
 AssertionError: Error re-parsing generated file
  on </srv/project-mpe/docutils-ext/var/test-5.inline-3.rst>
@@ -488,31 +559,30 @@ AssertionError: Error re-parsing generated file
 FAIL: Test5_Inline4; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 221, in runTest
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 223, in runTest
     self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 131, in _test_writer
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 133, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 196, in __test_writer
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 198, in __test_writer
     warnings)
 AssertionError: Error re-parsing generated file
  on </srv/project-mpe/docutils-ext/var/test-5.inline-4.rst>
 
 <string>:13: (WARNING/2) Explicit markup ends without a blank line; unexpected unindent.
-<string>:37: (ERROR/3) Content block expected for the "replace" directive; none found.
-<string>:37: (WARNING/2) Substitution definition "EXAMPLE" empty or invalid.
-
-.. |EXAMPLE| replace::
-
 <string>:3: (ERROR/3) Too many symbol footnote references: only 0 corresponding footnotes available.
+<string>:3: (ERROR/3) Unknown target name: "python".
 <string>:3: (ERROR/3) Unknown target name: "example".
 <string>:3: (ERROR/3) Unknown target name: "python web site".
+<string>:3: (ERROR/3) Unknown target name: "1".
+<string>:3: (ERROR/3) Unknown target name: "3".
+<string>:3: (ERROR/3) Unknown target name: "2".
 <string>:3: (ERROR/3) Unknown target name: "cit2002".
+<string>:13: (ERROR/3) Unknown target name: "targets".
 <string>:17: (ERROR/3) Unknown target name: "pep 287".
 <string>:17: (ERROR/3) Unknown target name: "rfc 2822".
-<string>:48: (ERROR/3) Unknown target name: "label".
 
 
 ----------------------------------------------------------------------
-Ran 49 tests in 2.753s
+Ran 49 tests in 2.955s
 
-FAILED (failures=16)
+FAILED (failures=20, errors=1)
