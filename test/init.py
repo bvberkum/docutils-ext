@@ -24,14 +24,20 @@ sys.path.insert(0, os.path.join(PROJ_LIB, 'docutils-branches',
 LOSSLESS_WRITER = __import__('rst') 
 
 ACW_DOC_FILES = filter(os.path.getsize,
-        glob.glob(os.path.join(PROJ_ROOT, 'var', 'test-*-atlassian.txt'))
+        glob.glob(os.path.join('var', 'test-*-atlassian.txt'))
     )
 ACW_DOC = [ (doc_file, doc_file.replace(".txt", ".pxml")) 
         for doc_file in ACW_DOC_FILES]
 "Atlassian Confluence Wiki documents and expected PXML. "
 
 WIKI_DOC = filter(os.path.getsize,
-        glob.glob(os.path.join(PROJ_ROOT, 'var', 'test-*-wiki.txt'))
+        glob.glob(os.path.join('var', 'test-*-wiki.txt'))
     )
 "Generic Wiki"
 
+SMF_DOC_FILES = filter(os.path.getsize,
+        glob.glob(os.path.join('var', 'test-*-simpleformat.txt'))
+    )
+SMF_DOC = [ (doc_file, doc_file.replace(".txt", ".pxml")) 
+        for doc_file in SMF_DOC_FILES ]
+""
