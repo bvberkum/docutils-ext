@@ -15,6 +15,7 @@ TODO:
 
 __docformat__ = 'reStructuredText'
 
+import sys
 
 import docutils
 import docutils.readers
@@ -24,6 +25,7 @@ import docutils.parsers.rst
 
 
 import dotmpe.du
+from dotmpe.du import comp
 import transform
 #import extractor
 import node
@@ -35,7 +37,6 @@ from dotmpe.du.ext.parser.rst.directive.margin import Margin
 from dotmpe.du.ext.parser.rst.directive.images import Figure
 
 
-""
 
 "Register left_margin/right_margin directives. "
 docutils.parsers.rst.directives.register_directive('margin', Margin)
@@ -54,11 +55,21 @@ docutils.parsers.rst.directives.register_directive('figure', Figure)
 
 
 try:
+    import rst2confluence.confluence
+
+    comp.writers['confluence'] = 'rst2confluence.confluence'
+
+except ImportError, e:
+    print >> sys.stderr, "No confluence writer (depends on rst2confluence)"
+
+try:
+    # XXX: make an raw block of mediawiki?
     import mwlib
 
     from dotmpe.du.ext.parser.rst.directive.mediawiki import MediaWiki
     docutils.parsers.rst.directives.register_directive('mediawiki', MediaWiki)
 except ImportError, e:
+    print >> sys.stderr, "No mediawiki directive (depends on mwlib)"
     pass
 
 #from pub import Publisher
