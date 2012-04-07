@@ -2,5 +2,5 @@ form
 rstwriter
 atlassianparser
 atlassianwriter
-confluence
+#confluence
 #simplemuxdem
