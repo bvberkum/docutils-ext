@@ -148,6 +148,7 @@ class AbstractWriterTestCase(object):
         warnings = StringIO()
         original_tree = docutils.core.publish_parts(
                 source=rst, 
+                source_path=self.DOC_FILE,
                 #reader_name=self.TAG,
                 settings_overrides={
                     'warning_stream': warnings,
@@ -168,7 +169,8 @@ class AbstractWriterTestCase(object):
         # Publish the source file to rST, ie. regenerate the rST file
         warnings = StringIO()
         result = docutils.core.publish_parts(
-                source=rst, 
+                source=rst,
+                source_path=self.DOC_FILE,
                 #reader_name=reader_name,
                 settings_overrides={
                     'warning_stream': warnings,
@@ -187,6 +189,7 @@ class AbstractWriterTestCase(object):
         warnings = StringIO()
         generated_tree = docutils.core.publish_parts(
                 source=result,
+                source_path=self.DOC_FILE,
                 #reader_name=reader_name,
                 settings_overrides={
                     'warning_stream': warnings,
