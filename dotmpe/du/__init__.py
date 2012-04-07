@@ -26,4 +26,9 @@ import docutils
 #if (du_version[0] != 0 or (du_version[0] == 0 and du_version[1] != 8)):
 #    raise Exception("Unkown version: "+docutils.__version__)
 
+import comp
+#import flatten
+#import form
+#import frontend
+import ext
 

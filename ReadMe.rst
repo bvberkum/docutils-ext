@@ -59,11 +59,16 @@ Devel
      a perhaps lossy representation? 
      Attributes of Du's DOM (``docutiles.nodes``) maybe hidden.
 
-Branches
-  - master, all development happened here until dev was branched.
-  - dev, all development now here.
-  - dev_rstwriterobjects, separate development branch for rstwriter
-    restructuring.  
+Branches:
+  master
+    all development happened here until dev was branched.
+  dev
+    all development now here.
+  dev_rstwriterobjects
+    separate development branch for rstwriter restructuring.  
+  dev_simplemuxdem
+    trying a lossless read/write using the rST SM base with a 
+    simple text format
 
 rST writer
 ----------

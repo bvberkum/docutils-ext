@@ -22,12 +22,22 @@ import docutils.writers
 import docutils.parsers
 import docutils.parsers.rst
 
-# import and register
-import dotmpe.du.ext.writer
 
+import dotmpe.du
+import transform
+#import extractor
+import node
+# import and register
+import dotmpe.du.ext.parser
+import dotmpe.du.ext.reader
+import dotmpe.du.ext.writer
+from dotmpe.du.ext.parser.rst.directive.margin import Margin
+from dotmpe.du.ext.parser.rst.directive.images import Figure
+
+
+""
 
 "Register left_margin/right_margin directives. "
-from dotmpe.du.ext.parser.rst.directive.margin import Margin
 docutils.parsers.rst.directives.register_directive('margin', Margin)
 
 #"Override include directive registration. "
@@ -36,7 +46,6 @@ docutils.parsers.rst.directives.register_directive('margin', Margin)
 #directives.register_directive('include', Include)
 
 "Override figure, enable 'label' for figure directive. "
-from dotmpe.du.ext.parser.rst.directive.images import Figure
 # FIXME: ugly.. need to dream up new directive names..
 del docutils.parsers.rst.directives._directive_registry['figure']
 # FIXME: i18n
