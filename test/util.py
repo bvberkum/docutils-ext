@@ -146,6 +146,7 @@ class AbstractWriterTestCase(object):
         warnings = StringIO()
         original_tree = docutils.core.publish_parts(
                 source=rst, 
+                source_path=self.DOC_FILE,
                 #reader_name=self.TAG,
                 settings_overrides={
                     'warning_stream': warnings,
@@ -166,7 +167,8 @@ class AbstractWriterTestCase(object):
         # Publish the source file to rST, ie. regenerate the rST file
         warnings = StringIO()
         result = docutils.core.publish_parts(
-                source=rst, 
+                source=rst,
+                source_path=self.DOC_FILE,
                 #reader_name=reader_name,
                 settings_overrides={
                     'warning_stream': warnings,
@@ -185,6 +187,7 @@ class AbstractWriterTestCase(object):
         warnings = StringIO()
         generated_tree = docutils.core.publish_parts(
                 source=result,
+                source_path=self.DOC_FILE,
                 #reader_name=reader_name,
                 settings_overrides={
                     'warning_stream': warnings,
@@ -227,6 +230,7 @@ def new_writer_testcase(tag, testcase_name, doc_file, lossy=False):
 
 
 def mkclassname(filename):
+    assert isinstance(filename, basestring), filename
     name = os.path.splitext(os.path.basename(filename))[0].replace('.','_')
     name = name.replace('-', ' ').title().replace(' ','').replace('+','_')
     if name[0].isdigit():
