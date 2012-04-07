@@ -69,6 +69,8 @@ Branches:
   dev_simplemuxdem
     trying a lossless read/write using the rST SM base with a 
     simple text format
+  x_subtree
+    experimenting with git-subtree, adding rst2confluence writer
 
 rST writer
 ----------
