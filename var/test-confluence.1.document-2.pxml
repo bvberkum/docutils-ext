@@ -1,2 +1,6 @@
-<document source="var/test-1.document-atlassian.txt">
-
+<document source="var/test-confluence.1.document-2.txt">
+    <raw format="confluence" xml:space="preserve">
+        h1. Notation Guide
+        
+        For Atlassian Confluence.
+        

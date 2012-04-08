@@ -1,6 +1,8 @@
-form
-rstwriter
-atlassianparser
-atlassianwriter
-confluence
-simplemuxdem
+#form
+#rstwriter
+#atlassianparser
+#atlassianwriter
+confluenceparser
+confluencewriter
+#confluencemuxdem
+#simplemuxdem

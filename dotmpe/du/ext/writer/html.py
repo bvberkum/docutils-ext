@@ -160,7 +160,7 @@ class HTMLTranslator(html4css1.HTMLTranslator):
 
 class Writer(html4css1.Writer):
 
-    supported = ('html', 'html4css1', )
+    supported = ( 'html', 'html4css1', )
     """Formats this writer supports."""
 
     settings_spec = html4css1.Writer.settings_spec + (

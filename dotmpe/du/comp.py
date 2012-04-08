@@ -41,14 +41,17 @@ def component_loader(component_type):
     def get_component_class(component_alias, klass=component_type.title()):
         "Import `klass` from the module registered with `%s_name`." % component_type
         if component_alias not in ext_component_modules:
-            #print "Loading %s_name" % component_type, component_alias, klass
+            print "Loading %s_name" % component_type, component_alias, klass
             if component_alias in ext_component_aliases:
                 ext_component_module = ext_component_aliases[component_alias]
-                ext_component_modules[component_alias] = load_module(ext_component_module)
+                ext_component_modules[component_alias] = \
+                        load_module(ext_component_module)
             else:
                 assert klass == component_type.title(), \
-                        "Du `get_%s_class` can only load %s component classes named '%s'." \
-                                % (component_type, component_group, component_type.title())
+                        "Du `get_%s_class` can only load %s component classes "\
+                        "named '%s'." \
+                                % (component_type, component_group, 
+                                        component_type.title())
                 du_component_loader = getattr(
                         getattr(docutils, component_group), 
                         "get_%s_class" % component_type)
@@ -153,7 +156,8 @@ def get_extractor_pair(mod_name):
 
 ## Util
 
-def register_extension_components(ext_module_prefix, ext_tag, ext_type, ext_dir):
+def register_extension_components(ext_module_prefix, ext_tag, ext_type, ext_dir,
+        exclude_names=[]):
 
     """
     Helper function to register all submodules in `ext_module_prefix` (at
@@ -183,11 +187,40 @@ def register_extension_components(ext_module_prefix, ext_tag, ext_type, ext_dir)
                 glob.glob(os.path.join(ext_dir, '[!_]*.py'))))
 
     for ext_name in ext_names:
+        if ext_name in exclude_names:
+            continue
         ext_module = ext_module_prefix + '.' + ext_name
         tagged_name = ext_name +'-'+ ext_tag
 
         # register name with ``dotmpe.du.comp``
         if ext_name not in du_comp_reg:
+            print "Info: registering %s named %r with %r" % \
+                    (ext_type, ext_name, ext_module)
             du_ext_comp_reg[ext_name] = ext_module
+
+        assert tagged_name not in du_ext_comp_reg
+        print "Info: registering tagged %s name %r with %r" % \
+                (ext_type, tagged_name, ext_module)
         du_ext_comp_reg[tagged_name] = ext_module
+
+        # Pre-load components to read additional supported aliases
+        # XXX: this effectively undoes lazy loading by
+        # dotmpe.du.comp.component_loader generated loaders. That code should be
+        # deprecated.
+        ext_mod = load_module(ext_module)
+        if not hasattr(ext_mod, ext_type):
+            print >>sys.stderr, "Warning: module %s does not provide %s component" \
+                    % (ext_module, ext_type)
+        else:
+            supported_aliases = getattr(getattr(ext_mod, ext_type), 'supported')
+            assert isinstance(supported_aliases, (tuple, list)),\
+                    "%s %s supported: need a sequence, not %s"(ext_type, ext_mod, supported_aliases)
+            for alias in supported_aliases:
+                if alias == ext_name:
+                    continue
+                assert alias not in du_ext_comp_reg, \
+                        "%s alias %r already registered (for component: %s)" \
+                        % (ext_type, alias, du_ext_comp_reg[alias])
+                du_ext_comp_reg[alias] = ext_module
+                print "%s %r also supports %r" % (ext_type, ext_module, alias)
 

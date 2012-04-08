@@ -1,6 +1,4 @@
-{quote}
 h1. Notation Guide
 
 For Atlassian Confluence.
 
-{quote}

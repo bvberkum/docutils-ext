@@ -1,3 +1,7 @@
+"""
+Experimental Atlassian Wiki markup parser (Confluence).
+"""
+
 import roman, re
 from docutils import frontend, parsers, nodes
 import docutils.statemachine

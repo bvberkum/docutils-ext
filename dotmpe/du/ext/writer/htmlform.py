@@ -49,6 +49,7 @@ class HTMLTranslator(html.HTMLTranslator):
 
 class Writer(html.Writer):
 
+    supported = ( 'html4css1-form', )
     def __init__(self):
         html.Writer.__init__(self)
         self.translator_class = HTMLTranslator

@@ -37,6 +37,7 @@ from dotmpe.du.ext.parser.rst.directive.margin import Margin
 from dotmpe.du.ext.parser.rst.directive.images import Figure
 
 
+### reStructuredText extensions
 
 "Register left_margin/right_margin directives. "
 docutils.parsers.rst.directives.register_directive('margin', Margin)
@@ -54,6 +55,9 @@ docutils.parsers.rst.directives.register_directive('figuur', Figure)
 docutils.parsers.rst.directives.register_directive('figure', Figure)
 
 
+
+### Atlassian Confluence support
+
 try:
     import rst2confluence.confluence
 
@@ -61,6 +65,9 @@ try:
 
 except ImportError, e:
     print >> sys.stderr, "No confluence writer (depends on rst2confluence)"
+
+
+### Media Wiki support
 
 try:
     # XXX: make an raw block of mediawiki?
@@ -71,6 +78,8 @@ try:
 except ImportError, e:
     print >> sys.stderr, "No mediawiki directive (depends on mwlib)"
     pass
+
+
 
 #from pub import Publisher
 "XXX: see blue-lines.appspot.com"
