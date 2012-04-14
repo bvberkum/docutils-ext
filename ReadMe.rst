@@ -60,18 +60,22 @@ Devel
      Attributes of Du's DOM (``docutiles.nodes``) maybe hidden.
 
 Branches:
-  master
+  master 
     all development happened here until dev was branched.
-  dev
+
+  dev (current 2012-04-14)
     all development now here.
+
+    :tests: 53; 18 failures, 35 OK
 
     dev_rstwriterobjects
       separate development branch for rstwriter restructuring.  
-    dev_simplemuxdem (current 2012-04-14)
+
+    dev_simplemuxdem (2012-04-14)
       trying a lossless read/write using the rST SM base with a 
       simple text format
 
-      :tests: 53: 18 failures, 35 OK
+      :tests: 53; 18 failures, 35 OK
 
 rST writer
 ----------
