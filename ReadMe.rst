@@ -67,7 +67,7 @@ Branches:
 
     dev_rstwriterobjects
       separate development branch for rstwriter restructuring.  
-    dev_simplemuxdem (current 2012-04-04)
+    dev_simplemuxdem (current 2012-04-14)
       trying a lossless read/write using the rST SM base with a 
       simple text format
 
