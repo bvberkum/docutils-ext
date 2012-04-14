@@ -880,6 +880,6 @@ var/test-confluence.1.full-format-help.txt:415: (ERROR/3) Undefined substitution
 
 
 ----------------------------------------------------------------------
-Ran 55 tests in 4.411s
+Ran 55 tests in 3.886s
 
 FAILED (failures=24, errors=3)

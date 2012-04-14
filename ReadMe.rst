@@ -65,8 +65,11 @@ Branches:
   dev
     all development now here.
 
-    dev_rstwriterobjects (current 2012-04-07)
+    dev_rstwriterobjects (current 2012-04-14)
       separate development branch for rstwriter restructuring.  
+
+      :test: 55; 24 failures, 3 errors, 28 OK
+
     dev_simplemuxdem
       trying a lossless read/write using the rST SM base with a 
       simple text format
