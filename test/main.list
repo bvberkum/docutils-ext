@@ -2,7 +2,7 @@
 #rstwriter
 #atlassianparser
 #atlassianwriter
-confluenceparser
-confluencewriter
-#confluencemuxdem
+#confluenceparser
+#confluencewriter
+confluencemuxdem
 #simplemuxdem

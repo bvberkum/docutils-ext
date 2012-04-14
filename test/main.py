@@ -21,6 +21,7 @@ def main(test_modules=[]):
     """
 
     for name in test_modules:
+        print >>sys.stderr, "Loading tests for %s" % name
         setattr(sys.modules[__name__], name, __import__(name, locals(), globals()))
 
     unittest.main()

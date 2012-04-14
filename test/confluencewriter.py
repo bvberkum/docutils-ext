@@ -21,14 +21,13 @@ def create_writer_tests(files):
     * Re-parse generated confluence, and compare pxml tree for lossy 
       structural test.
     """
-    for rst_file in files:
-        continue
+    for rst_file, pxml_file in files:
 
-        pass
-        testcase_name = mkclassname(acw_file)
+        testcase_name = mkclassname(rst_file)
 
         # Lossy
-        TestCase = new_writer_testcase('atlassian-mpe', testcase_name, acw_file, True)
+        TestCase = new_writer_testcase('confluence-embedded',
+                testcase_name, rst_file, True)
         TestCase.__module__ = __name__
         setattr(sys.modules[__name__], testcase_name, TestCase)
 

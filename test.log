@@ -1,9 +1,143 @@
-Warning: module dotmpe.du.ext.writer.confluence does not provide Writer component
 Warning: module dotmpe.du.ext.writer.atlassian does not provide Writer component
 Warning: module dotmpe.du.ext.writer.pydoc does not provide Writer component
 No mediawiki directive (depends on mwlib)
-..
+Loading tests for confluencemuxdem
+FF
+======================================================================
+FAIL: TestConfluence_1_Document2; Lossy doctree comparison; Writer 'confluence-embedded'
 ----------------------------------------------------------------------
-Ran 2 tests in 0.117s
+Traceback (most recent call last):
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 186, in __test_writer
+    ("on <%s>" % self.DOC_FILE ))
+AssertionError: Empty generated file. on <var/test-confluence.1.document-2.txt>
 
-OK
+======================================================================
+FAIL: TestConfluence_1_FullFormatHelp; Lossy doctree comparison; Writer 'confluence-embedded'
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 162, in __test_writer
+    warnings)
+AssertionError: Corrupt test source file: on <var/test-confluence.1.full-format-help.txt>
+var/test-confluence.1.full-format-help.txt:127: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:137: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:195: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:197: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:228: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:232: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:228: (WARNING/2) Inline emphasis start-string without end-string.
+var/test-confluence.1.full-format-help.txt:228: (WARNING/2) Inline emphasis start-string without end-string.
+var/test-confluence.1.full-format-help.txt:228: (WARNING/2) Inline emphasis start-string without end-string.
+var/test-confluence.1.full-format-help.txt:238: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:241: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:246: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:249: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:383: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:384: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:389: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:390: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:392: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:400: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:401: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:406: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:486: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:524: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:528: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:537: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:549: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:638: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:640: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:641: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:651: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:653: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:654: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:659: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:661: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:662: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:672: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:674: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:675: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:685: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:687: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:688: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:698: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:700: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:701: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:711: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:713: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:714: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:724: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:726: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:727: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:737: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:739: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:740: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:902: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:960: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:962: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:964: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:967: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:974: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:989: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:991: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:993: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:995: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:998: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:1005: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:1029: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:1039: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:1044: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:1054: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:1057: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:1060: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:1063: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:1087: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:1090: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:1092: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:1101: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:1104: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:1107: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:1110: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:1194: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:1238: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:1238: (WARNING/2) Inline emphasis start-string without end-string.
+var/test-confluence.1.full-format-help.txt:1248: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:1261: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:1264: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:1303: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:1320: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:1320: (WARNING/2) Inline emphasis start-string without end-string.
+var/test-confluence.1.full-format-help.txt:1331: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:1334: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:1353: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:1353: (WARNING/2) Inline emphasis start-string without end-string.
+var/test-confluence.1.full-format-help.txt:1365: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:1433: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:1441: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:1656: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:1658: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:1665: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:1681: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:1684: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:1686: (ERROR/3) Unexpected indentation.
+var/test-confluence.1.full-format-help.txt:1691: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+var/test-confluence.1.full-format-help.txt:1719: (WARNING/2) Inline emphasis start-string without end-string.
+var/test-confluence.1.full-format-help.txt:1719: (WARNING/2) Inline emphasis start-string without end-string.
+var/test-confluence.1.full-format-help.txt:1719: (WARNING/2) Inline emphasis start-string without end-string.
+var/test-confluence.1.full-format-help.txt:1719: (WARNING/2) Inline emphasis start-string without end-string.
+var/test-confluence.1.full-format-help.txt:332: (ERROR/3) Undefined substitution referenced: "col A1|col A2|col A3".
+var/test-confluence.1.full-format-help.txt:332: (ERROR/3) Undefined substitution referenced: "col B1|col B2|col B3".
+var/test-confluence.1.full-format-help.txt:415: (ERROR/3) Undefined substitution referenced: "dataDisplay=true|dataOrientation=vertical} |".
+
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.745s
+
+FAILED (failures=2)

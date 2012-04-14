@@ -26,7 +26,9 @@ def create_srcwriter_tests(files):
         testcase_name = mkclassname(acw_file)
 
         # Lossy
-        TestCase = new_writer_testcase('confluence', testcase_name, acw_file, True)
+        TestCase = new_writer_testcase('confluence-embedded', 
+                testcase_name, acw_file, True)
+        print TestCase
         TestCase.__module__ = __name__
         setattr(sys.modules[__name__], testcase_name, TestCase)
  
