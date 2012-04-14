@@ -1,3 +1,7 @@
+"""
+XXX: unused code (internally), see dotmpe.du.frontend for newer code
+"""
+
 import os
 import sys
 from docutils import Component, core, SettingsSpec
@@ -36,7 +40,7 @@ def run_extractor(reader_name='mpe'):
     pass # TODO
 
 
-### XXX:BVB: rewrite Du ext frontend for builder
+### XXX: rewrite Du ext frontend for builder
 # old code for what would be an interface for du to run an HTTP server
 # main interface and should be reused for Builder 
 #from gate import content, comp

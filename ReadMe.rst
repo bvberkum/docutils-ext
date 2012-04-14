@@ -71,7 +71,7 @@ Branches:
       trying a lossless read/write using the rST SM base with a 
       simple text format
 
-      :tests: only simplemuxdem, 2 tests OK
+      :tests: 53: 18 failures, 35 OK
 
 rST writer
 ----------
