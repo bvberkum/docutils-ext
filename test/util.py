@@ -74,6 +74,7 @@ class AbstractParserTestCase(object):
         warnings = StringIO()
         generated_tree = docutils.core.publish_parts(
                 source=doc,
+                source_path=self.DOC_FILE,
                 parser=parser,
                 settings_overrides={
                     'warning_stream': warnings,
@@ -93,10 +94,11 @@ class AbstractParserTestCase(object):
 
         # print unified diff for PXML mismatch
         diff = "\n".join(list(unified_diff(expected_pxml.split('\n'), generated_tree.split('\n'))))
-        self.assertEqual( original_tree, generated_tree, 
+        self.assertEqual( expected_pxml, generated_tree, 
                     "pxml tree mismatch \n "+
                     ("on <%s>" % self.DOC_FILE )+"\n\n"+
                     diff )
+        assert True
 
 def new_parser_testcase(tag, testcase_name, doc_file, pxml_file, lossy=False):
     lossy_str = 'Lossy'

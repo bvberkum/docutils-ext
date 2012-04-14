@@ -33,7 +33,6 @@ ACW_DOC = [ (doc_file, doc_file.replace(".txt", ".pxml"))
         for doc_file in ACW_DOC_FILES]
 "Atlassian Confluence Wiki test documents and expected PXML. "
 
-
 ### Media Wiki
 MW_DOC = filter(os.path.getsize,
         glob.glob(os.path.join('var', 'test-mediawiki*.wiki'))
@@ -50,3 +49,9 @@ SMF_DOC = [ (doc_file, doc_file.replace(".txt", ".pxml"))
 "Simple format (simpleformat) plain text markup test files for Du reader/parser/writer experimentation. "
 
 
+SMF_DOC_FILES = filter(os.path.getsize,
+        glob.glob(os.path.join('var', 'test-*-simpleformat.txt'))
+    )
+SMF_DOC = [ (doc_file, doc_file.replace(".txt", ".pxml")) 
+        for doc_file in SMF_DOC_FILES ]
+""
