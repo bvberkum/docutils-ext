@@ -64,11 +64,12 @@ Branches:
     all development happened here until dev was branched.
   dev
     all development now here.
-  dev_rstwriterobjects
-    separate development branch for rstwriter restructuring.  
-  dev_simplemuxdem
-    trying a lossless read/write using the rST SM base with a 
-    simple text format
+
+    dev_rstwriterobjects (current 2012-04-07)
+      separate development branch for rstwriter restructuring.  
+    dev_simplemuxdem
+      trying a lossless read/write using the rST SM base with a 
+      simple text format
 
 rST writer
 ----------
