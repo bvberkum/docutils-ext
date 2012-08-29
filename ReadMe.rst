@@ -65,7 +65,7 @@ Branches:
   dev (current 2012-04-14)
     all development now here.
 
-    :tests: 53; 18 failures, 35 OK
+    :tests: 50; 21 failures, 29 OK
 
     dev_rstwriterobjects (current 2012-08-29)
       separate development branch for rstwriter restructuring.  
