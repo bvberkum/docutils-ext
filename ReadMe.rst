@@ -63,10 +63,10 @@ Branches:
   master 
     all development happened here until dev was branched.
 
-  dev (current 2012-04-14)
+  dev (current 2012-08-29)
     all development now here.
 
-    :tests: 53; 18 failures, 35 OK
+    :tests: 57; 22 failures, 2 errors, 34 OK
 
     dev_rstwriterobjects
       separate development branch for rstwriter restructuring.  
