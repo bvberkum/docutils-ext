@@ -8,7 +8,7 @@ from util import mkclassname, new_writer_testcase
 
 def create_tests(files):
 
-    for acw_file in files:
+    for acw_file, pxml_file in files:
         testcase_name = mkclassname(acw_file)
 
         # Lossy

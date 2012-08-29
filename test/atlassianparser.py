@@ -1,3 +1,6 @@
+"""
+Test parsing of atlassion mediawiki formatting.
+"""
 import sys
 
 import dotmpe.du.ext.parser

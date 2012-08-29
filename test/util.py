@@ -57,6 +57,8 @@ class AbstractParserTestCase(object):
             self.fail(e)
 
     def __test_parser(self, parser, lossy=True):
+        global width
+
         doc = open(self.DOC_FILE).read().decode('utf-8')
         assert isinstance(doc, unicode)
 
@@ -225,6 +227,7 @@ def new_writer_testcase(tag, testcase_name, doc_file, lossy=False):
 
 
 def mkclassname(filename):
+    assert isinstance(filename, basestring), filename
     name = os.path.splitext(os.path.basename(filename))[0].replace('.','_')
     name = name.replace('-', ' ').title().replace(' ','').replace('+','_')
     if name[0].isdigit():
@@ -251,7 +254,8 @@ def print_compare_writer(doc_file,
     assert isinstance(doc, unicode)
 
     if not reader_class:
-        reader_class = dotmpe.du.ext.reader.get_reader_class(reader_name)
+        #reader_class = dotmpe.du.ext.reader.get_reader_class(reader_name)
+        reader_class = dotmpe.du.comp.get_reader_class(reader_name)
     if not parser_class:
         parser_class = dotmpe.du.comp.get_parser_class(parser_name)
 
@@ -273,7 +277,7 @@ def print_compare_writer(doc_file,
         generated_tree = u''
     assert isinstance(generated_tree, unicode)
 
-    width = int(round(max_width/2))
+    width = int((max_width-1)/2)
     #if width > 79:
     #    width = 79
 

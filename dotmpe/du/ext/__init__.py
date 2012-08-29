@@ -1,11 +1,12 @@
 """
 Extensions for docutils reStructuredText.
 
-Upon import registers:
+Upon import, this module registers:
 
 - Margin directive with rSt parser.
-- Updated inlcude directive for use with dotmpe.du.builder
-- Register additional writers
+- If 'mwlib' is available the 'mediawiki' directive for rST.
+- Updated include directive, for use with dotmpe.du.builder
+- Register additional writers for use with dotmpe.du.builder
 
 TODO:
 - 'dotmpe-htdocs' writer alias for XHTML output with margin support.
@@ -21,12 +22,22 @@ import docutils.writers
 import docutils.parsers
 import docutils.parsers.rst
 
-# import and register
-import dotmpe.du.ext.writer
 
+import dotmpe.du
+import transform
+#import extractor
+import node
+# import and register
+import dotmpe.du.ext.parser
+import dotmpe.du.ext.reader
+import dotmpe.du.ext.writer
+from dotmpe.du.ext.parser.rst.directive.margin import Margin
+from dotmpe.du.ext.parser.rst.directive.images import Figure
+
+
+""
 
 "Register left_margin/right_margin directives. "
-from dotmpe.du.ext.parser.rst.directive.margin import Margin
 docutils.parsers.rst.directives.register_directive('margin', Margin)
 
 #"Override include directive registration. "
@@ -35,12 +46,20 @@ docutils.parsers.rst.directives.register_directive('margin', Margin)
 #directives.register_directive('include', Include)
 
 "Override figure, enable 'label' for figure directive. "
-from dotmpe.du.ext.parser.rst.directive.images import Figure
 # FIXME: ugly.. need to dream up new directive names..
 del docutils.parsers.rst.directives._directive_registry['figure']
+# FIXME: i18n
 docutils.parsers.rst.directives.register_directive('figuur', Figure)
 docutils.parsers.rst.directives.register_directive('figure', Figure)
 
+
+try:
+    import mwlib
+
+    from dotmpe.du.ext.parser.rst.directive.mediawiki import MediaWiki
+    docutils.parsers.rst.directives.register_directive('mediawiki', MediaWiki)
+except ImportError, e:
+    pass
 
 #from pub import Publisher
 "XXX: see blue-lines.appspot.com"
