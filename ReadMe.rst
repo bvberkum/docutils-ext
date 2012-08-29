@@ -60,7 +60,7 @@ Devel
      Attributes of Du's DOM (``docutiles.nodes``) maybe hidden.
 
 Branches:
-  master 
+  master
     all development happened here until dev was branched.
 
   dev (current 2012-08-29)
@@ -70,8 +70,7 @@ Branches:
 
     dev_rstwriterobjects
       separate development branch for rstwriter restructuring.  
-
-    dev_simplemuxdem (2012-04-14)
+    dev_simplemuxdem
       trying a lossless read/write using the rST SM base with a 
       simple text format
 
@@ -79,6 +78,7 @@ Branches:
 
     dev_atlassian
       Working on Atlassion confluence support. 
+      Abandonning while I do not have enough insight into the parser.
 
 rST writer
 ----------
