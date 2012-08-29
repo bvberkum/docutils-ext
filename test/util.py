@@ -35,12 +35,13 @@ from dotmpe.du.ext.writer.rst import Writer
 
 
 
+width = 79
 
 class AbstractParserTestCase(object):
 
     DOC_FILE = None
     TAG = None
-    VERBOSE = 0
+    VERBOSE = 1
 
     corrupt_sources = []
 
@@ -64,11 +65,11 @@ class AbstractParserTestCase(object):
 
         expected_pxml = open(self.DOC_PXML_FILE).read().decode('utf-8')
 
-        if self.VERBOSE:
-            print self.DOC_FILE.ljust(width,'=')
-
         self.assertNotEqual(doc.strip(), u'', "Empty test file. "+
                     ("on <%s>" % self.DOC_FILE ))
+
+        if self.VERBOSE:
+            print self.DOC_FILE.ljust(width,'=')
 
         ## Compare parse trees, using pprint/pseudoxml representation
         warnings = StringIO()
@@ -86,14 +87,33 @@ class AbstractParserTestCase(object):
                 },
                 writer_name='pprint')['whole']
         warnings = warnings.getvalue()
+
+        # print unified diff for PXML mismatch
+        diff = "\n".join(list(unified_diff(expected_pxml.split('\n'), generated_tree.split('\n'))))
+
+        out = []
+        original_out = expected_pxml.strip().split('\n')
+        generated_out = generated_tree.strip().split('\n')
+        out += [ (u'Original Tree ').ljust(width, '-') +u' '+ (u'Generated Tree ').ljust(width, '-') ] 
+        while original_out or generated_out:
+            p1 = u''
+            p2 = u''
+            if original_out:
+                p1 = original_out.pop(0)
+            if generated_out:
+                p2 = generated_out.pop(0)
+            out += [ p1.ljust(width) +u' '+ p2.ljust(width) ]
+        out += [u''] 
+        print "\n".join(out)
+
+#        if self.VERBOSE:
+#            print diff
+
         if warnings:
             self.assertFalse(warnings.strip(), 
                     "Error parsing test document\n "+
                     ("on <%s>" % self.DOC_FILE )+"\n\n"+
                     warnings)
-
-        # print unified diff for PXML mismatch
-        diff = "\n".join(list(unified_diff(expected_pxml.split('\n'), generated_tree.split('\n'))))
         self.assertEqual( expected_pxml, generated_tree, 
                     "pxml tree mismatch \n "+
                     ("on <%s>" % self.DOC_FILE )+"\n\n"+

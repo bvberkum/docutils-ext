@@ -20,5 +20,5 @@ def create_tests(files):
         TestCase.__module__ = __name__
         setattr(sys.modules[__name__], testcase_name, TestCase)
   
-
+# XXX: need to commit working test
 create_tests(init.SMF_DOC)
