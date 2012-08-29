@@ -111,8 +111,10 @@ class RstTranslator(nodes.NodeVisitor):
             visitor_name = 'visit_Text'
         else:
             visitor_name = 'visit_' + node.tagname
-        assert hasattr(self.stack.formatter, visitor_name), visitor_name
-        visitor = getattr(self.stack.formatter, visitor_name)
+        if hasattr(self.stack.formatter, visitor_name):
+            visitor = getattr(self.stack.formatter, visitor_name)
+        else:
+            visitor = self.stack.formatter.unknown_visit
         visitor(node)
 
     def flush(self, node):
@@ -122,8 +124,10 @@ class RstTranslator(nodes.NodeVisitor):
             departor_name = 'depart_Text'
         else:
             departor_name = 'depart_' + node.tagname
-        assert hasattr(self.stack.formatter, departor_name), departor_name
-        departor = getattr(self.stack.formatter, departor_name)
+        if hasattr(self.stack.formatter, departor_name):
+            departor = getattr(self.stack.formatter, departor_name)
+        else:
+            departor = self.stack.formatter.unknown_departure
         departor(node)
 
         if node.tagname in self.formatters:

@@ -95,6 +95,8 @@ May need latest docutils from SVN.
 For some automated tasks on this project package use ``make [help|..]``.
 There is no setup script yet.
 
+mkdocs is latest dev_packages branch.
+
 Log
 -----
 2010-11-04

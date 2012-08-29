@@ -55,37 +55,9 @@ Traceback (most recent call last):
     self._test_writer(writer_class(), lossy=lossy)
   File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 179, in __test_writer
-    writer=writer)['whole']#writer_name='dotmpe-rst')
-  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 433, in publish_parts
-    enable_exit_status=enable_exit_status)
-  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 647, in publish_programmatically
-    output = pub.publish(enable_exit_status=enable_exit_status)
-  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 211, in publish
-    output = self.writer.write(self.document, self.destination)
-  File "/srv/project-mpe/docutils-ext/lib/docutils/writers/__init__.py", line 77, in write
-    self.translate()
-  File "/srv/project-mpe/docutils-ext/dotmpe/du/ext/writer/rst/__init__.py", line 41, in translate
-    self.document.walkabout(visitor)
-  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
-    if child.walkabout(visitor):
-  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
-    if child.walkabout(visitor):
-  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
-    if child.walkabout(visitor):
-  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
-    if child.walkabout(visitor):
-  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
-    if child.walkabout(visitor):
-  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
-    if child.walkabout(visitor):
-  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 165, in walkabout
-    visitor.dispatch_visit(self)
-  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 1604, in dispatch_visit
-    return method(node)
-  File "/srv/project-mpe/docutils-ext/dotmpe/du/ext/writer/rst/__init__.py", line 114, in append
-    assert hasattr(self.stack.formatter, visitor_name), visitor_name
-AssertionError: visit_rubric
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 186, in __test_writer
+    ("on <%s>" % self.DOC_FILE ))
+AssertionError: Empty generated file. on </srv/project-mpe/docutils-ext/var/test-rst.13.table-2.rst>
 
 ======================================================================
 FAIL: runTest (util.TestRst_13_Table3LossyRst-MpeWriterTestCase)
@@ -269,29 +241,26 @@ Traceback (most recent call last):
     self._test_writer(writer_class(), lossy=lossy)
   File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 179, in __test_writer
-    writer=writer)['whole']#writer_name='dotmpe-rst')
-  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 433, in publish_parts
-    enable_exit_status=enable_exit_status)
-  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 647, in publish_programmatically
-    output = pub.publish(enable_exit_status=enable_exit_status)
-  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 211, in publish
-    output = self.writer.write(self.document, self.destination)
-  File "/srv/project-mpe/docutils-ext/lib/docutils/writers/__init__.py", line 77, in write
-    self.translate()
-  File "/srv/project-mpe/docutils-ext/dotmpe/du/ext/writer/rst/__init__.py", line 41, in translate
-    self.document.walkabout(visitor)
-  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
-    if child.walkabout(visitor):
-  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
-    if child.walkabout(visitor):
-  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 165, in walkabout
-    visitor.dispatch_visit(self)
-  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 1604, in dispatch_visit
-    return method(node)
-  File "/srv/project-mpe/docutils-ext/dotmpe/du/ext/writer/rst/__init__.py", line 114, in append
-    assert hasattr(self.stack.formatter, visitor_name), visitor_name
-AssertionError: visit_author
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 210, in __test_writer
+    diff )
+AssertionError: pxml tree mismatch 
+ on </srv/project-mpe/docutils-ext/var/test-rst.1.document-4.rst>
+
+--- 
+
++++ 
+
+@@ -82,9 +82,4 @@
+
+                                     <field_body>
+                                         <paragraph>
+                                             Field-body
+-    <section ids="section" names="section">
+-        <title>
+-            Section
+-        <paragraph>
+-            Some paragraph in 4.1
+ 
 
 ======================================================================
 FAIL: runTest (util.TestRst_1_Document5_FullRstDemoLossyRst-MpeWriterTestCase)
@@ -302,29 +271,14 @@ Traceback (most recent call last):
     self._test_writer(writer_class(), lossy=lossy)
   File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 179, in __test_writer
-    writer=writer)['whole']#writer_name='dotmpe-rst')
-  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 433, in publish_parts
-    enable_exit_status=enable_exit_status)
-  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 647, in publish_programmatically
-    output = pub.publish(enable_exit_status=enable_exit_status)
-  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 211, in publish
-    output = self.writer.write(self.document, self.destination)
-  File "/srv/project-mpe/docutils-ext/lib/docutils/writers/__init__.py", line 77, in write
-    self.translate()
-  File "/srv/project-mpe/docutils-ext/dotmpe/du/ext/writer/rst/__init__.py", line 41, in translate
-    self.document.walkabout(visitor)
-  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
-    if child.walkabout(visitor):
-  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
-    if child.walkabout(visitor):
-  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 165, in walkabout
-    visitor.dispatch_visit(self)
-  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 1604, in dispatch_visit
-    return method(node)
-  File "/srv/project-mpe/docutils-ext/dotmpe/du/ext/writer/rst/__init__.py", line 114, in append
-    assert hasattr(self.stack.formatter, visitor_name), visitor_name
-AssertionError: visit_author
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 203, in __test_writer
+    warnings)
+AssertionError: Error re-parsing generated file
+ on </srv/project-mpe/docutils-ext/var/test-rst.1.document-5.full-rst-demo.rst>
+
+/srv/project-mpe/docutils-ext/var/test-rst.1.document-5.full-rst-demo.rst:10: (WARNING/2) Bibliographic field "Authors" incompatible with extraction: it must contain either a single paragraph (with authors separated by one of ";,"), multiple paragraphs (one per author), or a bullet list with one paragraph (one author) per item.
+/srv/project-mpe/docutils-ext/var/test-rst.1.document-5.full-rst-demo.rst:: (ERROR/3) Unknown target name: "goodger@python.org".
+
 
 ======================================================================
 FAIL: runTest (util.TestRst_1_Document6LossyRst-MpeWriterTestCase)
@@ -335,29 +289,14 @@ Traceback (most recent call last):
     self._test_writer(writer_class(), lossy=lossy)
   File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 179, in __test_writer
-    writer=writer)['whole']#writer_name='dotmpe-rst')
-  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 433, in publish_parts
-    enable_exit_status=enable_exit_status)
-  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 647, in publish_programmatically
-    output = pub.publish(enable_exit_status=enable_exit_status)
-  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 211, in publish
-    output = self.writer.write(self.document, self.destination)
-  File "/srv/project-mpe/docutils-ext/lib/docutils/writers/__init__.py", line 77, in write
-    self.translate()
-  File "/srv/project-mpe/docutils-ext/dotmpe/du/ext/writer/rst/__init__.py", line 41, in translate
-    self.document.walkabout(visitor)
-  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
-    if child.walkabout(visitor):
-  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
-    if child.walkabout(visitor):
-  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 165, in walkabout
-    visitor.dispatch_visit(self)
-  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 1604, in dispatch_visit
-    return method(node)
-  File "/srv/project-mpe/docutils-ext/dotmpe/du/ext/writer/rst/__init__.py", line 114, in append
-    assert hasattr(self.stack.formatter, visitor_name), visitor_name
-AssertionError: visit_author
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 203, in __test_writer
+    warnings)
+AssertionError: Error re-parsing generated file
+ on </srv/project-mpe/docutils-ext/var/test-rst.1.document-6.rst>
+
+/srv/project-mpe/docutils-ext/var/test-rst.1.document-6.rst:8: (WARNING/2) Bibliographic field "Authors" incompatible with extraction: it must contain either a single paragraph (with authors separated by one of ";,"), multiple paragraphs (one per author), or a bullet list with one paragraph (one author) per item.
+/srv/project-mpe/docutils-ext/var/test-rst.1.document-6.rst:: (ERROR/3) Unknown target name: "goodger@python.org".
+
 
 ======================================================================
 FAIL: runTest (util.TestRst_1_Document7LossyRst-MpeWriterTestCase)
@@ -428,29 +367,14 @@ Traceback (most recent call last):
     self._test_writer(writer_class(), lossy=lossy)
   File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 179, in __test_writer
-    writer=writer)['whole']#writer_name='dotmpe-rst')
-  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 433, in publish_parts
-    enable_exit_status=enable_exit_status)
-  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 647, in publish_programmatically
-    output = pub.publish(enable_exit_status=enable_exit_status)
-  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 211, in publish
-    output = self.writer.write(self.document, self.destination)
-  File "/srv/project-mpe/docutils-ext/lib/docutils/writers/__init__.py", line 77, in write
-    self.translate()
-  File "/srv/project-mpe/docutils-ext/dotmpe/du/ext/writer/rst/__init__.py", line 41, in translate
-    self.document.walkabout(visitor)
-  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
-    if child.walkabout(visitor):
-  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 173, in walkabout
-    if child.walkabout(visitor):
-  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 165, in walkabout
-    visitor.dispatch_visit(self)
-  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 1604, in dispatch_visit
-    return method(node)
-  File "/srv/project-mpe/docutils-ext/dotmpe/du/ext/writer/rst/__init__.py", line 114, in append
-    assert hasattr(self.stack.formatter, visitor_name), visitor_name
-AssertionError: visit_author
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 203, in __test_writer
+    warnings)
+AssertionError: Error re-parsing generated file
+ on </srv/project-mpe/docutils-ext/var/test-rst.22.docinfo.rst>
+
+/srv/project-mpe/docutils-ext/var/test-rst.22.docinfo.rst:8: (WARNING/2) Bibliographic field "Authors" incompatible with extraction: it must contain either a single paragraph (with authors separated by one of ";,"), multiple paragraphs (one per author), or a bullet list with one paragraph (one author) per item.
+/srv/project-mpe/docutils-ext/var/test-rst.22.docinfo.rst:: (ERROR/3) Unknown target name: "goodger@python.org".
+
 
 ======================================================================
 FAIL: runTest (util.TestRst_23_OptionList1LossyRst-MpeWriterTestCase)
@@ -600,6 +524,6 @@ AssertionError: Error re-parsing generated file
 
 
 ----------------------------------------------------------------------
-Ran 50 tests in 3.356s
+Ran 50 tests in 3.630s
 
 FAILED (failures=21)

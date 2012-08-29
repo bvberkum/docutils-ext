@@ -1007,7 +1007,6 @@ class AbstractRstFormatter(nodes.NodeVisitor):
         #'abstract':nodes.topic
 
         # RCSfile
-
     def depart_docinfo(self, node):
         self.pop_tree()
         self._write_indented('')
