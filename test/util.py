@@ -91,7 +91,7 @@ class AbstractParserTestCase(object):
         # print unified diff for PXML mismatch
         diff = "\n".join(list(unified_diff(expected_pxml.split('\n'), generated_tree.split('\n'))))
 
-        out = []
+        out += [u''] 
         original_out = expected_pxml.strip().split('\n')
         generated_out = generated_tree.strip().split('\n')
         out += [ (u'Original Tree ').ljust(width, '-') +u' '+ (u'Generated Tree ').ljust(width, '-') ] 
@@ -104,20 +104,21 @@ class AbstractParserTestCase(object):
                 p2 = generated_out.pop(0)
             out += [ p1.ljust(width) +u' '+ p2.ljust(width) ]
         out += [u''] 
-        print "\n".join(out)
+        diff += "\n".join(out)
 
 #        if self.VERBOSE:
 #            print diff
 
+        self.assertEqual( expected_pxml, generated_tree, 
+                    "pxml tree mismatch \n "+
+                    ("on <%s>" % self.DOC_FILE )+"\n\n"+
+                    diff )
+        
         if warnings:
             self.assertFalse(warnings.strip(), 
                     "Error parsing test document\n "+
                     ("on <%s>" % self.DOC_FILE )+"\n\n"+
                     warnings)
-        self.assertEqual( expected_pxml, generated_tree, 
-                    "pxml tree mismatch \n "+
-                    ("on <%s>" % self.DOC_FILE )+"\n\n"+
-                    diff )
         assert True
 
 def new_parser_testcase(tag, testcase_name, doc_file, pxml_file, lossy=False):
