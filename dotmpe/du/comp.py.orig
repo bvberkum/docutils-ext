@@ -199,6 +199,7 @@ def register_extension_components(ext_module_prefix, ext_tag, ext_type, ext_dir,
                 (ext_type, tagged_name, ext_module)
         du_ext_comp_reg[tagged_name] = ext_module
 
+<<<<<<< HEAD
         # Pre-load components to read additional supported aliases
         # XXX: this effectively undoes lazy loading by
         # dotmpe.du.comp.component_loader generated loaders. That code should be
@@ -219,3 +220,6 @@ def register_extension_components(ext_module_prefix, ext_tag, ext_type, ext_dir,
                         % (ext_type, alias, du_ext_comp_reg[alias])
                 du_ext_comp_reg[alias] = ext_module
                 print "%s %r also supports %r" % (ext_type, ext_module, alias)
+=======
+>>>>>>> dev_atlassian
+

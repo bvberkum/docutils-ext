@@ -1,10 +1,12 @@
-Warning: module dotmpe.du.ext.writer.atlassian does not provide Writer component
 Warning: module dotmpe.du.ext.writer.pydoc does not provide Writer component
+Warning: module dotmpe.du.ext.writer.atlassian does not provide Writer component
+No confluence writer (depends on rst2confluence)
 No mediawiki directive (depends on mwlib)
 Loading tests for confluencemuxdem
 FF
 ======================================================================
-FAIL: TestConfluence_1_Document2; Lossy doctree comparison; Writer 'confluence-embedded'
+FAIL: runTest (confluencemuxdem.TestConfluence_1_Document2LossyConfluence-EmbeddedWriterTestCase)
+TestConfluence_1_Document2; Lossy doctree comparison; Writer 'confluence-embedded'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
@@ -16,7 +18,8 @@ Traceback (most recent call last):
 AssertionError: Empty generated file. on <var/test-confluence.1.document-2.txt>
 
 ======================================================================
-FAIL: TestConfluence_1_FullFormatHelp; Lossy doctree comparison; Writer 'confluence-embedded'
+FAIL: runTest (confluencemuxdem.TestConfluence_1_FullFormatHelpLossyConfluence-EmbeddedWriterTestCase)
+TestConfluence_1_FullFormatHelp; Lossy doctree comparison; Writer 'confluence-embedded'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
@@ -138,6 +141,6 @@ var/test-confluence.1.full-format-help.txt:415: (ERROR/3) Undefined substitution
 
 
 ----------------------------------------------------------------------
-Ran 2 tests in 0.745s
+Ran 2 tests in 0.703s
 
 FAILED (failures=2)

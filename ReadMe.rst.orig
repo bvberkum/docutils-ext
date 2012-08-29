@@ -60,11 +60,20 @@ Devel
      Attributes of Du's DOM (``docutiles.nodes``) maybe hidden.
 
 Branches:
-  master
+  master 
     all development happened here until dev was branched.
 
   dev (current 2012-04-14)
     all development now here.
+<<<<<<< HEAD
+  dev_rstwriterobjects
+    separate development branch for rstwriter restructuring.  
+  dev_simplemuxdem
+    trying a lossless read/write using the rST SM base with a 
+    simple text format
+  dev_atlassian_confluence (current)
+    As dev_atlassian, but only implement embedded support
+=======
 
     :tests: 53; 18 failures, 35 OK
 
@@ -79,8 +88,7 @@ Branches:
 
     dev_atlassian
       Working on Atlassion confluence support. 
-    dev_atlassian_confluence (current)
-      As dev_atlassian, but only implement embedded support
+>>>>>>> dev_atlassian
 
 rST writer
 ----------
