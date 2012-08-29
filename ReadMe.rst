@@ -82,6 +82,8 @@ Branches:
     dev_atlassian_confluence (current)
       As dev_atlassian, but only implement embedded support
 
+      :tests: 2; 2 failures
+
 rST writer
 ----------
 An experimental writer. The module can be invoked as script using a rST filename
