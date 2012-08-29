@@ -1,13 +1,13 @@
-F..F..FFFF.....FF......FFF....FF.F..FFFF.............
+F..F..FFFF.....FF......FFF....FF.F..FFFF............F
 ======================================================================
 FAIL: test_1 (form.FormTest)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/srv/project-mpe/docutils-ext/test/form.py", line 163, in test_1
     document = builder.build(source, source_id)
-  File "/srv/project-mpe/docutils-ext/dotmpe/du/builder/__init__.py", line 83, in build
+  File "/srv/project-mpe/docutils-ext/dotmpe/du/builder/__init__.py", line 84, in build
     overrides)
-  File "/srv/project-mpe/docutils-ext/dotmpe/du/builder/__init__.py", line 231, in __publish
+  File "/srv/project-mpe/docutils-ext/dotmpe/du/builder/__init__.py", line 232, in __publish
     overrides, config_section=None, enable_exit_status=False)
   File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 647, in publish_programmatically
     output = pub.publish(enable_exit_status=enable_exit_status)
@@ -23,12 +23,13 @@ Traceback (most recent call last):
     value = self[field_id]
   File "/srv/project-mpe/docutils-ext/dotmpe/du/form.py", line 245, in __getitem__
     v = self.__process_field(field_id)
-  File "/srv/project-mpe/docutils-ext/dotmpe/du/form.py", line 408, in __process_field
-    assert not isinstance(node, list), "Multiple fields not supported. "
-AssertionError: Multiple fields not supported. 
+  File "/srv/project-mpe/docutils-ext/dotmpe/du/form.py", line 409, in __process_field
+    "Multiple fields not supported (field %s). " % field_id
+AssertionError: Multiple fields not supported (field my-ws-list). 
 
 ======================================================================
-FAIL: TestRst_10_LiteralBlock3; Lossy doctree comparison; Writer 'rst-mpe'
+FAIL: runTest (util.TestRst_10_LiteralBlock3LossyRst-MpeWriterTestCase)
+TestRst_10_LiteralBlock3; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
@@ -40,9 +41,9 @@ Traceback (most recent call last):
 AssertionError: pxml tree mismatch 
  on </srv/project-mpe/docutils-ext/var/test-rst.10.literal-block-3.rst>
 
----  
+--- 
 
-+++  
++++ 
 
 @@ -5,8 +5,11 @@
 
@@ -61,7 +62,8 @@ AssertionError: pxml tree mismatch
          will be omitted from the result.
 
 ======================================================================
-FAIL: TestRst_13_Table; Lossy doctree comparison; Writer 'rst-mpe'
+FAIL: runTest (util.TestRst_13_TableLossyRst-MpeWriterTestCase)
+TestRst_13_Table; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
@@ -73,9 +75,9 @@ Traceback (most recent call last):
 AssertionError: pxml tree mismatch 
  on </srv/project-mpe/docutils-ext/var/test-rst.13.table.rst>
 
----  
+--- 
 
-+++  
++++ 
 
 @@ -1,28 +1,14 @@
 
@@ -121,7 +123,8 @@ AssertionError: pxml tree mismatch
  
 
 ======================================================================
-FAIL: TestRst_13_Table2; Lossy doctree comparison; Writer 'rst-mpe'
+FAIL: runTest (util.TestRst_13_Table2LossyRst-MpeWriterTestCase)
+TestRst_13_Table2; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
@@ -142,7 +145,8 @@ AssertionError: Error re-parsing generated file
 
 
 ======================================================================
-FAIL: TestRst_13_Table3; Lossy doctree comparison; Writer 'rst-mpe'
+FAIL: runTest (util.TestRst_13_Table3LossyRst-MpeWriterTestCase)
+TestRst_13_Table3; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
@@ -154,9 +158,9 @@ Traceback (most recent call last):
 AssertionError: pxml tree mismatch 
  on </srv/project-mpe/docutils-ext/var/test-rst.13.table-3.rst>
 
----  
+--- 
 
-+++  
++++ 
 
 @@ -1,66 +1,36 @@
 
@@ -262,7 +266,8 @@ AssertionError: pxml tree mismatch
  
 
 ======================================================================
-FAIL: TestRst_13_Table4; Lossy doctree comparison; Writer 'rst-mpe'
+FAIL: runTest (util.TestRst_13_Table4LossyRst-MpeWriterTestCase)
+TestRst_13_Table4; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
@@ -278,7 +283,8 @@ AssertionError: Error re-parsing generated file
 
 
 ======================================================================
-FAIL: TestRst_17_Tables1; Lossy doctree comparison; Writer 'rst-mpe'
+FAIL: runTest (util.TestRst_17_Tables1LossyRst-MpeWriterTestCase)
+TestRst_17_Tables1; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
@@ -290,9 +296,9 @@ Traceback (most recent call last):
 AssertionError: pxml tree mismatch 
  on </srv/project-mpe/docutils-ext/var/test-rst.17.tables-1.rst>
 
----  
+--- 
 
-+++  
++++ 
 
 @@ -1,21 +1,10 @@
 
@@ -327,7 +333,8 @@ AssertionError: pxml tree mismatch
  
 
 ======================================================================
-FAIL: TestRst_17_Tables2; Lossy doctree comparison; Writer 'rst-mpe'
+FAIL: runTest (util.TestRst_17_Tables2LossyRst-MpeWriterTestCase)
+TestRst_17_Tables2; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
@@ -346,7 +353,8 @@ AssertionError: Error re-parsing generated file
 
 
 ======================================================================
-FAIL: TestRst_1_Document5_FullRstDemo; Lossy doctree comparison; Writer 'rst-mpe'
+FAIL: runTest (util.TestRst_1_Document5_FullRstDemoLossyRst-MpeWriterTestCase)
+TestRst_1_Document5_FullRstDemo; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
@@ -359,7 +367,8 @@ AssertionError: /srv/project-mpe/docutils-ext/var/test-rst.1.document-5.full-rst
 ^^^^^^^^^^^^^
 
 ======================================================================
-FAIL: TestRst_1_Document6; Lossy doctree comparison; Writer 'rst-mpe'
+FAIL: runTest (util.TestRst_1_Document6LossyRst-MpeWriterTestCase)
+TestRst_1_Document6; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
@@ -376,7 +385,8 @@ AssertionError: Error re-parsing generated file
 
 
 ======================================================================
-FAIL: TestRst_1_Document7; Lossy doctree comparison; Writer 'rst-mpe'
+FAIL: runTest (util.TestRst_1_Document7LossyRst-MpeWriterTestCase)
+TestRst_1_Document7; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
@@ -388,9 +398,9 @@ Traceback (most recent call last):
 AssertionError: pxml tree mismatch 
  on </srv/project-mpe/docutils-ext/var/test-rst.1.document-7.rst>
 
----  
+--- 
 
-+++  
++++ 
 
 @@ -11,16 +11,12 @@
 
@@ -418,7 +428,8 @@ AssertionError: pxml tree mismatch
          <paragraph>
 
 ======================================================================
-FAIL: TestRst_22_Docinfo; Lossy doctree comparison; Writer 'rst-mpe'
+FAIL: runTest (util.TestRst_22_DocinfoLossyRst-MpeWriterTestCase)
+TestRst_22_Docinfo; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
@@ -435,7 +446,8 @@ AssertionError: Error re-parsing generated file
 
 
 ======================================================================
-FAIL: TestRst_23_OptionList1; Lossy doctree comparison; Writer 'rst-mpe'
+FAIL: runTest (util.TestRst_23_OptionList1LossyRst-MpeWriterTestCase)
+TestRst_23_OptionList1; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
@@ -452,7 +464,8 @@ AssertionError: Corrupt test source file: on </srv/project-mpe/docutils-ext/var/
 
 
 ======================================================================
-FAIL: TestRst_2_Title1; Lossy doctree comparison; Writer 'rst-mpe'
+FAIL: runTest (util.TestRst_2_Title1LossyRst-MpeWriterTestCase)
+TestRst_2_Title1; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
@@ -465,7 +478,8 @@ Title
 ^^^^^
 
 ======================================================================
-FAIL: TestRst_5_Inline1; Lossy doctree comparison; Writer 'rst-mpe'
+FAIL: runTest (util.TestRst_5_Inline1LossyRst-MpeWriterTestCase)
+TestRst_5_Inline1; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
@@ -481,7 +495,8 @@ AssertionError: Error re-parsing generated file
 
 
 ======================================================================
-FAIL: TestRst_5_Inline2; Lossy doctree comparison; Writer 'rst-mpe'
+FAIL: runTest (util.TestRst_5_Inline2LossyRst-MpeWriterTestCase)
+TestRst_5_Inline2; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
@@ -508,7 +523,8 @@ See "backrefs" attribute for IDs.
 
 
 ======================================================================
-FAIL: TestRst_5_Inline3; Lossy doctree comparison; Writer 'rst-mpe'
+FAIL: runTest (util.TestRst_5_Inline3LossyRst-MpeWriterTestCase)
+TestRst_5_Inline3; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
@@ -526,7 +542,8 @@ AssertionError: Error re-parsing generated file
 
 
 ======================================================================
-FAIL: TestRst_5_Inline4; Lossy doctree comparison; Writer 'rst-mpe'
+FAIL: runTest (util.TestRst_5_Inline4LossyRst-MpeWriterTestCase)
+TestRst_5_Inline4; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
@@ -553,7 +570,45 @@ AssertionError: Error re-parsing generated file
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:48: (ERROR/3) Unknown target name: "label".
 
 
+======================================================================
+FAIL: runTest (simplemuxdem.Test1_Document2SimpleformatLossySimplereaderParserTestCase)
+Test1_Document2Simpleformat; Lossy doctree comparison; Parser 'simplereader'
 ----------------------------------------------------------------------
-Ran 53 tests in 3.650s
+Traceback (most recent call last):
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 114, in runTest
+    self._test_parser(parser_class(), lossy=lossy)
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 55, in _test_parser
+    self.__test_parser(parser, lossy=lossy)
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 100, in __test_parser
+    diff )
+AssertionError: pxml tree mismatch 
+ on <var/test-1.document-2-simpleformat.txt>
 
-FAILED (failures=18)
+--- 
+
++++ 
+
+@@ -1,14 +1,4 @@
+
+-<document source="var/test-1.document-2-simpleformat.txt">
+-    <section ids="section-1" names="section\ 1">
+-        <title>
+-            Section 1
+-    <section ids="section-1-2" names="section\ 1.2">
+-        <title>
+-            Section 1.2
+-        <section ids="section-1-2-1" names="section\ 1.2.1">
+-            <title>
+-                Section 1.2.1
+-    <section ids="section-2" names="section\ 2">
+-        <title>
+-            Section 2
++<document ids="section-1" names="section\ 1" source="var/test-1.document-2-simpleformat.txt" title="Section 1">
++    <title>
++        Section 1
+ 
+
+----------------------------------------------------------------------
+Ran 53 tests in 3.802s
+
+FAILED (failures=19)
