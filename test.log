@@ -123,9 +123,9 @@ Traceback (most recent call last):
     value = self[field_id]
   File "/srv/project-mpe/docutils-ext/dotmpe/du/form.py", line 245, in __getitem__
     v = self.__process_field(field_id)
-  File "/srv/project-mpe/docutils-ext/dotmpe/du/form.py", line 408, in __process_field
-    assert not isinstance(node, list), "Multiple fields not supported. "
-AssertionError: Multiple fields not supported. 
+  File "/srv/project-mpe/docutils-ext/dotmpe/du/form.py", line 409, in __process_field
+    "Multiple fields not supported (field %s). " % field_id
+AssertionError: Multiple fields not supported (field my-cs-list). 
 
 ======================================================================
 FAIL: runTest (util.TestRst_10_LiteralBlock3LossyRst-MpeWriterTestCase)
@@ -907,6 +907,6 @@ AssertionError: pxml tree mismatch
  
 
 ----------------------------------------------------------------------
-Ran 57 tests in 3.928s
+Ran 57 tests in 3.939s
 
 FAILED (failures=25, errors=2)
