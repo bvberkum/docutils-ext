@@ -78,7 +78,10 @@ def get_reader_class(reader_name):
     if reader_name in dotmpe.du.comp.readers:
         return dotmpe.du.comp.get_reader_class(reader_name)
     else:
-        return _du_get_reader_class(reader_name)
+        try:
+            return _du_get_reader_class(reader_name)
+        except AttributeError, e:
+            raise Exception("Cannot find reader %s" % reader_name)
 docutils.readers.get_reader_class = get_reader_class
 
 _du_get_parser_class = docutils.parsers.get_parser_class
@@ -86,7 +89,10 @@ def get_parser_class(parser_name):
     if parser_name in dotmpe.du.comp.parsers:
         return dotmpe.du.comp.get_parser_class(parser_name)
     else:
-        return _du_get_parser_class(parser_name)
+        try:
+            return _du_get_parser_class(parser_name)
+        except AttributeError, e:
+            raise Exception("Cannot find parser %s" % parser_name)
 docutils.parsers.get_parser_class = get_parser_class
 
 _du_get_writer_class = docutils.writers.get_writer_class
@@ -94,6 +100,9 @@ def get_writer_class(writer_name):
     if writer_name in dotmpe.du.comp.writers:
         return dotmpe.du.comp.get_writer_class(writer_name)
     else:
-        return _du_get_writer_class(writer_name)
+        try:
+            return _du_get_writer_class(writer_name)
+        except AttributeError, e:
+            raise Exception("Cannot find writer %s" % writer_name)
 docutils.writers.get_writer_class = get_writer_class
 

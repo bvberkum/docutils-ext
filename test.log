@@ -11,8 +11,6 @@ Traceback (most recent call last):
     writer_class = dotmpe.du.comp.get_writer_class(tag)
   File "/srv/project-mpe/docutils-ext/dotmpe/du/comp.py", line 55, in get_component_class
     return du_component_loader(component_alias)
-  File "/srv/project-mpe/docutils-ext/dotmpe/du/ext/__init__.py", line 97, in get_writer_class
-    return _du_get_writer_class(writer_name)
-  File "/srv/project-mpe/docutils-ext/lib/docutils/writers/__init__.py", line 134, in get_writer_class
-    return module.Writer
-AttributeError: 'module' object has no attribute 'Writer'
+  File "/srv/project-mpe/docutils-ext/dotmpe/du/ext/__init__.py", line 106, in get_writer_class
+    raise Exception("Cannot find writer %s" % writer_name)
+Exception: Cannot find writer confluence
