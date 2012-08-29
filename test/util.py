@@ -91,20 +91,21 @@ class AbstractParserTestCase(object):
         # print unified diff for PXML mismatch
         diff = "\n".join(list(unified_diff(expected_pxml.split('\n'), generated_tree.split('\n'))))
 
-        out += [u''] 
-        original_out = expected_pxml.strip().split('\n')
-        generated_out = generated_tree.strip().split('\n')
-        out += [ (u'Original Tree ').ljust(width, '-') +u' '+ (u'Generated Tree ').ljust(width, '-') ] 
-        while original_out or generated_out:
-            p1 = u''
-            p2 = u''
-            if original_out:
-                p1 = original_out.pop(0)
-            if generated_out:
-                p2 = generated_out.pop(0)
-            out += [ p1.ljust(width) +u' '+ p2.ljust(width) ]
-        out += [u''] 
-        diff += "\n".join(out)
+        if self.VERBOSE:
+            out = [u''] 
+            original_out = expected_pxml.strip().split('\n')
+            generated_out = generated_tree.strip().split('\n')
+            out += [ (u'Original Tree ').ljust(width, '-') +u' '+ (u'Generated Tree ').ljust(width, '-') ] 
+            while original_out or generated_out:
+                p1 = u''
+                p2 = u''
+                if original_out:
+                    p1 = original_out.pop(0)
+                if generated_out:
+                    p2 = generated_out.pop(0)
+                out += [ p1.ljust(width) +u' '+ p2.ljust(width) ]
+            out += [u''] 
+            diff += "\n".join(out)
 
 #        if self.VERBOSE:
 #            print diff

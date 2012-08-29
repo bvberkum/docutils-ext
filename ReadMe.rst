@@ -73,6 +73,8 @@ Branches:
 
       :tests: 53: 18 failures, 35 OK
 
+      Abandonning while I do not have enough insight into the parser.
+
 rST writer
 ----------
 An experimental writer. The module can be invoked as script using a rST filename
