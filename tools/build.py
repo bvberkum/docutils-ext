@@ -11,6 +11,21 @@ E.g. use::
 
 This uses the CLI functions from ``dotmpe.du.frontend``. 
 
+Abstract
+--------
+Behind the scenes, docutils uses a component model with the primary elements
+reader, parser and writer. Components have names and aliases, and also hold 
+specifications of the settings they accept as parameters. 
+
+This frontend supports two operations involving these: publish and process.
+
+A publish operation involves a predefined reader and writer to convert a
+document to a (target) format. 
+
+The process invocation 
+
+Name syntax
+------------
 More genericly the script name format is::
 
   [<source-format>[2<target-format>]-][<action>][-<tag>] [options]
@@ -57,7 +72,7 @@ import dotmpe.du.ext # register extensions
 
 
 description = ('')
-actions = ('proc','pub','render')
+actions = ('proc','pub',)
 
 # defaults
 tag = 'mpe'

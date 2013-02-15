@@ -4,7 +4,10 @@ include                $(MK_SHARE)Core/Main.dirstack.mk
 MK                  += $/Rules.mk
 #      ------------ -- 
 
+PACK := docutils-ext.mpe
 
+
+# Set targets to create documentation upon build
 PIC_$d 				:= $(wildcard $/doc/*.pic)
 PIC_PNG_$d 			:= $(PIC_$d:$/%.pic=$B%.png)
 PIC_SVG_$d 			:= $(PIC_$d:$/%.pic=$B%.png)
@@ -31,9 +34,6 @@ CLN 				+= \
 					   $(shell find ./test ./dotmpe -iname '*.pyc')
 
 
-#.PHONY: build clean clean-pyc test
-#
-#
 #$B%.xml: $/%.rst    
 #	@-./dotmpe-doctree.py --traceback $< $@ 
 #	@-tidy -q -xml -utf8 -w 0 -i -m $@
@@ -48,6 +48,7 @@ CLN 				+= \
 #clean-pyc:
 #	@-find ./ -iname "*.pyc" | while read c; do rm "$$c"; done;
 
+# XXX: convert this to test-python, see e.g. scrow
 test::
 	@-test_listing=test/main.list;\
 		test_mods=$$(cat $$test_listing|grep -v '^#'|grep -v '^$$');\
