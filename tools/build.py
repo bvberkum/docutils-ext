@@ -98,23 +98,32 @@ if script_names:
 # only use tag-suffixed comp alias if available
 reader_name = tag
 if reader_name not in comp.readers:
+    print "Using default reader 'standalone'"
     reader_name = 'standalone'
+
 parser_name = "%s-%s" % (source_format, tag)
 if parser_name not in comp.parsers:
     parser_name = source_format
+
 writer_name = "%s-%s" % (target_format, tag)
 if writer_name not in comp.writers:
     writer_name = target_format
 
+module_name = tag
+if not '.' in module_name:
+    module_name = 'dotmpe.du.builder.'+tag
+
+
 # print debug info
-if '-v' in sys.argv or '--verbose' in sys.argv:
+if '--debug-du-fe' in sys.argv:
     print >>sys.stderr, """source_format: %s
 target_format: %s,
 tag: %s,
 action: %s""" % (source_format, target_format, tag, action)
     print >>sys.stderr, """reader_name: %s,
 parser_name: %s,
-writer_name: %s""" % (reader_name, parser_name, writer_name)
+writer_name: %s,
+builder_module: %s""" % (reader_name, parser_name, writer_name, module_name)
 
 # Main
 if source_format == 'mime':
@@ -125,7 +134,7 @@ else:
 if action == 'proc':
     assert target_format == 'pseudoxml'
     # TODO: use source_format
-    frontend.cli_process(sys.argv[1:], 'dotmpe.du.builder.'+tag)
+    frontend.cli_process(sys.argv[1:], builder_name=module_name)
 
 elif action == 'pub':
     frontend.cli_du_publisher(
