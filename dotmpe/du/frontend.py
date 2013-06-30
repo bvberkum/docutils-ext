@@ -24,10 +24,10 @@ from dotmpe.du.ext.parser import Inliner
 
 
 
-def cli_process(sources, builder_name='mpe',description=''):
-    module_name = builder_name
-    Builder = comp.get_builder_class(module_name, class_name='Builder')
-    builder = Builder()
+def cli_process(sources,builder=None,builder_name='mpe',description=''):
+    if not builder:
+        Builder = comp.get_builder_class(builder_name, class_name='Builder')
+        builder = Builder()
     if not sources:
         print >>sys.stderr, "No sources. "
     for source in sources:
