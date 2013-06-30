@@ -9,7 +9,7 @@ class Builder(builder.Builder):
 			}
 
 	extractor_spec = [
-				('dotmpe.du.ext.extractor.htdocs', 'dotmpe.du.ext.extractor.htdocs.Storage' ),
+				('dotmpe.du.ext.extractor.htdocs', ),
 			]
 
 	#  xxx: rename to extractor params?

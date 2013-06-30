@@ -72,8 +72,14 @@ class Builder(SettingsSpec):
     def init_extractors(self):
         import dotmpe.du.ext.extractor
         for spec in self.extractor_spec:
-            self.extractors.append((comp.get_extractor_class(spec[0]),dotmpe.du.ext.extractor.TransientStorage))
-            #self.extractors.append(comp.get_extractor_pair(spec[0]))
+            if len(spec) > 1:
+                storage_module = spec[1]
+            else:
+                storage_module = spec[0]
+            self.extractors.append(
+                    (comp.get_extractor_class(spec[0]),
+                        comp.get_extractor_storage_class(storage_module))
+                )
 
     def build(self, source, source_id='<build>', overrides={}):
         """
