@@ -3,6 +3,8 @@
 """
 from nabu import extract
 #from dotmpe.du.ext import extractor
+from script_mpe import htdocs, taxus
+
 
 
 class HtdocsExtractor(extract.Extractor):
@@ -21,13 +23,17 @@ class HtdocsExtractor(extract.Extractor):
     fields_spec = []
 
     def apply(self, unid=None, storage=None, **kwds):
-        print unid, storage, kwds
+        print 'apply', unid, storage, kwds
+        storage.store(unid)
 
 
 class HtdocsStorage(extract.ExtractorStorage):
 
+    def __init__(self):
+        self.sa = taxus.get_session()
+
     def store(self, source_id, *args):
-        pass
+        print 'store', source_id, args
 
     def clear(self, source_id):
         pass
