@@ -29,8 +29,9 @@ class HtdocsExtractor(extract.Extractor):
 
 class HtdocsStorage(extract.ExtractorStorage):
 
-    def __init__(self):
-        self.sa = taxus.get_session()
+    def __init__(self, *args, **kwds):
+        print 'HtdocsStorage', 'init', args, kwds
+        #self.sa = taxus.get_session()
 
     def store(self, source_id, *args):
         print 'store', source_id, args
