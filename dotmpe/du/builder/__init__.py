@@ -69,7 +69,19 @@ class Builder(SettingsSpec):
     The stores may be left uninitialized until `prepare`.
     """
 
+    def build(self, source, source_id='<build>', overrides={}):
+        """
+        Build document from source, returns the document.
+        """
+        logger.debug("Building %r.", source_id)
+        output, self.publisher = self.__publish(source, source_id, None,
+                overrides)
+        return self.publisher.document
+
     def init_extractors(self):
+        """
+        Load extractor and storage classes from modules.
+        """
         import dotmpe.du.ext.extractor
         for spec in self.extractor_spec:
             if len(spec) > 1:
@@ -80,15 +92,6 @@ class Builder(SettingsSpec):
                     (comp.get_extractor_class(spec[0]),
                         comp.get_extractor_storage_class(storage_module))
                 )
-
-    def build(self, source, source_id='<build>', overrides={}):
-        """
-        Build document from source, returns the document.
-        """
-        logger.debug("Building %r.", source_id)
-        output, self.publisher = self.__publish(source, source_id, None,
-                overrides)
-        return self.publisher.document
 
     def prepare(self, **store_params):
         """

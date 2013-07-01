@@ -14,8 +14,8 @@ class Builder(builder.Builder):
 
     #  xxx: rename to extractor params?
     store_params = {
-            #'dotmpe.du.ext.extractor.htdocs.Storage': ''
-            }
+            'HtdocsStorage': ((1,2,3), {}),
+        }
 
     class Reader(mpe.Reader):
 

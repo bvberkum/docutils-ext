@@ -26,6 +26,9 @@ class HtdocsExtractor(extract.Extractor):
 
 class HtdocsStorage(extract.ExtractorStorage):
 
+    def __init__(self, *args, **kwds):
+        print 'HtdocsStorage', 'init', args, kwds
+
     def store(self, source_id, *args):
         pass
 
