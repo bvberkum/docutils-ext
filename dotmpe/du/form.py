@@ -2,6 +2,10 @@
 It may be convenient to treat a Du document as a form for user data. The
 objective here is to extract and validate, and to feedback any errors.
 
+To this end FormProcessor is implemented. In the package form2, an
+Nabu Extractor/Storage pattern implements validation, extraction and storage
+of information given in rSt documents.
+
 Du Forms
 ==========
 The result of the form is a set of key, value pairs.

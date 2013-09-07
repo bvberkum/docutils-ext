@@ -36,7 +36,7 @@ def cli_process(sources,builder=None,builder_name='mpe',description=''):
         assert os.path.exists(source), "source description "\
                 "must be existing local path for now (not '%s')" % source
         source_id = source
-
+        source = open(source_id)
         document = builder.build(source, source_id, overrides={})
         builder.prepare(**builder.store_params)
         builder.process(document, source_id, overrides={}, pickle_receiver=None)

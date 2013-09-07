@@ -220,7 +220,7 @@ class Builder(SettingsSpec):
                     source.transform_messages)
             settings = source.settings                
         else: # Read from source
-            source_class = docutils.io.StringInput 
+            source_class = docutils.io.FileInput#StringInput 
             parser = self.Parser()
             reader = self.Reader(parser=parser)
             settings = None
