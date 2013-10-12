@@ -10,12 +10,12 @@ Mainly convertors and validators, but needs some cleaning up.
 """
 import anydbm, hashlib, optparse, os, re, time, urllib2
 from pickle import loads
+import logging
 
 from docutils import utils, nodes, frontend
 #from docutils.nodes import fully_normalize_name, make_id
 from docutils.parsers.rst import directives
 
-from dotmpe.du.ext.transform import include
 import uriref
 
 
@@ -716,6 +716,8 @@ class MissingOptionError(utils.ExtensionOptionError):
 def addClass(classnames):
     "Create a new transform to set one or more classnames."
 
+    from dotmpe.du.ext.transform import include
+
     class AddClass(include.Include):
         default_priority = 500
 
@@ -811,4 +813,22 @@ def first_and_last_field_list(document):
     else:
         return ()
         
+def get_log(name, level=logging.DEBUG, stdout=True, stdout_level=logging.DEBUG,
+        fout=True, fout_level=logging.ERROR):
+    logger = logging.getLogger(name)
+    logger.setLevel(level)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    if fout:
+        if not isinstance(fout, basestring):
+            fout = "%s.log" % name
+        fh = logging.FileHandler(fout)
+        fh.setLevel(fout_level)
+        fh.setFormatter(formatter)
+        logger.addHandler(fh)
+    if stdout:
+        ch = logging.StreamHandler()
+        ch.setLevel(stdout_level)
+        ch.setFormatter(formatter)
+        logger.addHandler(ch)
+    return logger 
 

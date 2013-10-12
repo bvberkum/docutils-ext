@@ -76,7 +76,7 @@ from dotmpe.du.ext import extractor
 from dotmpe.du import util
 
 
-logger = logging.getLogger(__name__)
+logger = util.get_log(__name__)
 
 
 def opt_form_prepare():

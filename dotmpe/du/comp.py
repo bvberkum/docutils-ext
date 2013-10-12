@@ -9,9 +9,10 @@ import sys
 
 import docutils
 
+from dotmpe.du import util
 
-logger = logging.getLogger(__name__)
 
+logger = util.get_log(__name__)
 
 def load_module(module_path):
 

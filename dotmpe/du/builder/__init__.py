@@ -19,21 +19,8 @@ import dotmpe
 from dotmpe.du import comp, util
 
 
-logger = logging.getLogger('dotmpe.du.builder')
-logger.setLevel(logging.DEBUG)
-# create file handler which logs even debug messages
-fh = logging.FileHandler('spam.log')
-fh.setLevel(logging.DEBUG)
-# create console handler with a higher log level
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-# create formatter and add it to the handlers
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-fh.setFormatter(formatter)
-ch.setFormatter(formatter)
-# add the handlers to the logger
-logger.addHandler(fh)
-logger.addHandler(ch)
+logger = util.get_log(__name__)
+#logger = util.get_log('dotmpe.du.builder')
 
 class Builder(SettingsSpec):
 
@@ -126,8 +113,10 @@ class Builder(SettingsSpec):
                     xstore = xstore.__module__+'.'+xstore.__class__
 #                assert isinstance(xstore, types.ClassType)                    
                 args, kwds = store_params.get(unicode(xstore), ((),{}))
+# XXX: would want to have merged options here, instead of # settings_default_overrides ref!
                 try:
-                    args, kwds = parse_params(args, kwds)
+                    args, kwds = parse_params(args, kwds,
+                            self.settings_default_overrides)
                 except ValueError, e:
                     logger.error(e)
                     raise ValueError, "Error parsing storage params %r, %r" % (args, kwds)
@@ -247,6 +236,7 @@ class Builder(SettingsSpec):
         #settings = None # TODO: reuse (but needs full component (r/p/w) config!)
         assert not settings or isinstance(settings, frontend.Values)
         destination_class = docutils.io.StringOutput
+        logger.debug(reader.get_transforms())
         logger.info("Publishing %r (%s, %s, %s)", 
                 source_path, *map(util.component_name, (reader, parser, writer)))
         output, pub = docutils.core.publish_programmatically(
@@ -271,11 +261,12 @@ class Builder(SettingsSpec):
     #        logger.info("TODO: open or keep filelike warning_stream %s",
     #                self.overrides['warning_stream'])
 
-def parse_params(args, kwds):
+def parse_params(args, kwds, options):
     for i, a in enumerate(args):
         if callable(a):
-            args[i] = apply(a)
+            args[i] = a(options)
     for k, v in kwds.items():
         if callable(v):
-            kwds[k] = apply(v)
+            kwds[k] = v(options)
     return args, kwds
+

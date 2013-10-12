@@ -50,7 +50,7 @@ class Reader(readers.Reader):
             #template.TemplateSubstitutions, # 190
 #            MyPHPTemplate,
 # TODO: cannot have decorations before DocInfo transform
-#            generate.PathBreadcrumb,        # 200
+            generate.PathBreadcrumb,        # 200
             generate.Timestamp,             # 200
             generate.SourceLink,            # 200
             #            generate.CCLicenseLink,         # 200 # FIXME: this interferes with DocInfo
