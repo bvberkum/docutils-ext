@@ -32,10 +32,13 @@ for extractor modules, such as the ``form`` extractor?
 """
 from itertools import chain
 
+from dotmpe.du import util
 from nabu import extract
 from nabu.extract import \
         SQLExtractorStorage as PgSQLExtractorStorage
 
+
+logger = util.get_log(__name__)
 
 class TransientStorage(extract.ExtractorStorage):
     "This keeps all extracted data on the instance. "
@@ -93,16 +96,19 @@ class SQLiteExtractorStorage(extract.ExtractorStorage):
     def __init__(self, module, connection):
         self.module, self.connection = module, connection
 
+        logger.debug("New SQLiteExtractorStorage for %s, with %s", module,
+                connection)
+
         cursor = self.connection.cursor()
 
         # Check that the database tables exist and if they don't, create them.
         for tname, rtype, schema in chain(self.sql_relations_unid,
                                           self.sql_relations):
-            cursor.execute("""
-                SELECT * FROM main.sqlite_master WHERE type='table'
-                AND name ?
-               """, (tname,))
-            if cursor.rowcount == 0:
+            cursor.execute("SELECT * FROM main.sqlite_master "
+                "WHERE type='table' "
+                "AND name = ? ", (tname,))
+            if cursor.rowcount <= 0:
+                logger.info("Creating DB schema %s (%s)", tname, rtype)
                 cursor.execute(schema)
 
         self.connection.commit()
@@ -137,7 +143,7 @@ class SQLiteExtractorStorage(extract.ExtractorStorage):
 
             cursor.execute("""
                 SELECT * FROM main.sqlite_master WHERE type='table'
-                AND name ?
+                AND name = ?
                """, (tname,))
             if cursor.rowcount > 0:
                 cursor.execute("DROP %s %s CASCADE" % (rtype, tname))
