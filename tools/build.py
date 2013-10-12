@@ -30,14 +30,20 @@ More genericly the script name format is::
 
   [<source-format>[2<target-format>]-][<action>][-<tag>] [options]
 
-As illustrated, at least `target-format` or `tag` must be used in the script name.
+.. XXX: should fix this, for now working with 
+        tools/proc-dotmpe.du.builder.htdocs for publish
 
-The `tag` part influences which components will be used, it defaults to 'mpe'.
+At least `target-format` or `tag` must be used.
+
+The `tag` part specifies which components will be used, it defaults to 'mpe'
 The output format defaults to 'pprint', which in practice will be set to 
 something like 'latex' or 'html'. 
 
-Action defaults to 'pub', but may also be 'proc'. Note it does not make sense to 
-have a target format for a document processing command.
+Action is the main mode which defaults to 'pub' for document-to-document
+conversion, but may also be more generic 'proc'. Proc(essing) is used 
+for anything on the document that analyses, extracts and/or transforms a
+document. It does not make sense to have a target format for a document 
+processing command. 
 
 The source and target format map to Parser and Writer aliases as expected,
 with the addition that the '-<tag>' suffixed alias has priority. Ie. for

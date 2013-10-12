@@ -9,6 +9,16 @@ from dotmpe.du.ext.reader import mpe
 from dotmpe.du.util import addClass
 
 
+def get_store():
+    """Temporary stuff until storage component instances are properly managed.
+    """
+    import sqlite3
+    import sys
+    import os
+    #print os.getcwd()
+    return sqlite3.connect('var/lib/htdocs/dotmpe-v5-settings.db')
+
+
 class Builder(builder.Builder):
 
     settings_default_overrides = {
@@ -17,7 +27,7 @@ class Builder(builder.Builder):
         'script': 'http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js,/media/script/default.js',
         'embed_stylesheet': False,
         'embed_script': False,
-        'breadcrumb': True,
+        'breadcrumb': False,#True,
         'generator': False,
         'date': True,
         'input_encoding': 'utf-8',
@@ -41,12 +51,13 @@ class Builder(builder.Builder):
 
     # TODO: integrate with CLI/settings_spec
     extractor_spec = [
-            ('nabu.extractors.document', ),
-            ('dotmpe.du.ext.extractor.settings', 'dotmpe.du.extractor.SettingsStorage')
+            ('nabu.extractors.document', 'dotmpe.du.ext.extractor.document'),
+#            ('dotmpe.du.ext.extractor.settings', 'dotmpe.du.ext.extractor.settings.SettingsStorage')
         ] 
 
     store_params = {
-            'nabu.extractors.document': ((),{}),
+            'dotmpe.du.ext.extractor.document.Storage': ((),{'module':None,
+                'connection': get_store}),
         }
 
     class Reader(mpe.Reader):

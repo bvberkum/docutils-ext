@@ -24,7 +24,7 @@ from dotmpe.du.ext.parser import Inliner
 
 
 
-def cli_process(sources,builder=None,builder_name='mpe',description=''):
+def cli_process(sources, builder=None, builder_name='mpe', description=''):
     if not builder:
         Builder = comp.get_builder_class(builder_name, class_name='Builder')
         builder = Builder()
@@ -36,8 +36,8 @@ def cli_process(sources,builder=None,builder_name='mpe',description=''):
         assert os.path.exists(source), "source description "\
                 "must be existing local path for now (not '%s')" % source
         source_id = source
-
-        document = builder.build(source, source_id, overrides={})
+        # XXX: need options parsed here
+        document = builder.build(open(source_id).read(), source_id, overrides={})
         builder.prepare(**builder.store_params)
         builder.process(document, source_id, overrides={}, pickle_receiver=None)
         # TODO render messages as reST doc

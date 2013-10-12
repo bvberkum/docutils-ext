@@ -100,6 +100,7 @@ builders = { }
 def get_builder_class(mod_name, class_name='Builder'):
     global builders
     assert mod_name, ERR_MISSING_BUILDER_MODNAME
+    mod_name, class_name = split_class(mod_name, class_name)
     #if not class_name or (restrict and class_name not in restrict):
     #    class_name = 'Builder'
     if mod_name not in builders:
@@ -126,6 +127,7 @@ ERR_MISSING_EXTRACTOR_MODNAME = "Missing extractor module name. "
 def get_extractor_class(mod_name, class_name='Extractor'):
     global extractors
     assert mod_name, ERR_MISSING_EXTRACTOR_MODNAME
+    mod_name, class_name = split_class(mod_name, class_name)
     #if not class_name or (restrict and class_name not in restrict):
     #    class_name = 'Extractor'
     module = get_extractor_module(mod_name)
@@ -137,6 +139,7 @@ ERR_MISSING_EXTRACTOR_STORAGE_MODNAME = "Missing extractor_storage module name. 
 def get_extractor_storage_class(mod_name, class_name='Storage'):
     global extractor_storages
     assert mod_name, ERR_MISSING_EXTRACTOR_STORAGE_MODNAME
+    mod_name, class_name = split_class(mod_name, class_name)
     #if not class_name or (restrict and class_name not in restrict):
     #    class_name = 'Storage'
     module = get_extractor_module(mod_name)
@@ -164,20 +167,25 @@ def register_extension_components(ext_module_prefix, ext_tag, ext_type, ext_dir)
     aliases to both 'rst' and 'rst-test'.
     """
 
+    # be a bit too lenient
     if (os.path.isfile(ext_dir)):
         ext_dir = os.path.dirname(ext_dir)
 
+    # get a ref to Du's Readers, Parsers and Writers module
     du_comp_mod = getattr(docutils, ext_type.lower()+'s')
+    # also get a ref to our dict of aliases for current type
     du_comp_reg = getattr(du_comp_mod, "_%s_aliases" % ext_type.lower())
-    
+    # and our own Reader, Parser and Writer modules
     du_ext_comp_reg = getattr(sys.modules[__name__], ext_type.lower()+'s')
 
+    # find all python files int ext_dir
     ext_names = \
         map(lambda x:x.split('.')[0],
             map(
                 os.path.basename,
                 glob.glob(os.path.join(ext_dir, '[!_]*.py'))))
 
+    # give the names a module path
     for ext_name in ext_names:
         ext_module = ext_module_prefix + '.' + ext_name
         tagged_name = ext_name +'-'+ ext_tag
@@ -186,5 +194,19 @@ def register_extension_components(ext_module_prefix, ext_tag, ext_type, ext_dir)
         if ext_name not in du_comp_reg:
             du_ext_comp_reg[ext_name] = ext_module
         du_ext_comp_reg[tagged_name] = ext_module
+
+
+def split_class(mod_name, default_class_name):
+    """
+    Override default_class_name with custom class name from module path,
+    if last path element is a capitalized word
+    """
+    mod_path = mod_name.split('.')
+    if mod_path[-1][0].isupper():
+        class_name = mod_path.pop()
+        mod_name = '.'.join(mod_path)
+    else:
+        class_name = default_class_name
+    return mod_name, class_name
 
 

@@ -21,6 +21,10 @@ class HtdocsExtractor(extract.Extractor):
     fields_spec = []
 
     def apply(self, unid=None, storage=None, **kwds):
+        # - get (new) ref for each definition term
+        # - accumulated definition descriptions:
+        #   append lists to some log,
+        #   
         print unid, storage, kwds
 
 

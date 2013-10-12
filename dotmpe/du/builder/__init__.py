@@ -20,6 +20,20 @@ from dotmpe.du import comp, util
 
 
 logger = logging.getLogger('dotmpe.du.builder')
+logger.setLevel(logging.DEBUG)
+# create file handler which logs even debug messages
+fh = logging.FileHandler('spam.log')
+fh.setLevel(logging.DEBUG)
+# create console handler with a higher log level
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+# create formatter and add it to the handlers
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+fh.setFormatter(formatter)
+ch.setFormatter(formatter)
+# add the handlers to the logger
+logger.addHandler(fh)
+logger.addHandler(ch)
 
 class Builder(SettingsSpec):
 
@@ -85,13 +99,12 @@ class Builder(SettingsSpec):
         import dotmpe.du.ext.extractor
         for spec in self.extractor_spec:
             if len(spec) > 1:
-                storage_module = spec[1]
+                extr_mod, store_mod = spec
             else:
-                storage_module = spec[0]
-            self.extractors.append(
-                    (comp.get_extractor_class(spec[0]),
-                        comp.get_extractor_storage_class(storage_module))
-                )
+                extr_mod = store_mod = spec[0]
+            extr_clsss = comp.get_extractor_class(extr_mod)
+            store_clss = comp.get_extractor_storage_class(store_mod)
+            self.extractors.append((extr_clsss, store_clss))
 
     def prepare(self, **store_params):
         """
@@ -102,7 +115,7 @@ class Builder(SettingsSpec):
         """
         if not self.extractors and self.extractor_spec:
             self.init_extractors()
-        logger.debug("Builder prepare.")
+        logger.debug("Builder prepare %s." % store_params)
         self.process_messages = u''
         for idx, (xcls, xstore) in enumerate(self.extractors):
             # initialize extractor
@@ -110,9 +123,14 @@ class Builder(SettingsSpec):
             # reinitialize store
             if type(xstore) != type:
                 if type(xstore) == types.InstanceType:
-                    xstore = xstore.__class__
-                assert isinstance(xstore, types.ClassType)                    
-                args, kwds = store_params.get(xstore.__name__, ((),{}))
+                    xstore = xstore.__module__+'.'+xstore.__class__
+#                assert isinstance(xstore, types.ClassType)                    
+                args, kwds = store_params.get(unicode(xstore), ((),{}))
+                try:
+                    args, kwds = parse_params(args, kwds)
+                except ValueError, e:
+                    logger.error(e)
+                    raise ValueError, "Error parsing storage params %r, %r" % (args, kwds)
                 try:
                     xstore = xstore(*args, **kwds)
                 except TypeError, e:
@@ -253,5 +271,11 @@ class Builder(SettingsSpec):
     #        logger.info("TODO: open or keep filelike warning_stream %s",
     #                self.overrides['warning_stream'])
 
-
-
+def parse_params(args, kwds):
+    for i, a in enumerate(args):
+        if callable(a):
+            args[i] = apply(a)
+    for k, v in kwds.items():
+        if callable(v):
+            kwds[k] = apply(v)
+    return args, kwds
