@@ -44,7 +44,7 @@ class Builder(builder.Builder):
         'strip_user_settings': False,
         'compact_lists': False,
         'compact_field_lists': False,
-        'logbook_db': 'var/lib/htdocs/dotmpe-v5-settings.db'
+        'logbook_db': 'var/lib/htdocs/dotmpe-v5-logbook.db'
     }
 
     # TODO: integrate with CLI/settings_spec
