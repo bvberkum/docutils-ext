@@ -32,6 +32,7 @@ class UserSettings(transforms.Transform):
     standard Du transform.
     """
 
+    # setting spec is substruct of SettingSpec.settings_spec
     settings_spec = (
         (
             'Allow settings overrides by document author, extract fields for '
@@ -57,7 +58,7 @@ class UserSettings(transforms.Transform):
             ['--strip-settings-names'], 
             {'default':[], 'action':'append', 'metavar':'NAME[,NAME]',
                 'validator': util.validate_cs_list } 
-        ),
+        )
     )
 
     default_priority = 20

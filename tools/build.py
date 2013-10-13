@@ -88,16 +88,19 @@ action = 'pub'
 
 # parse script name
 script_names = os.path.basename(sys.argv[0]).split('-')
+# first part
 if '2' in script_names[0]:
     source_format, target_format = script_names.pop(0).split('2')
-elif script_names[0] in actions:
+elif script_names[0] in actions: # action- prefix
     action = script_names.pop(0)
-elif script_names[0] == 'build.py':
+elif script_names[0] == 'build.py': 
     pass
 else:
-    target_format = script_names.pop(0)
-if script_names:
+    target_format = script_names.pop(0) # otherwise first part is target format
+# second part: tag
+if script_names: 
     tag = script_names.pop(0)
+# second/third: action
 if script_names:
     action = script_names.pop(0)
 
@@ -131,18 +134,23 @@ parser_name: %s,
 writer_name: %s,
 builder_module: %s""" % (reader_name, parser_name, writer_name, module_name)
 
-# Main
 if source_format == 'mime':
     parser = comp.get_parser_class('rst')(rfc2822=1)
 else:
     parser = comp.get_parser_class(parser_name)()
 
+# Main
 if action == 'proc':
     assert target_format == 'pseudoxml'
     # TODO: use source_format
-    frontend.cli_process(sys.argv[1:], builder_name=module_name)
+    frontend.cli_process(
+            sys.argv[1:], builder_name=module_name)
 
 elif action == 'pub':
+    frontend.cli_render(
+            sys.argv[1:], builder_name=module_name)
+
+elif action == 'dupub':
     frontend.cli_du_publisher(
             reader_name=reader_name,
             parser=parser,

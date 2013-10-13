@@ -36,7 +36,7 @@ class Reader(readers.Reader):
             clean.StripSubstitutionDefs.settings_spec +
             clean.StripAnonymousTargets.settings_spec +
             debug.Options.settings_spec +
-            debug.Settings.settings_spec,
+            debug.Settings.settings_spec
     )
     config_section = '.mpe extended standalone reader'
     config_section_dependencies = ('readers',)
