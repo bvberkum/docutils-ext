@@ -32,3 +32,6 @@ Per-line quoting can also be used on
 unindented literal blocks::
 
 > Useful for quotes from email and 
+
+As usual blocks need to be separated 
+by white lines too.

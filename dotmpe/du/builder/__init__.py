@@ -229,6 +229,7 @@ class Builder(SettingsSpec, Publisher):
         Invoke writer by name and return parts after publishing.        
         """
         writer_name = writer_name or self.default_writer
+        assert writer_name == 'rst-mpe'
         self.writer = comp.get_writer_class(writer_name)()
         logger.info('Rendering %r as %r.', source_id, writer_name)
         assert not overrides
