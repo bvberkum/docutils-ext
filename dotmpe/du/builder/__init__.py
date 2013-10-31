@@ -10,22 +10,23 @@ import logging
 import types
 import StringIO
 import docutils.core
+from docutils.core import Publisher
+from docutils import SettingsSpec, frontend, utils, transforms
 
 #import nabu
 #import nabu.server
 import dotmpe
-from docutils import SettingsSpec, frontend, utils, transforms
 from dotmpe.du import comp, util
 
 
-logger = logging.getLogger('dotmpe.du.builder')
+logger = util.get_log(__name__)
 
-class Builder(SettingsSpec):
+class Builder(SettingsSpec, Publisher):
 
     """
     Each builder is a configuration of Docutils and Nabu components.
 
-    It is a facade to build document trees from source, and to render or process
+    It is sort of a (to-be) facade to build document trees from source, and to render or process
     these. Behind it are Du Publisher and Nabu data extraction routines.
     """
 
@@ -38,7 +39,7 @@ class Builder(SettingsSpec):
 
     The writer is accessed directly by name for now.
     """
-    default_writer = 'dotmpe-html'
+    default_writer = 'html-mpe'
 
     settings_spec = (
     )
@@ -62,28 +63,94 @@ class Builder(SettingsSpec):
     relative_path_settings = ()
     " XXX: Some pair of keynames used to lookup paths? "
 
-    extractors = [] # list of (transform, storage) type pairs
-    """
-    Transforms that are run during `process`. See Nabu for their interface.
-    The stores may be left uninitialized until `prepare`.
-    """
+    def __init__(self):
+        """
+        Defer to Publisher init. 
+        """
+        Publisher.__init__(self)
 
-    def init_extractors(self):
-        import dotmpe.du.ext.extractor
-        for spec in self.extractor_spec:
-            self.extractors.append((comp.get_extractor_class(spec[0]),dotmpe.du.ext.extractor.TransientStorage))
-            #self.extractors.append(comp.get_extractor_pair(spec[0]))
+        self.extractors = [] # list of (transform, storage) type pairs
+        """
+        Transforms that are run during `process`. See Nabu for their interface.
+        The stores may be left uninitialized until `prepare_extractors`.
+        """
+        self.source_class = None
+
+    def prepare_initial_components(self):
+        #self.set_components(reader_name, parser_name, writer_name)
+        self.parser = self.Parser()
+        self.reader = self.Reader(parser=self.parser) 
+        # FIXME: having initial writer component enables publisher src2trgt frontends 
+        self.components = (self.parser, self.reader, self)
+
+        # XXX: for now, all transforms are linked to the reader and the reader
+        # gets its transforms from there. The extractors will similary depend on
+        # the Reader transforms and settings_specs
+
+    def setup_option_parser(self, usage=None, description=None,
+                            settings_spec=None, config_section=None,
+                            **defaults):
+        if config_section:
+            if not settings_spec:
+                settings_spec = SettingsSpec()
+            settings_spec.config_section = config_section
+            parts = config_section.split()
+            if len(parts) > 1 and parts[-1] == 'application':
+                settings_spec.config_section_dependencies = ['applications']
+        #@@@ Add self.source & self.destination to components in future?
+        option_parser = frontend.OptionParser(
+            components=self.components,
+            defaults=defaults, read_config_files=1,
+            usage=usage, description=description)
+        return option_parser
+
+    def update_components(self):
+        """
+        Reset components based on current settings.
+        """
+        pass
+
+    def prepare(self, argv=None):
+        self.prepare_extractors(**self.store_params)
 
     def build(self, source, source_id='<build>', overrides={}):
         """
         Build document from source, returns the document.
+        TODO: Use Reader, Parser, Transform and Builder for option spec.
         """
         logger.debug("Building %r.", source_id)
-        output, self.publisher = self.__publish(source, source_id, None,
-                overrides)
-        return self.publisher.document
+        source_class, parser, reader, settings = self.prepare_source(source, source_id)
+        if not self.writer:
+            self.writer = comp.get_writer_class('null')()
+        self.components = (self.parser, self.reader, self.writer, self)
+        self.process_command_line() # replace settings for initial components
+        assert self.settings or isinstance(self.settings, frontend.Values)
+        self.set_source(source, source_id)
+        self.destination_class = docutils.io.StringOutput
+        assert self.reader and self.parser and self.writer
+        assert self.source
+        #    reader, str(self)+'.Reader',
+        #    parser, str(self)+'.Parser',
+        #    writer, str(self)+'.Writer',
+        output = self.publish()
+        return output, self.document
 
-    def prepare(self, **store_params):
+
+    def init_extractors(self):
+        """
+        Load extractor and storage classes from modules.
+        """
+        import dotmpe.du.ext.extractor
+        for spec in self.extractor_spec:
+            if len(spec) > 1:
+                extr_mod, store_mod = spec
+            else:
+                extr_mod = store_mod = spec[0]
+            extr_clsss = comp.get_extractor_class(extr_mod)
+            store_clss = comp.get_extractor_storage_class(store_mod)
+            self.extractors.append((extr_clsss, store_clss))
+
+    def prepare_extractors(self, **store_params):
         """
         Initialize or reset the extractors and storages. `store_params` provides
         arguments for constructing the storages by type. Note that storages per
@@ -92,7 +159,7 @@ class Builder(SettingsSpec):
         """
         if not self.extractors and self.extractor_spec:
             self.init_extractors()
-        logger.debug("Builder prepare.")
+        logger.debug("Builder prepare_extractors %s." % store_params)
         self.process_messages = u''
         for idx, (xcls, xstore) in enumerate(self.extractors):
             # initialize extractor
@@ -100,9 +167,16 @@ class Builder(SettingsSpec):
             # reinitialize store
             if type(xstore) != type:
                 if type(xstore) == types.InstanceType:
-                    xstore = xstore.__class__
-                assert isinstance(xstore, types.ClassType)                    
-                args, kwds = store_params.get(xstore.__name__, ((),{}))
+                    xstore = xstore.__module__+'.'+xstore.__class__
+#                assert isinstance(xstore, types.ClassType)                    
+                args, kwds = store_params.get(unicode(xstore), ((),{}))
+# XXX: would want to have merged options here, instead of # settings_default_overrides ref!
+                try:
+                    args, kwds = parse_params(args, kwds,
+                            self.settings_default_overrides)
+                except ValueError, e:
+                    logger.error(e)
+                    raise ValueError, "Error parsing storage params %r, %r" % (args, kwds)
                 try:
                     xstore = xstore(*args, **kwds)
                 except TypeError, e:
@@ -116,7 +190,7 @@ class Builder(SettingsSpec):
         If there are extractors for this builder, apply them to the document. 
         TODO: Return messages.
 
-        `prepare` should have been run to initialize storages. 
+        `prepare_extractors` should have been run to initialize storages. 
         """
         if not self.extractors:
             logger.info("Process: no extractors to run. ")
@@ -149,24 +223,24 @@ class Builder(SettingsSpec):
         # what about values from FP then..
         #print 'Extractor messages:', map(str,document.transform_messages)
 
-
     def render(self, source, source_id='<render>', writer_name=None,
             overrides={}, parts=['whole']):
         """
         Invoke writer by name and return parts after publishing.        
         """
         writer_name = writer_name or self.default_writer
-        writer = comp.get_writer_class(writer_name)()
+        assert writer_name == 'rst-mpe'
+        self.writer = comp.get_writer_class(writer_name)()
         logger.info('Rendering %r as %r.', source_id, writer_name)
+        assert not overrides
         #logger.info("source-length: %i", not source or len(source))
-        output, pub = self.__publish(source, source_id, writer, overrides)
-        self.parts = pub.writer.parts
+        output, document = self.build(source, source_id)
         #logging.info(overrides)
         #parts = ['html_title', 'script', 'stylesheet']
         #logger.info("output-length: %i", not output or len(output))
-        #logger.info([(part, self.parts.get(part)) for part in parts])
-        logger.info("Deps for %s: %s", source_id, pub.document.settings.record_dependencies)
-        return ''.join([self.parts.get(part) for part in parts])
+        #logger.info([(part, self.writer.parts.get(part)) for part in parts])
+        logger.info("Deps for %s: %s", source_id, self.document.settings.record_dependencies)
+        return ''.join([self.writer.parts.get(part) for part in parts])
 
     def render_fragment(self, source, source_id='<render_fragment>',
             overrides={}):
@@ -193,43 +267,26 @@ class Builder(SettingsSpec):
 #        for p in ['whole',]:
 #            parts[p] = parts[p].replace('</head>', script+'\n</head>')
 
-    # Builder Du core
-    def __publish(self, source, source_path, writer, overrides={}):
+    def prepare_source(self, source, source_path):
         assert source, "Need source to build, not %s" % source
         if isinstance(source, docutils.nodes.document):
             logger.info("ReReading %s", source_path)
             # Reread document
-            source_class = docutils.io.DocTreeInput
-            parser = comp.get_parser_class('null')()
-            reader = self.ReReader(parser)
+            self.source_class = docutils.io.DocTreeInput
+            self.parser = comp.get_parser_class('null')()
+            self.reader = self.ReReader(self.parser)
             if source.parse_messages:
                 map(lambda x:logger.info(x.astext()),
                     source.parse_messages)
             if source.transform_messages:
                 map(lambda x:logger.info(x.astext()),
                     source.transform_messages)
-            settings = source.settings                
+            self.settings = source.settings                
         else: # Read from source
-            source_class = docutils.io.StringInput 
-            parser = self.Parser()
-            reader = self.Reader(parser=parser)
-            settings = None
-        if not writer:
-            writer = comp.get_writer_class('null')()
-        #settings = None # TODO: reuse (but needs full component (r/p/w) config!)
-        assert not settings or isinstance(settings, frontend.Values)
-        destination_class = docutils.io.StringOutput
-        logger.info("Publishing %r (%s, %s, %s)", 
-                source_path, *map(util.component_name, (reader, parser, writer)))
-        output, pub = docutils.core.publish_programmatically(
-            source_class, source, source_path, 
-            destination_class, None, None,
-            reader, str(self)+'.Reader',
-            parser, str(self)+'.Parser',
-            writer, str(self)+'.Writer',
-            settings, self,
-            overrides, config_section=None, enable_exit_status=False)
-        return output, pub
+            self.source_class = docutils.io.StringInput 
+            self.parser = self.Parser()
+            self.reader = self.Reader(parser=self.parser)
+        return self.source_class, self.parser, self.reader, self.settings 
 
     def __str__(self):
         return type(self).__module__+'.'+type(self).__name__
@@ -243,5 +300,12 @@ class Builder(SettingsSpec):
     #        logger.info("TODO: open or keep filelike warning_stream %s",
     #                self.overrides['warning_stream'])
 
-
+def parse_params(args, kwds, options):
+    for i, a in enumerate(args):
+        if callable(a):
+            args[i] = a(options)
+    for k, v in kwds.items():
+        if callable(v):
+            kwds[k] = v(options)
+    return args, kwds
 

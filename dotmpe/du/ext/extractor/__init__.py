@@ -30,8 +30,15 @@ Types come from:
 A transient storage type is defined here, as superclass for     
 for extractor modules, such as the ``form`` extractor?
 """
-from nabu import extract
+from itertools import chain
 
+from dotmpe.du import util
+from nabu import extract
+from nabu.extract import \
+        SQLExtractorStorage as PgSQLExtractorStorage
+
+
+logger = util.get_log(__name__)
 
 class TransientStorage(extract.ExtractorStorage):
     "This keeps all extracted data on the instance. "
@@ -65,4 +72,84 @@ class SimpleSourceMap(extract.ExtractorStorage): pass # TODO
 
 class ComplexDictSourceMap(extract.ExtractorStorage): pass
     # define source_id -> key, value mapping storages
+
+
+class SQLiteExtractorStorage(extract.ExtractorStorage):
+
+    """
+    Extractor storage base class for storage that uses a DBAPI-2.0 connection.
+
+    Note: all of the declared tables should have a non-null unid column, to
+    enable clearing obsolete data when reloading a source document.
+    """
+
+    # Override this in the derived class.
+    # This should be a map from the table name to the table schema.
+
+    # Tables that have a unid mapping.  The data associated with the document's
+    # unid are cleared automatically.
+    sql_relations_unid = []
+
+    # Accessory tables that do not have a unid mapping.
+    sql_relations = []
+
+    def __init__(self, module, connection):
+        self.module, self.connection = module, connection
+
+        logger.debug("New SQLiteExtractorStorage for %s, with %s", module,
+                connection)
+
+        cursor = self.connection.cursor()
+
+        # Check that the database tables exist and if they don't, create them.
+        for tname, rtype, schema in chain(self.sql_relations_unid,
+                                          self.sql_relations):
+            cursor.execute("SELECT * FROM main.sqlite_master "
+                "WHERE type='table' "
+                "AND name = ? ", (tname,))
+            if cursor.rowcount <= 0:
+                logger.info("Creating DB schema %s (%s)", tname, rtype)
+                cursor.execute(schema)
+
+        self.connection.commit()
+
+    def clear(self, unid=None):
+        """
+        Default implementation that clears the entries/tables.
+        """
+        cursor = self.connection.cursor()
+
+        for tname, rtype, schema in self.sql_relations_unid:
+            query = "DELETE FROM %s" % tname
+            if unid is not None:
+                query += " WHERE unid = '%s'" % unid
+            cursor.execute(query)
+
+        self.connection.commit()
+
+    def reset_schema(self):
+        """
+        Default implementation that drops the tables.
+        """
+        cursor = self.connection.cursor()
+
+        for tname, rtype, schema in chain(self.sql_relations_unid,
+                                          self.sql_relations):
+            
+            # Indexes are automatically destroyed with their attached tables,
+            # don't do it explicitly.
+            if rtype.upper() == 'INDEX':
+                continue
+
+            cursor.execute("""
+                SELECT * FROM main.sqlite_master WHERE type='table'
+                AND name = ?
+               """, (tname,))
+            if cursor.rowcount > 0:
+                cursor.execute("DROP %s %s CASCADE" % (rtype, tname))
+            cursor.execute(schema)
+
+        self.connection.commit()
+
+
 

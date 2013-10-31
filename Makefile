@@ -1,1 +1,1 @@
-../mkdoc/Makefile
+/srv/project-mpe/mkdoc/Mkdocs.full

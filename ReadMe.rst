@@ -65,6 +65,8 @@ Branches:
   dev
     all development now here.
 
+    :tests: 50; 21 failures, 29 OK
+
     dev_rstwriterobjects
       separate development branch for rstwriter restructuring, 
       trying to OO-ify and add some elegance.
@@ -75,7 +77,7 @@ Branches:
       trying a lossless read/write using the rST SM base with a 
       simple text format, to understand the rSt parser statemachine.
 
-      :tests: 2, OK
+      :tests: 2 OK
 
       Abandonned while I do get enough insight into the rSt parser
       machinery.

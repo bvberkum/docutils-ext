@@ -3,10 +3,10 @@ form1 - Du transform components for dotmpe.du.form.
 """
 import logging
 from docutils import transforms, nodes
-from dotmpe.du import form
+from dotmpe.du import form, util
 
 
-logger = logging.getLogger(__name__)
+logger = util.get_log(__name__)
 
 class DuForm(transforms.Transform):
 

@@ -76,7 +76,7 @@ from dotmpe.du.ext import extractor
 from dotmpe.du import util
 
 
-logger = logging.getLogger(__name__)
+logger = util.get_log(__name__)
 
 
 def opt_form_prepare():
@@ -405,7 +405,8 @@ class FormProcessor:
         Extract value from node using field.
         """
         node = self.nodes[field_id]
-        assert not isinstance(node, list), "Multiple fields not supported. "
+        assert not isinstance(node, list), \
+                "Multiple fields not supported (field %s). " % field_id
         name = extract_form_field_label(node)
         field = self.fields[field_id]
         if field_id not in self.fields or not field.convertor:

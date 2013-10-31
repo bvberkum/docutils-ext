@@ -3,11 +3,11 @@ Extractors and util to retrieve and validate user-data from a document.
 """
 import logging
 from nabu import extract
-from dotmpe.du import form
+from dotmpe.du import form, util
 from dotmpe.du.ext import extractor
 
 
-logger = logging.getLogger('dotmpe.du.ext.extractor.form2')
+logger = util.get_log(__name__)
 
 class FormExtractor(extract.Extractor):
 
