@@ -65,7 +65,11 @@ Branches:
   dev
     all development now here.
 
-    :tests: 50; 17 failures, 33 OK
+    :tests: 50; 10 failures, 40 OK
+
+    Testing rstwriter only.
+    Also not testing all rSt features while not implemented.
+    Should do all that at separate branch perhaps.
 
     dev_rstwriterobjects
       separate development branch for rstwriter restructuring, 

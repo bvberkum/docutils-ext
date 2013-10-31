@@ -1,4 +1,4 @@
-..F..FFFF.....FF......FFF....FF.F..FFFF...........
+..F...................FFF....F..F..FFFF...........
 ======================================================================
 FAIL: TestRst_10_LiteralBlock3; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
@@ -33,291 +33,6 @@ AssertionError: pxml tree mismatch
          will be omitted from the result.
 
 ======================================================================
-FAIL: TestRst_13_Table; Lossy doctree comparison; Writer 'rst-mpe'
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
-    self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 210, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
- on </srv/project-mpe/docutils-ext/var/test-rst.13.table.rst>
-
----  
-
-+++  
-
-@@ -1,28 +1,14 @@
-
- <document source="/srv/project-mpe/docutils-ext/var/test-rst.13.table.rst">
--    <table>
--        <tgroup cols="2">
--            <colspec colwidth="6">
--            <colspec colwidth="8">
--            <tbody>
--                <row>
--                    <entry>
--                        <paragraph>
--                            Simple
--                    <entry>
--                        <paragraph>
--                            Table
--                <row>
--                    <entry>
--                        <paragraph>
--                            001
--                    <entry>
--                        <paragraph>
--                            AAA
--                <row>
--                    <entry>
--                        <paragraph>
--                            001
--                    <entry>
--                        <paragraph>
--                            AAB
-+    <paragraph>
-+        [XXX:table 0 0 u'' []][XXX:tgroup 0 0 u'' []][XXX:colspec 0 0 u'' []][XXX:colspec 0 0 u'' []][XXX:tbody 0 0 u'' []][XXX:row 0 0 u'' []][XXX:entry 0 0 u'' []]Simple[XXX:entry 1 6 u'' []]
-+    <paragraph>
-+        Table[XXX:row 2 5 u'' []][XXX:entry 2 5 u'' []]
-+    <paragraph>
-+        001[XXX:entry 3 3 u'' []]
-+    <paragraph>
-+        AAA[XXX:row 4 3 u'' []][XXX:entry 4 3 u'' []]
-+    <paragraph>
-+        001[XXX:entry 5 3 u'' []]
-+    <paragraph>
-+        AAB
- 
-
-======================================================================
-FAIL: TestRst_13_Table2; Lossy doctree comparison; Writer 'rst-mpe'
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
-    self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 203, in __test_writer
-    warnings)
-AssertionError: Error re-parsing generated file
- on </srv/project-mpe/docutils-ext/var/test-rst.13.table-2.rst>
-
-/srv/project-mpe/docutils-ext/var/test-rst.13.table-2.rst:12: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
-/srv/project-mpe/docutils-ext/var/test-rst.13.table-2.rst:15: (WARNING/2) Field list ends without a blank line; unexpected unindent.
-/srv/project-mpe/docutils-ext/var/test-rst.13.table-2.rst:18: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
-/srv/project-mpe/docutils-ext/var/test-rst.13.table-2.rst:21: (WARNING/2) Enumerated list ends without a blank line; unexpected unindent.
-/srv/project-mpe/docutils-ext/var/test-rst.13.table-2.rst:25: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
-/srv/project-mpe/docutils-ext/var/test-rst.13.table-2.rst:28: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
-
-
-======================================================================
-FAIL: TestRst_13_Table3; Lossy doctree comparison; Writer 'rst-mpe'
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
-    self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 210, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
- on </srv/project-mpe/docutils-ext/var/test-rst.13.table-3.rst>
-
----  
-
-+++  
-
-@@ -1,66 +1,36 @@
-
- <document source="/srv/project-mpe/docutils-ext/var/test-rst.13.table-3.rst">
--    <table>
--        <tgroup cols="3">
--            <colspec colwidth="5">
--            <colspec colwidth="5">
--            <colspec colwidth="6">
--            <thead>
--                <row>
--                    <entry morecols="1">
--                        <paragraph>
--                            Inputs
--                    <entry>
--                        <paragraph>
--                            Output
--                <row>
--                    <entry>
--                        <paragraph>
--                            A
--                    <entry>
--                        <paragraph>
--                            B
--                    <entry>
--                        <paragraph>
--                            A or B
--            <tbody>
--                <row>
--                    <entry>
--                        <paragraph>
--                            False
--                    <entry>
--                        <paragraph>
--                            False
--                    <entry>
--                        <paragraph>
--                            False
--                <row>
--                    <entry>
--                        <paragraph>
--                            True
--                    <entry>
--                        <paragraph>
--                            False
--                    <entry>
--                        <paragraph>
--                            True
--                <row>
--                    <entry>
--                        <paragraph>
--                            False
--                    <entry>
--                        <paragraph>
--                            True
--                    <entry>
--                        <paragraph>
--                            True
--                <row>
--                    <entry>
--                        <paragraph>
--                            True
--                    <entry>
--                        <paragraph>
--                            True
--                    <entry>
--                        <paragraph>
--                            True
-+    <paragraph>
-+        [XXX:table 0 0 u'' []][XXX:tgroup 0 0 u'' []][XXX:colspec 0 0 u'' []][XXX:colspec 0 0 u'' []][XXX:colspec 0 0 u'' []][XXX:thead 0 0 u'' []][XXX:row 0 0 u'' []][XXX:entry 0 0 u'' []]Inputs[XXX:entry 1 6 u'' []]
-+    <paragraph>
-+        Output[XXX:row 2 6 u'' []][XXX:entry 2 6 u'' []]
-+    <paragraph>
-+        A[XXX:entry 3 1 u'' []]
-+    <paragraph>
-+        B[XXX:entry 4 1 u'' []]
-+    <paragraph>
-+        A or B[XXX:tbody 5 6 u'' []][XXX:row 5 6 u'' []][XXX:entry 5 6 u'' []]
-+    <paragraph>
-+        False[XXX:entry 6 5 u'' []]
-+    <paragraph>
-+        False[XXX:entry 7 5 u'' []]
-+    <paragraph>
-+        False[XXX:row 8 5 u'' []][XXX:entry 8 5 u'' []]
-+    <paragraph>
-+        True[XXX:entry 9 4 u'' []]
-+    <paragraph>
-+        False[XXX:entry 10 5 u'' []]
-+    <paragraph>
-+        True[XXX:row 11 4 u'' []][XXX:entry 11 4 u'' []]
-+    <paragraph>
-+        False[XXX:entry 12 5 u'' []]
-+    <paragraph>
-+        True[XXX:entry 13 4 u'' []]
-+    <paragraph>
-+        True[XXX:row 14 4 u'' []][XXX:entry 14 4 u'' []]
-+    <paragraph>
-+        True[XXX:entry 15 4 u'' []]
-+    <paragraph>
-+        True[XXX:entry 16 4 u'' []]
-+    <paragraph>
-+        True
- 
-
-======================================================================
-FAIL: TestRst_13_Table4; Lossy doctree comparison; Writer 'rst-mpe'
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
-    self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 203, in __test_writer
-    warnings)
-AssertionError: Error re-parsing generated file
- on </srv/project-mpe/docutils-ext/var/test-rst.13.table-4.rst>
-
-/srv/project-mpe/docutils-ext/var/test-rst.13.table-4.rst:25: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
-
-
-======================================================================
-FAIL: TestRst_17_Tables1; Lossy doctree comparison; Writer 'rst-mpe'
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
-    self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 210, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
- on </srv/project-mpe/docutils-ext/var/test-rst.17.tables-1.rst>
-
----  
-
-+++  
-
-@@ -1,21 +1,10 @@
-
- <document source="/srv/project-mpe/docutils-ext/var/test-rst.17.tables-1.rst">
--    <table>
--        <tgroup cols="2">
--            <colspec colwidth="5">
--            <colspec colwidth="5">
--            <tbody>
--                <row>
--                    <entry>
--                        <paragraph>
--                            d1
--                    <entry>
--                        <paragraph>
--                            d2
--                <row>
--                    <entry>
--                        <paragraph>
--                            d3
--                    <entry>
--                        <paragraph>
--                            d4
-+    <paragraph>
-+        [XXX:table 0 0 u'' []][XXX:tgroup 0 0 u'' []][XXX:colspec 0 0 u'' []][XXX:colspec 0 0 u'' []][XXX:tbody 0 0 u'' []][XXX:row 0 0 u'' []][XXX:entry 0 0 u'' []]d1[XXX:entry 1 2 u'' []]
-+    <paragraph>
-+        d2[XXX:row 2 2 u'' []][XXX:entry 2 2 u'' []]
-+    <paragraph>
-+        d3[XXX:entry 3 2 u'' []]
-+    <paragraph>
-+        d4
- 
-
-======================================================================
-FAIL: TestRst_17_Tables2; Lossy doctree comparison; Writer 'rst-mpe'
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
-    self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 203, in __test_writer
-    warnings)
-AssertionError: Error re-parsing generated file
- on </srv/project-mpe/docutils-ext/var/test-rst.17.tables-2.rst>
-
-/srv/project-mpe/docutils-ext/var/test-rst.17.tables-2.rst:2: (WARNING/2) Title underline too short.
-
-[XXX:table 0 0 u'' []]Caption/Summary
-===============
-
-
-======================================================================
 FAIL: TestRst_1_Document5_FullRstDemo; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
@@ -325,7 +40,7 @@ Traceback (most recent call last):
     self._test_writer(writer_class(), lossy=lossy)
   File "/srv/project-mpe/docutils-ext/test/util.py", line 137, in _test_writer
     self.fail(e)
-AssertionError: /srv/project-mpe/docutils-ext/var/test-rst.1.document-5.full-rst-demo.rst:64: (SEVERE/4) Title level inconsistent:
+AssertionError: /srv/project-mpe/docutils-ext/var/test-rst.1.document-5.full-rst-demo.rst:67: (SEVERE/4) Title level inconsistent:
 
 2.1.1\xa0\xa0\xa0Inline Markup
 ^^^^^^^^^^^^^
@@ -407,23 +122,6 @@ AssertionError: Error re-parsing generated file
 
 
 ======================================================================
-FAIL: TestRst_23_OptionList1; Lossy doctree comparison; Writer 'rst-mpe'
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
-    self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 162, in __test_writer
-    warnings)
-AssertionError: Corrupt test source file: on </srv/project-mpe/docutils-ext/var/test-rst.23.option-list-1.rst>
-/srv/project-mpe/docutils-ext/var/test-rst.23.option-list-1.rst:2: (WARNING/2) Title underline too short.
-
-\ufeffOption Lists
-------------
-
-
-======================================================================
 FAIL: TestRst_2_Title1; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
@@ -492,9 +190,9 @@ Traceback (most recent call last):
 AssertionError: Error re-parsing generated file
  on </srv/project-mpe/docutils-ext/var/test-rst.5.inline-3.rst>
 
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-3.rst:9: (ERROR/3) Unknown interpreted text role "role".
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-3.rst:11: (ERROR/3) Unknown interpreted text role "role".
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-3.rst:13: (ERROR/3) Unknown interpreted text role "role".
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-3.rst:10: (ERROR/3) Unknown interpreted text role "role".
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-3.rst:12: (ERROR/3) Unknown interpreted text role "role".
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-3.rst:14: (ERROR/3) Unknown interpreted text role "role".
 
 
 ======================================================================
@@ -511,8 +209,8 @@ AssertionError: Error re-parsing generated file
  on </srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst>
 
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:13: (WARNING/2) Explicit markup ends without a blank line; unexpected unindent.
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:37: (ERROR/3) Content block expected for the "replace" directive; none found.
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:37: (WARNING/2) Substitution definition "EXAMPLE" empty or invalid.
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:38: (ERROR/3) Content block expected for the "replace" directive; none found.
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:38: (WARNING/2) Substitution definition "EXAMPLE" empty or invalid.
 
 .. |EXAMPLE| replace::
 
@@ -522,10 +220,10 @@ AssertionError: Error re-parsing generated file
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:3: (ERROR/3) Unknown target name: "cit2002".
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:17: (ERROR/3) Unknown target name: "pep 287".
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:17: (ERROR/3) Unknown target name: "rfc 2822".
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:48: (ERROR/3) Unknown target name: "label".
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:49: (ERROR/3) Unknown target name: "label".
 
 
 ----------------------------------------------------------------------
-Ran 50 tests in 3.507s
+Ran 50 tests in 3.361s
 
-FAILED (failures=17)
+FAILED (failures=10)

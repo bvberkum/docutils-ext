@@ -136,8 +136,9 @@ class RstTranslator(AbstractTranslator):
         self.force_block_level = False
         """Prevent blank line insert, allows override by previous sibling. """
         self.preserve_ws = False
-        self.capture_text = None
-        self.skip_content = None
+        self.capture_text = False
+        self.skip_content = False
+        self.tab_content = ()
         self.section_adornments = section_adornments        
         self.roles = []
         #self.docinfo = {}
@@ -265,6 +266,13 @@ class RstTranslator(AbstractTranslator):
             else:
                 self.indented += cindent
 
+    def _write_tabbed(self, *lines):#cols=0, fields=(), tabs=()):
+        """I guess this is a first step to writing tables also?
+        option lists need special tabbed blocks, not just indented blocks
+        but block-aligned content besides content.
+        """
+
+
     def _write_directive(self, name, *args, **kwds):
         if not self.block_level:
             self._assure_newblock()
@@ -362,6 +370,8 @@ class RstTranslator(AbstractTranslator):
             self._write_newline()
 
     def increment_index(self):
+        "Increase element counter for current stacklevel. "
+        # Overwrite context.index with incremented number:
         idx = self.context.index + 1
         del self.context.index
         self.context.index = idx
@@ -384,6 +394,22 @@ class RstTranslator(AbstractTranslator):
         del self.context.index
 
     def visit_Text(self, node):
+        """At the leafs of the three there are the textnodes, the actual stream
+        of text. There's a division of into two forms: those in large pieces of 
+        inline text (paragraphs) with occasional embedded elements, or short pieces
+        in elements of various structured. The document as a whole, is a mix of
+        degrees of these two.
+
+        This trieds to serve both purposes. Other visitor hooks toggle one of
+        the following bits to get what is required:
+
+        - **capture_text**, tells wether to concatenate the text onto the current
+          context; this is usually used together with
+        - **skip_content**, which will stop visit_Text from doing anything further. 
+          Otherwise
+        - **tab_content** is one last bit that tells to either write indented
+          blocks (_write_indented) or tabbed blocks (_write_tabbed).
+        """
         text = node.astext()
         #encoded = self.encode(text)
         #if self.in_mailto and self.settings.cloak_email_addresses:
@@ -393,7 +419,10 @@ class RstTranslator(AbstractTranslator):
             setattr(self.context, self.capture_text, text)
         lines = text.split('\n') # XXX: unix
         if not self.skip_content:
-            self._write_indented(*lines)
+            if self.tab_content:
+            	self._write_tabbed(*lines)
+            else:
+                self._write_indented(*lines)
     def depart_Text(self, node):
         pass
 
@@ -549,13 +578,17 @@ class RstTranslator(AbstractTranslator):
             self._assure_newblock()
         self.increment_index()
         self.context.index = 0
+#        self.tab_content = ( 14, ) # indent into two cols, first is 14 
         #self.context.indent += 5 * INDENT
     def depart_option_list(self, node):
         self.pop_tree()
         del self.context.index
         #del self.context.indent
+        self.tab_content = None
         self._assure_emptyline()
 
+    def visit_option_list_item(selfh):
+        pass
     visit_option_list_item = _pass_visit
     depart_option_list_item = _pass_visit
 
@@ -749,6 +782,9 @@ class RstTranslator(AbstractTranslator):
         self.sub_tree(node)
         if not self.block_level:
             self._assure_newblock()
+#        print node.attributes
+        if node.attributes['xml:space'] == "preserve":
+            self.preserve_ws = True
         self.increment_index()
         self._write_indented('.. ')
         self.context.indent += INDENT
@@ -756,6 +792,7 @@ class RstTranslator(AbstractTranslator):
         self.pop_tree()
         self._assure_emptyline()
         del self.context.indent
+        self.preserve_ws = False
 
     def visit_topic(self, node):
         self.sub_tree(node)
@@ -1036,6 +1073,13 @@ class RstTranslator(AbstractTranslator):
     depart_tgroup = _pass_visit
 
     def visit_table(self, node):
+        """
+        The problem for tables is, how to write embedded structures.
+        E.g. text would need to be written to its own context, one per cell.
+        And then it can get wrapping, resizing added borders and write it in one go. Ugh.
+
+        See option_list for start with tabbed writing.
+        """
         self.debugprint(node)
     depart_table = _pass_visit
 
