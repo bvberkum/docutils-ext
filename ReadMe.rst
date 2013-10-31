@@ -71,7 +71,7 @@ Branches:
     dev_rstwriterobjects (current 2012-04-14)
       separate development branch for rstwriter restructuring.  
 
-      :test: 57; 24 failures, 3 errors, 30 OK
+      :test: 53; 22 failures, 1 errors, 30 OK
 
     dev_simplemuxdem (2012-04-14)
       trying a lossless read/write using the rST SM base with a 
