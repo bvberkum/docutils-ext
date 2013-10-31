@@ -62,7 +62,7 @@ Devel
 Branches:
   master
     all development happened here until dev was branched.
-  dev (current 2012-04-14)
+  dev
     all development now here.
 
     :tests: 50; 21 failures, 29 OK
@@ -75,9 +75,10 @@ Branches:
 
     dev_simplemuxdem
       trying a lossless read/write using the rST SM base with a 
-      simple text format, to understand rSt parser.
+      simple text format, to understand the rSt parser statemachine.
 
-      :tests: 53; 18 failures, 35 OK
+      :tests: 2 OK
+
 
       Abandonned while I do get enough insight into the rSt parser
       machinery.

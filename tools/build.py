@@ -144,8 +144,11 @@ else:
 if action == 'proc':
     assert target_format == 'pseudoxml'
     # TODO: use source_format
-    frontend.cli_process(
-            sys.argv[1:], builder_name=module_name)
+    #frontend.cli_process(
+    #        sys.argv[1:], builder_name=module_name)
+    frontend.cli_process(sys.argv[1:], 'dotmpe.du.builder.'+tag)
+    #frontend.cli_process(
+    #        sys.argv[1:], builder_name=module_name)
 
 elif action == 'pub':
     frontend.cli_render(
