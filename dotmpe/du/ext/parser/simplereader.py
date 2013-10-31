@@ -5,6 +5,8 @@ This parses a simple format of nested sections with titles and
 paragraphs with strong or emphasized inline spans.
 
 I'm trying to strip and scrap the rSt as I go, but it is hard to separate.
+There is lots of stuff relevant to rST only here, and
+a very puny testcoverage I would guess.
 """
 
 import re

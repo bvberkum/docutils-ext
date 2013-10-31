@@ -52,7 +52,8 @@ CLN 				+= \
 test::
 	@-test_listing=test/main.list;\
 		test_mods=$$(cat $$test_listing|grep -v '^#'|grep -v '^$$');\
-		test_listing=$$test_listing python test/main.py $$test_mods 2> test.log
+		test_listing=$$test_listing coverage run test/main.py $$test_mods 2> test.log
+	@coverage report --include="test/*,dotmpe/*"
 	@if [ -n "$$(tail -1 test.log|grep OK)" ]; then \
 	    $(ll) Success "$@" "see" test.log; \
     else \
