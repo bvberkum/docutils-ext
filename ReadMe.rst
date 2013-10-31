@@ -66,12 +66,19 @@ Branches:
     all development now here.
 
     dev_rstwriterobjects
-      separate development branch for rstwriter restructuring.  
-    dev_simplemuxdem (current 2012-04-14)
+      separate development branch for rstwriter restructuring, 
+      trying to OO-ify and add some elegance.
+
+      :test: 57; 25 failures, 2 errors, 30 OK
+
+    dev_simplemuxdem
       trying a lossless read/write using the rST SM base with a 
-      simple text format
+      simple text format, to understand the rSt parser statemachine.
 
       :tests: 2, OK
+
+      Abandonned while I do get enough insight into the rSt parser
+      machinery.
 
 rST writer
 ----------
