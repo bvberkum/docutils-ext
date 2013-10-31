@@ -107,7 +107,7 @@ if script_names:
 # only use tag-suffixed comp alias if available
 reader_name = tag
 if reader_name not in comp.readers:
-    print "Using default reader 'standalone'"
+    print "Unknown", reader_name, "Using default reader 'standalone'"
     reader_name = 'standalone'
 
 parser_name = "%s-%s" % (source_format, tag)
@@ -125,6 +125,7 @@ if not '.' in module_name:
 
 # print debug info
 if '--debug-du-fe' in sys.argv:
+    sys.argv.remove('--debug-du-fe')
     print >>sys.stderr, """source_format: %s
 target_format: %s,
 tag: %s,
