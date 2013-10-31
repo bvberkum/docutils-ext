@@ -65,7 +65,7 @@ Branches:
   dev
     all development now here.
 
-    :tests: 50; 21 failures, 29 OK
+    :tests: 50; 17 failures, 33 OK
 
     dev_rstwriterobjects
       separate development branch for rstwriter restructuring, 
