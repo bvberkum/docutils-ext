@@ -612,7 +612,9 @@ class RstTranslator(AbstractTranslator):
         if not self.root and self.in_tag('figure', '*'):
             pass
         else:
-            if 'refuri' in node:
+            if 'name' in node:
+                pass
+            elif 'refuri' in node:
                 if node.astext() == node['refuri']:
                     pass
                 else:
@@ -626,7 +628,9 @@ class RstTranslator(AbstractTranslator):
             self._write_indented(":target: %s\n\n" %node['refuri'])
             self.indented = 0
         else:
-            if 'refuri' in node:
+            if 'name' in node:
+                self.body.append('_')
+            elif 'refuri' in node:
                 if node.astext() == node['refuri']:
                     pass
                 elif 'anonymous' in node:
@@ -678,6 +682,7 @@ class RstTranslator(AbstractTranslator):
     def visit_target(self, node):
         self.sub_tree(node)
         ref_uri = self._attr(node, 'refuri')
+        ref_name = self._attr(node, 'refname')
         ref_id = self._attr(node, 'refid')
         if ref_uri or ref_id:
             if not self.block_level:
@@ -685,7 +690,7 @@ class RstTranslator(AbstractTranslator):
         self.context.increment('index')
         if 'anonymous' in node and node['anonymous'] == '1':
             self._write_indented('.. __:')
-        elif 'refid' in node or 'refuri' in node:
+        elif ref_name or ref_uri or ref_id:
             self._write_indented('.. _')
         if ref_uri:
             # XXX: what about multiple names?
@@ -694,20 +699,25 @@ class RstTranslator(AbstractTranslator):
                     ref_uri))
             else:
                 self._write_indented("`")
-        elif ref_id:
+        elif ref_id or ref_name:
             if 'names' in node and node['names']:
-                self._write_indented("%s: `%s`_" % (node['names'][0],
-                    ref_id))
+                if ref_id:
+                    self._write_indented("%s: `%s`_" % (node['names'][0], ref_id))
+                else:
+                    self._write_indented("%s: %s_" % (node['names'][0], ref_name))
             else:
                 self._write_indented("`")
+        elif ref_name:
+            pass
         else:
-            self._write_indented('')
+            self._write_indented('_`')
     def depart_target(self, node):
         self.pop_tree()
         if 'refuri' not in node or not node['refuri']:
             pass
-        if 'refid' not in node or not node['refid']:
-            self._write_indented('')
+        if not 'refname' in node:
+            if 'refid' not in node or not node['refid']:
+                self._write_indented('`')
 
     def visit_title_reference(self, node):
         self.sub_tree(node)
@@ -841,18 +851,20 @@ class RstTranslator(AbstractTranslator):
         del self.context.indent
 
     def visit_literal_block(self, node):
+        self._assure_newblock()
         self.sub_tree(node)
         self.context.increment('index')
         self.context.index = 0
-#        self._assure_newblock()
 #        self.debugprint(node)
 # FIXME: cannot distinguish between literal block and parsed literal block?
         if 'xml:space' in node and node['xml:space'] == 'preserve':
             self._write_directive('parsed-literal')
         else:
             self._write_indented(':: ')
+        self._write_newline()
         self.context.indent += '   '
-        self._assure_newblock()
+        self._write_newline()
+        #self._assure_newblock()
         self.preserve_ws = True
     def depart_literal_block(self, node):
         self.pop_tree()
@@ -1361,16 +1373,17 @@ if __name__ == '__main__':
         TEST_DOC = [
 #'var/test-rst.1.document-5.full-rst-demo.rst',
 #'var/test-rst.1.document-7.rst',
-#'var/test-rst.16.block_quote.rst',
 #'var/test-rst.2.sections.rst',
 #'var/test-rst.2.title-1.rst',
 #'var/test-rst.5.inline-1.rst',
 #'var/test-rst.5.inline-2.rst',
 #'var/test-rst.5.inline-3.rst',
-#'var/test-rst.5.inline-4.rst',
-'var/test-rst.6.bullet-list-2.rst',
+'var/test-rst.5.inline-4.rst',
+#'var/test-rst.6.bullet-list-2.rst',
 #'var/test-rst.6.bullet-list.rst',
 #'var/test-rst.8.field-list-3.rst',
+
+# look at field-lists, only minimal newlines required:
 #'var/test-rst.8.field-list-4.rst',
         ]
         #TEST_DOC = filter(os.path.getsize,

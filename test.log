@@ -1,108 +1,59 @@
-FFF........F..........FF.....F..F..FFFF...........
-======================================================================
-FAIL: TestRst_10_LiteralBlock1; Lossy doctree comparison; Writer 'rst-mpe'
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
-    self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 203, in __test_writer
-    warnings)
-AssertionError: Error re-parsing generated file
- on </srv/project-mpe/docutils-ext/var/test-rst.10.literal-block-1.rst>
-
-/srv/project-mpe/docutils-ext/var/test-rst.10.literal-block-1.rst:1: (ERROR/3) Error in "parsed-literal" directive:
-no arguments permitted; blank line required before content block.
-
-.. parsed-literal::    Literal data
-
-
-
-======================================================================
-FAIL: TestRst_10_LiteralBlock2; Lossy doctree comparison; Writer 'rst-mpe'
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
-    self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 203, in __test_writer
-    warnings)
-AssertionError: Error re-parsing generated file
- on </srv/project-mpe/docutils-ext/var/test-rst.10.literal-block-2.rst>
-
-/srv/project-mpe/docutils-ext/var/test-rst.10.literal-block-2.rst:1: (ERROR/3) Error in "parsed-literal" directive:
-no arguments permitted; blank line required before content block.
-
-.. parsed-literal::    Literal data
-
-
-
+..F...................FF.....F..F...FFF...........
 ======================================================================
 FAIL: TestRst_10_LiteralBlock3; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 230, in runTest
     self._test_writer(writer_class(), lossy=lossy)
   File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 203, in __test_writer
-    warnings)
-AssertionError: Error re-parsing generated file
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 212, in __test_writer
+    diff )
+AssertionError: pxml tree mismatch 
  on </srv/project-mpe/docutils-ext/var/test-rst.10.literal-block-3.rst>
 
-/srv/project-mpe/docutils-ext/var/test-rst.10.literal-block-3.rst:4: (ERROR/3) Unexpected indentation.
-/srv/project-mpe/docutils-ext/var/test-rst.10.literal-block-3.rst:16: (ERROR/3) Error in "parsed-literal" directive:
-no arguments permitted; blank line required before content block.
+---  
 
-.. parsed-literal::    It's very convenient to use this form.
++++  
 
-/srv/project-mpe/docutils-ext/var/test-rst.10.literal-block-3.rst:22: (ERROR/3) Unexpected indentation.
-/srv/project-mpe/docutils-ext/var/test-rst.10.literal-block-3.rst:23: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+@@ -5,8 +5,11 @@
 
-
-======================================================================
-FAIL: TestRst_15_Blockquote; Lossy doctree comparison; Writer 'rst-mpe'
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
-    self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 203, in __test_writer
-    warnings)
-AssertionError: Error re-parsing generated file
- on </srv/project-mpe/docutils-ext/var/test-rst.15.blockquote.rst>
-
-/srv/project-mpe/docutils-ext/var/test-rst.15.blockquote.rst:6: (ERROR/3) Error in "parsed-literal" directive:
-no arguments permitted; blank line required before content block.
-
-.. parsed-literal::    >  Another form of quote
-
+         or quoted text is a literal block.
+     <literal_block xml:space="preserve">
+         Whitespace, newlines, blank lines, and
+-        all kinds of markup (like *this* or
+-        \this) is preserved by literal blocks.
++        all kinds of markup (like 
++        <emphasis>
++            this
++         or
++        this) is preserved by literal blocks.
+         
+         The paragraph containing only '::'
+         will be omitted from the result.
 
 ======================================================================
 FAIL: TestRst_1_Document5_FullRstDemo; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 230, in runTest
     self._test_writer(writer_class(), lossy=lossy)
   File "/srv/project-mpe/docutils-ext/test/util.py", line 137, in _test_writer
     self.fail(e)
-AssertionError: /srv/project-mpe/docutils-ext/var/test-rst.1.document-5.full-rst-demo.rst:67: (SEVERE/4) Title level inconsistent:
+AssertionError: /srv/project-mpe/docutils-ext/var/test-rst.1.document-5.full-rst-demo.rst:70: (SEVERE/4) Title level inconsistent:
 
-2.1.1\xa0\xa0\xa0Inline Markup
+Inline Markup
 ^^^^^^^^^^^^^
 
 ======================================================================
 FAIL: TestRst_1_Document6; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 230, in runTest
     self._test_writer(writer_class(), lossy=lossy)
   File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 203, in __test_writer
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 205, in __test_writer
     warnings)
 AssertionError: Error re-parsing generated file
  on </srv/project-mpe/docutils-ext/var/test-rst.1.document-6.rst>
@@ -115,11 +66,11 @@ AssertionError: Error re-parsing generated file
 FAIL: TestRst_22_Docinfo; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 230, in runTest
     self._test_writer(writer_class(), lossy=lossy)
   File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 203, in __test_writer
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 205, in __test_writer
     warnings)
 AssertionError: Error re-parsing generated file
  on </srv/project-mpe/docutils-ext/var/test-rst.22.docinfo.rst>
@@ -132,7 +83,7 @@ AssertionError: Error re-parsing generated file
 FAIL: TestRst_2_Title1; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 230, in runTest
     self._test_writer(writer_class(), lossy=lossy)
   File "/srv/project-mpe/docutils-ext/test/util.py", line 137, in _test_writer
     self.fail(e)
@@ -142,63 +93,37 @@ Title
 ^^^^^
 
 ======================================================================
-FAIL: TestRst_5_Inline1; Lossy doctree comparison; Writer 'rst-mpe'
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
-    self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 203, in __test_writer
-    warnings)
-AssertionError: Error re-parsing generated file
- on </srv/project-mpe/docutils-ext/var/test-rst.5.inline-1.rst>
-
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-1.rst:9: (ERROR/3) Indirect hyperlink target "reference" (id="reference") refers to target "target", which does not exist.
-
-
-======================================================================
 FAIL: TestRst_5_Inline2; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 230, in runTest
     self._test_writer(writer_class(), lossy=lossy)
   File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 203, in __test_writer
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 205, in __test_writer
     warnings)
 AssertionError: Error re-parsing generated file
  on </srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst>
 
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:5: (WARNING/2) Explicit markup ends without a blank line; unexpected unindent.
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:7: (WARNING/2) malformed hyperlink target.
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:20: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:20: (ERROR/3) Error in "parsed-literal" directive:
-no arguments permitted; blank line required before content block.
-
-.. parsed-literal::    *
-   literal
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:22: (WARNING/2) Explicit markup ends without a blank line; unexpected unindent.
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:27: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:28: (WARNING/2) Inline interpreted text or phrase reference start-string without end-string.
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:30: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:30: (WARNING/2) Inline interpreted text or phrase reference start-string without end-string.
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:32: (WARNING/2) malformed hyperlink target.
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:34: (WARNING/2) malformed hyperlink target.
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:: (ERROR/3) Anonymous hyperlink mismatch: 1 references but 0 targets.
-See "backrefs" attribute for IDs.
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:5: (ERROR/3) Unknown target name: "anonymous inline reference".
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:25: (WARNING/2) Explicit markup ends without a blank line; unexpected unindent.
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:29: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:31: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:33: (WARNING/2) malformed hyperlink target.
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:35: (WARNING/2) malformed hyperlink target.
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:19: (ERROR/3) Unknown target name: "term".
 
 
 ======================================================================
 FAIL: TestRst_5_Inline3; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 230, in runTest
     self._test_writer(writer_class(), lossy=lossy)
   File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 203, in __test_writer
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 205, in __test_writer
     warnings)
 AssertionError: Error re-parsing generated file
  on </srv/project-mpe/docutils-ext/var/test-rst.5.inline-3.rst>
@@ -212,24 +137,22 @@ AssertionError: Error re-parsing generated file
 FAIL: TestRst_5_Inline4; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 230, in runTest
     self._test_writer(writer_class(), lossy=lossy)
   File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 203, in __test_writer
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 205, in __test_writer
     warnings)
 AssertionError: Error re-parsing generated file
  on </srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst>
 
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:13: (WARNING/2) Explicit markup ends without a blank line; unexpected unindent.
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:38: (ERROR/3) Content block expected for the "replace" directive; none found.
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:38: (WARNING/2) Substitution definition "EXAMPLE" empty or invalid.
-
-.. |EXAMPLE| replace::
-
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:38: (WARNING/2) Inline target start-string without end-string.
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:38: (WARNING/2) Inline interpreted text or phrase reference start-string without end-string.
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:38: (ERROR/3) Undefined substitution referenced: "EXAMPLE".
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:3: (ERROR/3) Too many symbol footnote references: only 0 corresponding footnotes available.
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:3: (ERROR/3) Unknown target name: "example".
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:3: (ERROR/3) Unknown target name: "python web site".
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:3: (ERROR/3) Unknown target name: "site".
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:3: (ERROR/3) Unknown target name: "cit2002".
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:17: (ERROR/3) Unknown target name: "pep 287".
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:17: (ERROR/3) Unknown target name: "rfc 2822".
@@ -237,6 +160,6 @@ AssertionError: Error re-parsing generated file
 
 
 ----------------------------------------------------------------------
-Ran 50 tests in 3.361s
+Ran 50 tests in 3.330s
 
-FAILED (failures=12)
+FAILED (failures=8)

@@ -152,7 +152,9 @@ class AbstractWriterTestCase(object):
                 #reader_name=self.TAG,
                 settings_overrides={
                     'warning_stream': warnings,
-                    'input_encoding': 'unicode',
+#                    'output_encoding': 'unicode',
+#                    'output_encoding': 'ascii',
+                    #'input_encoding': 'unicode',
                 },
                 writer_name='pseudoxml')['whole']#writer_name='dotmpe-rst')
         warnings = warnings.getvalue()
@@ -267,7 +269,8 @@ def print_compare_writer(doc_file,
     original_tree = docutils.core.publish_parts(
             reader=reader_class(parser_class()),
             source=doc, 
-            writer_name='pseudoxml')['whole']
+            writer_name='pseudoxml',
+            settings_overrides={'input_encoding':'utf-8'})['whole']
     assert isinstance(original_tree, unicode)
     result = docutils.core.publish_parts(
             reader=reader_class(parser_class()),
@@ -302,8 +305,8 @@ def print_compare_writer(doc_file,
     out += [u''] 
 
     # print side-by-side view
-    original_out = doc.strip().split('\n')
-    generated_out = result.strip().split('\n')
+    original_out = doc.strip().decode('utf-8').split('\n')
+    generated_out = result.strip().decode('utf-8').split('\n')
     out += [ (u'Original ').ljust(width, '-') +u' '+ (u'Rewriter ').ljust(width, '-') ] 
     while original_out or generated_out:
         p1 = u''
@@ -337,4 +340,6 @@ def print_compare_writer(doc_file,
     out += [u'']
 
     print u"\n".join(out)
+
+
 
