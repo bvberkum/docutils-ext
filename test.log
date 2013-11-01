@@ -1,4 +1,44 @@
-..F...................FFF....F..F..FFFF...........
+FFF........F..........FF.....F..F..FFFF...........
+======================================================================
+FAIL: TestRst_10_LiteralBlock1; Lossy doctree comparison; Writer 'rst-mpe'
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 203, in __test_writer
+    warnings)
+AssertionError: Error re-parsing generated file
+ on </srv/project-mpe/docutils-ext/var/test-rst.10.literal-block-1.rst>
+
+/srv/project-mpe/docutils-ext/var/test-rst.10.literal-block-1.rst:1: (ERROR/3) Error in "parsed-literal" directive:
+no arguments permitted; blank line required before content block.
+
+.. parsed-literal::    Literal data
+
+
+
+======================================================================
+FAIL: TestRst_10_LiteralBlock2; Lossy doctree comparison; Writer 'rst-mpe'
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 203, in __test_writer
+    warnings)
+AssertionError: Error re-parsing generated file
+ on </srv/project-mpe/docutils-ext/var/test-rst.10.literal-block-2.rst>
+
+/srv/project-mpe/docutils-ext/var/test-rst.10.literal-block-2.rst:1: (ERROR/3) Error in "parsed-literal" directive:
+no arguments permitted; blank line required before content block.
+
+.. parsed-literal::    Literal data
+
+
+
 ======================================================================
 FAIL: TestRst_10_LiteralBlock3; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
@@ -7,30 +47,39 @@ Traceback (most recent call last):
     self._test_writer(writer_class(), lossy=lossy)
   File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 210, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 203, in __test_writer
+    warnings)
+AssertionError: Error re-parsing generated file
  on </srv/project-mpe/docutils-ext/var/test-rst.10.literal-block-3.rst>
 
----  
+/srv/project-mpe/docutils-ext/var/test-rst.10.literal-block-3.rst:4: (ERROR/3) Unexpected indentation.
+/srv/project-mpe/docutils-ext/var/test-rst.10.literal-block-3.rst:16: (ERROR/3) Error in "parsed-literal" directive:
+no arguments permitted; blank line required before content block.
 
-+++  
+.. parsed-literal::    It's very convenient to use this form.
 
-@@ -5,8 +5,11 @@
+/srv/project-mpe/docutils-ext/var/test-rst.10.literal-block-3.rst:22: (ERROR/3) Unexpected indentation.
+/srv/project-mpe/docutils-ext/var/test-rst.10.literal-block-3.rst:23: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
 
-         or quoted text is a literal block.
-     <literal_block xml:space="preserve">
-         Whitespace, newlines, blank lines, and
--        all kinds of markup (like *this* or
--        \this) is preserved by literal blocks.
-+        all kinds of markup (like 
-+        <emphasis>
-+            this
-+         or
-+        this) is preserved by literal blocks.
-         
-         The paragraph containing only '::'
-         will be omitted from the result.
+
+======================================================================
+FAIL: TestRst_15_Blockquote; Lossy doctree comparison; Writer 'rst-mpe'
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 203, in __test_writer
+    warnings)
+AssertionError: Error re-parsing generated file
+ on </srv/project-mpe/docutils-ext/var/test-rst.15.blockquote.rst>
+
+/srv/project-mpe/docutils-ext/var/test-rst.15.blockquote.rst:6: (ERROR/3) Error in "parsed-literal" directive:
+no arguments permitted; blank line required before content block.
+
+.. parsed-literal::    >  Another form of quote
+
 
 ======================================================================
 FAIL: TestRst_1_Document5_FullRstDemo; Lossy doctree comparison; Writer 'rst-mpe'
@@ -61,48 +110,6 @@ AssertionError: Error re-parsing generated file
 /srv/project-mpe/docutils-ext/var/test-rst.1.document-6.rst:8: (WARNING/2) Bibliographic field "Authors" incompatible with extraction: it must contain either a single paragraph (with authors separated by one of ";,"), multiple paragraphs (one per author), or a bullet list with one paragraph (one author) per item.
 /srv/project-mpe/docutils-ext/var/test-rst.1.document-6.rst:: (ERROR/3) Unknown target name: "goodger@python.org".
 
-
-======================================================================
-FAIL: TestRst_1_Document7; Lossy doctree comparison; Writer 'rst-mpe'
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 228, in runTest
-    self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 210, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
- on </srv/project-mpe/docutils-ext/var/test-rst.1.document-7.rst>
-
----  
-
-+++  
-
-@@ -11,16 +11,12 @@
-
-                 The fanatics going straight forward and openly, the politicians by the surer mode of zigzag.
-         <attribution>
-             Burke.
--    <enumerated_list enumtype="arabic" prefix="" start="2" suffix=".">
--        <list_item>
--            <paragraph>
--                (Arch.) A molding running in a zigzag line; a chevron, or series of chevrons.
--        <list_item>
--            <paragraph>
--                (Fort.) See Boyau. 
--                <footnote_reference auto="1" ids="id1" refid="id2">
--                    1
--    <footnote auto="1" backrefs="id1" ids="id2" names="1">
-+    <paragraph>
-+        2. (Arch.) A molding running in a zigzag line; a chevron, or series of chevrons.
-+        2. (Fort.) See Boyau. 
-+        <footnote_reference ids="id1" refid="id2">
-+            1
-+    <footnote auto="1" ids="id2" names="1">
-         <label>
-             1
-         <paragraph>
 
 ======================================================================
 FAIL: TestRst_22_Docinfo; Lossy doctree comparison; Writer 'rst-mpe'
@@ -165,13 +172,19 @@ AssertionError: Error re-parsing generated file
 
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:5: (WARNING/2) Explicit markup ends without a blank line; unexpected unindent.
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:7: (WARNING/2) malformed hyperlink target.
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:25: (WARNING/2) Explicit markup ends without a blank line; unexpected unindent.
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:30: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:31: (WARNING/2) Inline interpreted text or phrase reference start-string without end-string.
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:33: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:33: (WARNING/2) Inline interpreted text or phrase reference start-string without end-string.
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:35: (WARNING/2) malformed hyperlink target.
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:37: (WARNING/2) malformed hyperlink target.
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:20: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:20: (ERROR/3) Error in "parsed-literal" directive:
+no arguments permitted; blank line required before content block.
+
+.. parsed-literal::    *
+   literal
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:22: (WARNING/2) Explicit markup ends without a blank line; unexpected unindent.
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:27: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:28: (WARNING/2) Inline interpreted text or phrase reference start-string without end-string.
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:30: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:30: (WARNING/2) Inline interpreted text or phrase reference start-string without end-string.
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:32: (WARNING/2) malformed hyperlink target.
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:34: (WARNING/2) malformed hyperlink target.
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:: (ERROR/3) Anonymous hyperlink mismatch: 1 references but 0 targets.
 See "backrefs" attribute for IDs.
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:5: (ERROR/3) Unknown target name: "anonymous inline reference".
@@ -220,10 +233,10 @@ AssertionError: Error re-parsing generated file
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:3: (ERROR/3) Unknown target name: "cit2002".
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:17: (ERROR/3) Unknown target name: "pep 287".
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:17: (ERROR/3) Unknown target name: "rfc 2822".
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:49: (ERROR/3) Unknown target name: "label".
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:51: (ERROR/3) Unknown target name: "label".
 
 
 ----------------------------------------------------------------------
 Ran 50 tests in 3.361s
 
-FAILED (failures=10)
+FAILED (failures=12)

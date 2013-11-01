@@ -37,6 +37,7 @@ In progress:
   - ``dotmpe.du.builder`` has some packages with specific Reader/Parser/Writer
     component configurations, but frontend is undergoing work.
   - Front-end development in `Blue Lines`_.
+  - rST rewriter.  
 
 ToDo
   -  re-evaluate include, literal and raw dereferencing.
@@ -65,7 +66,7 @@ Branches:
   dev
     all development now here.
 
-    :tests: 50; 10 failures, 40 OK
+    :tests: 50; 12 failures, 38 OK
 
     Testing rstwriter only.
     Also not testing all rSt features while not implemented.
@@ -89,11 +90,9 @@ Branches:
 
 rST writer
 ----------
-An experimental writer. The module can be invoked as script using a rST filename
-as argument, and will print some lossy and lossless testing results.
-
-Currently only lossy rST writing is tested by 'make test'.
-rST writer testcases are generated for all files matching 'var/test-*.rst'.
+Although still heavily a work in progress, I think it may be almost ready for
+simple rST-to-rST processes. Tables are very low on the wishlist though,
+without some cleaning, restructuring and other fixes first.
 
 Getting Started
 ---------------
@@ -101,6 +100,20 @@ May need latest docutils from SVN.
 
 For some automated tasks on this project package use ``make [help|..]``.
 There is no setup script yet.
+
+Testing
+-------
+The main development is at the rST writer. The module is used as a crude 
+script during bugfixing::
+
+  python dotmpe/du/ext/writer/rst.py [\*.rst]
+
+This prints the documents in source and psuedoxml, conveniently side-by-side.
+
+Currently only lossy rST writing is tested by 'make test' because
+that generates enough work and bugreports for now.
+
+rST writer testcases are generated for all files matching ``var/test-*.rst``.
 
 Log
 -----
@@ -122,6 +135,9 @@ Log
   - Updated testing so dynamic test cases (generated from file) are handled as
     usual by unittest.main, no more need to aggregate testsuites.
     Lossless testing is disabled for now.
+
+2013-11-01
+  - Retaking to development. 
 
 - `Issues <Issues.rst>`_
 
