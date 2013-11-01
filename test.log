@@ -1,4 +1,4 @@
-..F...................FF.....F..F...FFF...........
+..F...................FF.....F.F.F..FFFF...........
 ======================================================================
 FAIL: TestRst_10_LiteralBlock3; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
@@ -80,6 +80,24 @@ AssertionError: Error re-parsing generated file
 
 
 ======================================================================
+FAIL: TestRst_24_References; Lossy doctree comparison; Writer 'rst-mpe'
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 230, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 205, in __test_writer
+    warnings)
+AssertionError: Error re-parsing generated file
+ on </srv/project-mpe/docutils-ext/var/test-rst.24.references.rst>
+
+/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:13: (WARNING/2) malformed hyperlink target.
+/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:17: (WARNING/2) malformed hyperlink target.
+/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:19: (WARNING/2) malformed hyperlink target.
+
+
+======================================================================
 FAIL: TestRst_2_Title1; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
@@ -91,6 +109,39 @@ AssertionError: /srv/project-mpe/docutils-ext/var/test-rst.2.title-1.rst:10: (SE
 
 Title
 ^^^^^
+
+======================================================================
+FAIL: TestRst_5_Inline1; Lossy doctree comparison; Writer 'rst-mpe'
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 230, in runTest
+    self._test_writer(writer_class(), lossy=lossy)
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 212, in __test_writer
+    diff )
+AssertionError: pxml tree mismatch 
+ on </srv/project-mpe/docutils-ext/var/test-rst.5.inline-1.rst>
+
+---  
+
++++  
+
+@@ -15,10 +15,8 @@
+
+         <strong classes="my-role">
+             role-fu
+         
+-        <target ids="target" names="target">
+-            target
+-        
+-        <reference name="reference" refid="target">
++        .. _target: target
++        <reference name="reference" refid="reference">
+             reference
+-    <target ids="reference" names="reference" refid="target">
++    <target ids="reference" names="reference">
+ 
 
 ======================================================================
 FAIL: TestRst_5_Inline2; Lossy doctree comparison; Writer 'rst-mpe'
@@ -107,6 +158,7 @@ AssertionError: Error re-parsing generated file
 
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:5: (WARNING/2) Explicit markup ends without a blank line; unexpected unindent.
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:7: (WARNING/2) malformed hyperlink target.
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:15: (WARNING/2) Explicit markup ends without a blank line; unexpected unindent.
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:25: (WARNING/2) Explicit markup ends without a blank line; unexpected unindent.
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:29: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-2.rst:31: (WARNING/2) Definition list ends without a blank line; unexpected unindent.
@@ -147,11 +199,7 @@ AssertionError: Error re-parsing generated file
  on </srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst>
 
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:13: (WARNING/2) Explicit markup ends without a blank line; unexpected unindent.
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:38: (WARNING/2) Inline target start-string without end-string.
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:38: (WARNING/2) Inline interpreted text or phrase reference start-string without end-string.
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:38: (ERROR/3) Undefined substitution referenced: "EXAMPLE".
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:3: (ERROR/3) Too many symbol footnote references: only 0 corresponding footnotes available.
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:3: (ERROR/3) Unknown target name: "example".
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:3: (ERROR/3) Unknown target name: "site".
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:3: (ERROR/3) Unknown target name: "cit2002".
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:17: (ERROR/3) Unknown target name: "pep 287".
@@ -160,6 +208,6 @@ AssertionError: Error re-parsing generated file
 
 
 ----------------------------------------------------------------------
-Ran 50 tests in 3.330s
+Ran 51 tests in 3.422s
 
-FAILED (failures=8)
+FAILED (failures=10)

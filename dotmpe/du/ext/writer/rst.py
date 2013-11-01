@@ -43,13 +43,7 @@ class Writer(writers.Writer):
 
 
 class AbstractTranslator(nodes.NodeVisitor):
-    def _attr(self, node, name):
-        """
-        Helper function. Return attribute from dict if set.
-        """
-        if name in node and node[name]:
-            return node[name]
-
+    pass
 
 class RstPreTranslator(AbstractTranslator):
 
@@ -65,10 +59,10 @@ class RstPreTranslator(AbstractTranslator):
         self.anonymous_references = {}
 
     def visit_reference(self, node):
-        anonymous = self._attr(node, 'anonymous')
-        classes = self._attr(node, 'classes')
-        ref_uri = self._attr(node, 'refuri')
-        ref_id = self._attr(node, 'refid')
+        anonymous = node.get('anonymous')
+        classes = node.get('classes')
+        ref_uri = node.get('refuri')
+        ref_id = node.get('refid')
         if ref_id:
             self.id_references[ref_id] = node
 
@@ -519,7 +513,7 @@ class RstTranslator(AbstractTranslator):
         self._write_indented('`')
 
     def _visit_simple_inline(self, klass, decoration, node):
-        if self._attr(node, 'classes'):
+        if node.get('classes'):
             if klass:
                 node['classes'].append(klass)
             self.visit_inline(node)
@@ -529,7 +523,7 @@ class RstTranslator(AbstractTranslator):
             self._write_indented(decoration)
 
     def _depart_simple_inline(self, klass, decoration, node):
-        if self._attr(node, 'classes'):
+        if node.get('classes'):
             self.depart_inline(node)
         else:
             self.pop_tree()
@@ -681,18 +675,23 @@ class RstTranslator(AbstractTranslator):
 
     def visit_target(self, node):
         self.sub_tree(node)
-        ref_uri = self._attr(node, 'refuri')
-        ref_name = self._attr(node, 'refname')
-        ref_id = self._attr(node, 'refid')
+        names = node.get('names')
+        ids = node.get('ids')
+        ref_uri = node.get('refuri')
+        ref_name = node.get('refname')
+        ref_id = node.get('refid')
         if ref_uri or ref_id:
             if not self.block_level:
                 self._assure_newblock()
         self.context.increment('index')
         if 'anonymous' in node and node['anonymous'] == '1':
             self._write_indented('.. __:')
-        elif ref_name or ref_uri or ref_id:
+        elif ref_name or ref_uri or ref_id or names:
             self._write_indented('.. _')
-        if ref_uri:
+        if names:
+            self.body.append(names[0])
+            self.body.append(": ")
+        elif ref_uri:
             # XXX: what about multiple names?
             if 'names' in node and node['names']:
                 self._write_indented("%s: %s" % (node['names'][0],
@@ -715,7 +714,7 @@ class RstTranslator(AbstractTranslator):
         self.pop_tree()
         if 'refuri' not in node or not node['refuri']:
             pass
-        if not 'refname' in node:
+        if not 'refname' in node and not 'names' in node:
             if 'refid' not in node or not node['refid']:
                 self._write_indented('`')
 
@@ -1378,7 +1377,8 @@ if __name__ == '__main__':
 #'var/test-rst.5.inline-1.rst',
 #'var/test-rst.5.inline-2.rst',
 #'var/test-rst.5.inline-3.rst',
-'var/test-rst.5.inline-4.rst',
+#'var/test-rst.5.inline-4.rst',
+'var/test-rst.24.references.rst',
 #'var/test-rst.6.bullet-list-2.rst',
 #'var/test-rst.6.bullet-list.rst',
 #'var/test-rst.8.field-list-3.rst',
