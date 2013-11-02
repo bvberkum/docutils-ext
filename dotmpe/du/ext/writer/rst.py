@@ -117,7 +117,7 @@ class RstTranslator(AbstractTranslator):
             'footnote',
             'substitution_definition',
         ] # + directives
-    "XXX: this may replace force_block_level?"
+    "These may be 'touching' without blankline separation. XXX: this may replace force_block_level?"
 
     body = []
     "The list of document strings, to be concatenated to final file. "
@@ -193,7 +193,7 @@ class RstTranslator(AbstractTranslator):
                 'field_body')
 
     @property
-    def current_path(self):
+    def path(self):
         return "/".join([n.tagname for n in self.context.tree])
 
     @property
@@ -449,15 +449,20 @@ class RstTranslator(AbstractTranslator):
         pass
 
     def visit_title(self, node):
-        self.sub_tree(node)
-        self.context.increment('index')
-        previous_tree = self.context.previous('tree')
+        previous_tree = self.context.tree
         if previous_tree and previous_tree[-1].tagname == 'topic':
             if not self.block_level:
                 self._assure_newblock()
+            self.sub_tree(node)
             self.visit_field_name(node)
         else:
             self.capture_text = 'title'
+            self.sub_tree(node)
+            #if previous_tree:
+            #    self._assure_emptyline()
+            #    self._write_newline()
+            #    #self._assure_newblock()
+        self.context.increment('index')
     def depart_title(self, node):
         self.pop_tree()
         prev_tree = self.context.previous('tree')
@@ -482,7 +487,7 @@ class RstTranslator(AbstractTranslator):
         text = self.context.subtitle
         self._assure_emptyline()
         seca = self.context.section_adornment
-        subindex = self.section_adornments.index(seca) + 2
+        subindex = self.section_adornments.index(seca) + 1
         assert len(self.section_adornments) >= subindex, subindex
         self._write_indented(self.section_adornments[subindex] * len(text))
         self._assure_emptyline()
@@ -1044,7 +1049,7 @@ class RstTranslator(AbstractTranslator):
         enum_index = self.context.counter + ( self.context.offset and self.context.offset-1 or 0) 
         is_bullet = self.in_tag('bullet_list', 1) 
         #assert is_bullet or self.in_tag('enumerated_list', 1), \
-        #        "Illegal container for %s %s, %s" % (self.in_tag(), self.current_path, self.in_tag(None, 1))
+        #        "Illegal container for %s %s, %s" % (self.in_tag(), self.path, self.in_tag(None, 1))
         #self.debugprint(,node)
         if is_bullet:
             bullet_instance = u'%s ' % self.context.bullet
@@ -1370,6 +1375,7 @@ class ContextStack(object):
         return value
     
     def increment(self, name):
+        old = self.current(name)
         self.replace(name, self.current(name) + 1) 
         return self.current(name)
 
