@@ -66,7 +66,7 @@ Branches:
   dev
     all development now here.
 
-    :tests: 51; 10 failures, 41 OK
+    :tests: 56; 10 failures, 46 OK
 
     Testing rstwriter only.
     Also not testing all rSt features while not implemented.

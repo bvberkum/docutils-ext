@@ -57,14 +57,21 @@ class RstPreTranslator(AbstractTranslator):
         self.id_references = {}
         self.uri_references = {}
         self.anonymous_references = {}
+        self.targets = {} # target id -> refid or refuri
+
+    def visit_target(self, node):
+        pass
+        #for i in ids.split(' '):
+        #    self.targets[i] = 
 
     def visit_reference(self, node):
+        # ????
         anonymous = node.get('anonymous')
         classes = node.get('classes')
-        ref_uri = node.get('refuri')
-        ref_id = node.get('refid')
-        if ref_id:
-            self.id_references[ref_id] = node
+        refuri = node.get('refuri')
+        refid = node.get('refid')
+        if refid:
+            self.id_references[refid] = node
 
     def unknown_visit(self, node): pass
     def unknown_departure(self, node): pass
@@ -72,6 +79,7 @@ class RstPreTranslator(AbstractTranslator):
 
 INDENT = u'  '
 section_adornments = ['=', '-', '~', '^', '+', "\"", "'", "_"]
+quote_chars = '!"#$%&\'()*+,-./:;<=>?@[\]^_`{|}~'
 
 class RstTranslator(AbstractTranslator):
 
@@ -133,6 +141,7 @@ class RstTranslator(AbstractTranslator):
         self.skip_content = False
         self.tab_content = ()
         self.section_adornments = section_adornments        
+        self.inline = False
         self.roles = []
         #self.docinfo = {}
         self.body = []
@@ -154,6 +163,7 @@ class RstTranslator(AbstractTranslator):
                 'index': None,
                 'block': None,
                 'offset': None,
+                'parsed': False,
             })
 
     def sub_tree(self, node):
@@ -241,7 +251,7 @@ class RstTranslator(AbstractTranslator):
         while _lines:
             text = _lines.pop(0)
 
-            if self.preserve_ws:
+            if self.preserve_ws and not self.context.parsed:
                 self.body.append(indent + text)
                 self._write_newline()
                 continue
@@ -324,6 +334,26 @@ class RstTranslator(AbstractTranslator):
     def _write_newline(self):
         self.body.append('\n') # XXX: unix
         self.indented = 0
+
+    def last_string(self, length=1):
+        assert length == 1
+        x = -1
+        bl = len(self.body)
+        while bl+x > -1:
+            y = -1
+            while len(self.body[x])+y > -1:
+                c = self.body[x][y]
+                if not c.isspace():
+                    return bl+x, len(self.body[x])+y, c
+                y -= 1
+            x -= 1
+        return -1, -1, None
+
+    def insert(self, x, y, s):
+        "Insert string in body text node."
+        text = self.body[x]
+        text = text[:y] +s+ text[y:]
+        self.body[x] = text
 
     @property
     def current_whitespace(self):
@@ -520,7 +550,8 @@ class RstTranslator(AbstractTranslator):
         else:
             self.sub_tree(node)
             self.context.increment('index')
-            self._write_indented(decoration)
+            #self._write_indented(decoration)
+            self.body.append(decoration)
 
     def _depart_simple_inline(self, klass, decoration, node):
         if node.get('classes'):
@@ -674,34 +705,70 @@ class RstTranslator(AbstractTranslator):
         self.body.append(']_ ')
 
     def visit_target(self, node):
+        """
+        - with anonymous and ids: lost id/name and got number id and refuri or refid; same as:
+        - with refid: block target, added its own id to endpoint, changed its id to refid
+        - with refuri: block target, got a refuri back for adding an id to a below target
+
+        Anything may be an endpoint, for most blocklevels this means the target
+        created an id on the below block, to which gets a refid.
+        But targets may be receiving id/names too, multiple targets even.
+        Then each target has the refid of the lowest target that points
+        elsewhere, the endpoint target.
+
+        To retrieve their id/names they have go to the endpoint. The endpoint
+        targets have forms:
+
+        - with ids and names and refid: inbound link
+        - with ids and names and refuri: outbound link
+
+        Links do not add ids/names to their target. This means the following
+        never have any additional ids/names?
+
+        - with ids and names: inline target
+
+        """
         self.sub_tree(node)
         names = node.get('names')
         ids = node.get('ids')
-        ref_uri = node.get('refuri')
-        ref_name = node.get('refname')
-        ref_id = node.get('refid')
-        if ref_uri or ref_id:
+        refuri = node.get('refuri')
+        refid = node.get('refid')
+        anonymous = node.get('refid', 0)
+        self.context.increment('index')
+
+        if anonymous and ids: # anonymous
+            self._write_indented('.. __:')
+        elif ids and names and refid: # inbound link
+            self._write_indented('.. _')
+        elif ids and names and refuri: # outbound link
+            self._write_indented('.. _')
+        elif ids and names: # inline targets
+            self._write_indented('.. _`')
+        elif refid: # block targets I
+            # perhaps should look up the id, but can use refid thats is the same
+            self._write_indented('.. _')
+        elif refuri: # block targets II
+            pass # FIXME: need to lookup the id here..
+        else:
+            assert False, node
+
+        if refuri or refid:
             if not self.block_level:
                 self._assure_newblock()
-        self.context.increment('index')
-        if 'anonymous' in node and node['anonymous'] == '1':
-            self._write_indented('.. __:')
-        elif ref_name or ref_uri or ref_id or names:
-            self._write_indented('.. _')
         if names:
             self.body.append(names[0])
             self.body.append(": ")
-        elif ref_uri:
+        elif refuri:
             # XXX: what about multiple names?
             if 'names' in node and node['names']:
                 self._write_indented("%s: %s" % (node['names'][0],
-                    ref_uri))
+                    refuri))
             else:
                 self._write_indented("`")
-        elif ref_id or ref_name:
+        elif refid:
             if 'names' in node and node['names']:
-                if ref_id:
-                    self._write_indented("%s: `%s`_" % (node['names'][0], ref_id))
+                if refid:
+                    self._write_indented("%s: `%s`_" % (node['names'][0], refid))
                 else:
                     self._write_indented("%s: %s_" % (node['names'][0], ref_name))
             else:
@@ -717,6 +784,7 @@ class RstTranslator(AbstractTranslator):
         if not 'refname' in node and not 'names' in node:
             if 'refid' not in node or not node['refid']:
                 self._write_indented('`')
+        self._assure_newblock()
 
     def visit_title_reference(self, node):
         self.sub_tree(node)
@@ -799,9 +867,9 @@ class RstTranslator(AbstractTranslator):
     def depart_system_message(self, node): pass
 
     def visit_comment(self, node):
-        self.sub_tree(node)
         if not self.block_level:
             self._assure_newblock()
+        self.sub_tree(node)
         if node.attributes['xml:space'] == "preserve":
             self.preserve_ws = True
         self.context.increment('index')
@@ -850,18 +918,35 @@ class RstTranslator(AbstractTranslator):
         del self.context.indent
 
     def visit_literal_block(self, node):
-        self._assure_newblock()
+        pre = node.get('xml:space') #is always set?
+        # look for non-text subnodes
+        def cond(node):
+            if node.tagname != '#text':#not isinstance(node, nodes.Text):
+                return True
+        nottext = node.traverse(condition=cond, include_self=False)
+        parsed = len(nottext) > 0
+        self.context.parsed = parsed
+        x, y, lastchar = self.last_string(1)
+        lastc = lastchar == ':'
+        if not parsed and lastc:
+            self.insert(x, y, ':')
+        else:
+            self._assure_newblock()
         self.sub_tree(node)
         self.context.increment('index')
         self.context.index = 0
-#        self.debugprint(node)
-# FIXME: cannot distinguish between literal block and parsed literal block?
-        if 'xml:space' in node and node['xml:space'] == 'preserve':
-            self._write_directive('parsed-literal')
-        else:
-            self._write_indented(':: ')
+        if not lastc:
+            if parsed:
+                self._write_directive('parsed-literal')
+            else:
+                self._write_indented(':: ')
         self._write_newline()
-        self.context.indent += '   '
+        # xxx: long winded way to detect quoted literal blocks
+        lines = [ l.strip() for l in node.astext().strip().split('\n') if l.strip() ]
+        quoted = [ l for l in lines if l[0] in quote_chars ]
+        node.quoted = len(quoted) == len(lines)
+        if not node.quoted:
+            self.context.indent += '   '
         self._write_newline()
         #self._assure_newblock()
         self.preserve_ws = True
@@ -869,8 +954,10 @@ class RstTranslator(AbstractTranslator):
         self.pop_tree()
         self._assure_newblock()
         del self.context.index
-        del self.context.indent
+        if not node.quoted:
+            del self.context.indent
         self.preserve_ws = False
+        self.context.parsed
 
     # XXX: what can lineblock contain
     def visit_line_block(self, node):
@@ -1374,15 +1461,15 @@ if __name__ == '__main__':
 #'var/test-rst.1.document-7.rst',
 #'var/test-rst.2.sections.rst',
 #'var/test-rst.2.title-1.rst',
-#'var/test-rst.5.inline-1.rst',
-#'var/test-rst.5.inline-2.rst',
 #'var/test-rst.5.inline-3.rst',
 #'var/test-rst.5.inline-4.rst',
+#'var/test-rst.5.inline-5.rst',
+#'var/test-rst.5.inline-6.rst',
+#'var/test-rst.5.inline-7.rst',
 'var/test-rst.24.references.rst',
 #'var/test-rst.6.bullet-list-2.rst',
 #'var/test-rst.6.bullet-list.rst',
 #'var/test-rst.8.field-list-3.rst',
-
 # look at field-lists, only minimal newlines required:
 #'var/test-rst.8.field-list-4.rst',
         ]
