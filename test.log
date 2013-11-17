@@ -1,207 +1,41 @@
-.......................FFF.....F.F.F....FFFFF...........
-======================================================================
-FAIL: TestRst_1_Document4; Lossy doctree comparison; Writer 'rst-mpe'
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 230, in runTest
-    self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 212, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
- on </srv/project-mpe/docutils-ext/var/test-rst.1.document-4.rst>
-
----  
-
-+++  
-
-@@ -1,87 +1,92 @@
-
- <document ids="test-document-4" names="test\ document\ 4" source="/srv/project-mpe/docutils-ext/var/test-rst.1.document-4.rst" title="Test Document 4">
-     <title>
-         Test Document 4
--    <subtitle ids="sub-title" names="sub\ title">
--        Sub title
--    <docinfo>
--        <author>
--            Me
--    <paragraph>
--        Some paragraph in document 4.
--    <comment xml:space="preserve">
--        Multi
--        Line
--        Comment
--    <enumerated_list enumtype="arabic" prefix="" suffix=".">
--        <list_item>
--            <paragraph>
--                List item 1
--        <list_item>
--            <paragraph>
--                List item 2
--        <list_item>
--            <paragraph>
--                Item
--            <bullet_list bullet="*">
--                <list_item>
-+    <section ids="sub-title" names="sub\ title">
-+        <title>
-+            Sub title
-+        <field_list>
-+            <field>
-+                <field_name>
-+                    Author
-+                <field_body>
-                     <paragraph>
--                        Nested bullet list
--                <list_item>
-+                        Me
-+        <paragraph>
-+            Some paragraph in document 4.
-+        <comment xml:space="preserve">
-+            Multi
-+            Line
-+            Comment
-+        <enumerated_list enumtype="arabic" prefix="" suffix=".">
-+            <list_item>
-+                <paragraph>
-+                    List item 1
-+            <list_item>
-+                <paragraph>
-+                    List item 2
-+            <list_item>
-+                <paragraph>
-+                    Item
-+                <bullet_list bullet="*">
-+                    <list_item>
-+                        <paragraph>
-+                            Nested bullet list
-+                    <list_item>
-+                        <paragraph>
-+                            Nested bullet list
-+        <definition_list>
-+            <definition_list_item>
-+                <term>
-+                    Term
-+                <definition>
-                     <paragraph>
--                        Nested bullet list
--    <definition_list>
--        <definition_list_item>
--            <term>
--                Term
--            <definition>
--                <paragraph>
--                    Definition
--        <definition_list_item>
--            <term>
--                Term
--            <definition>
--                <definition_list>
--                    <definition_list_item>
--                        <term>
--                            Term
--                        <definition>
--                            <paragraph>
--                                Definition
--    <field_list>
--        <field>
--            <field_name>
--                Field-name
--            <field_body>
--                <paragraph>
--                    Field-body
--        <field>
--            <field_name>
--                Field-name
--            <field_body>
--                <paragraph>
--                    Field-body
--        <field>
--            <field_name>
--                Field-name
--            <field_body>
--                <field_list>
--                    <field>
--                        <field_name>
--                            Field-name
--                        <field_body>
--                            <paragraph>
--                                Field-body
--                    <field>
--                        <field_name>
--                            Field-name
--                        <field_body>
--                            <field_list>
--                                <field>
--                                    <field_name>
--                                        Field-name
--                                    <field_body>
--                                        <paragraph>
--                                            Field-body
-+                        Definition
-+            <definition_list_item>
-+                <term>
-+                    Term
-+                <definition>
-+                    <definition_list>
-+                        <definition_list_item>
-+                            <term>
-+                                Term
-+                            <definition>
-+                                <paragraph>
-+                                    Definition
-+        <field_list>
-+            <field>
-+                <field_name>
-+                    Field-name
-+                <field_body>
-+                    <paragraph>
-+                        Field-body
-+            <field>
-+                <field_name>
-+                    Field-name
-+                <field_body>
-+                    <paragraph>
-+                        Field-body
-+            <field>
-+                <field_name>
-+                    Field-name
-+                <field_body>
-+                    <field_list>
-+                        <field>
-+                            <field_name>
-+                                Field-name
-+                            <field_body>
-+                                <paragraph>
-+                                    Field-body
-+                        <field>
-+                            <field_name>
-+                                Field-name
-+                            <field_body>
-+                                <field_list>
-+                                    <field>
-+                                        <field_name>
-+                                            Field-name
-+                                        <field_body>
-+                                            <paragraph>
-+                                                Field-body
-     <section ids="section" names="section">
-         <title>
-             Section
-
+........................FF.....F.F......FFFFF...........
 ======================================================================
 FAIL: TestRst_1_Document5_FullRstDemo; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/srv/project-mpe/docutils-ext/test/util.py", line 230, in runTest
     self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 137, in _test_writer
-    self.fail(e)
-AssertionError: /srv/project-mpe/docutils-ext/var/test-rst.1.document-5.full-rst-demo.rst:470: (SEVERE/4) Unexpected section title.
-
-Admonitions
-^^^^^^^^^^^
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
+    self.__test_writer(writer, lossy=lossy)
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 181, in __test_writer
+    writer=writer)['whole']#writer_name='dotmpe-rst')
+  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 448, in publish_parts
+    enable_exit_status=enable_exit_status)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 662, in publish_programmatically
+    output = pub.publish(enable_exit_status=enable_exit_status)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 219, in publish
+    output = self.writer.write(self.document, self.destination)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/writers/__init__.py", line 80, in write
+    self.translate()
+  File "/srv/project-mpe/docutils-ext/dotmpe/du/ext/writer/rst.py", line 40, in translate
+    self.document.walkabout(visitor)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 174, in walkabout
+    if child.walkabout(visitor):
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 174, in walkabout
+    if child.walkabout(visitor):
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 174, in walkabout
+    if child.walkabout(visitor):
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 174, in walkabout
+    if child.walkabout(visitor):
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 174, in walkabout
+    if child.walkabout(visitor):
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 166, in walkabout
+    visitor.dispatch_visit(self)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 1882, in dispatch_visit
+    return method(node)
+  File "/srv/project-mpe/docutils-ext/dotmpe/du/ext/writer/rst.py", line 507, in visit_subtitle
+    assert not self.subtitle_adornment, node
+AssertionError: <subtitle>Optional Subtitle</subtitle>
 
 ======================================================================
 FAIL: TestRst_1_Document6; Lossy doctree comparison; Writer 'rst-mpe'
@@ -279,37 +113,6 @@ See "backrefs" attribute for IDs.
 /srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:52: (ERROR/3) Unknown target name: "refs".
 /srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:57: (ERROR/3) Unknown target name: "refs".
 
-
-======================================================================
-FAIL: TestRst_2_Title1; Lossy doctree comparison; Writer 'rst-mpe'
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 230, in runTest
-    self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 135, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 212, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
- on </srv/project-mpe/docutils-ext/var/test-rst.2.title-1.rst>
-
----  
-
-+++  
-
-@@ -1,8 +1,9 @@
-
- <document ids="t-1" names="t.\ 1" source="/srv/project-mpe/docutils-ext/var/test-rst.2.title-1.rst" title="T. 1">
-     <title>
-         T. 1
--    <subtitle ids="t-1s" names="t.\ 1s">
--        T. 1s
-+    <section ids="t-1s" names="t.\ 1s">
-+        <title>
-+            T. 1s
-     <section ids="t-2" names="t.\ 2">
-         <title>
-             T. 2
 
 ======================================================================
 FAIL: TestRst_5_Inline3; Lossy doctree comparison; Writer 'rst-mpe'
@@ -411,6 +214,6 @@ AssertionError: Error re-parsing generated file
 
 
 ----------------------------------------------------------------------
-Ran 56 tests in 3.978s
+Ran 56 tests in 5.079s
 
-FAILED (failures=11)
+FAILED (failures=9)

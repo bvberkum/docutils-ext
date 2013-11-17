@@ -52,7 +52,7 @@ CLN 				+= \
 test::
 	@-test_listing=test/main.list;\
 		test_mods=$$(cat $$test_listing|grep -v '^#'|grep -v '^$$');\
-		test_listing=$$test_listing python test/main.py $$test_mods 2> test.log
+		python test/main.py $$test_mods 2> test.log
 	@if [ -n "$$(tail -1 test.log|grep OK)" ]; then \
 	    $(ll) Success "$@" "see" test.log; \
     else \
@@ -60,6 +60,11 @@ test::
 	    $(ll) Errors "$@" see test.log; \
     fi
 
+#test-atlassian
+test-common::
+	@\
+	    python test/main.py common
+#test-rstwriter
 
 #      ------------ -- 
 include                $(MK_SHARE)Core/Main.dirstack-pop.mk

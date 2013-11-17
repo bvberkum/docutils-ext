@@ -66,7 +66,7 @@ Branches:
   dev
     all development now here.
 
-    :tests: 56; 11 failures, 45 OK
+    :tests: 56; 9 failures
 
     Testing rstwriter only.
     Also not testing all rSt features while not implemented.
@@ -76,7 +76,7 @@ Branches:
       separate development branch for rstwriter restructuring, 
       trying to OO-ify and add some elegance.
 
-      :test: 57; 25 failures, 2 errors, 30 OK
+      :test: 57; 25 failures, 2 errors
 
     dev_simplemuxdem
       trying a lossless read/write using the rST SM base with a 
@@ -84,8 +84,7 @@ Branches:
 
       :tests: 2 OK
 
-
-      Abandonned while I do get enough insight into the rSt parser
+      Abandoned while I do get enough insight into the rSt parser
       machinery.
 
 rST writer

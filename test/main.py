@@ -21,18 +21,16 @@ def main(test_modules=[]):
     """
 
     for name in test_modules:
-        setattr(sys.modules[__name__], name, __import__(name, locals(), globals()))
+        m = __import__(name, locals(), globals())
+        if hasattr(m, 'create_tests'):
+            m.create_tests()
+        setattr(sys.modules[__name__], name, m)
 
     unittest.main()
 
 
 if __name__ == '__main__': 
-    # to run unittest, use testmodule name for argument:
-    listing_file = os.environ.get('test_listing')
-    assert listing_file
-    test_modules = filter(lambda x:not x.startswith('#'),
-            filter(len,
-                map(lambda x:x.strip(),
-                    open(listing_file).readlines())))
-    main(test_modules)
+    test_modules = sys.argv[1:]
+    if test_modules:
+        main(test_modules)
 

@@ -9,7 +9,7 @@ import init
 from util import mkclassname, new_parser_testcase
 
 
-def create_tests(files):
+def create_lossy_pxml_compare_tests(files):
 
     for smf_file, pxml_file in files:
         testcase_name = mkclassname(smf_file)
@@ -21,4 +21,6 @@ def create_tests(files):
         setattr(sys.modules[__name__], testcase_name, TestCase)
   
 
-create_tests(init.SMF_DOC)
+def create_tests():
+    create_lossy_pxml_compare_tests(init.SMF_DOC)
+

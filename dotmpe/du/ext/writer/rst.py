@@ -78,7 +78,6 @@ class RstPreTranslator(AbstractTranslator):
 
 
 INDENT = u'  '
-section_adornments = ['=', '-', '~', '^', '+', "\"", "'", "_"]
 quote_chars = '!"#$%&\'()*+,-./:;<=>?@[\]^_`{|}~'
 
 class RstTranslator(AbstractTranslator):
@@ -87,17 +86,10 @@ class RstTranslator(AbstractTranslator):
     Visit docutils tree and serialize to rSt.
     """
 
-    context = None
-    "Context to stack variables during node traversal. "
-
     debug = False
     debug_indent = False
 
-    indented = 0
-    "The offset already indented by the current line (substract from context.indent). "
-
-    section_adornments = []
-    "The sequence of section adornments. "
+    section_adornments = tuple('=-~^+"_`')
 
     enumeration_symbol = {
         'arabic': lambda i: str(i),            
@@ -108,9 +100,6 @@ class RstTranslator(AbstractTranslator):
     }
     "Map to symbol generators. "
 
-    capture_text = None
-    "Concatenate Text nodes onto `key` on context. "
-
     allow_body_adjacent = [
             'title',
             'comment',
@@ -119,13 +108,8 @@ class RstTranslator(AbstractTranslator):
         ] # + directives
     "These may be 'touching' without blankline separation. XXX: this may replace force_block_level?"
 
-    body = []
-    "The list of document strings, to be concatenated to final file. "
-
     #docinfo = {}
     #targets = {}
-
-    anonymous_role_count = 0 
 
     def __init__(self, document, pretranslator):
         nodes.NodeVisitor.__init__(self, document)
@@ -136,11 +120,23 @@ class RstTranslator(AbstractTranslator):
         self.settings = settings = document.settings
         self.force_block_level = False
         """Prevent blank line insert, allows override by previous sibling. """
+        self.context = None
+        "Context to stack variables during node traversal. "
+        self.indented = 0
+        "The offset already indented by the current line (substract from context.indent). "
+        self.section_adornments = [] # 0 is doctitle, then sectiontitles. 
+        "The sequence of section adornments. "
+        self.subtitle_adornment = None 
+        self.capture_text = None
+        "Concatenate Text nodes onto `key` on context. "
+        self.body = []
+        "The list of document strings, to be concatenated to final file. "
+        self.anonymous_role_count = 0 
+
         self.preserve_ws = False
         self.capture_text = False
         self.skip_content = False
         self.tab_content = ()
-        self.section_adornments = section_adornments        
         self.inline = False
         self.roles = []
         #self.docinfo = {}
@@ -156,7 +152,7 @@ class RstTranslator(AbstractTranslator):
                 'tree': [],
                 'bullet': u'',
                 'indent': u'',
-                'section_adornment': self.section_adornments[0],
+                #'section_adornment': self.section_adornments[0],
                 'enumtype': u'',
                 'title': None,
                 'subtitle': None,
@@ -165,6 +161,7 @@ class RstTranslator(AbstractTranslator):
                 'offset': None,
                 'parsed': False,
             })
+        self.doclevel = 0
 
     def sub_tree(self, node):
         self.context.append('tree', node)
@@ -239,6 +236,30 @@ class RstTranslator(AbstractTranslator):
         #if classes:
         #    self._write_directive('class',*classes)
 
+    def get_new_section_adornment(self):
+        adornments = list(self.__class__.section_adornments)
+        adornment = adornments.pop(0)
+        used = self.section_adornments + [ self.subtitle_adornment ]
+        while adornment in used:
+            assert adornments, "Ran out of adornments: %s" % used
+            adornment = adornments.pop(0)
+        return adornment
+
+    def sub_section(self):
+        adornment = self.get_new_section_adornment()
+        self.section_adornments.append(adornment)
+        assert self.doclevel == len(self.section_adornments), (self.doclevel,
+                len(self.section_adornments), self.section_adornments)
+
+    @property
+    def adornment(self):
+        return self.section_adornments[self.doclevel-1]
+
+    def set_title_adornment(self):
+        adornments = list(self.__class__.section_adornments)
+        if self.doclevel > len(self.section_adornments):
+        	self.sub_section()
+
     def _write_indented(self, *lines):
         """
         Write one or more lines. The indent on the context is used to prefix the
@@ -280,7 +301,6 @@ class RstTranslator(AbstractTranslator):
         option lists need special tabbed blocks, not just indented blocks
         but block-aligned content besides content.
         """
-
 
     def _write_directive(self, name, *args, **kwds):
         if not self.block_level:
@@ -406,6 +426,8 @@ class RstTranslator(AbstractTranslator):
     def visit_document(self, node):
         self.sub_tree(node)
         self.context.index = 0
+        self.doclevel += 1
+        self.set_title_adornment() 
 
     def depart_document(self, node):
         # finalize
@@ -414,6 +436,7 @@ class RstTranslator(AbstractTranslator):
 
         self.pop_tree()
         del self.context.index
+        self.doclevel -= 1
 
     def visit_Text(self, node):
         """At the leafs of the three there are the textnodes, the actual stream
@@ -474,22 +497,21 @@ class RstTranslator(AbstractTranslator):
             text = self.context.title
             del self.context.title
             self._assure_emptyline()
-            self._write_indented( self.context.section_adornment * len(text))
+            self._write_indented( self.adornment * len(text) )
         self._assure_emptyline()
 
     def visit_subtitle(self, node):
         #self.debugprint(self.context)
         self.sub_tree(node)
         self.capture_text = 'subtitle'
+        assert not self.subtitle_adornment, node
+        self.subtitle_adornment = self.get_new_section_adornment()
     def depart_subtitle(self, node):
         self.pop_tree()
         self.capture_text = None
         text = self.context.subtitle
         self._assure_emptyline()
-        seca = self.context.section_adornment
-        subindex = self.section_adornments.index(seca) + 1
-        assert len(self.section_adornments) >= subindex, subindex
-        self._write_indented(self.section_adornments[subindex] * len(text))
+        self._write_indented( self.subtitle_adornment  * len(text))
         self._assure_emptyline()
         del self.context.subtitle
 
@@ -500,13 +522,13 @@ class RstTranslator(AbstractTranslator):
             self._assure_newblock()
         self.context.increment('index')
         self.context.index = 0
-        newlevel = self.context.depth('index')
-        self.context.section_adornment = self.section_adornments[newlevel]
+        self.doclevel += 1
+        self.set_title_adornment() 
     def depart_section(self, node):
         self.pop_tree()
         self._assure_emptyline()
         del self.context.index
-        del self.context.section_adornment
+        self.doclevel -= 1
 
     def visit_paragraph(self, node):
         #self.debugprint(self.context)
