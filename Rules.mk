@@ -65,6 +65,9 @@ test-common::
 	@\
 	    python test/main.py common
 #test-rstwriter
+test-form::
+	@\
+		python tools/rst-form.py examples/form.rst
 
 #      ------------ -- 
 include                $(MK_SHARE)Core/Main.dirstack-pop.mk

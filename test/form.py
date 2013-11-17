@@ -153,6 +153,7 @@ expected = {
         'my-error': u'',
     }
 
+# Main test: one test 
 class FormTest(unittest.TestCase):
 
     def test_1(self):

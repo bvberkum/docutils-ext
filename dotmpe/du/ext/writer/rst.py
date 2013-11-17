@@ -3,6 +3,8 @@
 XXX: This is a heavy work in progress. RstTranslator has some issues with
      inline nodes and does not do tables.
 
+     There are no extra options at all, and not really a reader/parser to go
+     with it yet.
 """
 import math
 import re
@@ -504,6 +506,8 @@ class RstTranslator(AbstractTranslator):
         #self.debugprint(self.context)
         self.sub_tree(node)
         self.capture_text = 'subtitle'
+        in_sidebar = self.in_tag('sidebar', '*')
+        assert not in_sidebar, "TODO"
         assert not self.subtitle_adornment, node
         self.subtitle_adornment = self.get_new_section_adornment()
     def depart_subtitle(self, node):
@@ -760,7 +764,7 @@ class RstTranslator(AbstractTranslator):
         ids = node.get('ids')
         refuri = node.get('refuri')
         refid = node.get('refid')
-        anonymous = node.get('refid', 0)
+        anonymous = node.get('anonymous', 0)
         self.context.increment('index')
 
         if anonymous and ids: # anonymous
@@ -797,11 +801,10 @@ class RstTranslator(AbstractTranslator):
                 if refid:
                     self._write_indented("%s: `%s`_" % (node['names'][0], refid))
                 else:
-                    self._write_indented("%s: %s_" % (node['names'][0], ref_name))
+                    assert False, node
+                    self._write_indented("%s: %s_" % (node['names'][0], name))
             else:
                 self._write_indented("`")
-        elif ref_name:
-            pass
         else:
             self._write_indented('_`')
     def depart_target(self, node):
@@ -1485,20 +1488,21 @@ if __name__ == '__main__':
         PROJ_ROOT = p
         
         TEST_DOC = [
-#'var/test-rst.1.document-5.full-rst-demo.rst',
-#'var/test-rst.1.document-7.rst',
-#'var/test-rst.2.sections.rst',
-#'var/test-rst.2.title-1.rst',
-#'var/test-rst.5.inline-3.rst',
-#'var/test-rst.5.inline-4.rst',
-#'var/test-rst.5.inline-5.rst',
+# References, targets are broken.
+# And other bugs: starting with least complex:
+'var/test-rst.5.inline-5.rst',
 #'var/test-rst.5.inline-6.rst',
 #'var/test-rst.5.inline-7.rst',
-'var/test-rst.24.references.rst',
+#'var/test-rst.5.inline-3.rst',
+#'var/test-rst.24.references.rst',
+#'var/test-rst.5.inline-4.rst',
+#'var/test-rst.1.document-5.full-rst-demo.rst',
+# interesting for later:
+#'var/test-rst.2.title-1.rst',
+#'var/test-rst.1.document-7.rst',
 #'var/test-rst.6.bullet-list-2.rst',
-#'var/test-rst.6.bullet-list.rst',
-#'var/test-rst.8.field-list-3.rst',
 # look at field-lists, only minimal newlines required:
+#'var/test-rst.8.field-list-3.rst',
 #'var/test-rst.8.field-list-4.rst',
         ]
         #TEST_DOC = filter(os.path.getsize,
