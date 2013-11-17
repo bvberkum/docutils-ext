@@ -3,6 +3,7 @@ Form unittest and extractor (use nabu-test-extractor).
 """
 import unittest
 import sys, os
+import optparse
 from pprint import pprint
 test_dir = os.path.dirname(__file__)
 example_dir = os.path.realpath(os.path.join(test_dir, '..', 'examples'))
@@ -82,6 +83,7 @@ class MyFormPage(builder.Builder):
     settings_overrides = {
         #'form_field': (),
         #'form': 'name',
+#        'form_values': None
     }
 
 
@@ -161,10 +163,12 @@ class FormTest(unittest.TestCase):
         source = open(source_id).read()
         builder = MyFormPage()
         #builder.initialize(strip_comments=True)
-        document = builder.build(source, source_id)
-        for field_id, value in document.settings.form_values.items():
-            assert expected[field_id] == value, "Value error for %s: %r" % (field_id, value)
-            print field_id, 'OK'
+        output, document = builder.build(source, source_id)
+        assert isinstance(document.settings, optparse.Values),\
+                repr(document.settings)
+        form_values = getattr(document.settings, 'form_values', ())
+        for field_id, value in form_values:
+            self.asertEquals(expected[field_id], value, "Value error for %s: %r" % (field_id, value)) 
 
 if __name__ == '__main__':
     unittest.main()

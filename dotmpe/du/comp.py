@@ -193,7 +193,9 @@ def register_extension_components(ext_module_prefix, ext_tag, ext_type, ext_dir)
 
         # register name with ``dotmpe.du.comp``
         if ext_name not in du_comp_reg:
+            #print 'du_ext_comp_reg', ext_name, ext_module
             du_ext_comp_reg[ext_name] = ext_module
+        #print 'du_ext_comp_reg', tagged_name, ext_module
         du_ext_comp_reg[tagged_name] = ext_module
 
 

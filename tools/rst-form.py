@@ -46,17 +46,26 @@ try:
 except:
     pass
 
+from dotmpe.du.frontend import cli_du_publisher
+
+cli_du_publisher(
+        reader_name='mpe',
+        parser_name='',
+        writer_name=''
+    )
+
 from docutils.core import publish_cmdline, default_description,\
     publish_doctree,\
         Publisher
+from dotmpe.du.ext.writer.formresults import Writer as FormResultsWriter
+
+
 #publish_cmdline(reader=FormReader(), writer_name='pseudoxml')#writer=xhtmlform.Writer())
 
 source_path  = sys.argv[1]
 source = open(source_path)
 #doctree = publish_doctree(source, reader=FormReader())#, writer_name='pseudoxml')
 #print doctree
-
-from dotmpe.du.ext.writer.formresults import Writer as FormResultsWriter
 
 pub = Publisher(FormReader(), 
         writer=FormResultsWriter(),

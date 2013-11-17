@@ -1,5 +1,5 @@
 """
-Test utils for re-writer, intended to be the reverse of the given parser.
+Utils to test re-writer, intended to be the reverse of the given parser.
 """
 import os, re, unittest
 

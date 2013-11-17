@@ -75,9 +75,8 @@ def cli_du_publisher(reader_name='mpe', parser=None, parser_name='rst', writer_n
     """
     Simple wrapper for ``docutils.core.publish_cmdline``.
     """
-    description = ('')
 
-    # FIXME: parser = Parser(inliner=Inliner())
+    # XXX: how far does inline customization go? parser = Parser(inliner=Inliner())
     reader_class = comp.get_reader_class(reader_name)
     parser_class = None
     if not parser:
