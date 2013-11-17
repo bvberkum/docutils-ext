@@ -24,21 +24,6 @@ from docutils.readers import standalone
 from test.form import FormReader
 
 
-#class FormReader(standalone.Reader):
-#
-#    settings_spec = (
-#        'Form Reader', None,
-#        form.FormProcessor.settings_spec
-#        #+ mpe.Reader.settings_spec[2]
-#    )
-#
-#    def get_transforms(self):
-#        return standalone.Reader.get_transforms(self) + [
-#        #return readers.Reader.get_transforms(self) + [
-#        #return mpe.Reader.get_transforms(self) + [
-#            form1.DuForm
-#        ]
-
 
 try:
     import locale
@@ -48,11 +33,13 @@ except:
 
 from dotmpe.du.frontend import cli_du_publisher
 
-cli_du_publisher(
-        reader_name='mpe',
-        parser_name='',
-        writer_name=''
-    )
+#cli_du_publisher(
+#        reader_name='form',
+##        parser_name='',
+#        writer_name='formresults'
+#    )
+#
+#sys.exit()
 
 from docutils.core import publish_cmdline, default_description,\
     publish_doctree,\

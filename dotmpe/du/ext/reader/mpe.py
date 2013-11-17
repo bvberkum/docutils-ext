@@ -1,6 +1,8 @@
 """
 An Du Reader component with all settings and transforms of the 
 normal standalone reader, plus new extensions. 
+
+Perhaps name this standalone, or find some scheme to dereference links.
 """
 from docutils import Component, readers
 from docutils.readers import standalone
