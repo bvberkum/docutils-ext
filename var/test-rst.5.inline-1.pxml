@@ -1,0 +1,23 @@
+<document source="var/test-rst.5.inline-1.rst">
+    <paragraph>
+        <title_reference>
+            inline1
+        
+        <emphasis>
+            inline2
+        
+        <strong>
+            inline3
+        
+        <literal>
+            literal
+        
+        <strong classes="my-role">
+            role-fu
+        
+        <target ids="target" names="target">
+            target
+        
+        <reference name="reference" refid="target">
+            reference
+    <target ids="reference" names="reference" refid="target">

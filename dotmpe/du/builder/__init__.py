@@ -6,6 +6,7 @@ The goal is to have a component interface for multiple input and output formats,
 perhaps to experiment with content-negotiation later. Until then this serves as
 as a thin wrapper to the Du publisher framework.
 """
+import os
 import logging
 import types
 import StringIO
@@ -123,6 +124,8 @@ class Builder(SettingsSpec, Publisher):
         if not self.writer:
             self.writer = comp.get_writer_class('null')()
         self.components = (self.parser, self.reader, self.writer, self)
+        # FIXME: this assumes script is mainstatic entry point,
+# what about programmatic access
         self.process_command_line() # replace settings for initial components
         assert self.settings or isinstance(self.settings, frontend.Values)
         self.set_source(source, source_id)
@@ -132,8 +135,7 @@ class Builder(SettingsSpec, Publisher):
         #    reader, str(self)+'.Reader',
         #    parser, str(self)+'.Parser',
         #    writer, str(self)+'.Writer',
-        output = self.publish()
-        return output, self.document
+        return self.document
 
 
     def init_extractors(self):
@@ -234,12 +236,13 @@ class Builder(SettingsSpec, Publisher):
         logger.info('Rendering %r as %r.', source_id, writer_name)
         assert not overrides
         #logger.info("source-length: %i", not source or len(source))
-        output, document = self.build(source, source_id)
+        document = self.build(source, source_id)
         #logging.info(overrides)
         #parts = ['html_title', 'script', 'stylesheet']
         #logger.info("output-length: %i", not output or len(output))
         #logger.info([(part, self.writer.parts.get(part)) for part in parts])
         logger.info("Deps for %s: %s", source_id, self.document.settings.record_dependencies)
+        # XXX: right to the internal of the writer. Is this interface?
         return ''.join([self.writer.parts.get(part) for part in parts])
 
     def render_fragment(self, source, source_id='<render_fragment>',
@@ -267,25 +270,66 @@ class Builder(SettingsSpec, Publisher):
 #        for p in ['whole',]:
 #            parts[p] = parts[p].replace('</head>', script+'\n</head>')
 
-    def prepare_source(self, source, source_path):
-        assert source, "Need source to build, not %s" % source
+    def prepare_source(self, source, source_path=None):
+        """
+        This (re)sets self.source_class using some argument indpection.
+
+        Source can be a string or a docutils document instance, 
+        when source_path=None, the string is tested as filename too.
+
+        The keyword source_path can set a path location explicitly to prepare
+        for file input. 
+        The source may be None or loaded already no matter in this case.
+        Setting it to a string or False bypasses the filesystem check.
+        source_path may be always provided to provide the global ID of the
+        source.
+        """
+        reader, parser = None, None
         if isinstance(source, docutils.nodes.document):
+            assert source_path, "Need an ID, not %r" % source_path
             logger.info("ReReading %s", source_path)
             # Reread document
             self.source_class = docutils.io.DocTreeInput
-            self.parser = comp.get_parser_class('null')()
-            self.reader = self.ReReader(self.parser)
+            parser = comp.get_parser_class('null')()
+            reader = self.ReReader(self.parser)
             if source.parse_messages:
                 map(lambda x:logger.info(x.astext()),
                     source.parse_messages)
             if source.transform_messages:
                 map(lambda x:logger.info(x.astext()),
                     source.transform_messages)
-            self.settings = source.settings                
-        else: # Read from source
-            self.source_class = docutils.io.StringInput 
-            self.parser = self.Parser()
-            self.reader = self.Reader(parser=self.parser)
+            self.settings = source.settings
+        # XXX: would be nicer to have some 'file' resolver here. this
+        # introduces dep on os
+        #  local paths are made up of max. 255 chararacter names usally
+        # not sure about depth. Linux takes a conservative 4096, windows a
+        # whopping 15bits to count the total length
+        elif source and (
+                 ( source_path and isinstance(source_path, bool) )
+                 or not source_path
+            ) and ( 
+                source and len(source) < 4097 and os.path.exists(source)):
+            self.source_class = docutils.io.FileInput
+            self.source_id = source
+        else: 
+            if not source:
+                assert source_path
+                self.source_class = docutils.io.FileInput
+            else:
+                if source_path:
+                    assert isinstance(source_path, basestring)
+                self.source_class = docutils.io.StringInput 
+        if source_path and not isinstance(source_path, bool):
+            self.source_id = source_path
+        else:
+            assert source, "Need source to build, source is %r" % source
+        if not parser:
+            source_class = docutils.io.FileInput#StringInput 
+            parser = self.Parser()
+        if not reader:
+            reader = self.Reader(parser=self.parser)
+        self.reader = reader
+        self.parser = parser
         return self.source_class, self.parser, self.reader, self.settings 
 
     def __str__(self):

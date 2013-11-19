@@ -29,10 +29,10 @@ class Writer(writers.Writer):
          ('Specify comma separated list of stylesheet paths. '
           'With --link-stylesheet, '
           'the path is rewritten relative to the output HTML file. '
-          'Default: "%s"' % html.Writer.default_stylesheet_path,
+          'Default: "%s"', # FIXME % html.Writer.default_stylesheet_path,
           ['--stylesheet-path'],
           {'metavar': '<file>', 'overrides': 'stylesheet',
-           'default': html.Writer.default_stylesheet_path}),
+           'default': "",}),#html.Writer.default_stylesheet_path}),
          ('Embed the stylesheet(s) in the output HTML file.  The stylesheet '
           'files must be accessible during processing. This is the default.',
           ['--embed-stylesheet'],

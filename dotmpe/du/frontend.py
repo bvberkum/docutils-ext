@@ -35,8 +35,13 @@ def cli_process(argv, builder=None, builder_name='mpe', description=''):
                 "must be existing local path for now (not '%s %s')" % (os.getcwd(),
                 source)
         source_id = source
-        # XXX: need options parsed here
-        output, document = builder.build(open(source_id).read(), source_id, overrides={})
+        # XXX: need options parsed here too
+        #document = builder.build(open(source_id).read(), source_id, overrides={})
+        #builder.process(document, source_id, 
+        #        overrides={}, pickle_receiver=None)
+        source = open(source_id)
+        document = builder.build(source, source_id, overrides={})
+        builder.prepare(**builder.store_params)
         builder.process(document, source_id, overrides={}, pickle_receiver=None)
         # TODO render messages as reST doc
         for msg_list in document.parse_messages, document.transform_messages:
@@ -75,9 +80,8 @@ def cli_du_publisher(reader_name='mpe', parser=None, parser_name='rst', writer_n
     """
     Simple wrapper for ``docutils.core.publish_cmdline``.
     """
-    description = ('')
 
-    # FIXME: parser = Parser(inliner=Inliner())
+    # XXX: how far does inline customization go? parser = Parser(inliner=Inliner())
     reader_class = comp.get_reader_class(reader_name)
     parser_class = None
     if not parser:

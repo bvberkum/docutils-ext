@@ -47,7 +47,8 @@ docutils.parsers.rst.directives.register_directive('margin', Margin)
 
 "Override figure, enable 'label' for figure directive. "
 # FIXME: ugly.. need to dream up new directive names..
-del docutils.parsers.rst.directives._directive_registry['figure']
+if 'figure' in docutils.parsers.rst.directives._directive_registry:
+    del docutils.parsers.rst.directives._directive_registry['figure']
 # FIXME: i18n
 docutils.parsers.rst.directives.register_directive('figuur', Figure)
 docutils.parsers.rst.directives.register_directive('figure', Figure)
@@ -76,24 +77,30 @@ they're loaded (``dotmpe.du.comp``).
 _du_get_reader_class = docutils.readers.get_reader_class
 def get_reader_class(reader_name):
     if reader_name in dotmpe.du.comp.readers:
-        return dotmpe.du.comp.get_reader_class(reader_name)
+        reader = dotmpe.du.comp.get_reader_class(reader_name)
     else:
-        return _du_get_reader_class(reader_name)
+        reader = _du_get_reader_class(reader_name)
+    assert issubclass(reader, docutils.readers.Reader), reader
+    return reader
 docutils.readers.get_reader_class = get_reader_class
 
 _du_get_parser_class = docutils.parsers.get_parser_class
 def get_parser_class(parser_name):
     if parser_name in dotmpe.du.comp.parsers:
-        return dotmpe.du.comp.get_parser_class(parser_name)
+        parser = dotmpe.du.comp.get_parser_class(parser_name)
     else:
-        return _du_get_parser_class(parser_name)
+        parser = _du_get_parser_class(parser_name)
+    assert issubclass(parser, docutils.parsers.Parser), parser
+    return parser
 docutils.parsers.get_parser_class = get_parser_class
 
 _du_get_writer_class = docutils.writers.get_writer_class
 def get_writer_class(writer_name):
     if writer_name in dotmpe.du.comp.writers:
-        return dotmpe.du.comp.get_writer_class(writer_name)
+        writer = dotmpe.du.comp.get_writer_class(writer_name)
     else:
-        return _du_get_writer_class(writer_name)
+        writer = _du_get_writer_class(writer_name)
+    assert issubclass(writer, docutils.writers.Writer), writer
+    return writer
 docutils.writers.get_writer_class = get_writer_class
 
