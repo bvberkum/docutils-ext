@@ -40,6 +40,6 @@ def create_tests(files):
         setattr(sys.modules[__name__], testcase_name, TestCase)
         # Need writer for lossless compare
   
-
+# XXX: need to commit working test
 create_tests(init.SMF_DOC)
 

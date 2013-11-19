@@ -82,6 +82,8 @@ Branches:
       Abandonned while I do get enough insight into the rSt parser
       machinery.
 
+      Abandonning while I do not have enough insight into the parser.
+
 rST writer
 ----------
 An experimental writer. The module can be invoked as script using a rST filename
