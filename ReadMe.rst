@@ -66,17 +66,14 @@ Branches:
   dev
     all development now here.
 
-    :tests: 64; 9 failures, 1 error
+    :tests: 66; 9 failures
 
-    Testing rstwriter only.
-    Also not testing all rSt features while not implemented.
+    Not testing all rSt features while not implemented, focus on rstwriter.
     Should do all that at separate branch perhaps.
 
     dev_rstwriterobjects
       separate development branch for rstwriter restructuring, 
-      trying to OO-ify and add some elegance.
-
-      :test: 65; 25 failures
+      to OO-ify and add some elegance?
 
     dev_simplemuxdem
       trying a lossless read/write using the rST SM base with a 
@@ -86,6 +83,10 @@ Branches:
 
       Abandoned while I do get enough insight into the rSt parser
       machinery.
+
+    dev_form
+      Splitting topic of dev for separate testing. Possibly a few hacks while
+      core/frontend is in flux.
 
 
 rST writer

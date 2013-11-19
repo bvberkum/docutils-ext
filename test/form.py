@@ -163,7 +163,7 @@ class FormTest(unittest.TestCase):
         source = open(source_id).read()
         builder = MyFormPage()
         #builder.initialize(strip_comments=True)
-        output, document = builder.build(source, source_id)
+        document = builder.build(source, source_id)
         assert isinstance(document.settings, optparse.Values),\
                 repr(document.settings)
         form_values = getattr(document.settings, 'form_values', ())

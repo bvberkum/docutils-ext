@@ -114,29 +114,45 @@ class Builder(SettingsSpec, Publisher):
     def prepare(self, argv=None):
         self.prepare_extractors(**self.store_params)
 
-    def build(self, source, source_id='<build>', overrides={}):
+    def build(self, source, source_id='<build>', overrides={}, cli=False):
         """
         Build document from source, returns the document.
         TODO: Use Reader, Parser, Transform and Builder for option spec.
         """
         logger.debug("Building %r.", source_id)
+        self.source = source
         source_class, parser, reader, settings = self.prepare_source(source, source_id)
         if not self.writer:
             self.writer = comp.get_writer_class('null')()
         self.components = (self.parser, self.reader, self.writer, self)
-        # FIXME: this assumes script is mainstatic entry point,
-# what about programmatic access
-        self.process_command_line() # replace settings for initial components
-        assert self.settings or isinstance(self.settings, frontend.Values)
-        self.set_source(source, source_id)
+        # FIXME: get defaults for components
+        if not self.settings:\
+            self.settings = frontend.Values({})
+        if cli:
+            self.process_command_line() # replace settings for initial components
+        else:
+        	self.build_doc()
+        assert self.settings or isinstance(self.settings, frontend.Values), self.settings
         self.destination_class = docutils.io.StringOutput
         assert self.reader and self.parser and self.writer
         assert self.source
-        #    reader, str(self)+'.Reader',
-        #    parser, str(self)+'.Parser',
-        #    writer, str(self)+'.Writer',
+        self.settings.input_encoding = 'utf-8'
+        self.settings.halt_level = 0
+        self.settings.report_level = 0
+        # XXX
+        from dotmpe.du.frontend import get_option_parser
+        option_parser = get_option_parser(
+                self.components, usage='Builder testing: build [options] ..', 
+                settings_spec=None, read_config_files = 0)
+        self.settings = option_parser.get_default_values()
+        source = self.source_class(
+            source=self.source, source_path=self.source_id)
+        # FIXME:  encoding=self.settings.input_encoding)
+        self.document = self.reader.read(source, self.parser, self.settings)
         return self.document
 
+    def build_doc(self):
+        pass
 
     def init_extractors(self):
         """
