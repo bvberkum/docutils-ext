@@ -116,6 +116,7 @@ GIT
       While things left to be desired before finishing dev_rstwriterobjects,
       implement and test reStructuredText writer.
 
+      :tests: 66, 9 failed
 
 rST writer
 ----------
@@ -149,6 +150,10 @@ rST writer testcases are generated for all files matching ``var/test-*.rst``.
 
 Log
 -----
+2009 September
+  - Starting my own project for use with Blue Lines, custom 'margin' directives
+    and HTML writer components.
+
 2010-11-04
   Stefan Merten published his xml2rST and included an installer.
   He also has rST2gxl 'producing GXL which can be transformed to dot'
