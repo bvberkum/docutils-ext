@@ -1,7 +1,7 @@
 comp
 build
 form
-#rstwriter
+rstwriter
 #atlassianparser
 #atlassianwriter
 #confluence

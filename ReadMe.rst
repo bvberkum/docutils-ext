@@ -92,6 +92,7 @@ Branches:
       While things left to be desired before finishing dev_rstwriterobjects,
       implement and test reStructuredText writer.
 
+      :tests: 66, 9 failed
 
 rST writer
 ----------
