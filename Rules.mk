@@ -71,6 +71,28 @@ test-form::
 	@\
 		python tools/rst-form.py examples/form.rst
 
+var/%.xml: var/%.rst
+	@\
+	$(ll) file_target "$@" "Generating.." "$^" ;\
+	./tools/rst2xml $< | tidy -w 0 -i -xml -q > $@ 2> $@.log; \
+	[ -s $@.log ] && { \
+		$(ll) file_error "$@" "Warnings, see" test.log; \
+	} || { \
+		rm $@.log; \
+		$(ll) file_ok "$@"; \
+	}
+
+var/%.pxml: var/%.rst
+	@\
+	$(ll) file_target "$@" "Generating.." "$^" ;\
+	./tools/rst2pprint $< $@ 2> $@.log ;\
+	[ -s $@.log ] && { \
+		$(ll) file_error "$@" "Warnings, see" test.log; \
+	} || { \
+		rm $@.log; \
+		$(ll) file_ok "$@"; \
+	}
+
 #      ------------ -- 
 include                $(MK_SHARE)Core/Main.dirstack-pop.mk
 # vim:noet:

@@ -1,3 +1,4 @@
+.. _target:
 .. parsed-literal::
    
   *literal*

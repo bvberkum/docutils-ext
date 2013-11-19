@@ -69,13 +69,15 @@
         <reference name="anonymous inline refs" refuri="./ref">
             anonymous inline refs
         .
+        The former create two elements: inline reference and target.
         The latter is not marked anonymous as the first one is, but implicitly is still "anonymous" as it has only name.
         You cant refer to these blank nodes with a reference name.
         Its even more anonymous than the first, which cant be addressed either but still has an refid and a numberd target.
     <target anonymous="1" ids="id2" refid="another-target">
     <paragraph>
-        One can share the reference from an inline reference though, and manually set an ID for a
-        named references. As read here.
+        One can share the reference from an inline reference because it gets a target,
+        and manually set one ore more ids for a named reference. As read here, where two IDs get the refuri from an inline
+        reference.
     <target refuri="./ref">
     <target ids="test-1 test-2" names="test-1 test-2" refuri="./ref">
     <target ids="example-name-4" names="example-name-4">
