@@ -49,7 +49,7 @@ CLN 				+= \
 #	@-find ./ -iname "*.pyc" | while read c; do rm "$$c"; done;
 
 # XXX: convert this to test-python, see e.g. scrow
-test::
+test:: 
 	@-test_listing=test/main.list;\
 		test_mods=$$(cat $$test_listing|grep -v '^#'|grep -v '^$$');\
 		test_listing=$$test_listing coverage run test/main.py $$test_mods \
@@ -57,10 +57,10 @@ test::
 	@coverage report --include="test/*,dotmpe/*"
 	@if [ -n "$$(tail -1 test.log|grep OK)" ]; then \
 	    $(ll) Success "$@" "see" test.log; \
-    else \
+	else \
 	    $(ll) Errors "$@" "$$(tail -1 test.log)"; \
 	    $(ll) Errors "$@" see test.log; \
-    fi
+	fi
 
 #test-atlassian
 test-common::
@@ -71,27 +71,52 @@ test-form::
 	@\
 		python tools/rst-form.py examples/form.rst
 
+TEST_RST_$d      := $(wildcard var/test-rst.*.rst)
+TEST_RST_XML_$d  := $(TEST_RST_$d:%.rst=%.xml)
+
+test-validate-files: $(TEST_RST_XML_$d)
+	@\
+		$(ll) attention "$@" "All XML files built, removing valid ones. "; \
+		for x in var/*.xml; do stat -t $$x.*.log >/dev/null 2>/dev/null || rm "$$x"; done
+	@\
+	L=$$(ls var/|grep \.log);\
+    [ "$$(echo $$L|wc -w)" -gt 0 ] && { $(ll) Errors "$@" "in testfiles" "$$(echo $$L)"; exit 1; } || { $(ll) OK "$@"; }
+
 var/%.xml: var/%.rst
 	@\
 	$(ll) file_target "$@" "Generating.." "$^" ;\
-	./tools/rst2xml $< | tidy -w 0 -i -xml -q > $@ 2> $@.log; \
-	[ -s $@.log ] && { \
+	./tools/rst2xml "$<" | tidy -w 0 -i -xml -q > "$@" 2> "$@.du.log"; \
+	[ -s "$@.du.log" ] && { \
+		$(ll) file_error "$@" "Warnings, see" $@.du.log; \
+	} || { \
+		rm "$@.du.log"; \
+		xmllint --valid --noout $@ 2> $@.dtd.log; \
+		[ -s "$@.dtd.log" ] && { \
+		  $(ll) file_error "$@" "DTD validation warnings, see" "$@.dtd.log"; \
+		} || { \
+		  rm "$@.dtd.log"; \
+		  $(ll) file_ok "$@"; \
+		} \
+	}
+
+define build-pretty
+	$(ll) file_target "$@" "Generating.." "$^" ;\
+	./tools/rst2pprint "$<" "$@" 2> "$@.log" ;\
+	[ -s "$@.log" ] && { \
 		$(ll) file_error "$@" "Warnings, see" test.log; \
 	} || { \
-		rm $@.log; \
+		rm "$@.log"; \
 		$(ll) file_ok "$@"; \
 	}
+endef
 
 var/%.pxml: var/%.rst
 	@\
-	$(ll) file_target "$@" "Generating.." "$^" ;\
-	./tools/rst2pprint $< $@ 2> $@.log ;\
-	[ -s $@.log ] && { \
-		$(ll) file_error "$@" "Warnings, see" test.log; \
-	} || { \
-		rm $@.log; \
-		$(ll) file_ok "$@"; \
-	}
+	$(build-pretty)
+
+var/%.pxml: var/%.txt
+	@\
+	$(build-pretty)
 
 #      ------------ -- 
 include                $(MK_SHARE)Core/Main.dirstack-pop.mk

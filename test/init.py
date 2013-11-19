@@ -27,8 +27,7 @@ RST_COMMON.sort()
 
 
 ### Have a look at lossless-rst-writer branch
-sys.path.insert(0, os.path.join(PROJ_LIB, 'docutils-branches',
-	'lossless-rst-writer', 'docutils', 'writers'))
+sys.path.insert(0, os.path.join(PROJ_LIB, 'docutils-lossless', 'writers'))
 # XXX: access extension module directly
 try:
     LOSSLESS_WRITER = __import__('rst') 

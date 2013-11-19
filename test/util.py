@@ -131,9 +131,10 @@ def new_parser_testcase(tag, testcase_name, doc_file, pxml_file, lossy=False):
     class TestCase(unittest.TestCase, AbstractParserTestCase):
         DOC_FILE = doc_file 
         DOC_PXML_FILE = pxml_file
+        PARSER_CLASS = parser_class
         TAG = tag
         def runTest(self):
-            self._test_parser(parser_class(), lossy=lossy)
+            self._test_parser(self.PARSER_CLASS(), lossy=lossy)
         runTest.__doc__ = "%s; %s doctree comparison; Parser '%s'" % (testcase_name, lossy_str, tag)
     TestCase.__name__ = testcase_name +suffix
     return TestCase

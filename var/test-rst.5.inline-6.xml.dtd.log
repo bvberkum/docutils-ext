@@ -1,0 +1,3 @@
+var/test-rst.5.inline-6.xml:6: element target: validity error : IDREF attribute refid references an unknown ID "target"
+var/test-rst.5.inline-6.xml:10: element reference: validity error : IDREF attribute refid references an unknown ID "target"
+var/test-rst.5.inline-6.xml:13: element target: validity error : IDREF attribute refid references an unknown ID "target"

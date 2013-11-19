@@ -91,7 +91,7 @@ GIT
     Sort of the master now. Testing only functional stuff, may be deceptive as
     not everything is unit/systemtested?
 
-    :tests: 10 OK
+    :tests: 8 OK
 
     dev_rstwriterobjects
       separate development branch for rstwriter restructuring, 
@@ -148,8 +148,22 @@ that generates enough work and bugreports for now.
 
 rST writer testcases are generated for all files matching ``var/test-*.rst``.
 
+Dependencies
+''''''''''''
+::
+  pip install coverage
+
+
+- some symlinks in lib/
+- my mkdocs project to build from ``Rules.mk``
+- xmllint
+
 Log
 -----
+2009 September
+  - Starting my own project for use with `Blue Lines`_, 
+    custom 'margin' directives and HTML writer components.
+
 2010-11-04
   Stefan Merten published his xml2rST and included an installer.
   He also has rST2gxl 'producing GXL which can be transformed to dot'
@@ -175,7 +189,10 @@ Log
     Need frontent/CLI system tests.
   - Splitting testing and non-functional stuff to sep. branches.
   - Adding build log and validation for test markup files.
-    Should clean out ``examples/``.
+    There should not be any log files in ``var/`` otherwise some test-file does not
+    completely check out (``rm var/test-rst*.log && make test-validate-files``).
+
+    Should clean/check out ``examples/`` too.
 
 .. __: doc/links.rst
 .. _Issues: Issues.rst
@@ -185,6 +202,4 @@ Log
 .. _Blue Lines: http://blue-lines.appspot.com/
 .. _docs: doc/main.rst
 .. _Du/rST examples: examples/main.rst
-
-
 
