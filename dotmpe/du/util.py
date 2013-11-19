@@ -16,7 +16,6 @@ from docutils import utils, nodes, frontend
 #from docutils.nodes import fully_normalize_name, make_id
 from docutils.parsers.rst import directives
 
-import uriref
 
 
 def new_document(source_path, settings=None):
@@ -196,6 +195,8 @@ def du_uri_reference(node):
     elif 'refuri' in rnode.attributes:
         href = rnode['refuri']
     if href:
+        # XXX how to go about uriref dep
+        import uriref
         # XXX: relative or absolute
         m = uriref.match(href)
         if not m:
@@ -204,12 +205,14 @@ def du_uri_reference(node):
 
 # XXX: optparse validator
 def validate_absolute_uriref(setting, value, option_parser):
+    import uriref
     m = uriref.absoluteURI.match(value)
     if not m:
         raise ValueError, "Not a valid absolute URI reference: %s" % value
     return value
 
 def validate_context(setting, value, option_parser):
+    import uriref
     m = uriref.absoluteURI.match(value)
     if not m:
         raise ValueError, "Not an absolute URI reference: %s" % value
@@ -220,6 +223,7 @@ def validate_context(setting, value, option_parser):
     
 # XXX: dotmpe du ext form validator    
 def v_absolute_uriref(data, proc=None):
+    import uriref
     if not data:
         raise ValueError, "expected Absolute URI"
     href = data
