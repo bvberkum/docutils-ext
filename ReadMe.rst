@@ -20,47 +20,67 @@ Utilities
 
   This is the main entry point. 
 
-Development targets
---------------------
-Completed:
-  - Left- and right-margin decoration.
-  - Various document transforms and additional document settings (with
-    command-line options). See `Transforms`_ (``dotmpe.du.ext.transform``).
-  - These transforms are used by ``dotmpe.du.ext.reader.mpe.``\ `Reader`.
-  - Several Nabu `Extractor`, `Storage` pairs, see `Extractors`_ (``dotmpe.du.ext.extractor``) but nothing complex yet.
-  - `rST forms`_ framework.
-    Use rST documents as forms, but gotten a bit out of use and no unittests.
-    The implementation includes retrieving data from a document according to the
-    `form specification`, which includes type conversion and value validation.
+Development
+-----------
 
-In progress:
-  - ``dotmpe.du.builder`` has some packages with specific Reader/Parser/Writer
-    component configurations, but frontend is undergoing work.
-  - Front-end development in `Blue Lines`_.
-  - rST rewriter.  
+Completed
+'''''''''
+- Left- and right-margin decoration.
+- Various document transforms and additional document settings (with
+  command-line options). See `Transforms`_ (``dotmpe.du.ext.transform``).
+- These transforms are used by ``dotmpe.du.ext.reader.mpe.``\ `Reader`.
+- Several Nabu `Extractor`, `Storage` pairs, see `Extractors`_ (``dotmpe.du.ext.extractor``) but nothing complex yet.
+- `rST forms`_ framework.
+  Use rST documents as forms, but gotten a bit out of use and no unittests.
+  The implementation includes retrieving data from a document according to the
+  `form specification`, which includes type conversion and value validation.
+- Monkey patched ``docutils.{readers,parser,writers}.get_*_class()`` to load
+  components from my lib. Enable 'extension' by importing ``dotmpe.du.ext``.
+
+In progress
+'''''''''''
+- ``dotmpe.du.builder`` has some packages with specific Reader/Parser/Writer
+  component configurations, but frontend is undergoing work.
+- Front-end development in `Blue Lines`_.
+- rST rewriter.  
 
 ToDo
-  -  re-evaluate include, literal and raw dereferencing.
-  -  expose extractor and storage parameters on command line
-  -  create a storage context that can provide Nabu stores. see extractors.rst_
-  -  ``--use-bibtex=USE_BIBTEX`` from latex2e may be nice practical example of 
-     external resource framework/metadata integration.
-  -  directive options are not all i18n'd
+''''
+-  re-evaluate include, literal and raw dereferencing.
+   want something like subdocs but low on the list of wannahaves.
+-  expose extractor and storage parameters on command line as other
+   components.
+-  create a storage context that can provide Nabu stores. see extractors.rst_
+-  ``--use-bibtex=USE_BIBTEX`` from latex2e may be nice practical example of 
+   external resource framework/metadata integration.
+-  directive options are not all i18n'd
+- `Du/rST examples`_
+
   -  example: form demonstration
   -  example: example rSt on inline references and roles
   -  example: breakcrumbs
-  -  rST directives for breadcrumbs.
-  - `Docs`_
-  - `Du/rST examples`_
+
+-  rST directives for breadcrumbs, testing etc? options?
+- `Issues`_
 
 Devel
-  -  propose breadcrumb and other generate transforms on devel list,
-     Lea mentioned breadcrumbs.
-  -  Is the XML tree the complete representation whereof the rST is a variant,
-     a perhaps lossy representation? 
-     Attributes of Du's DOM (``docutiles.nodes``) maybe hidden.
+''''''''''
+- `Docs`_
+-  Validation. Relax-NG?
+-  I'd like an alternative (even less vertically hungry) markup for titles.
+   What about ``=== title`` or ``= title =`` block formats. Nice and short
+   where appropiate.
+-  Same point goes for tables (title would be header, left or right aligned etc.)
+   If rstwriter restructured is finished I might have stab at this.
+-  propose breadcrumb and other generate transforms on devel list,
+   Lea mentioned breadcrumbs (long ago..).
+-  Is the XML tree the complete representation whereof the rST is a variant,
+   a perhaps lossy representation? I think it loses some things, should keep
+   track during rstwriter devel.
 
-Branches:
+Branches
+''''''''
+GIT
   master
     all development happened here until dev was branched.
   dev
@@ -81,7 +101,7 @@ Branches:
 
       :tests: 2 OK
 
-      Abandoned while I do get enough insight into the rSt parser
+      Abandoned while I do get more insight into the rSt parser
       machinery.
 
     dev_form
@@ -96,15 +116,18 @@ Branches:
 rST writer
 ----------
 Although still heavily a work in progress, I think it may be almost ready for
-simple rST-to-rST processes. Tables are very low on the wishlist though,
-without some cleaning, restructuring and other fixes first.
+simple rST-to-rST processes... should push through.
+Tables may be low on the wishlist though, get everything else first.
+Then figure out nested parser for tables. Perhaps need to think about nested
+writer for current literal blocks already?
 
 Getting Started
 ---------------
-May need latest docutils from SVN.
-
-For some automated tasks on this project package use ``make [help|..]``.
-There is no setup script yet.
+- May need latest docutils from SVN, sorry not sure about current version
+  but Du has not been in a lot of flux so..
+- For some automated tasks on this project package use ``make [help|..]``.
+- There is no setup script yet.
+- Skim the `docs`_.
 
 Testing
 -------
@@ -145,12 +168,12 @@ Log
   - Retaking to development. 
   - Adding new tests. First unnittests for builder. 
     Need frontent/CLI system tests.
-    Splitting testing and non-functional stuff to sep. branches.
-
-- `Issues <Issues.rst>`_
+  - Splitting testing and non-functional stuff to sep. branches.
+  - Adding build log and validation for test markup files.
+    Should clean out ``examples/``.
 
 .. __: doc/links.rst
-
+.. _Issues: Issues.rst
 .. _rST forms: `docs`_
 .. _Transforms: doc/transforms.rst
 .. _Extractors: doc/extractors.rst
