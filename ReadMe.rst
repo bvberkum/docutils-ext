@@ -14,6 +14,8 @@ second a list summary is given of the source code, whose main files will be
 documented themselves. Lastly a global log and list of further references is
 follows.
 
+.. contents::
+
 Utilities
 ---------
 - tools/build.py can be symlinked to any publisher wanted, ie. rst2latex, etc.  
