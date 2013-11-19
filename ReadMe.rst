@@ -64,12 +64,10 @@ Branches:
   master
     all development happened here until dev was branched.
   dev
-    all development now here.
+    Sort of the master now. Testing only functional stuff, may be deceptive as
+    not everything is unit/systemtested?
 
-    :tests: 66; 9 failures
-
-    Not testing all rSt features while not implemented, focus on rstwriter.
-    Should do all that at separate branch perhaps.
+    :tests: 10 OK
 
     dev_rstwriterobjects
       separate development branch for rstwriter restructuring, 
