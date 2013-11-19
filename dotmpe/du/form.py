@@ -2,6 +2,10 @@
 It may be convenient to treat a Du document as a form for user data. The
 objective here is to extract and validate, and to feedback any errors.
 
+To this end FormProcessor is implemented. In the package form2, an
+Nabu Extractor/Storage pattern implements validation, extraction and storage
+of information given in rSt documents.
+
 Du Forms
 ==========
 The result of the form is a set of key, value pairs.
@@ -11,19 +15,23 @@ The following Du structures lend themselves for such model:
 - definition lists: term, definition
 - sections: heading, body
 
-To process these fields, the structure `FormField` is initialized for each
-`--form-field` [*]_. Processing consists of a conversion of the document node to
-primitive or complex data.
+Note each of these structures can nest itself, and ofcourse rSt marked-up
+content. The initial version processes fields which text's mkid matches to 
+a fieldspec.
 
-These fields, references to the original nodes, and eventually the extracted and
-validated values are kepts as attributes of a FormProcessor instance.
+To process fields, structure `FormField` is initialized for each given spec.
+Specs are passed programmatically or using `--form-field`. 
+
+Processing then consists of a conversion of the document node to
+primitive or complex data. Some basic types are implemented.
 
 When validation is done, the settings key 'validated' is set to true, so care
 must be taken by any calling code to properly match this status to a specific
-set of fields.
+set of fields. 
 
-While all the work is done by FormProcessor, the following classes actually
-integrate it into various docutils components.
+Most interaction is programmatically to the FormProcessor instance, which is
+put on the document and vice versa, and which holds extracted values.
+
 
 ext.transform.form1.DuForm
     A standard Du transform, processes and validate according to settings or its
@@ -42,10 +50,8 @@ ext.extractor.form2.FormExtractor and FormStorage
 ext.writer.xhtmlform
     Write Du documents with form constructs to XHTML, possibly validate.
 
-.. [#] The field's ID is created from the text value of each label.
 
-
-Besides converting the whole tree to a form in such a fashion, it may be more
+Besides converting the whole tree to a form, it may be more
 effective to divide some options for recognizing forms:
 
 - by 'form' class
@@ -53,10 +59,16 @@ effective to divide some options for recognizing forms:
 - by options listed explicitly in document
 
 This proposal does not introduce its own directives or nodes?
-A directive might be, but I've observed discussions on rSt where the concensus
-was that if a generic construct can do the job of a more specific one, then the
-former is preferred. Ie. the option-list would have been deprecated if e.g.
-definition list could capture the same.
+
+.. 
+    A directive might be, but I've observed discussions on rSt where the concensus
+    was that if a generic construct can do the job of a more specific one, then the
+    former is preferred. Ie. the option-list would have been deprecated if e.g.
+    definition list could capture the same.
+
+..
+    FormFieldIDVisitor is not going to help extracting data from patterns in
+    nesting.
 
 Field types
 ------------
@@ -68,6 +80,23 @@ Field types
 - list, combined with anyther field-type
 - bool, any on of the str's '0', '1', 'True', 'False', 'On', 'Off', 'true', etc.
 
+Field specification
+-------------------
+::
+        '<field-id>', '<field-type>', <attr>
+
+The attr is an optional dict that makes the spec extensible for all sorts of
+types and some features. Implemented::
+
+    required
+        Boolean
+    append
+        Makes field spec multi-matching. TODO: figure out some way around unique
+        IDs and maybe names then.
+
+XXX: Should match fields to proper id/name during parse or read. Requires some DB indices.
+TODO: Get some tab/csv ouput writer going.
+TODO: Scanning and denormalization of nested fields into rows for output.
 """
 import logging, types
 from docutils import nodes, utils, transforms
@@ -76,7 +105,7 @@ from dotmpe.du.ext import extractor
 from dotmpe.du import util
 
 
-logger = logging.getLogger(__name__)
+logger = util.get_log(__name__)
 
 
 def opt_form_prepare():
@@ -210,18 +239,23 @@ class FormProcessor:
         fv.initialize(self.fields.keys())
         fv.apply()
         self.seen = []
+        # iterate found fields
         for field_id, node in fv.fields:
+            # keep list of nodes for 'append'-value setting
             if self.fields[field_id].append:
                 if field_id not in self.nodes:
                     self.nodes[field_id] = []
                 self.nodes[field_id].append(node)
+            # or single occurrences
             elif field_id in self.nodes:
                 self.__report_error(node, DuplicateFieldError, field_id)
                 continue
             else:
                 self.nodes[field_id] = node
+            # track id
             if field_id not in self.seen:
                 self.seen.append(field_id)
+            # pre-cache node's value
             if require_value:
                 try:
                     value = self[field_id]
@@ -240,7 +274,12 @@ class FormProcessor:
     def __contains__(self, field_id):
         return field_id in self.nodes
 
+    def __iter__(self):
+        for field_id in self.nodes:
+        	yield field_id
+
     def __getitem__(self, field_id):
+        """Return cached value. """
         if field_id not in self.values:
             v = self.__process_field(field_id)
             if field_id=='id':
@@ -298,12 +337,12 @@ class FormProcessor:
                     assert False, "fid is in self?"
                 except TypeError, e:
                     self.__report_error(node, FieldTypeError, e)
-                    #self.invalid[fid] = value
-                    #v = False
+                    self.invalid[fid] = value
+                    v = False
                 except ValueError, e:
                     self.__report_error(node, FieldValueError, fid, data, e)
-                    #self.invalid[fid] = value
-                    #v = False
+                    self.invalid[fid] = value
+                    v = False
             for value in data:
                 if type(value) == type(None) and not field.required:
                     continue
@@ -311,7 +350,7 @@ class FormProcessor:
                 for vldtor in field.validators:
                     try:
                         _v = vldtor(value, self)
-                        #logger.info("%s, %s, %s", vldtor, _v, v)
+                        logger.info("%s, %s, %s", vldtor, _v, v)
                         v = v and _v
                     except ValueError, e:
                         self.invalid[fid] = value
@@ -405,8 +444,11 @@ class FormProcessor:
         Extract value from node using field.
         """
         node = self.nodes[field_id]
+        if isinstance(node, list):
+            if len(node) == 1:
+            	node = node[0]
         assert not isinstance(node, list), \
-                "Multiple fields not supported (field %s). " % field_id
+                "Multiple fields not supported (field %s, %s). " % (field_id, node)
         name = extract_form_field_label(node)
         field = self.fields[field_id]
         if field_id not in self.fields or not field.convertor:
@@ -441,6 +483,7 @@ class FormProcessor:
             #finally:
             #    if isinstance(data, types.NoneType):
             #        data = u''
+        value = None
         if field.append:
             if not value:
                 value = []
@@ -547,6 +590,10 @@ def form_field_spec(field_id, convertor_or_names, validators=(), **attrs):
 
 class AbstractFormVisitor(nodes.SparseNodeVisitor):
 
+    """
+    Implements handling of the document.settings.form settings.
+    """
+
     def __init__(self, document):
         nodes.SparseNodeVisitor.__init__(self, document)
         self.settings = self.document.settings
@@ -566,20 +613,31 @@ class AbstractFormVisitor(nodes.SparseNodeVisitor):
         if not hasattr(self, 'field_ids') or field_ids:
             self.field_ids = field_ids
         self.fields = []
+        "Captured fields"
         self.fieldset_class = getattr(self.settings, 'form_class', 'form')
+        ""
         self.field_class = self.fieldset_class + '-field'
+        ""
 
     def is_fieldset(self, node):
         if self.__hasclass(node, self.fieldset_class):
             return True
 
     def is_field(self, field_node):
+        ""
         if self.__hasclass(field_node, self.field_class):
             return True
         elif self.__hasfieldid(field_node):
             return True
 
     def scan_field(self, node):
+        """
+        If the element matches as a field, capture it.
+        """
+        if self.settings.form == 'class' or self.settings.form == 'class-and-name':
+        	pass
+        if self.settings.form == 'name' or self.settings.form == 'class-and-name':
+        	pass
         field_id = nodes.make_id(extract_form_field_label(node))
         if self.field_class not in node['classes']:
             node['classes'].append(self.field_class)
@@ -608,16 +666,22 @@ class AbstractFormVisitor(nodes.SparseNodeVisitor):
 
 
 class FormFieldSetVisitor(AbstractFormVisitor):
+
     def visit_definition_list(self, node):
-        if self.is_form_element(node):
+        if self.is_fieldset(node):
             pass # subs_add_form_class(node)
 
     def visit_field_list(self, node):
-        if self.is_form_element(node):
+        if self.is_fieldset(node):
             pass # subs_add_form_class(node)
 
 
 class FormFieldIDVisitor(AbstractFormVisitor):
+
+    """
+    FieldID visitor matches various Du elements based on the mkid
+    of their text contents.
+    """
 
     # NodeVisitor hooks
 

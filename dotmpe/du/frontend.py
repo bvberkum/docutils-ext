@@ -13,8 +13,7 @@ import sys
 
 from docutils.core import publish_cmdline
 from docutils.parsers.rst import Parser
-from docutils import Component, core, SettingsSpec
-from docutils.frontend import OptionParser
+from docutils import Component, core, SettingsSpec, frontend
 #import nabu.server
 #import nabu.process
 
@@ -24,19 +23,23 @@ from dotmpe.du.ext.parser import Inliner
 
 
 
-def cli_process(sources, builder_name='mpe',description=''):
-    module_name = builder_name
-    Builder = comp.get_builder_class(module_name, class_name='Builder')
-    builder = Builder()
-    if not sources:
-        print >>sys.stderr, "No sources. "
-    for source in sources:
+def cli_process(argv, builder=None, builder_name='mpe', description=''):
+    if not builder:
+        Builder = comp.get_builder_class(builder_name, class_name='Builder')
+        builder = Builder()
+
+    for source in argv:
         if source.startswith('-'):
             continue
         assert os.path.exists(source), "source description "\
-                "must be existing local path for now (not '%s')" % source
+                "must be existing local path for now (not '%s %s')" % (os.getcwd(),
+                source)
         source_id = source
-
+        # XXX: need options parsed here too
+        #document = builder.build(open(source_id).read(), source_id, overrides={})
+        #builder.process(document, source_id, 
+        #        overrides={}, pickle_receiver=None)
+        source = open(source_id)
         document = builder.build(source, source_id, overrides={})
         builder.prepare(**builder.store_params)
         builder.process(document, source_id, overrides={}, pickle_receiver=None)
@@ -48,11 +51,19 @@ def cli_process(sources, builder_name='mpe',description=''):
                 print msg.astext()
 
 
-def cli_render(sources, builder_name='mpe'):
-    module_name = builder_name
-    Builder = comp.get_builder_class(module_name, class_name='Builder')
+def cli_render(argv, builder_name='mpe'):
+    Builder = comp.get_builder_class(builder_name, class_name='Builder')
     builder = Builder()
-    for source in sources:
+    builder.prepare_initial_components()
+    builder.process_command_line() # replace settings for initial components
+    assert builder.settings
+    #pub.set_components(reader_name, parser_name, writer_name)
+    #pub.process_programmatic_settings(
+    #    settings_spec, settings_overrides, config_section)
+    #pub.set_source(source, source_path)
+    #pub.set_destination(destination, destination_path)
+    #output = pub.publish(enable_exit_status=enable_exit_status)
+    for source in argv:
         if source.startswith('-'):
             continue
         assert os.path.exists(source), "source description "\
@@ -61,17 +72,16 @@ def cli_render(sources, builder_name='mpe'):
         
         # FIXME: cli_render
         print builder.render(source)
-        print document.parse_messages
-        print document.transform_messages
+        print builder.document.parse_messages
+        print builder.document.transform_messages
 
 
 def cli_du_publisher(reader_name='mpe', parser=None, parser_name='rst', writer_name='pseudoxml', description=''):
     """
     Simple wrapper for ``docutils.core.publish_cmdline``.
     """
-    description = ('')
 
-    # FIXME: parser = Parser(inliner=Inliner())
+    # XXX: how far does inline customization go? parser = Parser(inliner=Inliner())
     reader_class = comp.get_reader_class(reader_name)
     parser_class = None
     if not parser:
@@ -154,7 +164,7 @@ def get_option_parser(components,
         settings_spec.settings_spec = options
     settings_spec.config_section = 'test-section'
 
-    option_parser = OptionParser( components=tuple(components) + (settings_spec,),
+    option_parser = frontend.OptionParser( components=tuple(components) + (settings_spec,),
         defaults=defaults, read_config_files=1,
         usage=usage, description=description)
     return option_parser

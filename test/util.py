@@ -1,5 +1,5 @@
 """
-Test utils for re-writer, intended to be the reverse of the given parser.
+Utils to test re-writer, intended to be the reverse of the given parser.
 """
 import os, re, unittest
 
@@ -35,12 +35,13 @@ from dotmpe.du.ext.writer.rst import Writer
 
 
 
+width = 79
 
 class AbstractParserTestCase(object):
 
     DOC_FILE = None
     TAG = None
-    VERBOSE = 0
+    VERBOSE = 1
 
     corrupt_sources = []
 
@@ -64,11 +65,11 @@ class AbstractParserTestCase(object):
 
         expected_pxml = open(self.DOC_PXML_FILE).read().decode('utf-8')
 
-        if self.VERBOSE:
-            print self.DOC_FILE.ljust(width,'=')
-
         self.assertNotEqual(doc.strip(), u'', "Empty test file. "+
                     ("on <%s>" % self.DOC_FILE ))
+
+        if self.VERBOSE:
+            print self.DOC_FILE.ljust(width,'=')
 
         ## Compare parse trees, using pprint/pseudoxml representation
         warnings = StringIO()
@@ -86,18 +87,39 @@ class AbstractParserTestCase(object):
                 },
                 writer_name='pprint')['whole']
         warnings = warnings.getvalue()
+
+        # print unified diff for PXML mismatch
+        diff = "\n".join(list(unified_diff(expected_pxml.split('\n'), generated_tree.split('\n'))))
+
+        if self.VERBOSE:
+            out = [u''] 
+            original_out = expected_pxml.strip().split('\n')
+            generated_out = generated_tree.strip().split('\n')
+            out += [ (u'Original Tree ').ljust(width, '-') +u' '+ (u'Generated Tree ').ljust(width, '-') ] 
+            while original_out or generated_out:
+                p1 = u''
+                p2 = u''
+                if original_out:
+                    p1 = original_out.pop(0)
+                if generated_out:
+                    p2 = generated_out.pop(0)
+                out += [ p1.ljust(width) +u' '+ p2.ljust(width) ]
+            out += [u''] 
+            diff += "\n".join(out)
+
+#        if self.VERBOSE:
+#            print diff
+
+        self.assertEqual( expected_pxml, generated_tree, 
+                    "pxml tree mismatch \n "+
+                    ("on <%s>" % self.DOC_FILE )+"\n\n"+
+                    diff )
+        
         if warnings:
             self.assertFalse(warnings.strip(), 
                     "Error parsing test document\n "+
                     ("on <%s>" % self.DOC_FILE )+"\n\n"+
                     warnings)
-
-        # print unified diff for PXML mismatch
-        diff = "\n".join(list(unified_diff(expected_pxml.split('\n'), generated_tree.split('\n'))))
-        self.assertEqual( expected_pxml, generated_tree, 
-                    "pxml tree mismatch \n "+
-                    ("on <%s>" % self.DOC_FILE )+"\n\n"+
-                    diff )
         assert True
 
 def new_parser_testcase(tag, testcase_name, doc_file, pxml_file, lossy=False):
@@ -152,7 +174,9 @@ class AbstractWriterTestCase(object):
                 #reader_name=self.TAG,
                 settings_overrides={
                     'warning_stream': warnings,
-                    'input_encoding': 'unicode',
+#                    'output_encoding': 'unicode',
+#                    'output_encoding': 'ascii',
+                    #'input_encoding': 'unicode',
                 },
                 writer_name='pseudoxml')['whole']#writer_name='dotmpe-rst')
         warnings = warnings.getvalue()
@@ -267,7 +291,8 @@ def print_compare_writer(doc_file,
     original_tree = docutils.core.publish_parts(
             reader=reader_class(parser_class()),
             source=doc, 
-            writer_name='pseudoxml')['whole']
+            writer_name='pseudoxml',
+            settings_overrides={'input_encoding':'utf-8'})['whole']
     assert isinstance(original_tree, unicode)
     result = docutils.core.publish_parts(
             reader=reader_class(parser_class()),
@@ -302,8 +327,8 @@ def print_compare_writer(doc_file,
     out += [u''] 
 
     # print side-by-side view
-    original_out = doc.strip().split('\n')
-    generated_out = result.strip().split('\n')
+    original_out = doc.strip().decode('utf-8').split('\n')
+    generated_out = result.strip().decode('utf-8').split('\n')
     out += [ (u'Original ').ljust(width, '-') +u' '+ (u'Rewriter ').ljust(width, '-') ] 
     while original_out or generated_out:
         p1 = u''
@@ -337,4 +362,6 @@ def print_compare_writer(doc_file,
     out += [u'']
 
     print u"\n".join(out)
+
+
 

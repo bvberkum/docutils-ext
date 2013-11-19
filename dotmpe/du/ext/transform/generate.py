@@ -11,6 +11,10 @@ from docutils import nodes
 from docutils.transforms import Transform
 from docutils.transforms.references import Substitutions
 from dotmpe.du.ext.transform import include
+from dotmpe.du import util
+
+
+logger = util.get_log(__name__)
 
 
 # This should run before references.Substitutions (220). "
@@ -61,6 +65,8 @@ class PathBreadcrumb(Generator):
         if not hasattr(self.document.settings, 'breadcrumb') \
                 or not getattr(self.document.settings, 'breadcrumb', None):
             return
+
+        logger.debug('Running breadcrumb xform')
 
         subrefname = nodes.fully_normalize_name(
             self.document.settings.breadcrumb_substitution_reference)
@@ -189,6 +195,8 @@ class CCLicenseLink(include.Include):
         if not hasattr(settings, 'cc_embed') or not settings.cc_embed:
             return
 
+        logger.debug('Running cc_embed xform')
+
         subrefname = nodes.fully_normalize_name(
                 settings.cc_license_substitution_reference)
         subrefid = nodes.make_id(subrefname)
@@ -245,6 +253,7 @@ class Timestamp(include.Include):
     def apply(self):
         settings = self.document.settings
         #print 'timestamp', settings.datestamp
+        logger.debug('TODO: timestamp xform')
 
     def generate_timestamp(self):
         pass
@@ -257,5 +266,6 @@ class SourceLink(include.Include):
 
     default_priority = 200
 
-    def apply(self): pass
+    def apply(self): 
+        logger.debug('TODO: sourcelink xform')
 

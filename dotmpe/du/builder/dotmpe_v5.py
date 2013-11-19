@@ -4,9 +4,16 @@ dotmpe.com v5 writer
 This is an aggregation and configuration of Du components.
 """
 from dotmpe.du import builder, util
-from dotmpe.du.ext.transform import include
+from dotmpe.du.ext.transform import include, logbook
 from dotmpe.du.ext.reader import mpe
 from dotmpe.du.util import addClass
+
+
+def _get_logbook_store(options):
+    """Temporary stuff until storage component instances are properly managed.
+    """
+    import sqlite3
+    return sqlite3.connect(options['logbook_db'])
 
 
 class Builder(builder.Builder):
@@ -17,7 +24,7 @@ class Builder(builder.Builder):
         'script': 'http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js,/media/script/default.js',
         'embed_stylesheet': False,
         'embed_script': False,
-        'breadcrumb': True,
+        'breadcrumb': False,#True,
         'generator': False,
         'date': True,
         'input_encoding': 'utf-8',
@@ -37,16 +44,19 @@ class Builder(builder.Builder):
         'strip_user_settings': False,
         'compact_lists': False,
         'compact_field_lists': False,
+        'logbook_db': 'var/lib/htdocs/dotmpe-v5-logbook.db'
     }
 
     # TODO: integrate with CLI/settings_spec
     extractor_spec = [
-            ('nabu.extractors.document', ),
-            ('dotmpe.du.ext.extractor.settings', 'dotmpe.du.extractor.SettingsStorage')
+            ('nabu.extractors.document', 'dotmpe.du.ext.extractor.document'),
+            ('dotmpe.du.ext.extractor.settings', 'dotmpe.du.ext.extractor.settings.SettingsStorage')
         ] 
 
     store_params = {
-            'nabu.extractors.document': ((),{}),
+            'dotmpe.du.ext.extractor.document.Storage': (
+                (),
+                {'module':None, 'connection': _get_logbook_store}),
         }
 
     class Reader(mpe.Reader):
@@ -57,7 +67,9 @@ class Builder(builder.Builder):
 
         def get_transforms(self):
             return mpe.Reader.get_transforms(self) + [
-                addClass(Builder.Reader.add_class) ]
+                    addClass(Builder.Reader.add_class),
+                    logbook.LogBook
+                ]
 
     class ReReader(builder.Builder.ReReader):
         settings_spec = (
@@ -65,9 +77,10 @@ class Builder(builder.Builder):
             None, (),)
         def get_transforms(self):
             return builder.Builder.ReReader.get_transforms(self) + [
-                debug.Settings,                 # 500
-                debug.Options,                  # 500
-            ]
+                    debug.Settings,                 # 500
+                    debug.Options,                  # 500
+                    logbook.LogBook
+                ]
 
 
 class Page(Builder):
@@ -86,7 +99,8 @@ class Page(Builder):
 
         def get_transforms(self):
             return mpe.Reader.get_transforms(self) + [
-                addClass(Page.Reader.add_class) ]
+                    addClass(Page.Reader.add_class),
+                ]
 
 
 class Frontpage(Page):

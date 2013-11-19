@@ -77,11 +77,13 @@ My yesno
 
 :My flag: 
 :My exclusive flag:
-:My unsigned integer:   d
+:My unsigned integer:   4
 :My unknown: entry
 :My colour:             red
 
 :My error:   str
+
+:My Bool: true
 
 Unsupported
 ''''''''''''

@@ -37,5 +37,7 @@ Section
 ^^^^^^^
 Some paragraph in 4.1
 
-
+Section 2
+^^^^^^^^^
+Section at same level.
 

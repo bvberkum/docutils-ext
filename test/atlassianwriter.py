@@ -6,7 +6,7 @@ import init
 from util import mkclassname, new_writer_testcase
 
 
-def create_tests(files):
+def create_lossy_pxml_compare_tests(files):
 
     for acw_file, pxml_file in files:
         testcase_name = mkclassname(acw_file)
@@ -17,5 +17,5 @@ def create_tests(files):
         setattr(sys.modules[__name__], testcase_name, TestCase)
   
 
-create_tests(init.ACW_DOC)
+create_lossy_pxml_compare_tests(init.ACW_DOC)
 

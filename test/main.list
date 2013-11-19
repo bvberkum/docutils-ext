@@ -1,6 +1,8 @@
+comp
+build
 #form
 rstwriter
 #atlassianparser
 #atlassianwriter
 #confluence
-#simplemuxdem
+simplemuxdem

@@ -18,11 +18,23 @@ RST_DOC = filter(os.path.getsize,
 RST_DOC.sort()
 
 
+
+RST_COMMON = filter(os.path.getsize,
+        glob.glob(os.path.join(PROJ_ROOT, 'var', 'test-common*.rst'))
+    )
+"reStructuredText common interchange documents (with size >0)"
+RST_COMMON.sort()
+
+
 ### Have a look at lossless-rst-writer branch
 sys.path.insert(0, os.path.join(PROJ_LIB, 'docutils-branches',
 	'lossless-rst-writer', 'docutils', 'writers'))
 # XXX: access extension module directly
-LOSSLESS_WRITER = __import__('rst') 
+try:
+    LOSSLESS_WRITER = __import__('rst') 
+except ImportError, e:
+    print "Cannot find lossless-rst-writer:", e
+    sys.exit(1)
 
 
 ### Atlassian Confluence

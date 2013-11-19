@@ -1,5 +1,7 @@
 from nabu import extract
 
+from dotmpe.du.ext import extractor
+
 
 class Extractor(extract.Extractor):
 
@@ -13,5 +15,9 @@ class Extractor(extract.Extractor):
         self.document.reporter.info(
             'Document settings extractor: %s' % pformat(settings))
         storage.store(unid, settings)
+
+
+class SettingsStorage(extractor.TransientStorage):
+    pass
 
 
