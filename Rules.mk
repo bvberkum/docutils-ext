@@ -63,7 +63,7 @@ test:: test-validate-files
 	fi
 	@\
 	L=$$(ls var/|grep \.log);\
-		[ "$$(echo $$L|wc -w)" > 0 ] && { $(ll) Errors "$@" "in testfiles" "$$(echo $$L)"; } || {}
+		[ "$$(echo $$L|wc -w)" -gt 0 ] && { $(ll) Errors "$@" "in testfiles" "$$(echo $$L)"; } || {}
 
 #test-atlassian
 test-common::
@@ -83,7 +83,7 @@ test-validate-files: $(TEST_RST_XML_$d)
 		for x in var/*.xml; do echo $$x; stat $$x.*.log > /dev/null 2> /dev/null || rm $$x ; done;
 	@\
 	L=$$(ls var/|grep \.log);\
-		[ "$$(echo $$L|wc -w)" > 0 ] && { $(ll) Errors "$@" "in testfiles" "$$(echo $$L)"; } || { $(ll) OK "$@"; }
+		[ "$$(echo $$L|wc -w)" -gt 0 ] && { $(ll) Errors "$@" "in testfiles" "$$(echo $$L)"; } || { $(ll) OK "$@"; }
 
 var/%.xml: var/%.rst
 	@\

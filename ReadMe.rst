@@ -91,7 +91,7 @@ GIT
     Sort of the master now. Testing only functional stuff, may be deceptive as
     not everything is unit/systemtested?
 
-    :tests: 10 OK
+    :tests: 8 OK
 
     dev_rstwriterobjects
       separate development branch for rstwriter restructuring, 
