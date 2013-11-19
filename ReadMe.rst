@@ -18,9 +18,11 @@ follows.
 
 Utilities
 ---------
-- tools/build.py can be symlinked to any publisher wanted, ie. rst2latex, etc.  
+``tools/build.py``
+  Can be symlinked to any publisher wanted, ie. rst2latex, etc.  
 
-  This is the main entry point. 
+  This should be the main entry point, but ``dupub.py`` (docutils publisher with
+  extensions) may be (more) functional...
 
 Development
 -----------
