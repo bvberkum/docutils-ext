@@ -324,6 +324,7 @@ class Builder(SettingsSpec, Publisher):
         else:
             assert source, "Need source to build, source is %r" % source
         if not parser:
+            source_class = docutils.io.FileInput#StringInput 
             parser = self.Parser()
         if not reader:
             reader = self.Reader(parser=self.parser)

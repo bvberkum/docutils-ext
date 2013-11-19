@@ -1,3 +1,5 @@
+import os.path
+
 from dotmpe.du import builder
 from dotmpe.du.ext.reader import mpe
 from dotmpe.du.util import addClass
@@ -14,7 +16,8 @@ class Builder(builder.Builder):
 
     #  xxx: rename to extractor params?
     store_params = {
-            'HtdocsStorage': ((1,2,3), {}),
+            'HtdocsStorage': ((),
+                {'dbref':'sqlite:///'+os.path.expanduser('~/.cllct/db.sqlite')}),
         }
 
     class Reader(mpe.Reader):

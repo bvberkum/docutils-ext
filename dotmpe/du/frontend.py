@@ -36,9 +36,13 @@ def cli_process(argv, builder=None, builder_name='mpe', description=''):
                 source)
         source_id = source
         # XXX: need options parsed here too
-        document = builder.build(open(source_id).read(), source_id, overrides={})
-        builder.process(document, source_id, 
-                overrides={}, pickle_receiver=None)
+        #document = builder.build(open(source_id).read(), source_id, overrides={})
+        #builder.process(document, source_id, 
+        #        overrides={}, pickle_receiver=None)
+        source = open(source_id)
+        document = builder.build(source, source_id, overrides={})
+        builder.prepare(**builder.store_params)
+        builder.process(document, source_id, overrides={}, pickle_receiver=None)
         # TODO render messages as reST doc
         for msg_list in document.parse_messages, document.transform_messages:
             for msg in msg_list:
