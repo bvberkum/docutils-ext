@@ -90,6 +90,10 @@ Branches:
       Abandoned while I do get enough insight into the rSt parser
       machinery.
 
+    dev_form
+      Splitting topic of dev for separate testing. Possibly a few hacks while
+      core/frontend is in flux.
+
 
 rST writer
 ----------
