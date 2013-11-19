@@ -1,0 +1,11 @@
+<document source="var/test-1.document-1-simpleformat.txt">
+    <paragraph>
+        h1. Test Document
+    <paragraph>
+        Some paragraph 
+        <strong>
+            strong
+         
+        <emphasis>
+            emphasis
+        .
