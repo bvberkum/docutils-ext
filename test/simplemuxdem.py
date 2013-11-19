@@ -36,6 +36,8 @@ def create_lossy_pxml_compare_tests(files):
         # Lossy - compare to PXML
         TestCase = new_parser_testcase('simplereader', testcase_name, smf_file,
                 pxml_file, True)
+        from dotmpe.du.ext.parser.simplereader import Parser
+        assert TestCase.PARSER_CLASS == Parser, TestCase.PARSER_CLASS
         TestCase.__module__ = __name__
         setattr(sys.modules[__name__], testcase_name, TestCase)
         # Need writer for lossless compare

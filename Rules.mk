@@ -49,7 +49,7 @@ CLN 				+= \
 #	@-find ./ -iname "*.pyc" | while read c; do rm "$$c"; done;
 
 # XXX: convert this to test-python, see e.g. scrow
-test::
+test:: test-validate-files
 	@-test_listing=test/main.list;\
 		test_mods=$$(cat $$test_listing|grep -v '^#'|grep -v '^$$');\
 		test_listing=$$test_listing coverage run test/main.py $$test_mods \
@@ -57,13 +57,13 @@ test::
 	@coverage report --include="test/*,dotmpe/*"
 	@if [ -n "$$(tail -1 test.log|grep OK)" ]; then \
 	    $(ll) Success "$@" "see" test.log; \
-    else \
+	else \
 	    $(ll) Errors "$@" "$$(tail -1 test.log)"; \
 	    $(ll) Errors "$@" see test.log; \
-    fi
+	fi
 	@\
 	L=$$(ls var/|grep \.log);\
-		[ "$$(echo $$L|wc -w)" > 0 ] && { $(ll) Errors "$@" "in testfiles" "$$L" } || {}
+		[ "$$(echo $$L|wc -w)" > 0 ] && { $(ll) Errors "$@" "in testfiles" "$$(echo $$L)"; } || {}
 
 #test-atlassian
 test-common::
@@ -80,8 +80,10 @@ TEST_RST_XML_$d  := $(TEST_RST_$d:%.rst=%.xml)
 test-validate-files: $(TEST_RST_XML_$d)
 	@\
 		$(ll) attention "$@" "All XML files built, removing valid ones. "; \
-		for x in var/*.xml; do echo $$x;stat $$x.*.log || rm $$x ; done; \
-		$(ll) OK "$@";
+		for x in var/*.xml; do echo $$x; stat $$x.*.log > /dev/null 2> /dev/null || rm $$x ; done;
+	@\
+	L=$$(ls var/|grep \.log);\
+		[ "$$(echo $$L|wc -w)" > 0 ] && { $(ll) Errors "$@" "in testfiles" "$$(echo $$L)"; } || { $(ll) OK "$@"; }
 
 var/%.xml: var/%.rst
 	@\
@@ -92,12 +94,12 @@ var/%.xml: var/%.rst
 	} || { \
 		rm "$@.du.log"; \
 		xmllint --valid --noout $@ 2> $@.dtd.log; \
-    [ -s "$@.dtd.log" ] && { \
-      $(ll) file_error "$@" "DTD validation warnings, see" "$@.dtd.log"; \
-    } || { \
-      rm "$@.dtd.log"; \
-      $(ll) file_ok "$@"; \
-    } \
+		[ -s "$@.dtd.log" ] && { \
+		  $(ll) file_error "$@" "DTD validation warnings, see" "$@.dtd.log"; \
+		} || { \
+		  rm "$@.dtd.log"; \
+		  $(ll) file_ok "$@"; \
+		} \
 	}
 
 define build-pretty
