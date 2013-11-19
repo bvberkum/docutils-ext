@@ -90,6 +90,10 @@ Branches:
       Splitting topic of dev for separate testing. Possibly a few hacks while
       core/frontend is in flux.
 
+    dev_rstwriter
+      While things left to be desired before finishing dev_rstwriterobjects,
+      implement and test reStructuredText writer.
+
 
 rST writer
 ----------
@@ -139,8 +143,11 @@ Log
     usual by unittest.main, no more need to aggregate testsuites.
     Lossless testing is disabled for now.
 
-2013-11-01
+2013 November
   - Retaking to development. 
+  - Adding new tests. First unnittests for builder. 
+    Need frontent/CLI system tests.
+    Splitting testing and non-functional stuff to sep. branches.
 
 - `Issues <Issues.rst>`_
 
