@@ -11,10 +11,11 @@ import types
 import StringIO
 import docutils.core
 
+from docutils import SettingsSpec, frontend, utils, transforms
+
 #import nabu
 #import nabu.server
 import dotmpe
-from docutils import SettingsSpec, frontend, utils, transforms
 from dotmpe.du import comp, util
 
 

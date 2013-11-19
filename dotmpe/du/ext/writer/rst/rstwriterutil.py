@@ -69,6 +69,9 @@ class ContextStack(object):
         if l:
             return l-1
 
+    def __contains__(self, name):
+        return name in self._stack
+
     def previous(self, name):
         if len(self._stack[name]) > 1:
             return self._stack[name][-2]

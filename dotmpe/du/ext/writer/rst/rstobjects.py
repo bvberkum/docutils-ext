@@ -405,7 +405,9 @@ class AbstractRstFormatter(nodes.NodeVisitor):
             self.capture_text = 'title'
     def depart_title(self, node):
         self.pop_tree()
-        prev_tree = self.context.previous('tree')
+        prev_tree = None
+        if 'tree' in self.context:
+            prev_tree = self.context.previous('tree')
         if prev_tree and prev_tree[-1].tagname == 'topic':
             self.depart_field_name(node)
             self.context.indent += INDENT
@@ -1005,7 +1007,6 @@ class AbstractRstFormatter(nodes.NodeVisitor):
         #'abstract':nodes.topic
 
         # RCSfile
-
     def depart_docinfo(self, node):
         self.pop_tree()
         self._write_indented('')
