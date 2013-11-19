@@ -66,13 +66,9 @@ Branches:
   dev
     all development now here.
 
-    :tests: 64; 9 failures, 1 error
+    :tests: 66; 9 failures
 
-    FIXME: 25 failures. introduced a bug relating to literal block spacing, 
-       update tests if appropiate before updating ReadMe
-
-    Testing rstwriter only.
-    Also not testing all rSt features while not implemented.
+    Not testing all rSt features while not implemented, focus on rstwriter.
     Should do all that at separate branch perhaps.
 
     dev_rstwriterobjects

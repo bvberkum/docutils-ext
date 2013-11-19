@@ -61,7 +61,7 @@ class AbstractParserTestCase(object):
         global width
 
         doc = open(self.DOC_FILE).read().decode('utf-8')
-        assert isinstance(doc, unicode)
+        assert isinstance(doc, unicode), doc
 
         expected_pxml = open(self.DOC_PXML_FILE).read().decode('utf-8')
 
@@ -280,7 +280,7 @@ def print_compare_writer(doc_file,
     out = []
     out += [ (' ' + doc_file).rjust(max_width, '=')]
     doc = open(doc_file).read().decode(encoding)
-    assert isinstance(doc, unicode)
+    assert isinstance(doc, unicode), doc
 
     if not reader_class:
         #reader_class = dotmpe.du.ext.reader.get_reader_class(reader_name)

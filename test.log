@@ -1,404 +1,6 @@
-......2013-11-19 09:19:25,110 - dotmpe.du.builder - INFO - ReReading <id>
-.2013-11-19 09:19:25,111 - dotmpe.du.builder - DEBUG - Building '/srv/project-mpe/docutils-ext/examples/form.rst'.
-...F.F..FFFF.....FF...FFFFFF...FFFFFF....FFFFF.............
-======================================================================
-FAIL: TestRst_10_LiteralBlock3; Lossy doctree comparison; Writer 'rst-mpe'
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 252, in runTest
-    self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 157, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 234, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
- on </srv/project-mpe/docutils-ext/var/test-rst.10.literal-block-3.rst>
-
----  
-
-+++  
-
-@@ -5,8 +5,11 @@
-
-         or quoted text is a literal block.
-     <literal_block xml:space="preserve">
-         Whitespace, newlines, blank lines, and
--        all kinds of markup (like *this* or
--        \this) is preserved by literal blocks.
-+        all kinds of markup (like 
-+        <emphasis>
-+            this
-+         or
-+        this) is preserved by literal blocks.
-         
-         The paragraph containing only '::'
-         will be omitted from the result.
-
-======================================================================
-FAIL: TestRst_10_LiteralBlock5; Lossy doctree comparison; Writer 'rst-mpe'
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 252, in runTest
-    self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 157, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 227, in __test_writer
-    warnings)
-AssertionError: Error re-parsing generated file
- on </srv/project-mpe/docutils-ext/var/test-rst.10.literal-block-5.rst>
-
-/srv/project-mpe/docutils-ext/var/test-rst.10.literal-block-5.rst:9: (WARNING/2) Explicit markup ends without a blank line; unexpected unindent.
-/srv/project-mpe/docutils-ext/var/test-rst.10.literal-block-5.rst:12: (WARNING/2) Bullet list ends without a blank line; unexpected unindent.
-
-
-======================================================================
-FAIL: TestRst_13_Table; Lossy doctree comparison; Writer 'rst-mpe'
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 252, in runTest
-    self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 157, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 234, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
- on </srv/project-mpe/docutils-ext/var/test-rst.13.table.rst>
-
----  
-
-+++  
-
-@@ -2,8 +2,7 @@
-
-     <comment xml:space="preserve">
-         XXX: not supported
-          FIXME: should support embed/whitespace preserved literal block
--        
--        ====== ========
-+          ====== ========
-         Simple Table
-         ------ --------
-         001    AAA
-
-======================================================================
-FAIL: TestRst_13_Table2; Lossy doctree comparison; Writer 'rst-mpe'
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 252, in runTest
-    self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 157, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 234, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
- on </srv/project-mpe/docutils-ext/var/test-rst.13.table-2.rst>
-
----  
-
-+++  
-
-@@ -2,8 +2,7 @@
-
-     <comment xml:space="preserve">
-         XXX: not supported
-          FIXME: should support embed/whitespace preserved literal block
--        
--        ================= ===================== =============== ===================
-+          ================= ===================== =============== ===================
-         Testing more      complex               values          in tables
-         ----------------- --------------------- --------------- -------------------
-         .. comments
-@@ -14,8 +13,6 @@
-
-         * item 1
-         * item 2          Not sure how to keep
-                           lists in one cell
--        
--                          .. rubric:: test
--        
--        ================= ===================== =============== ===================
-+                            .. rubric:: test
-+          ================= ===================== =============== ===================
- 
-
-======================================================================
-FAIL: TestRst_13_Table3; Lossy doctree comparison; Writer 'rst-mpe'
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 252, in runTest
-    self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 157, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 234, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
- on </srv/project-mpe/docutils-ext/var/test-rst.13.table-3.rst>
-
----  
-
-+++  
-
-@@ -2,8 +2,7 @@
-
-     <comment xml:space="preserve">
-         XXX: not supported
-          FIXME: should support embed/whitespace preserved literal block
--        
--        =====  =====  ======
-+          =====  =====  ======
-            Inputs     Output
-         ------------  ------
-           A      B    A or B
-
-======================================================================
-FAIL: TestRst_13_Table4; Lossy doctree comparison; Writer 'rst-mpe'
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 252, in runTest
-    self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 157, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 234, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
- on </srv/project-mpe/docutils-ext/var/test-rst.13.table-4.rst>
-
----  
-
-+++  
-
-@@ -2,8 +2,7 @@
-
-     <comment xml:space="preserve">
-         XXX: not supported
-          FIXME: should support embed/whitespace preserved literal block
--        
--        +------------+------------+-----------+
-+          +------------+------------+-----------+
-         | Header 1   | Header 2   | Header 3  |
-         +============+============+===========+
-         | body row 1 | column 2   | column 3  |
-
-======================================================================
-FAIL: TestRst_17_Tables1; Lossy doctree comparison; Writer 'rst-mpe'
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 252, in runTest
-    self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 157, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 234, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
- on </srv/project-mpe/docutils-ext/var/test-rst.17.tables-1.rst>
-
----  
-
-+++  
-
-@@ -2,8 +2,7 @@
-
-     <comment xml:space="preserve">
-         XXX: not supported
-          FIXME: should support embed/whitespace preserved literal block
--        
--        ===== =====
-+          ===== =====
-         d1    d2
-         d3    d4
-         ===== =====
-
-======================================================================
-FAIL: TestRst_17_Tables2; Lossy doctree comparison; Writer 'rst-mpe'
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 252, in runTest
-    self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 157, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 234, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
- on </srv/project-mpe/docutils-ext/var/test-rst.17.tables-2.rst>
-
----  
-
-+++  
-
-@@ -1,12 +1,10 @@
-
- <document source="/srv/project-mpe/docutils-ext/var/test-rst.17.tables-2.rst">
-     <comment xml:space="preserve">
-         XXX: not supported
--         FIXME: should support embed/whitespace preserved literal block
--        
--        .. table:: Caption/Summary
--        
--          ===== =====
--          d1    d2
--          d3    d4
--          ===== =====
-+        FIXME: should support embed/whitespace preserved literal block
-+         .. table:: Caption/Summary
-+           ===== =====
-+         d1    d2
-+         d3    d4
-+         ===== =====
- 
-
-======================================================================
-FAIL: TestRst_1_Document2; Lossy doctree comparison; Writer 'rst-mpe'
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 252, in runTest
-    self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 157, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 234, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
- on </srv/project-mpe/docutils-ext/var/test-rst.1.document-2.rst>
-
----  
-
-+++  
-
-@@ -3,11 +3,4 @@
-
-         Test Document
-     <paragraph>
-         Some paragraph.
--    <section ids="section" names="section">
--        <title>
--            Section
--        <paragraph>
--            Some paragraph.
--        <comment xml:space="preserve">
--            comment
- 
-
-======================================================================
-FAIL: TestRst_1_Document3; Lossy doctree comparison; Writer 'rst-mpe'
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 252, in runTest
-    self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 157, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 234, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
- on </srv/project-mpe/docutils-ext/var/test-rst.1.document-3.rst>
-
----  
-
-+++  
-
-@@ -5,68 +5,4 @@
-
-         Some paragraph.
-     <comment xml:space="preserve">
-         Comment
--    <section ids="section" names="section">
--        <title>
--            Section
--        <paragraph>
--            Some paragraph.
--        <field_list>
--            <field>
--                <field_name>
--                    field
--                <field_body>
--                    <paragraph>
--                        value
--            <field>
--                <field_name>
--                    field
--                <field_body>
--                    <paragraph>
--                        value
--        <enumerated_list enumtype="arabic" prefix="" suffix=".">
--            <list_item>
--                <paragraph>
--                    List item 1
--            <list_item>
--                <paragraph>
--                    List item 2
--        <enumerated_list enumtype="loweralpha" prefix="" suffix=".">
--            <list_item>
--                <paragraph>
--                    List item a.
--            <list_item>
--                <paragraph>
--                    List item b.
--        <enumerated_list enumtype="upperalpha" prefix="" suffix=".">
--            <list_item>
--                <paragraph>
--                    List item A.
--            <list_item>
--                <paragraph>
--                    List item B.
--        <enumerated_list enumtype="upperroman" prefix="" suffix=".">
--            <list_item>
--                <paragraph>
--                    List item I.
--            <list_item>
--                <paragraph>
--                    List item II.
--        <definition_list>
--            <definition_list_item>
--                <term>
--                    Term
--                <definition>
--                    <paragraph>
--                        Definition
--            <definition_list_item>
--                <term>
--                    Term
--                <definition>
--                    <paragraph>
--                        Definition
--        <section ids="subsection" names="subsection">
--            <title>
--                Subsection
--            <paragraph>
--                Some paragraph in 3.1
- 
-
-======================================================================
-FAIL: TestRst_1_Document4; Lossy doctree comparison; Writer 'rst-mpe'
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 252, in runTest
-    self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 157, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 234, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
- on </srv/project-mpe/docutils-ext/var/test-rst.1.document-4.rst>
-
----  
-
-+++  
-
-@@ -82,14 +82,4 @@
-
-                                     <field_body>
-                                         <paragraph>
-                                             Field-body
--    <section ids="section" names="section">
--        <title>
--            Section
--        <paragraph>
--            Some paragraph in 4.1
--    <section ids="section-2" names="section\ 2">
--        <title>
--            Section 2
--        <paragraph>
--            Section at same level.
- 
-
+......2013-11-19 09:53:57,702 - dotmpe.du.builder - INFO - ReReading <id>
+.2013-11-19 09:53:57,703 - dotmpe.du.builder - DEBUG - Building '/srv/project-mpe/docutils-ext/examples/form.rst'.
+.........................FF.....F.F......FFFFF.............
 ======================================================================
 FAIL: TestRst_1_Document5_FullRstDemo; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
@@ -407,14 +9,35 @@ Traceback (most recent call last):
     self._test_writer(writer_class(), lossy=lossy)
   File "/srv/project-mpe/docutils-ext/test/util.py", line 157, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 227, in __test_writer
-    warnings)
-AssertionError: Error re-parsing generated file
- on </srv/project-mpe/docutils-ext/var/test-rst.1.document-5.full-rst-demo.rst>
-
-/srv/project-mpe/docutils-ext/var/test-rst.1.document-5.full-rst-demo.rst:10: (WARNING/2) Bibliographic field "Authors" incompatible with extraction: it must contain either a single paragraph (with authors separated by one of ";,"), multiple paragraphs (one per author), or a bullet list with one paragraph (one author) per item.
-/srv/project-mpe/docutils-ext/var/test-rst.1.document-5.full-rst-demo.rst:: (ERROR/3) Unknown target name: "goodger@python.org".
-
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 203, in __test_writer
+    writer=writer)['whole']#writer_name='dotmpe-rst')
+  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 448, in publish_parts
+    enable_exit_status=enable_exit_status)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 662, in publish_programmatically
+    output = pub.publish(enable_exit_status=enable_exit_status)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 219, in publish
+    output = self.writer.write(self.document, self.destination)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/writers/__init__.py", line 80, in write
+    self.translate()
+  File "/srv/project-mpe/docutils-ext/dotmpe/du/ext/writer/rst.py", line 42, in translate
+    self.document.walkabout(visitor)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 174, in walkabout
+    if child.walkabout(visitor):
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 174, in walkabout
+    if child.walkabout(visitor):
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 174, in walkabout
+    if child.walkabout(visitor):
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 174, in walkabout
+    if child.walkabout(visitor):
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 174, in walkabout
+    if child.walkabout(visitor):
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 166, in walkabout
+    visitor.dispatch_visit(self)
+  File "/srv/project-mpe/docutils-ext/lib/docutils/nodes.py", line 1882, in dispatch_visit
+    return method(node)
+  File "/srv/project-mpe/docutils-ext/dotmpe/du/ext/writer/rst.py", line 510, in visit_subtitle
+    assert not in_sidebar, "TODO"
+AssertionError: TODO
 
 ======================================================================
 FAIL: TestRst_1_Document6; Lossy doctree comparison; Writer 'rst-mpe'
@@ -431,64 +54,6 @@ AssertionError: Error re-parsing generated file
 
 /srv/project-mpe/docutils-ext/var/test-rst.1.document-6.rst:8: (WARNING/2) Bibliographic field "Authors" incompatible with extraction: it must contain either a single paragraph (with authors separated by one of ";,"), multiple paragraphs (one per author), or a bullet list with one paragraph (one author) per item.
 /srv/project-mpe/docutils-ext/var/test-rst.1.document-6.rst:: (ERROR/3) Unknown target name: "goodger@python.org".
-
-
-======================================================================
-FAIL: TestRst_1_Document7; Lossy doctree comparison; Writer 'rst-mpe'
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 252, in runTest
-    self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 157, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 234, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
- on </srv/project-mpe/docutils-ext/var/test-rst.1.document-7.rst>
-
----  
-
-+++  
-
-@@ -11,16 +11,12 @@
-
-                 The fanatics going straight forward and openly, the politicians by the surer mode of zigzag.
-         <attribution>
-             Burke.
--    <enumerated_list enumtype="arabic" prefix="" start="2" suffix=".">
--        <list_item>
--            <paragraph>
--                (Arch.) A molding running in a zigzag line; a chevron, or series of chevrons.
--        <list_item>
--            <paragraph>
--                (Fort.) See Boyau. 
--                <footnote_reference auto="1" ids="id1" refid="id2">
--                    1
--    <footnote auto="1" backrefs="id1" ids="id2" names="1">
-+    <paragraph>
-+        2. (Arch.) A molding running in a zigzag line; a chevron, or series of chevrons.
-+        2. (Fort.) See Boyau. 
-+        <footnote_reference ids="id1" refid="id2">
-+            1
-+    <footnote auto="1" ids="id2" names="1">
-         <label>
-             1
-         <paragraph>
-
-======================================================================
-FAIL: TestRst_21_Transition1; Lossy doctree comparison; Writer 'rst-mpe'
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 252, in runTest
-    self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 157, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 227, in __test_writer
-    warnings)
-AssertionError: Error re-parsing generated file
- on </srv/project-mpe/docutils-ext/var/test-rst.21.transition-1.rst>
-
-/srv/project-mpe/docutils-ext/var/test-rst.21.transition-1.rst:5: (ERROR/3) Document may not end with a transition.
 
 
 ======================================================================
@@ -509,43 +74,6 @@ AssertionError: Error re-parsing generated file
 
 
 ======================================================================
-FAIL: TestRst_23_OptionList1; Lossy doctree comparison; Writer 'rst-mpe'
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 252, in runTest
-    self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 157, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 234, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
- on </srv/project-mpe/docutils-ext/var/test-rst.23.option-list-1.rst>
-
----  
-
-+++  
-
-@@ -11,15 +11,13 @@
-
-         --long        options can be long also
-         --input=file  long options can also have
-                       arguments
--        
--        -x, -y, -z    Multiple options are an "option group".
-+          -x, -y, -z    Multiple options are an "option group".
-         -v, --verbose  Usually we list one short & one long option.
-                       If the list of options gets to long, rSt still
-                       parses it.
-         --very-long-option
-                       The description can also start on the next line.
--        
--        -1 file, --one=file, --two file
-+          -1 file, --one=file, --two file
-                       Multiple options with arguments.
-         /V            DOS/VMS-style options too
-     <comment xml:space="preserve">
-
-======================================================================
 FAIL: TestRst_24_References; Lossy doctree comparison; Writer 'rst-mpe'
 ----------------------------------------------------------------------
 Traceback (most recent call last):
@@ -558,73 +86,35 @@ Traceback (most recent call last):
 AssertionError: Error re-parsing generated file
  on </srv/project-mpe/docutils-ext/var/test-rst.24.references.rst>
 
-/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:23: (WARNING/2) malformed hyperlink target.
-/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:42: (WARNING/2) malformed hyperlink target.
-/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:48: (WARNING/2) Explicit markup ends without a blank line; unexpected unindent.
-/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:53: (WARNING/2) malformed hyperlink target.
-/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:59: (WARNING/2) malformed hyperlink target.
-/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:65: (WARNING/2) malformed hyperlink target.
-/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:67: (WARNING/2) malformed hyperlink target.
-/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:71: (WARNING/2) malformed hyperlink target.
-/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:73: (WARNING/2) malformed hyperlink target.
-/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:81: (WARNING/2) malformed hyperlink target.
-/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:: (ERROR/3) Anonymous hyperlink mismatch: 1 references but 0 targets.
+/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:20: (WARNING/2) malformed hyperlink target.
+/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:22: (WARNING/2) Inline target start-string without end-string.
+/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:31: (WARNING/2) Inline interpreted text or phrase reference start-string without end-string.
+/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:50: (WARNING/2) Inline interpreted text or phrase reference start-string without end-string.
+/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:58: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:65: (WARNING/2) Inline interpreted text or phrase reference start-string without end-string.
+/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:71: (WARNING/2) Inline interpreted text or phrase reference start-string without end-string.
+/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:77: (WARNING/2) malformed hyperlink target.
+/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:79: (ERROR/3) Content block expected for the "replace" directive; none found.
+/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:79: (WARNING/2) Substitution definition "EXAMPLE" empty or invalid.
+
+.. |EXAMPLE| replace::
+
+/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:84: (WARNING/2) Inline interpreted text or phrase reference start-string without end-string.
+/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:88: (WARNING/2) Inline interpreted text or phrase reference start-string without end-string.
+/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:96: (WARNING/2) Inline interpreted text or phrase reference start-string without end-string.
+/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:100: (WARNING/2) Inline interpreted text or phrase reference start-string without end-string.
+/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:116: (WARNING/2) Inline interpreted text or phrase reference start-string without end-string.
+/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:122: (ERROR/3) Anonymous hyperlink mismatch: 0 references but 1 targets.
 See "backrefs" attribute for IDs.
-/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:75: (ERROR/3) Indirect hyperlink target "example-name-8" (id="example-name-8") refers to target "example-name-4", which does not exist.
-/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:77: (ERROR/3) Indirect hyperlink target "example-name-9" (id="example-name-9") refers to target "example-name-3", which does not exist.
-/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:79: (ERROR/3) Indirect hyperlink target "example-name-10" (id="example-name-10") refers to target "another-target", which does not exist.
-/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:83: (ERROR/3) Indirect hyperlink target "example-name-11" (id="example-name-11") refers to target "another-target", which does not exist.
-/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:31: (ERROR/3) Unknown target name: "example-name-5".
-/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:31: (ERROR/3) Unknown target name: "example-name-5".
+/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:3: (ERROR/3) Unknown target name: "example-ref-name-1".
+/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:39: (ERROR/3) Unknown target name: "example-name-5".
+/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:39: (ERROR/3) Unknown target name: "example-name-5".
+/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:39: (ERROR/3) Unknown target name: "example-name-5".
+/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:39: (ERROR/3) Unknown target name: "python".
+/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:52: (ERROR/3) Unknown target name: "test".
+/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:52: (ERROR/3) Unknown target name: "refs".
+/srv/project-mpe/docutils-ext/var/test-rst.24.references.rst:57: (ERROR/3) Unknown target name: "refs".
 
-
-======================================================================
-FAIL: TestRst_2_Sections; Lossy doctree comparison; Writer 'rst-mpe'
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 252, in runTest
-    self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 157, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 210, in __test_writer
-    ("on <%s>" % self.DOC_FILE ))
-AssertionError: Empty generated file. on </srv/project-mpe/docutils-ext/var/test-rst.2.sections.rst>
-
-======================================================================
-FAIL: TestRst_2_Title1; Lossy doctree comparison; Writer 'rst-mpe'
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 252, in runTest
-    self._test_writer(writer_class(), lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 157, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 234, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
- on </srv/project-mpe/docutils-ext/var/test-rst.2.title-1.rst>
-
----  
-
-+++  
-
-@@ -3,16 +3,4 @@
-
-         T. 1
-     <subtitle ids="t-1s" names="t.\ 1s">
-         T. 1s
--    <section ids="t-2" names="t.\ 2">
--        <title>
--            T. 2
--        <section ids="t-3" names="t.\ 3">
--            <title>
--                T. 3
--            <section ids="t-4" names="t.\ 4">
--                <title>
--                    T. 4
--                <section ids="t-5" names="t.\ 5">
--                    <title>
--                        T. 5
- 
 
 ======================================================================
 FAIL: TestRst_5_Inline3; Lossy doctree comparison; Writer 'rst-mpe'
@@ -639,9 +129,9 @@ Traceback (most recent call last):
 AssertionError: Error re-parsing generated file
  on </srv/project-mpe/docutils-ext/var/test-rst.5.inline-3.rst>
 
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-3.rst:9: (ERROR/3) Unknown interpreted text role "role".
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-3.rst:11: (ERROR/3) Unknown interpreted text role "role".
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-3.rst:13: (ERROR/3) Unknown interpreted text role "role".
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-3.rst:10: (ERROR/3) Unknown interpreted text role "role".
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-3.rst:12: (ERROR/3) Unknown interpreted text role "role".
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-3.rst:14: (ERROR/3) Unknown interpreted text role "role".
 
 
 ======================================================================
@@ -658,17 +148,20 @@ AssertionError: Error re-parsing generated file
  on </srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst>
 
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:13: (WARNING/2) Explicit markup ends without a blank line; unexpected unindent.
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:16: (WARNING/2) Block quote ends without a blank line; unexpected unindent.
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:40: (WARNING/2) malformed hyperlink target.
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:42: (ERROR/3) Content block expected for the "replace" directive; none found.
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:42: (WARNING/2) Substitution definition "EXAMPLE" empty or invalid.
+
+.. |EXAMPLE| replace::
+
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:3: (ERROR/3) Too many symbol footnote references: only 0 corresponding footnotes available.
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:3: (ERROR/3) Unknown target name: "python".
 /srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:3: (ERROR/3) Unknown target name: "example".
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:3: (ERROR/3) Unknown target name: "python web site".
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:3: (ERROR/3) Unknown target name: "1".
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:3: (ERROR/3) Unknown target name: "3".
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:3: (ERROR/3) Unknown target name: "2".
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:3: (ERROR/3) Unknown target name: "cit2002".
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:13: (ERROR/3) Unknown target name: "targets".
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:17: (ERROR/3) Unknown target name: "pep 287".
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:17: (ERROR/3) Unknown target name: "rfc 2822".
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:3: (ERROR/3) Unknown target name: "site".
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:19: (ERROR/3) Unknown target name: "pep 287".
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:19: (ERROR/3) Unknown target name: "rfc 2822".
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-4.rst:58: (ERROR/3) Unknown target name: "label".
 
 
 ======================================================================
@@ -684,11 +177,12 @@ Traceback (most recent call last):
 AssertionError: Error re-parsing generated file
  on </srv/project-mpe/docutils-ext/var/test-rst.5.inline-5.rst>
 
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-5.rst:5: (WARNING/2) Explicit markup ends without a blank line; unexpected unindent.
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-5.rst:7: (WARNING/2) malformed hyperlink target.
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-5.rst:: (ERROR/3) Anonymous hyperlink mismatch: 1 references but 0 targets.
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-5.rst:10: (WARNING/2) Inline interpreted text or phrase reference start-string without end-string.
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-5.rst:12: (ERROR/3) Anonymous hyperlink mismatch: 0 references but 1 targets.
 See "backrefs" attribute for IDs.
-/srv/project-mpe/docutils-ext/var/test-rst.5.inline-5.rst:5: (ERROR/3) Unknown target name: "anonymous inline reference".
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-5.rst:1: (ERROR/3) Unknown target name: "reference".
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-5.rst:1: (ERROR/3) Unknown target name: "reference".
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-5.rst:6: (ERROR/3) Unknown target name: "reference".
 
 
 ======================================================================
@@ -713,29 +207,17 @@ Traceback (most recent call last):
     self._test_writer(writer_class(), lossy=lossy)
   File "/srv/project-mpe/docutils-ext/test/util.py", line 157, in _test_writer
     self.__test_writer(writer, lossy=lossy)
-  File "/srv/project-mpe/docutils-ext/test/util.py", line 234, in __test_writer
-    diff )
-AssertionError: pxml tree mismatch 
+  File "/srv/project-mpe/docutils-ext/test/util.py", line 227, in __test_writer
+    warnings)
+AssertionError: Error re-parsing generated file
  on </srv/project-mpe/docutils-ext/var/test-rst.5.inline-7.rst>
 
----  
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-7.rst:6: (WARNING/2) malformed hyperlink target.
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-7.rst:9: (WARNING/2) Explicit markup ends without a blank line; unexpected unindent.
+/srv/project-mpe/docutils-ext/var/test-rst.5.inline-7.rst:2: (ERROR/3) Unknown target name: "term".
 
-+++  
-
-@@ -9,9 +9,7 @@
-
-                     test
-                 <target ids="a-ref-in-term" names="a\ ref\ in\ term" refuri="trgt1">
-                 <paragraph>
--                    <target ids="target" names="target">
--                        target
--                    
-+                    target
-                     <reference name="reference" refuri="#test">
-                         reference
-                     
 
 ----------------------------------------------------------------------
-Ran 66 tests in 6.417s
+Ran 66 tests in 6.332s
 
-FAILED (failures=25)
+FAILED (failures=9)
