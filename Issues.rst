@@ -5,3 +5,5 @@
 2013-10-31 rst-writer
   - Literal blocks come out as parsed literals?
   - Problem with unicode bomb? Leaving for now.
+2013-10-19
+  - Full rST demo still has some encoding errors.

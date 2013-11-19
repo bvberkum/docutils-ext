@@ -20,6 +20,7 @@
 - `A short overview of Du   <docutils-internals.rst>`_
 - `reStructuredText cheatsheet <sheet/du.rst>`_ a cheatsheet that could use some more cheats.
 - `Other uses of Du/rSt     <third-party.rst>`__
+- `of Du/rSt     <third-party.rst>`__
 
 ::
 

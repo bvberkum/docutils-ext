@@ -1,4 +1,5 @@
 :created: 2011-01-12
+:updated: 2013-11-19
 :description: 
   reStructuredText has a construct to write meta elements from flat lists.
   But there is not a way to explicitly write out complete links, or to specify
@@ -11,27 +12,23 @@
 
 Links are always made up of two different endpoints described at different locations, 
 except in the case of anonymous links, which are single inline constructs but
-which still will have a target point.
+which still will have a target point. I think about it as a blank node in a
+network graph but I should check rST references/targets out further.
 
 In HTML it is possible to provide for link descriptions in the document header
 (but which often are not granted any real estate by the browser though).
 Nevertheless, these are *essential* for writing Web pages.
 
-So whatever the feelings about HTML or the use for such a structured in output formats other than HTML, 
-I personally believe it is a usefull and on the Web perhaps even underused feature.
+So whatever the feelings about HTML or the use for such a structure in output formats other than HTML, I personally believe it is a usefull and on the Web perhaps even underused feature.
 At the very least, without it the following is impossible:
 
 - specifying the style document to be used with the current document.
 - specifying the current document as a node in a sequence or graph. 
   E.g. to link to the owner or to provide previous/next metadata.
 
-Thou the latter is possible through anchors and other elements in concord with microformats to some extent.
+Though the latter is to some extent possible through anchors and other elements, iow. falling back to (X)HTML in concord with microformats.
 
-Furthermore, reStructuredText does not have a way to specifiy the relations expressed by a reference to a target.
-Within Docutils, all links are generic inline references or of a few other types as discussed in this document.
-
-I believe there is room in reStructuredText for a directive that attempts to alleviate these issues.
-Lets proceed with defining such an directive.
+I believe a link element is needed, but perhaps more so as a sort of plumbing for new transforms or markup directives.
 
 Links in HTML
 --------------
@@ -46,22 +43,32 @@ At its simplest form, the functionality offered by HTML is expressed in::
      :rel: stylesheet
 
 The relation (``rel`` attribute) is available for anchors (``<a/>``) in HTML too.
-Also in HTML, ``link`` definitions are made in the document's header, but not in any way tied
-to the anchors within the document.
+But in HTML, ``link`` definitions are made in the document's header, and not in any way tied to the anchors within the document.
 Perhaps there is some microformat that extends on that, I don't know.
 
-Without the ``rev`` attribute the links are at the origin point of the relation.
 HTML links are directed.
+Without the ``rev`` attribute the links are at the origin point of the relation,
+but can or should sometimes be stored at the destination point.
+Lets introduce storage point and reference point to indicate link endpoints
+based on storage regardless of their direction.
 
-The target point may be an anchor if the URIRef includes a fragment identifier.
-There is not a ready, obvious way to relate the origin point to an anchor.
-In such a scenario in HTML an anchor definition is normally used instead of a link definition.
+Because HTML introduces a peculiarity. 
+The reference-poin may be some kind of HTML anchor, because the URI-ref may include a fragment identifier.
+Addressing document substructures using URI-ref 'hash' or 'fragment' identifiers
+is not really a well-defined practice.
+For XML in general W3C has settled on matching element ID attributes with this
+URI part and so containers in the document can be addressable.
 
-A microformat may step in here.
+Again a microformat may step in.
 The goal would be to have multiple origin points and target points in two
-distinct sets from and to, and a third one to denote type. 
-(so maybe settle on simple double endpoint here and let some new URL format do
-impossible things.)
+distinct sets ``from`` and ``to``, and a third one of such a set to denote type. 
+Perhaps a fourth ``homedoc`` to indicate the storage location.
+That would be the full Xanadu 88.1 spec I think for links and their end-sets.
+
+Being pragmatically and looking at the web and past semweb efforts, a single
+span endset may just suffice.
+
+In any case a new URI format for such a beast would be needed?
 
 
 reST

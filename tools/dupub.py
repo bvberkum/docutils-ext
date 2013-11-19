@@ -19,10 +19,13 @@ from dotmpe.du import frontend, comp
 import dotmpe.du.ext # register extensions
 
 
-script_names = [sys.argv[0]]#os.path.basename(sys.argv[0]).split('-')
+name = sys.argv[0]
+if os.sep in name:
+    name = os.path.basename(name)
+script_names = [name]
 
-if '2' in script_names[0]:
-    source_format, target_format = script_names.pop(0).split('2')
+assert '2' in name
+source_format, target_format = name.split('2')
 
 reader_name = 'standalone'
 if source_format == 'mime':

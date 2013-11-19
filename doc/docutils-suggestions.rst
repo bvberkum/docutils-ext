@@ -1,6 +1,8 @@
 Du suggestions
 --------------
 The good, the bad, the ugly. 
+Wannahave dump.
+Things.
 
 
 - Would be nice to have all errors in (XHTML) output accumulated into
@@ -13,6 +15,8 @@ The good, the bad, the ugly.
   perhaps I've been looking at to horrible publisher errors, need to reproduce.
 
 - MD5 et. al. check-sum proposal.
+  What to checksum, need some superstructure like the MIME parser/reader?
+  What about modelines in rSt comments.
 
 - Breadcrumb paths proposal.
 
