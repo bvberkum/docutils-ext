@@ -1,4 +1,5 @@
-......2013-11-17 21:23:41,002 - dotmpe.du.builder - DEBUG - Building '/srv/project-mpe/docutils-ext/examples/form.rst'.
+......2013-11-19 08:12:37,235 - dotmpe.du.builder - INFO - ReReading <id>
+.2013-11-19 08:12:37,250 - dotmpe.du.builder - DEBUG - Building '/srv/project-mpe/docutils-ext/examples/form.rst'.
 Usage
 =====
   main.py [options]
@@ -11,7 +12,7 @@ ERROR: test_1 (form.FormTest)
 Traceback (most recent call last):
   File "/srv/project-mpe/docutils-ext/test/form.py", line 166, in test_1
     output, document = builder.build(source, source_id)
-  File "/srv/project-mpe/docutils-ext/dotmpe/du/builder/__init__.py", line 126, in build
+  File "/srv/project-mpe/docutils-ext/dotmpe/du/builder/__init__.py", line 129, in build
     self.process_command_line() # replace settings for initial components
   File "/srv/project-mpe/docutils-ext/lib/docutils/core.py", line 161, in process_command_line
     self.settings = option_parser.parse_args(argv)
@@ -244,6 +245,6 @@ AssertionError: Error re-parsing generated file
 
 
 ----------------------------------------------------------------------
-Ran 63 tests in 4.325s
+Ran 64 tests in 4.233s
 
 FAILED (failures=9, errors=1)

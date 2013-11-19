@@ -93,7 +93,6 @@ types and some features. Implemented::
 XXX: Should match fields to proper id/name during parse or read. Requires some DB indices.
 TODO: Get some tab/csv ouput writer going.
 TODO: Scanning and denormalization of nested fields into rows for output.
-
 """
 import logging, types
 from docutils import nodes, utils, transforms

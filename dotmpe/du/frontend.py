@@ -35,9 +35,10 @@ def cli_process(argv, builder=None, builder_name='mpe', description=''):
                 "must be existing local path for now (not '%s %s')" % (os.getcwd(),
                 source)
         source_id = source
-        # XXX: need options parsed here
-        output, document = builder.build(open(source_id).read(), source_id, overrides={})
-        builder.process(document, source_id, overrides={}, pickle_receiver=None)
+        # XXX: need options parsed here too
+        document = builder.build(open(source_id).read(), source_id, overrides={})
+        builder.process(document, source_id, 
+                overrides={}, pickle_receiver=None)
         # TODO render messages as reST doc
         for msg_list in document.parse_messages, document.transform_messages:
             for msg in msg_list:
