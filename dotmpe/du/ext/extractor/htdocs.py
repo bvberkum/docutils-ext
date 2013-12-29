@@ -7,6 +7,7 @@ from nabu import extract
 from docutils import nodes
 #from dotmpe.du.ext import extractor
 from script_mpe import htdocs, taxus
+from script_mpe.taxus.util import get_session
 
 
 
@@ -55,7 +56,7 @@ class HtdocsStorage(extract.ExtractorStorage):
 
     def __init__(self, dbref='sqlite', initdb=False):
         print 'HtdocsStorage', 'init', dbref, initdb
-        self.sa = taxus.get_session(dbref, initdb)
+        self.sa = get_session(dbref, initdb)
 
     def store(self, source_id, *args):
         print 'store', source_id, args
@@ -93,8 +94,8 @@ class TinkerVisitor(nodes.SparseNodeVisitor):
         print 'visit_term', node.astext()
         terms = node.astext().split()
         for i, term in enumerate(terms):
-            matches = self.store.sa.query(taxus.Description)\
-                    .filter(taxus.Description.name==term).all()
+            matches = self.store.sa.query(taxus.semweb.Description)\
+                    .filter(taxus.semweb.Description.name==term).all()
             if not matches:
                 description = taxus.Description(
                         name=term, date_added=now())

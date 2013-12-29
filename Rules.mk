@@ -49,7 +49,7 @@ CLN 				+= \
 #	@-find ./ -iname "*.pyc" | while read c; do rm "$$c"; done;
 
 # XXX: convert this to test-python, see e.g. scrow
-test:: test-validate-files
+test::
 	@-test_listing=test/main.list;\
 		test_mods=$$(cat $$test_listing|grep -v '^#'|grep -v '^$$');\
 		test_listing=$$test_listing coverage run test/main.py $$test_mods \
@@ -77,12 +77,13 @@ test-form::
 TEST_RST_$d      := $(wildcard var/test-rst.*.rst)
 TEST_RST_XML_$d  := $(TEST_RST_$d:%.rst=%.xml)
 
-test-validate-files: $(TEST_RST_XML_$d)
+var-testfiles.log: $(TEST_RST_XML_$d)
 	@\
 		$(ll) attention "$@" "All XML files built, removing valid ones. "; \
 		for x in var/*.xml; do echo $$x; stat $$x.*.log > /dev/null 2> /dev/null || rm $$x ; done;
 	@\
 	L=$$(ls var/|grep \.log);\
+	    for l in $$L; do echo $$l >> $@; cat var/$$l >> $@;echo >> $@;done;\
 		[ "$$(echo $$L|wc -w)" -gt 0 ] && { $(ll) Errors "$@" "in testfiles" "$$(echo $$L)"; } || { $(ll) OK "$@"; }
 
 var/%.xml: var/%.rst

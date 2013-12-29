@@ -22,13 +22,17 @@ class DotmpeDuExtBuilderTest(unittest.TestCase):
         self.assertRaises( AssertionError, builder.prepare_source, None, None)
         self.assertRaises( AssertionError, builder.prepare_source, '', None)
         self.assertRaises( AssertionError, builder.prepare_source, '', '')
+
         clss, prsr, rdr, sttngs = builder.prepare_source(SOURCE)
         self.assertEquals(builder.source_class, docutils.io.StringInput)
+
         clss, prsr, rdr, sttngs = builder.prepare_source(SOURCE, "<id>")
         self.assertEquals(builder.source_class, docutils.io.StringInput)
         self.assertEquals(builder.source_id, "<id>")
+
         self.assertRaises( AssertionError, builder.prepare_source, 
                 docutils.nodes.document("", ""))
+
         clss, prsr, rdr, sttngs = builder.prepare_source(
                 docutils.nodes.document("", ""), "<id>")
         self.assertEquals(builder.source_class, docutils.io.DocTreeInput)

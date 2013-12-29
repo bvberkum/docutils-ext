@@ -14,10 +14,12 @@ from dotmpe.du.ext.writer import \
         formresults, html, \
         rst as rst_writer, pydoc, latex2e, xhtml, \
         htmlform
+from dotmpe.du.builder import Builder
+import dotmpe.du.builder.dotmpe_v5
+import dotmpe.du.builder.htdocs
 
 
-
-class DuComponentLoaderMokeyPatchTest(unittest.TestCase):
+class DuComponentLoaderMonkeyPatchTest(unittest.TestCase):
 
     reader = (
     	    ( mpe.Reader, ('mpe', 'mpe-mpe',) ),
@@ -58,26 +60,44 @@ class DuComponentLoaderMokeyPatchTest(unittest.TestCase):
 
 class DotmpeComponentLoaderTest(unittest.TestCase):
 
+    """
+    Test dotmpe.du.comp
+    """
+
     def test_2_get_reader_class(self):
-        for Reader, names in DuComponentLoaderMokeyPatchTest.reader:
+        for Reader, names in DuComponentLoaderMonkeyPatchTest.reader:
             for name in names:
             	self.assert_( issubclass(Reader, docutils.readers.Reader), 
             	        Reader )
                 self.assertEquals( Reader, comp.get_reader_class(name) )
 
     def test_2_get_parser_class(self):
-        for Parser, names in DuComponentLoaderMokeyPatchTest.parser:
+        for Parser, names in DuComponentLoaderMonkeyPatchTest.parser:
             for name in names:
             	self.assert_( issubclass(Parser, docutils.parsers.Parser),
             	        Parser )
                 self.assertEquals( Parser, comp.get_parser_class(name) )
 
     def test_3_get_writer_class(self):
-        for Writer, names in DuComponentLoaderMokeyPatchTest.parser:
+        for Writer, names in DuComponentLoaderMonkeyPatchTest.writer:
             for name in names:
             	self.assert_( issubclass(Writer, docutils.writers.Writer),
             	        Writer )
                 self.assertEquals( Writer, comp.get_writer_class(name) )
+
+    builder = (
+            (dotmpe.du.builder.htdocs.Builder, ['dotmpe.du.builder.htdocs']),
+            (dotmpe.du.builder.dotmpe_v5.Builder, ['dotmpe.du.builder.dotmpe_v5'])
+        )
+    def test_4_get_builder_class(self):
+        for Builder, names in self.builder:
+            for name in names:
+                self.assertEquals(
+                        dotmpe.du.comp.get_builder_class(name),
+                        Builder )
+                dotmpe.du.comp.get_builder_class(name)
+            	self.assert_( issubclass(Builder, dotmpe.du.builder.Builder),
+            	        Builder )
 
 if __name__ == '__main__':
     unittest.main()

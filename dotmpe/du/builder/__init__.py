@@ -199,7 +199,9 @@ class Builder(SettingsSpec, Publisher):
                     xstore = xstore(*args, **kwds)
                 except TypeError, e:
                     logger.error(e)
-                    raise TypeError, "Error instantiating storage %r,  "  % xstore
+                    raise TypeError,  \
+                            "Error instantiating storage %r with params %r %r"  % (
+                                    xstore, args, kwds)
             self.extractors[idx] = (xcls, xstore)
 
     def process(self, document, source_id='<process>', overrides={},

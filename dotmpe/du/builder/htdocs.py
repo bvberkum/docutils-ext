@@ -12,7 +12,7 @@ class Builder(builder.Builder):
 
     extractor_spec = [
             ('dotmpe.du.ext.extractor.htdocs', ),
-            ]
+        ]
 
     #  xxx: rename to extractor params?
     store_params = {
