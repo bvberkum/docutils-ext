@@ -94,6 +94,9 @@ class TinkerVisitor(nodes.SparseNodeVisitor):
         print 'visit_term', node.astext()
         terms = node.astext().split()
         for i, term in enumerate(terms):
+            print i, term
+            continue
+
             matches = self.store.sa.query(taxus.semweb.Description)\
                     .filter(taxus.semweb.Description.name==term).all()
             if not matches:
@@ -109,13 +112,13 @@ class TinkerVisitor(nodes.SparseNodeVisitor):
         # Another routine is needed (in taxus) to clean up unreferenced nodes
 
     def visit_definition(self, node):
-        print 'visit_description'#, node.astext()
+        pass#print 'visit_description'#, node.astext()
 
     def depart_definition(self, node):
-        print 'depart_definition'#, node.astext()
+        pass#print 'depart_definition'#, node.astext()
 
     def visit_list_item(self, node):
-        print 'visit_list_item', node
+        pass#print 'visit_list_item', node
 
 
 Extractor = HtdocsExtractor
