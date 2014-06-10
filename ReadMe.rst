@@ -45,7 +45,7 @@ In progress
 '''''''''''
 - ``dotmpe.du.builder`` has some packages with specific Reader/Parser/Writer
   component configurations, but frontend is undergoing work.
-- Front-end development in `Blue Lines`_.
+- Front-end development in `Blue Lines`_. Simplified frontend for NodeJS.
 - rST rewriter.  
 
 ToDo
