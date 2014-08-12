@@ -1,12 +1,25 @@
 """
 .mpe htdocs extractor
+
+dev phase
+1. Uniquely identify each section, term or reference in a document.
+2. Interactively identify above nodes; need rSt document in-place rewrite.
+
+Phase I
+-------
+- Work in progress extacting terms. 
+  Eventually many types of nodes could qualify.
+
+XXX can this be generic, or should build different one for note, journal, etc.
+    gonna need lots of path- or context-specific handlers to determine global
+    ID.
 """
 from datetime import datetime 
 
 from nabu import extract
 from docutils import nodes
 #from dotmpe.du.ext import extractor
-from script_mpe import htdocs, taxus
+from script_mpe import taxus
 from script_mpe.taxus.util import get_session
 
 
@@ -20,14 +33,14 @@ class HtdocsExtractor(extract.Extractor):
     settings_spec = (
         'HtDocs Extractor Options',
         None,
-        [(
+        ((
              'todo',
              ['--todo'],
              {
                  'metavar':'PATH', 
 #                 'validator': util.optparse_init_anydbm,
              }
-        ),] 
+        ),) 
     )
 
     default_priority = 500
@@ -54,12 +67,13 @@ class HtdocsExtractor(extract.Extractor):
 
 class HtdocsStorage(extract.ExtractorStorage):
 
-    def __init__(self, dbref='sqlite', initdb=False):
-        print 'HtdocsStorage', 'init', dbref, initdb
+    def __init__(self, dbref=None, initdb=False):
+        assert dbref, self
+        #print 'HtdocsStorage', 'init', dbref, initdb
         self.sa = get_session(dbref, initdb)
 
     def store(self, source_id, *args):
-        print 'store', source_id, args
+        #print 'store', source_id, args
         this.sa.query(source_id)
 
     def clear(self, source_id):
@@ -91,7 +105,7 @@ class TinkerVisitor(nodes.SparseNodeVisitor):
         def now():
             return datetime.now()
 
-        print 'visit_term', node.astext()
+        #print 'visit_term', node.astext()
         terms = node.astext().split()
         for i, term in enumerate(terms):
             print i, term

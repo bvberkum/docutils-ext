@@ -69,6 +69,8 @@ class Extractor(extract.Extractor):
 
     default_priority = 900
 
+# TODO init store here
+
     def apply(self, unid=None, store=None, **kwargs):
         refdb = getattr(self.document.settings, 'reference_database', None)
         if refdb == None:

@@ -1,0 +1,15 @@
+#!/usr/bin/env mpe-sitefile
+#
+# Generic options
+options:
+    store: 
+        - 'sitedir:build/site/'
+        - 'sitefile:'
+        - 'sitestore:build/site.sqlite3'
+    extractors:
+    transforms:
+
+Issues:
+ReadMe:
+
+# vim:ft=yaml:

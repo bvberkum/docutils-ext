@@ -836,3 +836,7 @@ def get_log(name, level=logging.DEBUG, stdout=True, stdout_level=logging.DEBUG,
         logger.addHandler(ch)
     return logger 
 
+
+class DatabaseConnectionError(Exception):
+    pass
+

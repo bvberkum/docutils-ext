@@ -24,31 +24,77 @@ from dotmpe.du.ext.parser import Inliner
 
 
 def cli_process(argv, builder=None, builder_name='mpe', description=''):
+
+    """
+    - Load builder for given name or use provided instance.
+
+    Make one or more invocations to process for given source files,
+    process will run all extractors of the given builder.
+
+    TODO:
+        CLI arguments for subsequent calls are separated by '--'.
+        Extractors are initialized only once (ie. using initial options only).
+        Settings are updated from additional options if provided.
+        Ofcourse all other components should be reusable and/or reset appropiately.
+    """
+
     if not builder:
         Builder = comp.get_builder_class(builder_name, class_name='Builder')
         builder = Builder()
 
-    for source in argv:
-        if source.startswith('-'):
-            continue
-        assert os.path.exists(source), "source description "\
-                "must be existing local path for now (not '%s %s')" % (os.getcwd(),
-                source)
-        source_id = source
-        # XXX: need options parsed here too
-        #document = builder.build(open(source_id).read(), source_id, overrides={})
-        #builder.process(document, source_id, 
-        #        overrides={}, pickle_receiver=None)
-        source = open(source_id)
-        document = builder.build(source, source_id, overrides={})
-        builder.prepare(**builder.store_params)
-        builder.process(document, source_id, overrides={}, pickle_receiver=None)
-        # TODO render messages as reST doc
-        for msg_list in document.parse_messages, document.transform_messages:
-            for msg in msg_list:
-                #print type(msg), dir(msg)
-                #print msg.asdom()
-                print msg.astext()
+    builder.prepare_initial_components()
+
+    # Rest deals with argv handling and defers to run_process (tmp)
+
+    if not argv:
+        raise Exception("Arguments expected (use --help)")
+
+    try:
+        argv_idx = argv.index('--')
+    except ValueError, e:
+        argv_idx = len(argv)
+
+    if argv_idx == 0:
+        # XXX skip initial options?
+        argv = argv[1:]
+        argv_idx = argv.index('--')
+
+    while argv_idx and argv_idx != -1:
+        argv_cur, argv = argv[0:argv_idx], argv[argv_idx+1:]
+
+        _run_process(builder, argv_cur)
+
+        try:
+            argv_idx = argv.index('--')
+        except ValueError, e:
+            argv_idx = -1
+
+
+def _run_process(builder, argv):
+
+    """
+    See cli_process.
+    """
+
+    source = argv[0] # XXX: fixme
+
+    builder.process_command_line(argv=argv) # replace settings for initial components
+
+    source_id = source
+    # XXX: need options parsed here too
+    #document = builder.build(open(source_id).read(), source_id, overrides={})
+    #builder.process(document, source_id, 
+    #        overrides={}, pickle_receiver=None)
+    source = open(source_id)
+    document = builder.build(source, source_id, overrides={})
+    builder.prepare(**builder.store_params)
+    builder.process(document, source_id, overrides={}, pickle_receiver=None)
+    # TODO render messages as reST doc
+    for msg_list in document.parse_messages, document.transform_messages:
+        for msg in msg_list:
+            #print type(msg), dir(msg)
+            #print msg.asdom()
+            print msg.astext()
 
 
 def cli_render(argv, builder_name='mpe'):

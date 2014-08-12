@@ -146,7 +146,7 @@ if action == 'proc':
     # TODO: use source_format
     #frontend.cli_process(
     #        sys.argv[1:], builder_name=module_name)
-    frontend.cli_process(sys.argv[1:], 'dotmpe.du.builder.'+tag)
+    frontend.cli_process(sys.argv[1:], None, 'dotmpe.du.builder.'+tag)
     #frontend.cli_process(
     #        sys.argv[1:], builder_name=module_name)
 

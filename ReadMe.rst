@@ -4,14 +4,10 @@ Docutils extensions
 
 My collection of extensions for Python docutils.
 
-Current focus is on finishing an rST writer component to make it possible to
-rewrite any doctree to reStructuredText format and do all kinds of new stuff
-with docutils.
-
 This document attempts to present an overview of the project tree.
 First a description is given of the command-line utilities in tools/,
 second a list summary is given of the source code, whose main files will be
-documented themselves. Lastly a global log and list of further references is
+documented themselves. Lastly a global log and list of further references 
 follows.
 
 .. contents::
@@ -22,7 +18,7 @@ Utilities
   Can be symlinked to any publisher wanted, ie. rst2latex, etc.  
 
   This should be the main entry point, but ``dupub.py`` (docutils publisher with
-  extensions) may be (more) functional...
+  extensions) may be (more) functional..
 
 Development
 -----------
@@ -151,6 +147,7 @@ rST writer testcases are generated for all files matching ``var/test-*.rst``.
 Dependencies
 ''''''''''''
 ::
+
   pip install coverage
 
 
@@ -193,6 +190,12 @@ Log
     completely check out (``rm var/test-rst*.log && make test-validate-files``).
 
     Should clean/check out ``examples/`` too.
+
+2014 August
+  - Taking up Builder.process again for ~/htdocs.
+    Started working on setup-file too, and considering Sitefile concept.
+
+
 
 .. __: doc/links.rst
 .. _Issues: Issues.rst

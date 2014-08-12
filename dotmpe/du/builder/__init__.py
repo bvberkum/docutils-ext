@@ -85,9 +85,13 @@ class Builder(SettingsSpec, Publisher):
         self.components = (self.parser, self.reader, self)
 
         # XXX: for now, all transforms are linked to the reader and the reader
-        # gets its transforms from there. The extractors will similary depend on
-        # the Reader transforms and settings_specs
+        # gets its transforms from there. 
+        # The extractors could similary depend on the Builder to get its specs
+        # into the parser. at least it makes it work, but it'll be nice to be
+        # able to concatenate several groups
+        
 
+    # XXX docutils.core.Publisher override (no changes, just for ref.)
     def setup_option_parser(self, usage=None, description=None,
                             settings_spec=None, config_section=None,
                             **defaults):
@@ -111,8 +115,13 @@ class Builder(SettingsSpec, Publisher):
         """
         pass
 
-    def prepare(self, argv=None):
-        self.prepare_extractors(**self.store_params)
+    def prepare(self, argv=None, **store_params):
+        """
+        After settings and components are determined, prepare extractors.
+        XXX should prepare reader/parser/writer here too.
+        Source is prepared later, it is reset upon every build.
+        """
+        self.prepare_extractors(**store_params)
 
     def build(self, source, source_id='<build>', overrides={}, cli=False):
         """
@@ -120,7 +129,6 @@ class Builder(SettingsSpec, Publisher):
         TODO: Use Reader, Parser, Transform and Builder for option spec.
         """
         logger.debug("Building %r.", source_id)
-        self.source = source
         source_class, parser, reader, settings = self.prepare_source(source, source_id)
         if not self.writer:
             self.writer = comp.get_writer_class('null')()
@@ -135,7 +143,7 @@ class Builder(SettingsSpec, Publisher):
         assert self.settings or isinstance(self.settings, frontend.Values), self.settings
         self.destination_class = docutils.io.StringOutput
         assert self.reader and self.parser and self.writer
-        assert self.source
+        assert self.source or os.path.exists(self.source_id)
         self.settings.input_encoding = 'utf-8'
         self.settings.halt_level = 0
         self.settings.report_level = 0
@@ -180,14 +188,13 @@ class Builder(SettingsSpec, Publisher):
         logger.debug("Builder prepare_extractors %s." % store_params)
         self.process_messages = u''
         for idx, (xcls, xstore) in enumerate(self.extractors):
-            # initialize extractor
+            # XXX initialize extractor
             #xcls.init_parser(xcls)
             # reinitialize store
-            if type(xstore) != type:
-                if type(xstore) == types.InstanceType:
-                    xstore = xstore.__module__+'.'+xstore.__class__
-#                assert isinstance(xstore, types.ClassType)                    
+            if type(xstore) != type and type(xstore) != types.InstanceType:
+                assert isinstance(xstore, types.ClassType)
                 args, kwds = store_params.get(unicode(xstore), ((),{}))
+
 # XXX: would want to have merged options here, instead of # settings_default_overrides ref!
                 try:
                     args, kwds = parse_params(args, kwds,
@@ -219,9 +226,13 @@ class Builder(SettingsSpec, Publisher):
         document.transformer = transforms.Transformer(document)
         # before extract, remove existing msg.level < reporter.report_level from tree
         #document.transformer.add_transform(universal.FilterMessages, priority=1)
-        # Sanity check
-        assert not document.parse_messages, '\n'.join(map(str,
-            document.parse_messages))
+        # Sanity check assert not document.parse_messages, '\n'.join(map(str, document.parse_messages))
+        if document.parse_messages:
+# print 'Parser messages:', map(str,document.parse_messages)
+            for msg in document.parse_messages:
+                #if msg.get('level') > 2: # 3=ERROR
+                if msg.get('level') > 3: # 4=
+                    assert not msg, msg
         assert not document.transform_messages, '\n'.join(map(str,
             document.transform_messages))
         # Populate with transforms.
@@ -240,8 +251,9 @@ class Builder(SettingsSpec, Publisher):
         # clean doc
         document.transform = document.reporter = document.form_processor = None
         # FIXME: what about when FP needs run during process i.o. build?
-        # what about values from FP then..
-        #print 'Extractor messages:', map(str,document.transform_messages)
+        # what about values from FP then.
+        if document.transform_messages:
+            print 'Transformation messages:', map(str,document.transform_messages)
 
     def render(self, source, source_id='<render>', writer_name=None,
             overrides={}, parts=['whole']):
@@ -290,9 +302,9 @@ class Builder(SettingsSpec, Publisher):
 
     def prepare_source(self, source, source_path=None):
         """
-        This (re)sets self.source_class using some argument indpection.
+        This (re)sets self.source_class using some argument inspection.
 
-        Source can be a string or a docutils document instance, 
+        Source should be either a string or a docutils document instance, 
         when source_path=None, the string is tested as filename too.
 
         The keyword source_path can set a path location explicitly to prepare
@@ -317,37 +329,35 @@ class Builder(SettingsSpec, Publisher):
                 map(lambda x:logger.info(x.astext()),
                     source.transform_messages)
             self.settings = source.settings
-        # XXX: would be nicer to have some 'file' resolver here. this
-        # introduces dep on os
-        #  local paths are made up of max. 255 chararacter names usally
-        # not sure about depth. Linux takes a conservative 4096, windows a
-        # whopping 15bits to count the total length
-        elif source and (
-                 ( source_path and isinstance(source_path, bool) )
-                 or not source_path
-            ) and ( 
-                source and len(source) < 4097 and os.path.exists(source)):
-            self.source_class = docutils.io.FileInput
-            self.source_id = source
-        else: 
-            if not source:
-                assert source_path
-                self.source_class = docutils.io.FileInput
-            else:
-                if source_path:
-                    assert isinstance(source_path, basestring)
-                self.source_class = docutils.io.StringInput 
-        if source_path and not isinstance(source_path, bool):
+
+        elif source_path:
+            assert os.path.exists(source_path), "Source does not exist %s" % source_path
             self.source_id = source_path
+            self.source_class = docutils.io.FileInput
+
+        elif source and os.path.exists(source):
+            self.source_class = docutils.io.FileInput
+            self.source = None
+            self.source_id = source
+
+        elif source:
+            assert isinstance(source, unicode)
+            self.source = source
+            self.source_class = docutils.io.StringInput 
+        
         else:
-            assert source, "Need source to build, source is %r" % source
+            assert source, "Need source to build"
+
         if not parser:
-            source_class = docutils.io.FileInput#StringInput 
             parser = self.Parser()
+
+            self.parser = parser
+
         if not reader:
             reader = self.Reader(parser=self.parser)
-        self.reader = reader
-        self.parser = parser
+
+            self.reader = reader
+
         return self.source_class, self.parser, self.reader, self.settings 
 
     def __str__(self):
