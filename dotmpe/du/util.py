@@ -816,24 +816,37 @@ def first_and_last_field_list(document):
 
     else:
         return ()
-        
-def get_log(name, level=logging.DEBUG, stdout=True, stdout_level=logging.DEBUG,
+
+
+def get_log(
+        name, level=logging.DEBUG,
+        stdout=False, stdout_level=logging.INFO,
         fout=True, fout_level=logging.ERROR):
+
+    """
+    Set up really simple log configuration, using module path for name.
+    FIXME: should want to configure file-out log level though.
+    """
+
     logger = logging.getLogger(name)
     logger.setLevel(level)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter(
+            '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
     if fout:
         if not isinstance(fout, basestring):
-            fout = "%s.log" % name
+            fout = "./log/du/%s.log" % name
         fh = logging.FileHandler(fout)
         fh.setLevel(fout_level)
         fh.setFormatter(formatter)
         logger.addHandler(fh)
+
     if stdout:
         ch = logging.StreamHandler()
         ch.setLevel(stdout_level)
         ch.setFormatter(formatter)
         logger.addHandler(ch)
+
     return logger 
 
 

@@ -4,12 +4,6 @@ references in docutils.
 
 .. __: http://thread.gmane.org/gmane.text.docutils.devel/2060/focus=2066
 
-
-FIXME this does not use the extractor interface, but can be used as normal
-xform.
-
-TODO: link resolver
-
 1. If no scheme.
 
    1. Try local path
@@ -29,10 +23,11 @@ from nabu import extract
 
 import uriref
 from dotmpe.du import util
+from script_mpe.taxus.util import get_session
 
 
 
-class Extractor(extract.Extractor):
+class ReferenceExtractor(extract.Extractor):
 
     """
     Stores all external references in an index.
@@ -69,8 +64,6 @@ class Extractor(extract.Extractor):
 
     default_priority = 900
 
-# TODO init store here
-
     def apply(self, unid=None, store=None, **kwargs):
         refdb = getattr(self.document.settings, 'reference_database', None)
         if refdb == None:
@@ -91,6 +84,7 @@ class RefDbVisitor(nodes.SparseNodeVisitor):
             self.store(node)
 
     def store(self, node):
+
         refdb = self.document.settings.reference_database
         ctx = self.document.settings.reference_context
         link = node.attributes['refuri']
@@ -121,17 +115,38 @@ class RefDbVisitor(nodes.SparseNodeVisitor):
         else:
             refdb[key] = pickle.dumps({'name':node.get('name'),'href':link})
 
-                
+
+class ReferenceStorage(extract.ExtractorStorage):
+
+    def __init__(self, dbref=None, initdb=False):
+        assert dbref, ( dbref, initdb )
+        self.sa = get_session(dbref, initdb)
+
+    def store(self, source_id, *args):
+        #self.sa.insert('references', values=)
+        print 'store', source_id, args
+
+    def clear(self, source_id):
+        pass
+
+    def reset_schema(self, source_id):
+        raise NotImplemented
+
+
+Extractor = ReferenceExtractor
+Storage = ReferenceStorage
+
+
 
 ## App-engine storage
 
-# XXX: Unused code
+# XXX: Currently unused code
 try:
 
     from google.appengine.ext import db
 
 except ImportError, e:
-    pass#print 'Not loading GAE reference model.'
+    pass#print 'Not loading GAE reference store.'
 
 else:
 

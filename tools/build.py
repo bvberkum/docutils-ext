@@ -73,7 +73,7 @@ try:
 except:
     pass
 
-from dotmpe.du import frontend, comp
+from dotmpe.du import util, frontend, comp
 import dotmpe.du.ext # register extensions
 
 
@@ -141,7 +141,11 @@ else:
     parser = comp.get_parser_class(parser_name)()
 
 # Main
+
+log = util.get_log(None, fout=False, stdout=True)
+
 if action == 'proc':
+    log.info("Starting Du processor")
     assert target_format == 'pseudoxml'
     # TODO: use source_format
     #frontend.cli_process(
@@ -151,13 +155,15 @@ if action == 'proc':
     #        sys.argv[1:], builder_name=module_name)
 
 elif action == 'pub':
+    log.info("Starting Du publish")
     frontend.cli_render(
             sys.argv[1:], builder_name=module_name)
 
 elif action == 'dupub':
+    log.info("Starting standard publisher")
     frontend.cli_du_publisher(
             reader_name=reader_name,
             parser=parser,
-            writer_name=writer_name, 
+            writer_name=writer_name,
             description=description)
 

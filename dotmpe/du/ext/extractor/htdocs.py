@@ -10,6 +10,8 @@ Phase I
 - Work in progress extacting terms. 
   Eventually many types of nodes could qualify.
 
+  Simple anydbm based storage. db is shared between extractors.  
+
 XXX can this be generic, or should build different one for note, journal, etc.
     gonna need lots of path- or context-specific handlers to determine global
     ID.
@@ -17,8 +19,11 @@ XXX can this be generic, or should build different one for note, journal, etc.
 from datetime import datetime 
 
 from nabu import extract
+
 from docutils import nodes
 #from dotmpe.du.ext import extractor
+from dotmpe.du import util
+
 from script_mpe import taxus
 from script_mpe.taxus.util import get_session
 
@@ -27,20 +32,20 @@ from script_mpe.taxus.util import get_session
 class HtdocsExtractor(extract.Extractor):
 
     """
-    See dotmpe.du.form for documentation.
     """
 
     settings_spec = (
         'HtDocs Extractor Options',
-        None,
+        "Extract various fields into a title index. "
+        "Provides the title database used in some dependent extractors.",
         ((
-             'todo',
-             ['--todo'],
+             'Database to store titles. ',
+             ['--title-database'],
              {
                  'metavar':'PATH', 
-#                 'validator': util.optparse_init_anydbm,
+                 'validator': util.optparse_init_anydbm,
              }
-        ),) 
+        ),)
     )
 
     default_priority = 500
@@ -77,7 +82,6 @@ class HtdocsStorage(extract.ExtractorStorage):
         this.sa.query(source_id)
 
     def clear(self, source_id):
-
         pass
 
     def reset_schema(self, source_id):
@@ -108,7 +112,7 @@ class TinkerVisitor(nodes.SparseNodeVisitor):
         #print 'visit_term', node.astext()
         terms = node.astext().split()
         for i, term in enumerate(terms):
-            print i, term
+            # TODO: query term print i, term
             continue
 
             matches = self.store.sa.query(taxus.semweb.Description)\

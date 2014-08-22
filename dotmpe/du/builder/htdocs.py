@@ -32,13 +32,15 @@ class Builder(builder.Builder):
     store_params = {
             'dotmpe.du.ext.extractor.htdocs.HtdocsStorage': ((),
                 {'dbref':'sqlite:///.cllct/HtdocsStorage.sqlite'}),
+            'dotmpe.du.ext.extractor.reference.ReferenceStorage': ((),
+                {'dbref':'sqlite:///.cllct/ReferenceStorage.sqlite'}),
         }
 
     class Reader(mpe.Reader):
 
         add_class = [
                 'document[0]/section[0],htdocs'
-                ]
+            ]
 
         def get_transforms(self):
             return mpe.Reader.get_transforms(self) + [

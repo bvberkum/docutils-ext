@@ -18,7 +18,7 @@ from docutils import Component, core, SettingsSpec, frontend
 #import nabu.process
 
 from dotmpe.du import comp
-import dotmpe.du.ext 
+import dotmpe.du.ext
 from dotmpe.du.ext.parser import Inliner
 
 
