@@ -7,12 +7,16 @@ perhaps to experiment with content-negotiation later. Until then this serves as
 as a thin wrapper to the Du publisher framework.
 """
 import os
+import sys
+import traceback
 import logging
 import types
 import StringIO
+
 import docutils.core
 from docutils.core import Publisher
 from docutils import SettingsSpec, frontend, utils, transforms
+import sqlite3
 
 #import nabu
 #import nabu.server
@@ -406,7 +410,13 @@ class Builder(SettingsSpec, Publisher):
         self.prepare(**self.store_params)
         for extractor, storage in self.extractors:
             assert extractor != storage, "FIXME"
-            storage.reset_schema()
+            try:
+                storage.reset_schema()
+            except sqlite3.OperationalError, e:
+                exc_type, exc_value, exc_traceback = sys.exc_info()
+                e.info = sys.exc_info()
+                logger.error( "Error in extractor SQL %r: %s" % (storage, e) )
+                raise e
 
 
     ### XXX Builder frontend/programatic work in progress

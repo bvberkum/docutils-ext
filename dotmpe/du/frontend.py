@@ -10,6 +10,7 @@ except:
     pass
 import os
 import sys
+import traceback
 
 from docutils.core import publish_cmdline
 from docutils.parsers.rst import Parser
@@ -17,10 +18,13 @@ from docutils import Component, core, SettingsSpec, frontend
 #import nabu.server
 #import nabu.process
 
-from dotmpe.du import comp
+from dotmpe.du import comp, util
 import dotmpe.du.ext
 from dotmpe.du.ext.parser import Inliner
 
+
+
+logger = util.get_log(__name__)
 
 
 def cli_process(argv, builder=None, builder_name='mpe', description=''):
@@ -140,7 +144,15 @@ def cli_run(argv, stdin=None, builder=None, builder_name='mpe'):
             cmd = argv.pop(0)
         else:
             cmd = 'interactive'
-        getattr(builder, cmd)(argv)
+
+        try:
+            getattr(builder, cmd)(argv)
+        except Exception, e:
+
+            logger.error( "Error in command handler %r: %s" % (cmd, e) )
+            traceback.print_exc(sys.stderr)
+            if hasattr(e, 'info'):
+                traceback.print_exception(*e.info)
 
 
 def cli_du_publisher(reader_name='mpe', parser=None, parser_name='rst', writer_name='pseudoxml', description=''):

@@ -19,15 +19,16 @@ references in docutils.
 import os, pickle, socket, urlparse
 
 from docutils import nodes, frontend
-from nabu import extract
 
 import uriref
 from dotmpe.du import util
+from dotmpe.du.ext import extractor
+from script_mpe.taxus.init import SqlBase
 from script_mpe.taxus.util import get_session
 
 
 
-class ReferenceExtractor(extract.Extractor):
+class ReferenceExtractor(extractor.Extractor):
 
     """
     Stores all external references in an index.
@@ -116,21 +117,22 @@ class RefDbVisitor(nodes.SparseNodeVisitor):
             refdb[key] = pickle.dumps({'name':node.get('name'),'href':link})
 
 
-class ReferenceStorage(extract.ExtractorStorage):
+class ReferenceStorage(extractor.SQLiteExtractorStorage):
+
+    sql_relations_unid = []
+    sql_relations = []
 
     def __init__(self, dbref=None, initdb=False):
         assert dbref, ( dbref, initdb )
-        self.sa = get_session(dbref, initdb)
+        # set for SA, get engine to use as DBAPI-2.0 compatible connection
+        self.session = get_session(dbref, True)
+        self.connection = SqlBase.metadata.bind.raw_connection()
 
     def store(self, source_id, *args):
-        #self.sa.insert('references', values=)
         print 'store', source_id, args
 
     def clear(self, source_id):
         pass
-
-    def reset_schema(self, source_id):
-        raise NotImplemented
 
 
 Extractor = ReferenceExtractor
@@ -154,7 +156,7 @@ else:
         url = db.LinkProperty()
         unid = db.StringProperty()
 
-    class ReferenceStorage(extract.ExtractorStorage):
+    class ReferenceStorage(extractor.ExtractorStorage):
         def store(self, unid, url):
             ref = Reference()
             ref.unid = unid
@@ -172,7 +174,7 @@ else:
                     ref.delete()
 
         def reset_schema(self):
-            raise Exception, 'reset_schema'+repr(self)
+            raise Exception( 'reset_schema'+repr(self) )
 
 
 ## Maintenance?

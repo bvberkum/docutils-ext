@@ -22,10 +22,8 @@ import json
 
 from sqlalchemy import Table
 
-from nabu import extract
-
 from docutils import nodes
-#from dotmpe.du.ext import extractor
+from dotmpe.du.ext import extractor
 
 from script_mpe import taxus
 from script_mpe.taxus.init import SqlBase
@@ -33,7 +31,7 @@ from script_mpe.taxus.util import get_session
 
 
 
-class HtdocsExtractor(extract.Extractor):
+class HtdocsExtractor(extractor.Extractor):
 
     """
     TODO: store titles in rel. DB.
@@ -70,15 +68,43 @@ class HtdocsExtractor(extract.Extractor):
         v.finalize()
 
 
-class HtdocsStorage(extract.ExtractorStorage):
+class HtdocsStorage(extractor.SQLiteExtractorStorage):
 
     """
-    Work in progress: SQLAlchemy storage
+    Work in progress: SQLAlchemy storage?
     """
+
+    sql_relations_unid = [
+        ('titles', 'TABLE',
+         """
+
+          CREATE TABLE titles
+          (
+             unid INTEGER PRIMARY KEY AUTOINCREMENT,
+             sid TEXT,
+             value TEXT NOT NULL,
+             file TEXT NOT NULL DEFAULT "<source>",
+             char_offset INTEGER,
+             line_offset INTEGER,
+             url TEXT
+          );
+
+        """),
+    ]
+
+    sql_relations = [
+#        ('title_value_idx', 'INDEX', """
+#
+#          CREATE INDEX title_value_idx ON titles (value);
+#
+#         """)
+    ]
 
     def __init__(self, dbref=None):
         assert dbref, ("Missing SQL-alchemy DB ref", self)
+        # set for SA, get engine to use as DBAPI-2.0 compatible connection
         self.session = get_session(dbref, True)
+        self.connection = SqlBase.metadata.bind.raw_connection()
 
     def store(self, source_id, *args):
         pass
@@ -86,12 +112,14 @@ class HtdocsStorage(extract.ExtractorStorage):
     def clear(self, source_id):
         pass
 
-    def reset_schema(self):
-        raise Exception("NotImplemented")
-
     # custom
     def find_term(self, term):
-        t = Table('titles', SqlBase.metadata, autoload=True)#, autoload_with=engine)
+        engine = SqlBase.metadata.bind
+        print engine
+        return
+        t = Table('titles', SqlBase.metadata, autoload=True,
+                autoload_with=engine)
+        print t
         return
         def now():
             return datetime.now()
