@@ -18,6 +18,9 @@ from docutils.core import Publisher
 from docutils import SettingsSpec, frontend, utils, transforms
 import sqlite3
 
+# XXX this has all taxus metadata too
+from script_mpe.taxus.util import get_session
+from script_mpe.taxus.init import SqlBase
 #import nabu
 #import nabu.server
 import dotmpe
@@ -281,7 +284,7 @@ class Builder(SettingsSpec, Publisher):
     def render(self, source, source_id='<render>', writer_name=None,
             overrides={}, parts=['whole']):
         """
-        Invoke writer by name and return parts after publishing.        
+        Invoke writer by name and return parts after publishing.
         """
         writer_name = writer_name or self.default_writer
         assert writer_name == 'rst-mpe'
@@ -395,6 +398,8 @@ class Builder(SettingsSpec, Publisher):
     #        logger.info("TODO: open or keep filelike warning_stream %s",
     #                self.overrides['warning_stream'])
 
+    ###
+
     # XXX not sure yet of some interpreted Builder mode, 
     #   but it should be a nice exercise in getting the publisher cycle right
 
@@ -407,11 +412,15 @@ class Builder(SettingsSpec, Publisher):
     def reset_schema(self, argv):
         self.prepare_initial_components()
         self.process_command_line(argv=argv)
-        self.prepare(**self.store_params)
+        # XXX self.prepare(**self.store_params)
+        session = get_session(self.settings.dbref, True)
+        conn = SqlBase.metadata.bind.raw_connection()
+        self.init_extractors()
+
         for extractor, storage in self.extractors:
-            assert extractor != storage, "FIXME"
+            store = storage(engine=conn)
             try:
-                storage.reset_schema()
+                store.reset_schema()
             except sqlite3.OperationalError, e:
                 exc_type, exc_value, exc_traceback = sys.exc_info()
                 e.info = sys.exc_info()
@@ -421,6 +430,9 @@ class Builder(SettingsSpec, Publisher):
 
     ### XXX Builder frontend/programatic work in progress
 
+# TODO need to relieve extractors of db connection layer. 
+#   current prepare() is not adequate
+
     def _do_process(self):
         # XXX Builder.process self.set_io()
         source_id = self.settings._source
@@ -428,7 +440,14 @@ class Builder(SettingsSpec, Publisher):
 
         document = self.build(source, source_id, overrides={})
 
-        self.prepare(**self.store_params)
+        #self.prepare(**self.store_params)
+        # set for SA, get engine to use as DBAPI-2.0 compatible connection
+        session = get_session(self.settings.dbref, True)
+        conn = SqlBase.metadata.bind.raw_connection()
+        self.init_extractors()
+
+        for i, ( extractor, storage ) in enumerate(self.extractors):
+            self.extractors[i] = [ extractor, storage(engine=conn) ]
 
         self.process(document, source_id, overrides={}, pickle_receiver=None)
 

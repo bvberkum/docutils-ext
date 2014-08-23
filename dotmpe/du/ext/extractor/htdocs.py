@@ -23,6 +23,7 @@ import json
 from sqlalchemy import Table
 
 from docutils import nodes
+from dotmpe.du import util
 from dotmpe.du.ext import extractor
 
 from script_mpe import taxus
@@ -30,6 +31,8 @@ from script_mpe.taxus.init import SqlBase
 from script_mpe.taxus.util import get_session
 
 
+
+logger = util.get_log(__name__)
 
 class HtdocsExtractor(extractor.Extractor):
 
@@ -100,11 +103,17 @@ class HtdocsStorage(extractor.SQLiteExtractorStorage):
 #         """)
     ]
 
-    def __init__(self, dbref=None):
-        assert dbref, ("Missing SQL-alchemy DB ref", self)
-        # set for SA, get engine to use as DBAPI-2.0 compatible connection
-        self.session = get_session(dbref, True)
-        self.connection = SqlBase.metadata.bind.raw_connection()
+    def __init__(self, engine=None, dbref=None):
+        if not engine:
+            assert dbref, ("Missing SQL-alchemy DB ref", self)
+            # set for SA, get engine to use as DBAPI-2.0 compatible connection
+            self.session = get_session(dbref, True)
+            self.connection = SqlBase.metadata.bind.raw_connection()
+
+        else:
+            self.connection = engine
+
+        logger.info("Connected to %s", self.connection)
 
     def store(self, source_id, *args):
         pass
@@ -115,11 +124,8 @@ class HtdocsStorage(extractor.SQLiteExtractorStorage):
     # custom
     def find_term(self, term):
         engine = SqlBase.metadata.bind
-        print engine
-        return
         t = Table('titles', SqlBase.metadata, autoload=True,
                 autoload_with=engine)
-        print t
         return
         def now():
             return datetime.now()

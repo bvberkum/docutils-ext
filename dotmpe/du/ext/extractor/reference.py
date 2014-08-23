@@ -122,7 +122,11 @@ class ReferenceStorage(extractor.SQLiteExtractorStorage):
     sql_relations_unid = []
     sql_relations = []
 
-    def __init__(self, dbref=None, initdb=False):
+    def __init__(self, engine=None, dbref=None, initdb=False):
+        if engine:
+            self.connection = engine
+            return
+
         assert dbref, ( dbref, initdb )
         # set for SA, get engine to use as DBAPI-2.0 compatible connection
         self.session = get_session(dbref, True)

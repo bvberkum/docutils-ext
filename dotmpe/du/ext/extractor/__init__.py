@@ -153,7 +153,7 @@ class SQLiteExtractorStorage(extract.ExtractorStorage):
                 cursor.execute("DROP %s %s" % (rtype, tname))
                 logger.info("Destroyed table %s", tname)
             except Exception, e:
-                print e
+                logger.error(e)
 
             cursor.execute(schema)
 

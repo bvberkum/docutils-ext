@@ -10,6 +10,8 @@ from dotmpe.du.ext.extractor import htdocs, reference
 
 class Builder(builder.Builder):
 
+    HTSTORE = 'sqlite:///.cllct/HtdocsStorage.sqlite'
+
     settings_defaults_overrides = {
             }
 
@@ -24,10 +26,11 @@ class Builder(builder.Builder):
             '. ',
             ((
                  'Database to store titles. ',
-                 ['--title-database'],
+                 ['--dbref'],
                  {
                      'metavar':'PATH', 
-                     'validator': util.optparse_init_sqlalchemy,
+                     'default': HTSTORE
+                     #'validator': util.optparse_init_sqlalchemy,
                  }
             ),) +
             reference.Extractor.settings_spec[2] 
@@ -37,7 +40,7 @@ class Builder(builder.Builder):
     store_params = {
 
             'dotmpe.du.ext.extractor.htdocs.HtdocsStorage': ((),
-                {'dbref':'sqlite:///.cllct/HtdocsStorage.sqlite'}),
+                {'dbref':HTSTORE}),
 
             'dotmpe.du.ext.extractor.reference.ReferenceStorage': ((),
                 {'dbref':'sqlite:///.cllct/ReferenceStorage.sqlite'}),
