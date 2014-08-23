@@ -12,6 +12,8 @@ import anydbm, hashlib, optparse, os, re, time, urllib2
 from pickle import loads
 import logging
 
+from script_mpe.taxus.util import get_session
+
 from docutils import utils, nodes, frontend
 #from docutils.nodes import fully_normalize_name, make_id
 from docutils.parsers.rst import directives
@@ -57,7 +59,7 @@ def merge_level(d, *args, **kwds):
 
 
 def compare(obj1, obj2):
-    "Attr/key based compare to determine document.setting differences ?"
+    "TODO: Attr/key based compare to determine document.setting differences ?"
     pass
 
 """
@@ -407,17 +409,25 @@ Raise any exception or optparse.OptionValueError if needed.
 XXX: would be nice to have some extended attributes based on settings_spec
 """
 
-# Unused
+# XXX: Unused validate_path
 def validate_path(setting, value, option_parser):
     if not os.path.exists(value):
         raise optparse.OptionValueError, "Path does not exist: %s" % value
     return value
 
+# XXX These two are a bit abusive: should not init, just check..
 def optparse_init_anydbm(setting, value, option_parser):
     try:
         db = anydbm.open(value, 'c')
     except Exception, e:
         raise optparse.OptionValueError, "Cannot read from %s: %s" % (value, e)
+    return db
+
+def optparse_init_sqlalchemy(setting, value, option_parser):
+    try:
+        db = get_session(value, True)
+    except Exception, e:
+        raise optparse.OptionValueError, "Cannot connect to %s: %s" % (value, e)
     return db
 
 def validate_cs_list(setting, value, option_parser):

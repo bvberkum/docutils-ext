@@ -18,13 +18,17 @@ XXX can this be generic, or should build different one for note, journal, etc.
 """
 from datetime import datetime 
 
+import json
+
+from sqlalchemy import Table
+
 from nabu import extract
 
 from docutils import nodes
 #from dotmpe.du.ext import extractor
-from dotmpe.du import util
 
 from script_mpe import taxus
+from script_mpe.taxus.init import SqlBase
 from script_mpe.taxus.util import get_session
 
 
@@ -32,25 +36,21 @@ from script_mpe.taxus.util import get_session
 class HtdocsExtractor(extract.Extractor):
 
     """
+    TODO: store titles in rel. DB.
+
+    Record:
+        - value (unicode string)
+        - xml-path (used to infer type?)
+        - file
+        - char_offset (if I can get it from the parser)
+        - line_offset
+
+    Some global identifiers could be inferred. Make up some schemes.. titles,
+    definition terms, roles.
+    Global could mean include <doc-id>. Var. URIRef options here.
     """
 
-    settings_spec = (
-        'HtDocs Extractor Options',
-        "Extract various fields into a title index. "
-        "Provides the title database used in some dependent extractors.",
-        ((
-             'Database to store titles. ',
-             ['--title-database'],
-             {
-                 'metavar':'PATH', 
-                 'validator': util.optparse_init_anydbm,
-             }
-        ),)
-    )
-
     default_priority = 500
-
-    # See dotmpe.du.form for settings_spec
 
     def init_parser(cls):
         " do some env. massaging if needed. "
@@ -72,20 +72,45 @@ class HtdocsExtractor(extract.Extractor):
 
 class HtdocsStorage(extract.ExtractorStorage):
 
-    def __init__(self, dbref=None, initdb=False):
-        assert dbref, self
-        #print 'HtdocsStorage', 'init', dbref, initdb
-        self.sa = get_session(dbref, initdb)
+    """
+    Work in progress: SQLAlchemy storage
+    """
+
+    def __init__(self, dbref=None):
+        assert dbref, ("Missing SQL-alchemy DB ref", self)
+        self.session = get_session(dbref, True)
 
     def store(self, source_id, *args):
-        #print 'store', source_id, args
-        this.sa.query(source_id)
+        pass
 
     def clear(self, source_id):
         pass
 
-    def reset_schema(self, source_id):
-        raise NotImplemented
+    def reset_schema(self):
+        raise Exception("NotImplemented")
+
+    # custom
+    def find_term(self, term):
+        t = Table('titles', SqlBase.metadata, autoload=True)#, autoload_with=engine)
+        return
+        def now():
+            return datetime.now()
+
+
+        terms = term.split()
+        for i, term in enumerate(terms):
+            # TODO: query term 
+            print i, term
+            continue
+
+            matches = session.query(taxus.semweb.Description)\
+                    .filter(taxus.semweb.Description.name==term).all()
+            if not matches:
+                description = taxus.Description(
+                        name=term, date_added=now())
+                session.add(description)
+                session.commit()
+                print 'new', description.name
 
 
 class TinkerVisitor(nodes.SparseNodeVisitor):
@@ -105,24 +130,9 @@ class TinkerVisitor(nodes.SparseNodeVisitor):
 
     def visit_term(self, node):
 
-        sa = self.store.sa
-        def now():
-            return datetime.now()
+        s = self.store
 
-        #print 'visit_term', node.astext()
-        terms = node.astext().split()
-        for i, term in enumerate(terms):
-            # TODO: query term print i, term
-            continue
-
-            matches = self.store.sa.query(taxus.semweb.Description)\
-                    .filter(taxus.semweb.Description.name==term).all()
-            if not matches:
-                description = taxus.Description(
-                        name=term, date_added=now())
-                sa.add(description)
-                sa.commit()
-                print 'new', description.name
+        s.find_term(node.astext())
 
         # XXX it is not the intention to do a string lookup, each node should
         # carry semantics so there may be term_1 term_2 to denote different terms

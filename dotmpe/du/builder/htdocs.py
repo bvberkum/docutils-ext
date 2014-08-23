@@ -3,10 +3,9 @@
 
 import os.path
 
-from dotmpe.du import builder
+from dotmpe.du import builder, util
 from dotmpe.du.ext.reader import mpe
 from dotmpe.du.ext.extractor import htdocs, reference
-from dotmpe.du.util import addClass
 
 
 class Builder(builder.Builder):
@@ -23,15 +22,23 @@ class Builder(builder.Builder):
     settings_spec = (
             'htdocs.mpe Builder',
             '. ',
-
-            htdocs.Extractor.settings_spec[2] +
+            ((
+                 'Database to store titles. ',
+                 ['--title-database'],
+                 {
+                     'metavar':'PATH', 
+                     'validator': util.optparse_init_sqlalchemy,
+                 }
+            ),) +
             reference.Extractor.settings_spec[2] 
         )
 
     #  extractor storages
     store_params = {
+
             'dotmpe.du.ext.extractor.htdocs.HtdocsStorage': ((),
                 {'dbref':'sqlite:///.cllct/HtdocsStorage.sqlite'}),
+
             'dotmpe.du.ext.extractor.reference.ReferenceStorage': ((),
                 {'dbref':'sqlite:///.cllct/ReferenceStorage.sqlite'}),
         }
@@ -44,6 +51,6 @@ class Builder(builder.Builder):
 
         def get_transforms(self):
             return mpe.Reader.get_transforms(self) + [
-                    addClass(Builder.Reader.add_class) ]
+                    util.addClass(Builder.Reader.add_class) ]
 
 

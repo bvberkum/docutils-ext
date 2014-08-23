@@ -78,7 +78,7 @@ import dotmpe.du.ext # register extensions
 
 
 description = ('')
-actions = ('proc','pub',)
+actions = ('proc','pub','run')
 
 # defaults
 tag = 'mpe'
@@ -157,6 +157,11 @@ if action == 'proc':
 elif action == 'pub':
     log.info("Starting Du publish")
     frontend.cli_render(
+            sys.argv[1:], builder_name=module_name)
+
+elif action == 'run':
+    log.info("Starting Du command")
+    frontend.cli_run(
             sys.argv[1:], builder_name=module_name)
 
 elif action == 'dupub':

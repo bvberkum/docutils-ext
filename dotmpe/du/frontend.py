@@ -31,100 +31,131 @@ def cli_process(argv, builder=None, builder_name='mpe', description=''):
     Make one or more invocations to process for given source files,
     process will run all extractors of the given builder.
 
+    - CLI arguments for subsequent calls are separated by '--'.
+
     TODO:
-        CLI arguments for subsequent calls are separated by '--'.
-        Extractors are initialized only once (ie. using initial options only).
+        Extractors should be initialized only once (ie. using initial options only).
         Settings are updated from additional options if provided.
         Ofcourse all other components should be reusable and/or reset appropiately.
+    FIXME: does not merge settings between invokations
     """
 
     if not builder:
         Builder = comp.get_builder_class(builder_name, class_name='Builder')
         builder = Builder()
 
+    # raises exception if no argv
+    argvs = split_argv(argv)
+
     builder.prepare_initial_components()
+
+    # replace settings for initial components
+    builder.process_command_line(argv=argvs.next())
 
     # Rest deals with argv handling and defers to run_process (tmp)
 
-    if not argv:
-        raise Exception("Arguments expected (use --help)")
+    for argv in argvs:
 
-    try:
-        argv_idx = argv.index('--')
-    except ValueError, e:
-        argv_idx = len(argv)
+        # replace settings for initial components
+        builder.process_command_line(argv=argv)
 
-    if argv_idx == 0:
-        # XXX skip initial options?
-        argv = argv[1:]
-        argv_idx = argv.index('--')
+        builder._do_process()
 
-    while argv_idx and argv_idx != -1:
-        argv_cur, argv = argv[0:argv_idx], argv[argv_idx+1:]
-
-        _run_process(builder, argv_cur)
-
-        try:
-            argv_idx = argv.index('--')
-        except ValueError, e:
-            argv_idx = -1
+    else:
+        # No further args (or break but not using that)
+        builder._do_process()
 
 
-def _run_process(builder, argv):
+def cli_render(argv, builder=None, builder_name='mpe'):
 
     """
-    See cli_process.
+    Accept invocations to render documents from source to dest or
+    stdout. Subsequent invocations should be separated by '--'.
+    The initial group of arguments 
+    TODO: see cli_process.
+
+    Setup publisher chain from builder class, and run them converting document(s)
+    from source to dest.
     """
 
-    source = argv[0] # XXX: fixme
+    if not builder:
+        Builder = comp.get_builder_class(builder_name, class_name='Builder')
+        builder = Builder()
 
-    builder.process_command_line(argv=argv) # replace settings for initial components
+    argvs = split_argv(argv)
 
-    source_id = source
-    # XXX: need options parsed here too
-    #document = builder.build(open(source_id).read(), source_id, overrides={})
-    #builder.process(document, source_id, 
-    #        overrides={}, pickle_receiver=None)
-    source = open(source_id)
-    document = builder.build(source, source_id, overrides={})
-    builder.prepare(**builder.store_params)
-    builder.process(document, source_id, overrides={}, pickle_receiver=None)
-    # TODO render messages as reST doc
-    for msg_list in document.parse_messages, document.transform_messages:
-        for msg in msg_list:
-            #print type(msg), dir(msg)
-            #print msg.asdom()
-            print msg.astext()
-
-
-def cli_render(argv, builder_name='mpe'):
-    Builder = comp.get_builder_class(builder_name, class_name='Builder')
-    builder = Builder()
     builder.prepare_initial_components()
-    builder.process_command_line() # replace settings for initial components
-    assert builder.settings
+    # replace settings for initial components
+    builder.process_command_line(argv=argvs.next()) 
     #pub.set_components(reader_name, parser_name, writer_name)
     #pub.process_programmatic_settings(
     #    settings_spec, settings_overrides, config_section)
     #pub.set_source(source, source_path)
     #pub.set_destination(destination, destination_path)
     #output = pub.publish(enable_exit_status=enable_exit_status)
-    for source in argv:
-        if source.startswith('-'):
-            continue
-        assert os.path.exists(source), "source description "\
-                "must be existing local path for now (not '%s')" % source
-        source_id = source
-        
-        # FIXME: cli_render
+
+    for argv in argvs:
+        builder.process_command_line(argv=argv)
+        assert builder.settings
+        # TODO: cli_render
         print builder.render(source)
         print builder.document.parse_messages
         print builder.document.transform_messages
 
 
+def cli_run(argv, stdin=None, builder=None, builder_name='mpe'):
+
+    """
+    Enter extended batch mode; read commands from stdin or readline.
+
+    Using argv, this resolve the initial argument to a callable method
+    of the builder and delegates further (argv/stdin) handling to it.
+
+    This defaults to 'interactive', if no arguments are given and the stdin is
+    connected to a terminal. For no-terminal without arguments it will try to run
+    'read_script'.
+    """
+
+    if not stdin:
+        stdin = sys.stdin
+
+    if not builder:
+        Builder = comp.get_builder_class(builder_name, class_name='Builder')
+        builder = Builder()
+
+    # connected to TTY session or redirected descriptor?
+
+    argvs = None
+    if argv:
+        argvs = split_argv(argv)
+
+    elif not stdin.isatty():
+        builder.read_script()
+
+    # run commands from argv
+
+    for argv in argvs:
+        # XXX very naively..
+        if argv:
+            cmd = argv.pop(0)
+        else:
+            cmd = 'interactive'
+        getattr(builder, cmd)(argv)
+
+
 def cli_du_publisher(reader_name='mpe', parser=None, parser_name='rst', writer_name='pseudoxml', description=''):
+
     """
     Simple wrapper for ``docutils.core.publish_cmdline``.
+    During development, this should still be working.
+
+    Shortcomings are it cannot load settings-specs from transforms, 
+    or perform processing only (without rendering). 
+    It does not handle stores for transforms directly as Nabu does. 
+    But, given that transforms could handle storage
+    initialization themselves, and that the Reader/Parser/Writer 'parent'
+    component can hold the settings-specs, should make it fairly easy to port
+    Builder code back to work with docutils. 
     """
 
     # XXX: how far does inline customization go? parser = Parser(inliner=Inliner())
@@ -143,6 +174,38 @@ def cli_du_publisher(reader_name='mpe', parser=None, parser_name='rst', writer_n
             writer=writer_class(), 
             writer_name=writer_name, 
             description=description)
+
+
+def split_argv(argv):
+    """
+    Split argv at '--', yield subsequent groups.
+    """
+    if not argv:
+        raise Exception("Arguments expected (use --help)")
+
+    try:
+        argv_idx = argv.index('--')
+    except ValueError, e:
+        argv_idx = len(argv)
+
+    if argv_idx == 0:
+        # no initial options
+        argv = argv[1:]
+        argv_idx = argv.index('--')
+
+    while argv_idx and argv_idx != -1:
+        argv_cur, argv = argv[0:argv_idx], argv[argv_idx+1:]
+
+        yield argv_cur
+
+        try:
+            argv_idx = argv.index('--')
+        except ValueError, e:
+            argv_idx = -1
+
+
+
+
 
 
 ### XXX:BVB: rewrite Du ext frontend for builder

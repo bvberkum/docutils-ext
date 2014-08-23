@@ -25,10 +25,26 @@ logger = util.get_log(__name__)
 class Builder(SettingsSpec, Publisher):
 
     """
-    Each builder is a configuration of Docutils and Nabu components.
+    Each builder is a static configuration of Docutils and Nabu components.
+    Usefull during development of new docutils publisher chains.
 
-    It is sort of a (to-be) facade to build document trees from source, and to render or process
-    these. Behind it are Du Publisher and Nabu data extraction routines.
+    Behind it are Du Publisher and Nabu data extraction routines.
+    This implementation tries to stay close to the publisher, but adds 
+    the routines needed for process documents from the command line without
+    rendering. It does not borrow much of Nabu except the Extractor
+    interface/base-class.
+
+    Like the du publisher, it retrieves settings from the commandline arguments
+    using process_command_line.
+
+    For further ease of development, there is a third exec mode besides
+    rendering or processing: interactive. This aims to relieve the
+    argv parser of schemes for switching between modes of operations (or
+    vary chain configurations). TODO use the extra level of interpretation 
+    to try to 
+    reach Builders original goals (see Blue-Lines for unfinished prior art).
+
+    See the frontend module for how to use the builder.
     """
 
     Reader = comp.get_reader_class('standalone')
@@ -126,6 +142,8 @@ class Builder(SettingsSpec, Publisher):
     def build(self, source, source_id='<build>', overrides={}, cli=False):
         """
         Build document from source, returns the document.
+        This is used before a process or render.
+
         TODO: Use Reader, Parser, Transform and Builder for option spec.
         """
         logger.debug("Building %r.", source_id)
@@ -165,6 +183,7 @@ class Builder(SettingsSpec, Publisher):
     def init_extractors(self):
         """
         Load extractor and storage classes from modules.
+        Populate self.extractors with pairs of extractor/storage classes.
         """
         import dotmpe.du.ext.extractor
         for spec in self.extractor_spec:
@@ -372,6 +391,47 @@ class Builder(SettingsSpec, Publisher):
     #        logger.info("TODO: open or keep filelike warning_stream %s",
     #                self.overrides['warning_stream'])
 
+    # XXX not sure yet of some interpreted Builder mode, 
+    #   but it should be a nice exercise in getting the publisher cycle right
+
+    def interactive(self, argv):
+        raise NotImplementedError
+
+    def read_script(self, argv):
+        raise NotImplementedError
+
+    def reset_schema(self, argv):
+        self.prepare_initial_components()
+        self.process_command_line(argv=argv)
+        self.prepare(**self.store_params)
+        for extractor, storage in self.extractors:
+            assert extractor != storage, "FIXME"
+            storage.reset_schema()
+
+
+    ### XXX Builder frontend/programatic work in progress
+
+    def _do_process(self):
+        # XXX Builder.process self.set_io()
+        source_id = self.settings._source
+        source = open(source_id)
+
+        document = self.build(source, source_id, overrides={})
+
+        self.prepare(**self.store_params)
+
+        self.process(document, source_id, overrides={}, pickle_receiver=None)
+
+        # TODO render messages as reST doc
+        for msg_list in document.parse_messages, document.transform_messages:
+            for msg in msg_list:
+                #print type(msg), dir(msg)
+                #print msg.asdom()
+                print msg.astext()
+
+
+
+# XXX: prep store-params
 def parse_params(args, kwds, options):
     for i, a in enumerate(args):
         if callable(a):

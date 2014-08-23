@@ -1,15 +1,13 @@
-#!/usr/bin/env mpe-sitefile
-#
-# Generic options
-options:
-    store: 
-        - 'sitedir:build/site/'
-        - 'sitefile:'
-        - 'sitestore:build/site.sqlite3'
-    extractors:
-    transforms:
+#!/usr/bin/env python 
+"""
+make mpe-sitefile executable and able to output
+    Make rules
+    Grunt targets?
+    Good excuse to have a look at SCons again.
 
-Issues:
-ReadMe:
+"""
 
-# vim:ft=yaml:
+
+if __name__ == '__main__':
+	pass
+
