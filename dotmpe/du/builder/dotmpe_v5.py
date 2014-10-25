@@ -13,7 +13,11 @@ def _get_logbook_store(options):
     """Temporary stuff until storage component instances are properly managed.
     """
     import sqlite3
-    return sqlite3.connect(options['logbook_db'])
+    dbf = options['logbook_db']
+    try:
+        return sqlite3.connect(dbf)
+    except sqlite3.OperationalError:
+        raise util.DatabaseConnectionError("Cannot connect to %s" % dbf)
 
 
 class Builder(builder.Builder):

@@ -4,6 +4,7 @@ insecure) module import.
 """
 import logging
 import glob
+import traceback
 import os
 import sys
 
@@ -28,6 +29,7 @@ def load_module(module_path):
     except ImportError, e:
         logger.critical('Failed importing module %s from %s: %s.  ',
                 super_module, module_path, e)
+        logger.critical(traceback.print_exc())
         raise e
 
 

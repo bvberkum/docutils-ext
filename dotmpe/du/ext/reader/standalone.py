@@ -23,8 +23,8 @@ class Reader(readers.Reader):
     """
 
     settings_spec = (
-            'Reader with extended set of transforms',
-            None,
+            '.mpe Reader',
+            'Standard \'standalone\' reader with extended set of transforms. ',
 
             standalone.Reader.settings_spec[2] +
             user.UserSettings.settings_spec +

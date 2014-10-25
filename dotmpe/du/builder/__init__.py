@@ -7,13 +7,20 @@ perhaps to experiment with content-negotiation later. Until then this serves as
 as a thin wrapper to the Du publisher framework.
 """
 import os
+import sys
+import traceback
 import logging
 import types
 import StringIO
+
 import docutils.core
 from docutils.core import Publisher
 from docutils import SettingsSpec, frontend, utils, transforms
+import sqlite3
 
+# XXX this has all taxus metadata too
+from script_mpe.taxus.util import get_session
+from script_mpe.taxus.init import SqlBase
 #import nabu
 #import nabu.server
 #import htdocs
@@ -26,10 +33,26 @@ logger = util.get_log(__name__)#, stdout=True, fout=False)
 class Builder(SettingsSpec, Publisher):
 
     """
-    Each builder is a configuration of Docutils and Nabu components.
+    Each builder is a static configuration of Docutils and Nabu components.
+    Usefull during development of new docutils publisher chains.
 
-    It is sort of a (to-be) facade to build document trees from source, and to render or process
-    these. Behind it are Du Publisher and Nabu data extraction routines.
+    Behind it are Du Publisher and Nabu data extraction routines.
+    This implementation tries to stay close to the publisher, but adds 
+    the routines needed for process documents from the command line without
+    rendering. It does not borrow much of Nabu except the Extractor
+    interface/base-class.
+
+    Like the du publisher, it retrieves settings from the commandline arguments
+    using process_command_line.
+
+    For further ease of development, there is a third exec mode besides
+    rendering or processing: interactive. This aims to relieve the
+    argv parser of schemes for switching between modes of operations (or
+    vary chain configurations). TODO use the extra level of interpretation 
+    to try to 
+    reach Builders original goals (see Blue-Lines for unfinished prior art).
+
+    See the frontend module for how to use the builder.
     """
 
     Reader = comp.get_reader_class('standalone')
@@ -86,9 +109,13 @@ class Builder(SettingsSpec, Publisher):
         self.components = (self.parser, self.reader, self)
 
         # XXX: for now, all transforms are linked to the reader and the reader
-        # gets its transforms from there. The extractors will similary depend on
-        # the Reader transforms and settings_specs
+        # gets its transforms from there. 
+        # The extractors could similary depend on the Builder to get its specs
+        # into the parser. at least it makes it work, but it'll be nice to be
+        # able to concatenate several groups
+        
 
+    # XXX docutils.core.Publisher override (no changes, just for ref.)
     def setup_option_parser(self, usage=None, description=None,
                             settings_spec=None, config_section=None,
                             **defaults):
@@ -112,16 +139,22 @@ class Builder(SettingsSpec, Publisher):
         """
         pass
 
-    def prepare(self, argv=None):
-        self.prepare_extractors(**self.store_params)
+    def prepare(self, argv=None, **store_params):
+        """
+        After settings and components are determined, prepare extractors.
+        XXX should prepare reader/parser/writer here too.
+        Source is prepared later, it is reset upon every build.
+        """
+        self.prepare_extractors(**store_params)
 
     def build(self, source, source_id='<build>', overrides={}, cli=False):
         """
         Build document from source, returns the document.
+        This is used before a process or render.
+
         TODO: Use Reader, Parser, Transform and Builder for option spec.
         """
         logger.debug("Building %r.", source_id)
-        self.source = source
         source_class, parser, reader, settings = self.prepare_source(source, source_id)
         if not self.writer:
             self.writer = comp.get_writer_class('null')()
@@ -136,7 +169,7 @@ class Builder(SettingsSpec, Publisher):
         assert self.settings or isinstance(self.settings, frontend.Values), self.settings
         self.destination_class = docutils.io.StringOutput
         assert self.reader and self.parser and self.writer
-        assert self.source
+        assert self.source or os.path.exists(self.source_id)
         self.settings.input_encoding = 'utf-8'
         self.settings.halt_level = 0
         self.settings.report_level = 6
@@ -158,6 +191,7 @@ class Builder(SettingsSpec, Publisher):
     def init_extractors(self):
         """
         Load extractor and storage classes from modules.
+        Populate self.extractors with pairs of extractor/storage classes.
         """
         import dotmpe.du.ext.extractor
         for spec in self.extractor_spec:
@@ -181,14 +215,13 @@ class Builder(SettingsSpec, Publisher):
         logger.debug("Builder prepare_extractors %s." % store_params)
         self.process_messages = u''
         for idx, (xcls, xstore) in enumerate(self.extractors):
-            # initialize extractor
+            # XXX initialize extractor
             #xcls.init_parser(xcls)
             # reinitialize store
-            if type(xstore) != type:
-                if type(xstore) == types.InstanceType:
-                    xstore = xstore.__module__+'.'+xstore.__class__
-#                assert isinstance(xstore, types.ClassType)                    
+            if type(xstore) != type and type(xstore) != types.InstanceType:
+                assert isinstance(xstore, types.ClassType)
                 args, kwds = store_params.get(unicode(xstore), ((),{}))
+
 # XXX: would want to have merged options here, instead of # settings_default_overrides ref!
                 try:
                     args, kwds = parse_params(args, kwds,
@@ -220,9 +253,13 @@ class Builder(SettingsSpec, Publisher):
         document.transformer = transforms.Transformer(document)
         # before extract, remove existing msg.level < reporter.report_level from tree
         #document.transformer.add_transform(universal.FilterMessages, priority=1)
-        # Sanity check
-        assert not document.parse_messages, '\n'.join(map(str,
-            document.parse_messages))
+        # Sanity check assert not document.parse_messages, '\n'.join(map(str, document.parse_messages))
+        if document.parse_messages:
+# print 'Parser messages:', map(str,document.parse_messages)
+            for msg in document.parse_messages:
+                #if msg.get('level') > 2: # 3=ERROR
+                if msg.get('level') > 3: # 4=
+                    assert not msg, msg
         assert not document.transform_messages, '\n'.join(map(str,
             document.transform_messages))
         # Populate with transforms.
@@ -243,13 +280,14 @@ class Builder(SettingsSpec, Publisher):
             print 'document transformed', document.transform_messages
         document.transform = document.reporter = document.form_processor = None
         # FIXME: what about when FP needs run during process i.o. build?
-        # what about values from FP then..
-        #print 'Extractor messages:', map(str,document.transform_messages)
+        # what about values from FP then.
+        if document.transform_messages:
+            print 'Transformation messages:', map(str,document.transform_messages)
 
     def render(self, source, source_id='<render>', writer_name=None,
             overrides={}, parts=['whole']):
         """
-        Invoke writer by name and return parts after publishing.        
+        Invoke writer by name and return parts after publishing.
         """
         writer_name = writer_name or self.default_writer
         assert writer_name
@@ -297,9 +335,9 @@ class Builder(SettingsSpec, Publisher):
 
     def prepare_source(self, source, source_path=None):
         """
-        This (re)sets self.source_class using some argument indpection.
+        This (re)sets self.source_class using some argument inspection.
 
-        Source can be a string or a docutils document instance, 
+        Source should be either a string or a docutils document instance, 
         when source_path=None, the string is tested as filename too.
 
         The keyword source_path can set a path location explicitly to prepare
@@ -324,37 +362,35 @@ class Builder(SettingsSpec, Publisher):
                 map(lambda x:logger.info(x.astext()),
                     source.transform_messages)
             self.settings = source.settings
-        # XXX: would be nicer to have some 'file' resolver here. this
-        # introduces dep on os
-        #  local paths are made up of max. 255 chararacter names usally
-        # not sure about depth. Linux takes a conservative 4096, windows a
-        # whopping 15bits to count the total length
-        elif source and (
-                 ( source_path and isinstance(source_path, bool) )
-                 or not source_path
-            ) and ( 
-                source and len(source) < 4097 and os.path.exists(source)):
-            self.source_class = docutils.io.FileInput
-            self.source_id = source
-        else: 
-            if not source:
-                assert source_path
-                self.source_class = docutils.io.FileInput
-            else:
-                if source_path:
-                    assert isinstance(source_path, basestring)
-                self.source_class = docutils.io.StringInput 
-        if source_path and not isinstance(source_path, bool):
+
+        elif source_path:
+            assert os.path.exists(source_path), "Source does not exist %s" % source_path
             self.source_id = source_path
+            self.source_class = docutils.io.FileInput
+
+        elif source and os.path.exists(source):
+            self.source_class = docutils.io.FileInput
+            self.source = None
+            self.source_id = source
+
+        elif source:
+            assert isinstance(source, unicode)
+            self.source = source
+            self.source_class = docutils.io.StringInput 
+        
         else:
-            assert source, "Need source to build, source is %r" % source
+            assert source, "Need source to build"
+
         if not parser:
-            source_class = docutils.io.FileInput#StringInput 
             parser = self.Parser()
+
+            self.parser = parser
+
         if not reader:
             reader = self.Reader(parser=self.parser)
-        self.reader = reader
-        self.parser = parser
+
+            self.reader = reader
+
         return self.source_class, self.parser, self.reader, self.settings 
 
     def __str__(self):
@@ -369,6 +405,69 @@ class Builder(SettingsSpec, Publisher):
     #        logger.info("TODO: open or keep filelike warning_stream %s",
     #                self.overrides['warning_stream'])
 
+    ###
+
+    # XXX not sure yet of some interpreted Builder mode, 
+    #   but it should be a nice exercise in getting the publisher cycle right
+
+    def interactive(self, argv):
+        raise NotImplementedError
+
+    def read_script(self, argv):
+        raise NotImplementedError
+
+    def reset_schema(self, argv):
+        self.prepare_initial_components()
+        self.process_command_line(argv=argv)
+        # XXX self.prepare(**self.store_params)
+        session = get_session(self.settings.dbref, True)
+        conn = SqlBase.metadata.bind.raw_connection()
+        self.init_extractors()
+
+        for extractor, storage in self.extractors:
+            store = storage(engine=conn)
+            try:
+                store.reset_schema()
+            except sqlite3.OperationalError, e:
+                exc_type, exc_value, exc_traceback = sys.exc_info()
+                e.info = sys.exc_info()
+                logger.error( "Error in extractor SQL %r: %s" % (storage, e) )
+                raise e
+
+
+    ### XXX Builder frontend/programatic work in progress
+
+# TODO need to relieve extractors of db connection layer. 
+#   current prepare() is not adequate
+
+    def _do_process(self):
+        # XXX Builder.process self.set_io()
+        source_id = self.settings._source
+        source = open(source_id)
+
+        document = self.build(source, source_id, overrides={})
+
+        #self.prepare(**self.store_params)
+        # set for SA, get engine to use as DBAPI-2.0 compatible connection
+        session = get_session(self.settings.dbref, True)
+        conn = SqlBase.metadata.bind.raw_connection()
+        self.init_extractors()
+
+        for i, ( extractor, storage ) in enumerate(self.extractors):
+            self.extractors[i] = [ extractor, storage(engine=conn) ]
+
+        self.process(document, source_id, overrides={}, pickle_receiver=None)
+
+        # TODO render messages as reST doc
+        for msg_list in document.parse_messages, document.transform_messages:
+            for msg in msg_list:
+                #print type(msg), dir(msg)
+                #print msg.asdom()
+                print msg.astext()
+
+
+
+# XXX: prep store-params
 def parse_params(args, kwds, options):
     for i, a in enumerate(args):
         if callable(a):

@@ -35,6 +35,8 @@ from itertools import chain
 from dotmpe.du import util
 from nabu import extract
 from nabu.extract import \
+        Extractor, \
+        ExtractorStorage, \
         SQLExtractorStorage as PgSQLExtractorStorage
 
 
@@ -135,18 +137,24 @@ class SQLiteExtractorStorage(extract.ExtractorStorage):
 
         for tname, rtype, schema in chain(self.sql_relations_unid,
                                           self.sql_relations):
-            
+
             # Indexes are automatically destroyed with their attached tables,
             # don't do it explicitly.
             if rtype.upper() == 'INDEX':
                 continue
 
-            cursor.execute("""
+            x = cursor.execute("""
                 SELECT * FROM main.sqlite_master WHERE type='table'
                 AND name = ?
                """, (tname,))
-            if cursor.rowcount > 0:
-                cursor.execute("DROP %s %s CASCADE" % (rtype, tname))
+
+            try:
+                cursor.fetchone()
+                cursor.execute("DROP %s %s" % (rtype, tname))
+                logger.info("Destroyed table %s", tname)
+            except Exception, e:
+                logger.error(e)
+
             cursor.execute(schema)
 
         self.connection.commit()

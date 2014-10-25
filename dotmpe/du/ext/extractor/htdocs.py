@@ -1,38 +1,57 @@
 """
 .mpe htdocs extractor
+
+dev phase
+1. Uniquely identify each section, term or reference in a document.
+2. Interactively identify above nodes; need rSt document in-place rewrite.
+
+Phase I
+-------
+- Work in progress extacting terms. 
+  Eventually many types of nodes could qualify.
+
+  Simple anydbm based storage. db is shared between extractors.  
+
+XXX can this be generic, or should build different one for note, journal, etc.
+    gonna need lots of path- or context-specific handlers to determine global
+    ID.
 """
 from datetime import datetime 
 
-from nabu import extract
+import json
+
+from sqlalchemy import Table
+
 from docutils import nodes
-#from dotmpe.du.ext import extractor
-from script_mpe import htdocs, taxus
+from dotmpe.du import util
+from dotmpe.du.ext import extractor
+
+from script_mpe import taxus
+from script_mpe.taxus.init import SqlBase
 from script_mpe.taxus.util import get_session
 
 
 
-class HtdocsExtractor(extract.Extractor):
+logger = util.get_log(__name__)
+
+class HtdocsExtractor(extractor.Extractor):
 
     """
-    See dotmpe.du.form for documentation.
-    """
+    TODO: store titles in rel. DB.
 
-    settings_spec = (
-        'HtDocs Extractor Options',
-        None,
-        [(
-             'todo',
-             ['--todo'],
-             {
-                 'metavar':'PATH', 
-#                 'validator': util.optparse_init_anydbm,
-             }
-        ),] 
-    )
+    Record:
+        - value (unicode string)
+        - xml-path (used to infer type?)
+        - file
+        - char_offset (if I can get it from the parser)
+        - line_offset
+
+    Some global identifiers could be inferred. Make up some schemes.. titles,
+    definition terms, roles.
+    Global could mean include <doc-id>. Var. URIRef options here.
+    """
 
     default_priority = 500
-
-    # See dotmpe.du.form for settings_spec
 
     def init_parser(cls):
         " do some env. massaging if needed. "
@@ -52,22 +71,80 @@ class HtdocsExtractor(extract.Extractor):
         v.finalize()
 
 
-class HtdocsStorage(extract.ExtractorStorage):
+class HtdocsStorage(extractor.SQLiteExtractorStorage):
 
-    def __init__(self, dbref='sqlite', initdb=False):
-        print 'HtdocsStorage', 'init', dbref, initdb
-        self.sa = get_session(dbref, initdb)
+    """
+    Work in progress: SQLAlchemy storage?
+    """
+
+    sql_relations_unid = [
+        ('titles', 'TABLE',
+         """
+
+          CREATE TABLE titles
+          (
+             unid INTEGER PRIMARY KEY AUTOINCREMENT,
+             sid TEXT,
+             value TEXT NOT NULL,
+             file TEXT NOT NULL DEFAULT "<source>",
+             char_offset INTEGER,
+             line_offset INTEGER,
+             url TEXT
+          );
+
+        """),
+    ]
+
+    sql_relations = [
+#        ('title_value_idx', 'INDEX', """
+#
+#          CREATE INDEX title_value_idx ON titles (value);
+#
+#         """)
+    ]
+
+    def __init__(self, engine=None, dbref=None):
+        if not engine:
+            assert dbref, ("Missing SQL-alchemy DB ref", self)
+            # set for SA, get engine to use as DBAPI-2.0 compatible connection
+            self.session = get_session(dbref, True)
+            self.connection = SqlBase.metadata.bind.raw_connection()
+
+        else:
+            self.connection = engine
+
+        logger.info("Connected to %s", self.connection)
 
     def store(self, source_id, *args):
-        print 'store', source_id, args
-        this.sa.query(source_id)
-
-    def clear(self, source_id):
-
         pass
 
-    def reset_schema(self, source_id):
-        raise NotImplemented
+    def clear(self, source_id):
+        pass
+
+    # custom
+    def find_term(self, term):
+        engine = SqlBase.metadata.bind
+        t = Table('titles', SqlBase.metadata, autoload=True,
+                autoload_with=engine)
+        return
+        def now():
+            return datetime.now()
+
+
+        terms = term.split()
+        for i, term in enumerate(terms):
+            # TODO: query term 
+            print i, term
+            continue
+
+            matches = session.query(taxus.semweb.Description)\
+                    .filter(taxus.semweb.Description.name==term).all()
+            if not matches:
+                description = taxus.Description(
+                        name=term, date_added=now())
+                session.add(description)
+                session.commit()
+                print 'new', description.name
 
 
 class TinkerVisitor(nodes.SparseNodeVisitor):
@@ -87,24 +164,28 @@ class TinkerVisitor(nodes.SparseNodeVisitor):
 
     def visit_term(self, node):
 
-        def now():
-            return datetime.now()
+        #def now():
+        #    return datetime.now()
 
-        print 'visit_term', node.astext()
-        terms = node.astext().split()
-        for i, term in enumerate(terms):
-            print i, term
-            continue
+        #print 'visit_term', node.astext()
+        #terms = node.astext().split()
+        #for i, term in enumerate(terms):
+        #    print i, term
+        #    continue
 
-            sa = self.store.sa
-            matches = self.store.sa.query(taxus.semweb.Description)\
-                    .filter(taxus.semweb.Description.name==term).all()
-            if not matches:
-                description = taxus.Description(
-                        name=term, date_added=now())
-                sa.add(description)
-                sa.commit()
-                print 'new', description.name
+        #    sa = self.store.sa
+        #    matches = self.store.sa.query(taxus.semweb.Description)\
+        #            .filter(taxus.semweb.Description.name==term).all()
+        #    if not matches:
+        #        description = taxus.Description(
+        #                name=term, date_added=now())
+        #        sa.add(description)
+        #        sa.commit()
+        #        print 'new', description.name
+
+        s = self.store
+
+        s.find_term(node.astext())
 
         # XXX it is not the intention to do a string lookup, each node should
         # carry semantics so there may be term_1 term_2 to denote different terms

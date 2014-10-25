@@ -4,12 +4,6 @@ references in docutils.
 
 .. __: http://thread.gmane.org/gmane.text.docutils.devel/2060/focus=2066
 
-
-FIXME this does not use the extractor interface, but can be used as normal
-xform.
-
-TODO: link resolver
-
 1. If no scheme.
 
    1. Try local path
@@ -25,15 +19,17 @@ TODO: link resolver
 import os, pickle, socket, urlparse
 
 from docutils import nodes, frontend
-from nabu import extract
 
 import uriref
 from dotmpe.du import util
+from dotmpe.du.ext import extractor
+from script_mpe.taxus.init import SqlBase
+from script_mpe.taxus.util import get_session
 
 
 logger = util.get_log(__name__, fout=False)
 
-class Extractor(extract.Extractor):
+class ReferenceExtractor(extractor.Extractor):
 
     """
     Stores all external references in an index.
@@ -91,6 +87,7 @@ class RefDbVisitor(nodes.SparseNodeVisitor):
             #self.store(node)
 
     def store(self, node):
+
         refdb = self.document.settings.reference_database
         ctx = self.document.settings.reference_context
         link = node.attributes['refuri']
@@ -121,17 +118,43 @@ class RefDbVisitor(nodes.SparseNodeVisitor):
         else:
             refdb[key] = pickle.dumps({'name':node.get('name'),'href':link})
 
-                
+
+class ReferenceStorage(extractor.SQLiteExtractorStorage):
+
+    sql_relations_unid = []
+    sql_relations = []
+
+    def __init__(self, engine=None, dbref=None, initdb=False):
+        if engine:
+            self.connection = engine
+            return
+
+        assert dbref, ( dbref, initdb )
+        # set for SA, get engine to use as DBAPI-2.0 compatible connection
+        self.session = get_session(dbref, True)
+        self.connection = SqlBase.metadata.bind.raw_connection()
+
+    def store(self, source_id, *args):
+        print 'store', source_id, args
+
+    def clear(self, source_id):
+        pass
+
+
+Extractor = ReferenceExtractor
+Storage = ReferenceStorage
+
+
 
 ## App-engine storage
 
-# XXX: Unused code
+# XXX: Currently unused code
 try:
 
     from google.appengine.ext import db
 
 except ImportError, e:
-    pass#print 'Not loading GAE reference model.'
+    pass#print 'Not loading GAE reference store.'
 
 else:
 
@@ -139,7 +162,7 @@ else:
         url = db.LinkProperty()
         unid = db.StringProperty()
 
-    class ReferenceStorage(extract.ExtractorStorage):
+    class ReferenceStorage(extractor.ExtractorStorage):
         def store(self, unid, url):
             ref = Reference()
             ref.unid = unid
@@ -157,7 +180,7 @@ else:
                     ref.delete()
 
         def reset_schema(self):
-            raise Exception, 'reset_schema'+repr(self)
+            raise Exception( 'reset_schema'+repr(self) )
 
 
 ## Maintenance?
