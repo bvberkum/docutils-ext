@@ -41,7 +41,6 @@ class LogBookExtractor(extract.Extractor):
         # - get (new) ref for each definition term
         # - accumulated definition descriptions:
         #   append lists to some log,
-        #   
         print unid, storage, kwds
 
 

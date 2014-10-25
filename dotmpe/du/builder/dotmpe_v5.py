@@ -5,7 +5,7 @@ This is an aggregation and configuration of Du components.
 """
 from dotmpe.du import builder, util
 from dotmpe.du.ext.transform import include, logbook
-from dotmpe.du.ext.reader import mpe
+from dotmpe.du.ext.reader import standalone
 from dotmpe.du.util import addClass
 
 
@@ -59,14 +59,14 @@ class Builder(builder.Builder):
                 {'module':None, 'connection': _get_logbook_store}),
         }
 
-    class Reader(mpe.Reader):
+    class Reader(standalone.Reader):
 
         add_class = [
                 'document[0]/section[0],dotmpe-v5'
             ]
 
         def get_transforms(self):
-            return mpe.Reader.get_transforms(self) + [
+            return standalone.Reader.get_transforms(self) + [
                     addClass(Builder.Reader.add_class),
                     logbook.LogBook
                 ]
@@ -98,7 +98,7 @@ class Page(Builder):
             ]
 
         def get_transforms(self):
-            return mpe.Reader.get_transforms(self) + [
+            return standalone.Reader.get_transforms(self) + [
                     addClass(Page.Reader.add_class),
                 ]
 
@@ -117,7 +117,7 @@ class Frontpage(Page):
             ]
 
         def get_transforms(self):
-            return mpe.Reader.get_transforms(self) + [
+            return standalone.Reader.get_transforms(self) + [
                 addClass(Frontpage.Reader.add_class) ]
 
 

@@ -87,7 +87,6 @@ class TinkerVisitor(nodes.SparseNodeVisitor):
 
     def visit_term(self, node):
 
-        sa = self.store.sa
         def now():
             return datetime.now()
 
@@ -97,6 +96,7 @@ class TinkerVisitor(nodes.SparseNodeVisitor):
             print i, term
             continue
 
+            sa = self.store.sa
             matches = self.store.sa.query(taxus.semweb.Description)\
                     .filter(taxus.semweb.Description.name==term).all()
             if not matches:
