@@ -418,7 +418,8 @@ class Builder(SettingsSpec, Publisher):
         self.init_extractors()
 
         for extractor, storage in self.extractors:
-            store = storage(engine=conn)
+            store = storage(session=session)
+            store.connection = conn
             try:
                 store.reset_schema()
             except sqlite3.OperationalError, e:
@@ -438,16 +439,17 @@ class Builder(SettingsSpec, Publisher):
         source_id = self.settings._source
         source = open(source_id)
 
+        print '_do_process', source, source_id
+
         document = self.build(source, source_id, overrides={})
 
         #self.prepare(**self.store_params)
-        # set for SA, get engine to use as DBAPI-2.0 compatible connection
         session = get_session(self.settings.dbref, True)
-        conn = SqlBase.metadata.bind.raw_connection()
         self.init_extractors()
+        SqlBase.metadata.reflect(SqlBase.metadata.bind)
 
         for i, ( extractor, storage ) in enumerate(self.extractors):
-            self.extractors[i] = [ extractor, storage(engine=conn) ]
+            self.extractors[i] = [ extractor, storage(session=session) ]
 
         self.process(document, source_id, overrides={}, pickle_receiver=None)
 

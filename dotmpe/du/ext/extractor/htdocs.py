@@ -32,6 +32,7 @@ from script_mpe.taxus.util import get_session
 
 
 
+
 logger = util.get_log(__name__)
 
 class HtdocsExtractor(extractor.Extractor):
@@ -67,6 +68,7 @@ class HtdocsExtractor(extractor.Extractor):
         # create visitor for doc, add storage for lookup and possible updates to existing items
         # xxx: must rewrite document for updates, but rst2rst is not happening yet
         v = TinkerVisitor(self.document, storage)
+        v.unid = unid
         self.document.walk(v)
         v.finalize()
 
@@ -86,7 +88,7 @@ class HtdocsStorage(extractor.SQLiteExtractorStorage):
              unid INTEGER PRIMARY KEY AUTOINCREMENT,
              sid TEXT,
              value TEXT NOT NULL,
-             file TEXT NOT NULL DEFAULT "<source>",
+             file_name TEXT NOT NULL DEFAULT "<source>",
              char_offset INTEGER,
              line_offset INTEGER,
              url TEXT
@@ -103,17 +105,21 @@ class HtdocsStorage(extractor.SQLiteExtractorStorage):
 #         """)
     ]
 
-    def __init__(self, engine=None, dbref=None):
-        if not engine:
+    def __init__(self, session=None, dbref=None):
+        if not session:
             assert dbref, ("Missing SQL-alchemy DB ref", self)
-            # set for SA, get engine to use as DBAPI-2.0 compatible connection
+            # set for SA, then get engine to use as DBAPI-2.0 compatible connection
             self.session = get_session(dbref, True)
-            self.connection = SqlBase.metadata.bind.raw_connection()
-
         else:
-            self.connection = engine
+            self.session = session
+        # XXX can I get raw-connection from self.session?
+        #self.connection = SqlBase.metadata.bind.raw_connection()
+        #logger.info("Connected to %s", self.connection)
+        logger.info("Extractor store to %s", self.session)
 
-        logger.info("Connected to %s", self.connection)
+        class Title(SqlBase):
+            __table__ = SqlBase.metadata.tables['titles']
+        self.Title = Title
 
     def store(self, source_id, *args):
         pass
@@ -122,29 +128,33 @@ class HtdocsStorage(extractor.SQLiteExtractorStorage):
         pass
 
     # custom
-    def find_term(self, term):
-        engine = SqlBase.metadata.bind
-        t = Table('titles', SqlBase.metadata, autoload=True,
-                autoload_with=engine)
-        return
+
+    def find_term(self, visitor, node):
+
+        s = self.session
+        q = s.query(self.Title)
+
         def now():
             return datetime.now()
 
+        terms = node.astext().split()
+        for i, t in enumerate(terms):
+            if t.isalnum():
+                q = q.filter(self.Title.value.like("%%%s%%" % t))
+        candidates = q.all()
 
-        terms = term.split()
-        for i, term in enumerate(terms):
-            # TODO: query term 
-            print i, term
-            continue
+        print terms
+        for c in candidates:
+            print c.unid, c.value, c.file_name
 
-            matches = session.query(taxus.semweb.Description)\
-                    .filter(taxus.semweb.Description.name==term).all()
-            if not matches:
-                description = taxus.Description(
-                        name=term, date_added=now())
-                session.add(description)
-                session.commit()
-                print 'new', description.name
+        #assert not candidates, (candidates, term)
+
+        # TODO get line number
+        term = node.astext()
+        t = self.Title(value=term, file_name=visitor.unid)
+        s.add(t)
+        s.commit()
+
 
 
 class TinkerVisitor(nodes.SparseNodeVisitor):
@@ -154,33 +164,19 @@ class TinkerVisitor(nodes.SparseNodeVisitor):
         self.store = store
 
     def finalize(self):
-        pass
-
-#    def visit_definition_list(self, node):
-#        print 'visit_definition_list', node
-
-#    def visit_definition_list_item(self, node):
-#        print 'visit_definition_list_item', node
+        pass # XXX
 
     def visit_term(self, node):
 
         s = self.store
 
-        s.find_term(node.astext())
+        s.find_term(self, node)
 
         # XXX it is not the intention to do a string lookup, each node should
         # carry semantics so there may be term_1 term_2 to denote different terms
         # Currently this means the writer should be explicit
         # Another routine is needed (in taxus) to clean up unreferenced nodes
 
-    def visit_definition(self, node):
-        pass#print 'visit_description'#, node.astext()
-
-    def depart_definition(self, node):
-        pass#print 'depart_definition'#, node.astext()
-
-    def visit_list_item(self, node):
-        pass#print 'visit_list_item', node
 
 
 Extractor = HtdocsExtractor
