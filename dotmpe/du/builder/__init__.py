@@ -85,6 +85,9 @@ class Builder(SettingsSpec, Publisher):
     relative_path_settings = ()
     " XXX: Some pair of keynames used to lookup paths? "
 
+    extractor_spec = ()
+    ""
+
     def __init__(self):
         """
         Defer to Publisher init. 
@@ -188,7 +191,8 @@ class Builder(SettingsSpec, Publisher):
     def init_extractors(self):
         """
         Load extractor and storage classes from modules.
-        Populate self.extractors with pairs of extractor/storage classes.
+        Populate self.extractors with pairs of extractor/storage classes
+        from clss.extractor_spec
         """
         import dotmpe.du.ext.extractor
         for spec in self.extractor_spec:
@@ -260,6 +264,7 @@ class Builder(SettingsSpec, Publisher):
         assert not document.transform_messages, '\n'.join(map(str,
             document.transform_messages))
         # Populate with transforms.
+        print self, self.extractors
         for tclass, storage in self.extractors:
             document.transformer.add_transform(
                 tclass, unid=source_id, storage=storage,

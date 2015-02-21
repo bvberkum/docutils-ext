@@ -52,7 +52,7 @@ def cli_process(argv, builder=None, builder_name='mpe', description=''):
     argvs = split_argv(argv)
 
     builder.prepare_initial_components()
-    print 'components', builder.components
+    #print 'components', builder.components
 
     # replace settings for initial components
     builder.process_command_line(argv=argvs.next())

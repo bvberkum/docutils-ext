@@ -1,5 +1,27 @@
 """
 Builder class testing
+
+Builder
+    prepare_source()
+        Test wether arguments give correct source_class/_id 
+    Reader
+        settings_spec
+            TODO
+        transforms
+            TODO
+    Parser
+        settings_spec
+            TODO
+    Writer
+        settings_spec
+            TODO
+    build()
+        TODO
+    process()
+        TODO
+    reset()
+        TODO
+
 """
 import os
 import unittest

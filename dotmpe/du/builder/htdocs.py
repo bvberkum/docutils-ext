@@ -20,7 +20,7 @@ class Builder(builder.Builder):
             ('dotmpe.du.ext.extractor.reference', ),
 #              ('dotmpe.du.ext.extractor.logbook', ), # see dotmpe builder
         ]
-    
+
     settings_spec = (
             'htdocs.mpe Builder',
             '. ',
