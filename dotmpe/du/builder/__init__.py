@@ -25,7 +25,7 @@ from dotmpe.du.util import get_session, SqlBase
 from dotmpe.du import comp, util
 
 
-logger = util.get_log(__name__)
+logger = util.get_log(__name__)#, stdout=True, fout=False)
 
 class Builder(SettingsSpec, Publisher):
 
@@ -172,7 +172,7 @@ class Builder(SettingsSpec, Publisher):
         assert self.source or os.path.exists(self.source_id)
         self.settings.input_encoding = 'utf-8'
         self.settings.halt_level = 0
-        self.settings.report_level = 0
+        self.settings.report_level = 6
         # XXX
         from dotmpe.du.frontend import get_option_parser
         option_parser = get_option_parser(
@@ -278,6 +278,8 @@ class Builder(SettingsSpec, Publisher):
         # Run extractor transforms on the document tree.
         document.transformer.apply_transforms()
         # clean doc
+        if document.transform_messages:
+            print 'document transformed', document.transform_messages
         document.transform = document.reporter = document.form_processor = None
         # FIXME: what about when FP needs run during process i.o. build?
         # what about values from FP then.
@@ -290,9 +292,9 @@ class Builder(SettingsSpec, Publisher):
         Invoke writer by name and return parts after publishing.
         """
         writer_name = writer_name or self.default_writer
-        assert writer_name == 'rst-mpe'
+        assert writer_name
         self.writer = comp.get_writer_class(writer_name)()
-        logger.info('Rendering %r as %r.', source_id, writer_name)
+        logger.info('Rendering %r as %r with parts %r.', source_id, writer_name, parts)
         assert not overrides
         #logger.info("source-length: %i", not source or len(source))
         document = self.build(source, source_id)
@@ -302,7 +304,11 @@ class Builder(SettingsSpec, Publisher):
         #logger.info([(part, self.writer.parts.get(part)) for part in parts])
         logger.info("Deps for %s: %s", source_id, self.document.settings.record_dependencies)
         # XXX: right to the internal of the writer. Is this interface?
-        return ''.join([self.writer.parts.get(part) for part in parts])
+        assert parts
+        results = [ p for p in [ 
+            self.writer.parts.get(part) for part in parts ] if p ]
+        if results:
+            return ''.join(results)
 
     def render_fragment(self, source, source_id='<render_fragment>',
             overrides={}):

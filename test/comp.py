@@ -4,7 +4,7 @@ import docutils
 
 from dotmpe.du import comp
 from dotmpe.du.ext.reader import \
-        mpe, mkdoc
+        standalone, mkdoc
 from dotmpe.du.ext.parser import \
         atlassian as atlassian_parser, \
         simplereader
@@ -22,7 +22,7 @@ import dotmpe.du.builder.htdocs
 class DuComponentLoaderMonkeyPatchTest(unittest.TestCase):
 
     reader = (
-    	    ( mpe.Reader, ('mpe', 'mpe-mpe',) ),
+    	    ( standalone.Reader, ('standalone', 'standalone-mpe',) ),
     	    ( mkdoc.Reader, ('mkdoc', 'mkdoc-mpe',)) ,
         )
     def test_1_get_reader_class(self):

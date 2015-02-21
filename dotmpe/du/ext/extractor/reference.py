@@ -26,6 +26,7 @@ from dotmpe.du.util import SqlBase, get_session
 from dotmpe.du.ext import extractor
 
 
+logger = util.get_log(__name__, fout=False)
 
 logger = util.get_log(__name__)
 
@@ -80,10 +81,11 @@ class RefDbVisitor(nodes.SparseNodeVisitor):
     def visit_reference(self, node):
         if 'refuri' in node.attributes:
             link = node.attributes['refuri']
+            logger.debug("Found uriref %s", linke)
             #scheme, d,p,r,q,f = urlparse.urlparse(link)
             #if scheme in ('sip', 'mailto', 'ssh'):
             #    return
-            self.store(node)
+            #self.store(node)
 
     def store(self, node):
 

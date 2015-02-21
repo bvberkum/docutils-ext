@@ -25,7 +25,6 @@ class Builder(builder.Builder):
             () 
         )
 
-from util import capture
 
 class FrontendTest(unittest.TestCase):
 

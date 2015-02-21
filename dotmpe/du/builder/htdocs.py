@@ -4,7 +4,7 @@
 import os.path
 
 from dotmpe.du import builder, util
-from dotmpe.du.ext.reader import mpe
+from dotmpe.du.ext.reader import standalone
 from dotmpe.du.ext.extractor import htdocs, reference
 
 
@@ -46,14 +46,14 @@ class Builder(builder.Builder):
                 {'dbref':'sqlite:///.cllct/ReferenceStorage.sqlite'}),
         }
 
-    class Reader(mpe.Reader):
+    class Reader(standalone.Reader):
 
         add_class = [
                 'document[0]/section[0],htdocs'
             ]
 
         def get_transforms(self):
-            return mpe.Reader.get_transforms(self) + [
+            return standalone.Reader.get_transforms(self) + [
                     util.addClass(Builder.Reader.add_class) ]
 
 

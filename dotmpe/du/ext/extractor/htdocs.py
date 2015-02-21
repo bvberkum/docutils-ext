@@ -165,6 +165,25 @@ class TinkerVisitor(nodes.SparseNodeVisitor):
 
     def visit_term(self, node):
 
+        #def now():
+        #    return datetime.now()
+
+        #print 'visit_term', node.astext()
+        #terms = node.astext().split()
+        #for i, term in enumerate(terms):
+        #    print i, term
+        #    continue
+
+        #    sa = self.store.sa
+        #    matches = self.store.sa.query(taxus.semweb.Description)\
+        #            .filter(taxus.semweb.Description.name==term).all()
+        #    if not matches:
+        #        description = taxus.Description(
+        #                name=term, date_added=now())
+        #        sa.add(description)
+        #        sa.commit()
+        #        print 'new', description.name
+
         s = self.store
 
         s.find_term(self, node)

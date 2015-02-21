@@ -41,7 +41,7 @@ class LogBookExtractor(extract.Extractor):
         # - get (new) ref for each definition term
         # - accumulated definition descriptions:
         #   append lists to some log,
-        #
+
         self.document.reporter.debug('LogBookExtractor unid:%s, store:%s, kwds:%r' % (
             unid, storage, kwds))
 
