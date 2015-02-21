@@ -2,7 +2,7 @@
 dotmpe.du Module tests
 
 frontend.cli_process
-    ..
+    Tests wether builder picks up custom reader settings-spec on --help
 
 """
 

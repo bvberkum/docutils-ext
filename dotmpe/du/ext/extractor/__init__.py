@@ -107,9 +107,10 @@ class SQLiteExtractorStorage(extract.ExtractorStorage):
         for tname, rtype, schema in chain(self.sql_relations_unid,
                                           self.sql_relations):
             cursor.execute("SELECT * FROM main.sqlite_master "
-                "WHERE type='table' "
-                "AND name = ? ", (tname,))
-            if cursor.rowcount <= 0:
+                "WHERE type= ? "
+                "AND name = ? ", (rtype.lower(), tname,))
+            rs = cursor.fetchone()
+            if not rs:
                 logger.info("Creating DB schema %s (%s)", tname, rtype)
                 cursor.execute(schema)
 
@@ -143,16 +144,16 @@ class SQLiteExtractorStorage(extract.ExtractorStorage):
             if rtype.upper() == 'INDEX':
                 continue
 
-            x = cursor.execute("""
-                SELECT * FROM main.sqlite_master WHERE type='table'
-                AND name = ?
-               """, (tname,))
+            cursor.execute("SELECT * FROM main.sqlite_master "
+                "WHERE type= ? "
+                "AND name = ? ", (rtype.lower(), tname,))
 
             try:
                 cursor.fetchone()
-                cursor.execute("DROP %s %s" % (rtype, tname))
+                cursor.execute("DROP %s %s;" % (rtype, tname))
                 logger.info("Destroyed table %s", tname)
             except Exception, e:
+                print 'Error deleting %s: %s' % ( tname, e )
                 logger.error(e)
 
             cursor.execute(schema)

@@ -365,16 +365,3 @@ def print_compare_writer(doc_file,
     print u"\n".join(out)
 
 
-import sys
-from cStringIO import StringIO
-from contextlib import contextmanager
-
-@contextmanager
-def capture(command, *args, **kwargs):
-    out, sys.stdout = sys.stdout, StringIO()
-    command(*args, **kwargs)
-    sys.stdout.seek(0)
-    yield sys.stdout.read()
-    sys.stdout = out
-
-

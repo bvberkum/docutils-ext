@@ -1,10 +1,11 @@
 comp
 build
 form
-#extractor
 frontend
+sql_storage
 # FIXME rstwriter
 # TODO 
+#extractor
 #mediawiki
 #atlassianparser
 #atlassianwriter
