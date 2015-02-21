@@ -12,7 +12,24 @@ import anydbm, hashlib, optparse, os, re, time, urllib2
 from pickle import loads
 import logging
 
-from script_mpe.taxus.util import get_session
+#from script_mpe.taxus.util import get_session
+from sqlalchemy.ext.declarative import declarative_base
+
+class_registry = {}
+SqlBase = declarative_base(class_registry=class_registry)
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+def get_session(dbref, initialize=False, metadata=SqlBase.metadata):
+    engine = create_engine(dbref)
+    metadata.bind = engine
+    if initialize:
+        log.info("Applying SQL DDL to DB %s..", dbref)
+        metadata.create_all()  # issue DDL create 
+        log.note('Updated schema for %s to %s', dbref, 'X')
+    session = sessionmaker(bind=engine)()
+    return session
 
 from docutils import utils, nodes, frontend
 #from docutils.nodes import fully_normalize_name, make_id

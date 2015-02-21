@@ -11,8 +11,8 @@ from dotmpe.du.ext.parser import \
 #        rst as rst_parser,  \
 from dotmpe.du.ext.writer import \
         atlassian as atlassian_writer,  \
-        formresults, html, \
-        rst as rst_writer, pydoc, latex2e, xhtml, \
+        formresults, html as mpe_html, \
+        rst as rst_writer, pydoc, latex2e, xhtml as mpe_xhtml, \
         htmlform
 from dotmpe.du.builder import Builder
 import dotmpe.du.builder.dotmpe_v5
@@ -42,12 +42,12 @@ class DuComponentLoaderMonkeyPatchTest(unittest.TestCase):
                         docutils.parsers.get_parser_class(name) )
 
     writer = (
-            ( html.Writer, ('html', 'html-mpe') ),
-            ( xhtml.Writer, ('xhtml', 'xhtml-mpe') ),
+            ( mpe_html.Writer, ('html-mpe',) ),
+            ( mpe_xhtml.Writer, ('xhtml', 'xhtml-mpe') ),
             ( rst_writer.Writer, ('rst', 'rst-mpe') ),
 #            ( pydoc.Writer, ('pydoc', 'pydoc-mpe') ),
             ( latex2e.Writer, ('latex2e', 'latex2e-mpe') ),
-            ( htmlform.Writer, ('html-form', 'html-form-mpe') ),
+            ( htmlform.Writer, ('htmlform', 'htmlform-mpe') ),
             ( formresults.Writer, ('formresults', 'formresults-mpe') ),
             ( atlassian_writer.Writer, ('atlassian', 'atlassian-mpe') ),
         )

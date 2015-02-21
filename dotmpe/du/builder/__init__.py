@@ -18,12 +18,10 @@ from docutils.core import Publisher
 from docutils import SettingsSpec, frontend, utils, transforms
 import sqlite3
 
-# XXX this has all taxus metadata too
-from script_mpe.taxus.util import get_session
-from script_mpe.taxus.init import SqlBase
 #import nabu
 #import nabu.server
 import dotmpe
+from dotmpe.du.util import get_session, SqlBase
 from dotmpe.du import comp, util
 
 
@@ -357,9 +355,10 @@ class Builder(SettingsSpec, Publisher):
             self.settings = source.settings
 
         elif source_path:
-            assert os.path.exists(source_path), "Source does not exist %s" % source_path
+            if isinstance(source_path, basestring) and os.path.exists(source_path):
+                self.source_path = source_path
+                self.source_class = docutils.io.FileInput
             self.source_id = source_path
-            self.source_class = docutils.io.FileInput
 
         elif source and os.path.exists(source):
             self.source_class = docutils.io.FileInput
@@ -367,10 +366,12 @@ class Builder(SettingsSpec, Publisher):
             self.source_id = source
 
         elif source:
-            assert isinstance(source, unicode)
+            if isinstance(source, str):
+                source = unicode(source)
+            assert isinstance(source, unicode), type(source)
             self.source = source
             self.source_class = docutils.io.StringInput 
-        
+
         else:
             assert source, "Need source to build"
 

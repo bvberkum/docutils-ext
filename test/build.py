@@ -47,7 +47,7 @@ class DotmpeDuExtBuilderTest(unittest.TestCase):
         self.assertEquals(builder.source_id, testfn)
         self.assertEquals(builder.source_class, docutils.io.FileInput)
 
-        clss, prsr, rdr, sttngs = builder.prepare_source(testfn, True)
+        clss, prsr, rdr, sttngs = builder.prepare_source(testfn, None)
         self.assertEquals(builder.source_id, testfn)
         self.assertEquals(builder.source_class, docutils.io.FileInput)
 

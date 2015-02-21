@@ -50,20 +50,24 @@ CLN 				+= \
 
 # XXX: convert this to test-python, see e.g. scrow
 test::
+	@$(ll) Attention "$@" "Testing modules listed in" test/main.list;
 	@-test_listing=test/main.list;\
 		test_mods=$$(cat $$test_listing|grep -v '^#'|grep -v '^$$');\
 		test_listing=$$test_listing coverage run test/main.py $$test_mods \
 		             2> test.log
-	@coverage report --include="test/*,dotmpe/*"
 	@if [ -n "$$(tail -1 test.log|grep OK)" ]; then \
-	    $(ll) Success "$@" "see" test.log; \
+	    $(ll) Success "$@" "see unit result in" test.log; \
 	else \
 	    $(ll) Errors "$@" "$$(tail -1 test.log)"; \
-	    $(ll) Errors "$@" see test.log; \
+	    $(ll) Errors "$@" "see unit result in" test.log; \
 	fi
 	@\
 	L=$$(ls var/|grep \.log);\
-		[ "$$(echo $$L|wc -w)" -gt 0 ] && { $(ll) Errors "$@" "in testfiles" "$$(echo $$L)"; } || {}
+		[ "$$(echo $$L|wc -w)" -gt 0 ] && { $(ll) Errors "$@" "in testfiles" "$$(echo $$L)"; } || { echo -n; }
+	@$(ll) Done "$@" "see coverage with 'make test-coverage'" ;
+
+test-coverage::
+	@coverage report --include="test/*,dotmpe/*"
 
 #test-atlassian
 test-common::

@@ -1,2 +1,0 @@
-var/test-rst.1.document-7.xml:24: element footnote_reference: validity error : IDREF attribute refid references an unknown ID "id2"
-var/test-rst.1.document-7.xml:27: element footnote: validity error : IDREFS attribute backrefs references an unknown ID "id1"

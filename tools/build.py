@@ -145,7 +145,7 @@ else:
 log = util.get_log(None, fout=False, stdout=True)
 
 if action == 'proc':
-    log.info("Starting Du processor")
+    log.info("Starting Du processor: "+tag)
     assert target_format == 'pseudoxml'
     # TODO: use source_format
     #frontend.cli_process(

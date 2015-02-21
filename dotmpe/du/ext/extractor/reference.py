@@ -22,9 +22,8 @@ from docutils import nodes, frontend
 
 import uriref
 from dotmpe.du import util
+from dotmpe.du.util import SqlBase, get_session
 from dotmpe.du.ext import extractor
-from script_mpe.taxus.init import SqlBase
-from script_mpe.taxus.util import get_session
 
 
 
