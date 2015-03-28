@@ -104,9 +104,11 @@ class Builder(SettingsSpec, Publisher):
     def prepare_initial_components(self):
         #self.set_components(reader_name, parser_name, writer_name)
         self.parser = self.Parser()
-        self.reader = self.Reader(parser=self.parser) 
+        self.reader = self.Reader(parser=self.parser)
+        # XXX render initializes again, but we want to see the help too...
+        self.writer = comp.get_writer_class(self.default_writer)()
         # FIXME: having initial writer component enables publisher src2trgt frontends 
-        self.components = (self.parser, self.reader, self)
+        self.components = (self.parser, self.reader, self.writer, self)
 
         # XXX: for now, all transforms are linked to the reader and the reader
         # gets its transforms from there. 
@@ -165,24 +167,32 @@ class Builder(SettingsSpec, Publisher):
         if cli:
             self.process_command_line() # replace settings for initial components
         else:
-        	self.build_doc()
+            self.build_doc()
         assert self.settings or isinstance(self.settings, frontend.Values), self.settings
         self.destination_class = docutils.io.StringOutput
         assert self.reader and self.parser and self.writer
         assert self.source or os.path.exists(self.source_id)
         self.settings.input_encoding = 'utf-8'
+        self.settings.output_encoding = 'utf-8'
         self.settings.halt_level = 0
         self.settings.report_level = 6
+        self.settings.output_encoding_error_handler = 'backslashreplace'
         # XXX
-        from dotmpe.du.frontend import get_option_parser
-        option_parser = get_option_parser(
-                self.components, usage='Builder testing: build [options] ..', 
-                settings_spec=None, read_config_files = 0)
-        self.settings = option_parser.get_default_values()
+        #from dotmpe.du.frontend import get_option_parser
+        #option_parser = get_option_parser(
+        #        self.components, usage='Builder testing: build [options] ..', 
+        #        settings_spec=None, read_config_files = 0)
+        #self.settings = option_parser.get_default_values()
         source = self.source_class(
             source=self.source, source_path=self.source_id)
+        if not hasattr(self.settings, '_destination'):
+            self.settings._destination = None
+        self.set_destination()
         # FIXME:  encoding=self.settings.input_encoding)
         self.document = self.reader.read(source, self.parser, self.settings)
+        self.document.transformer.populate_from_components(
+            (source, self.reader, self.parser, self.writer, self.destination))
+        self.document.transformer.apply_transforms()
         return self.document
 
     def build_doc(self):
@@ -303,6 +313,11 @@ class Builder(SettingsSpec, Publisher):
         #logger.info("output-length: %i", not output or len(output))
         #logger.info([(part, self.writer.parts.get(part)) for part in parts])
         logger.info("Deps for %s: %s", source_id, self.document.settings.record_dependencies)
+        output = self.writer.write(document, self.destination)
+        return output
+        
+        print output
+        assert self.writer.parts
         # XXX: right to the internal of the writer. Is this interface?
         assert parts
         results = [ p for p in [ 

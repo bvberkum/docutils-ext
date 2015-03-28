@@ -87,11 +87,11 @@ def cli_render(argv, builder=None, builder_name='mpe'):
         Builder = comp.get_builder_class(builder_name, class_name='Builder')
         builder = Builder()
 
-    argvs = split_argv(argv)
+    #argvs = split_argv(argv)
 
     builder.prepare_initial_components()
     # replace settings for initial components
-    builder.process_command_line(argv=argvs.next()) 
+    builder.process_command_line(argv=argv)#s.next())
     #pub.set_components(reader_name, parser_name, writer_name)
     #pub.process_programmatic_settings(
     #    settings_spec, settings_overrides, config_section)
@@ -99,13 +99,11 @@ def cli_render(argv, builder=None, builder_name='mpe'):
     #pub.set_destination(destination, destination_path)
     #output = pub.publish(enable_exit_status=enable_exit_status)
 
-    for argv in argvs:
-        builder.process_command_line(argv=argv)
-        assert builder.settings
-        # TODO: cli_render
-        print builder.render(source)
-        print builder.document.parse_messages
-        print builder.document.transform_messages
+    assert builder.settings
+    print builder.render(None, builder.settings._source)
+    return
+    print builder.document.parse_messages
+    print builder.document.transform_messages
 
 
 def cli_run(argv, stdin=None, builder=None, builder_name='mpe'):
@@ -192,6 +190,11 @@ def cli_du_publisher(reader_name='mpe', parser=None, parser_name='rst', writer_n
 def split_argv(argv):
     """
     Split argv at '--', yield subsequent groups.
+
+    If what would be the first group does not contain options (-f --flag..)
+    then take it to be a separate group and yield an initial empty group.
+
+    No other processing. 
     """
     if not argv:
         raise Exception("Arguments expected (use --help)")
@@ -206,8 +209,18 @@ def split_argv(argv):
         argv = argv[1:]
         argv_idx = argv.index('--')
 
+    first = True
+
     while argv_idx and argv_idx != -1:
         argv_cur, argv = argv[0:argv_idx], argv[argv_idx+1:]
+
+        if first:
+            initial_options = False
+            for x in argv_cur:
+                if x.startswith('-'):
+                    initial_options = True
+            if not initial_options:
+                yield []
 
         yield argv_cur
 
@@ -216,6 +229,7 @@ def split_argv(argv):
         except ValueError, e:
             argv_idx = -1
 
+        first = False
 
 
 

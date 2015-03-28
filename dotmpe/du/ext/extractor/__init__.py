@@ -111,8 +111,12 @@ class SQLiteExtractorStorage(extract.ExtractorStorage):
                 "AND name = ? ", (rtype.lower(), tname,))
             rs = cursor.fetchone()
             if not rs:
-                logger.info("Creating DB schema %s (%s)", tname, rtype)
-                cursor.execute(schema)
+                try:
+                    logger.info("Creating DB schema %s (%s)", tname, rtype)
+                    cursor.execute(schema)
+                except Exception, e:
+                    print "Failed creating %s" % tname
+                    raise e
 
         self.connection.commit()
 

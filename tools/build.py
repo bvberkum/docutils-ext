@@ -107,7 +107,7 @@ if script_names:
 # only use tag-suffixed comp alias if available
 reader_name = tag
 if reader_name not in comp.readers:
-    print "Unknown", reader_name, "Using default reader 'standalone'"
+    #print "Unknown reader '%s'" % reader_name, "Using default reader 'standalone'"
     reader_name = 'standalone'
 
 parser_name = "%s-%s" % (source_format, tag)

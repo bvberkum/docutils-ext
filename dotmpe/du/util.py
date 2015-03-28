@@ -12,6 +12,10 @@ import anydbm, hashlib, optparse, os, re, time, urllib2
 from pickle import loads
 import logging
 
+from docutils import utils, nodes, frontend
+#from docutils.nodes import fully_normalize_name, make_id
+from docutils.parsers.rst import directives
+
 #from script_mpe.taxus.util import get_session
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -20,6 +24,15 @@ SqlBase = declarative_base(class_registry=class_registry)
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
+
+logdirs = [
+        './log',
+        './logs',
+        '/var/log/',
+        '/tmp/'
+]
+
 
 def get_session(dbref, initialize=False, metadata=SqlBase.metadata):
     engine = create_engine(dbref)
@@ -30,11 +43,6 @@ def get_session(dbref, initialize=False, metadata=SqlBase.metadata):
         log.note('Updated schema for %s to %s', dbref, 'X')
     session = sessionmaker(bind=engine)()
     return session
-
-from docutils import utils, nodes, frontend
-#from docutils.nodes import fully_normalize_name, make_id
-from docutils.parsers.rst import directives
-
 
 
 def new_document(source_path, settings=None):
@@ -862,7 +870,10 @@ def get_log(
 
     if fout:
         if not isinstance(fout, basestring):
-            fout = "./log/du/%s.log" % name
+            for logdir in logdirs:
+                if os.path.isdir(logdir) and os.access(logdir, os.W_OK):
+                    fout = "%s/%s.log" % (logdir, name)
+        assert isinstance(fout, basestring), "No dir to log to"
         fh = logging.FileHandler(fout)
         fh.setLevel(fout_level)
         fh.setFormatter(formatter)

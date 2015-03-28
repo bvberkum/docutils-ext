@@ -1,9 +1,5 @@
 """
-dotmpe.du Module tests
-
-frontend.cli_process
-    Tests wether builder picks up custom reader settings-spec on --help
-
+dotmpe.du.frontend Module tests
 """
 
 import sys
@@ -28,7 +24,12 @@ class Builder(builder.Builder):
 
 class FrontendTest(unittest.TestCase):
 
-    def test__cli_process_1(self):
+    def test__cli_process_1_help(self):
+
+        """
+        Tests wether builder picks up custom reader settings-spec on --help
+        """
+
         out, sys.stdout = sys.stdout, StringIO()
         #  Maybe parse output again. 
         # TODO: Verify My Reader is in there
@@ -46,6 +47,8 @@ class FrontendTest(unittest.TestCase):
 
         assert 'My Reader' in output
         assert 'My Description' in output
+
+
 
 if __name__ == '__main__':
     unittest.main()

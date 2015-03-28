@@ -1,9 +1,11 @@
 comp
-build
-form
+builder
 frontend
+build
+#FIXME form
 sql_storage
 # FIXME rstwriter
+
 # TODO 
 #extractor
 #mediawiki

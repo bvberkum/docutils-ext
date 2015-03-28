@@ -50,7 +50,7 @@ ToDo
    want something like subdocs but low on the list of wannahaves.
 -  expose extractor and storage parameters on command line as other
    components.
--  create a storage context that can provide Nabu stores. see extractors.rst_
+-  create a storage context that can provide Nabu stores. see Extractors_
 -  ``--use-bibtex=USE_BIBTEX`` from latex2e may be nice practical example of 
    external resource framework/metadata integration.
 -  directive options are not all i18n'd
@@ -132,8 +132,15 @@ Getting Started
 
 Testing
 -------
+::
+
+  make test
+
+runs some of the modules in ``test/``. See ``test/main.list``.
+
+
 The main development is at the rST writer. The module is used as a crude 
-script during bugfixing::
+test script during bugfixing::
 
   python dotmpe/du/ext/writer/rst.py [\*.rst]
 
@@ -143,6 +150,7 @@ Currently only lossy rST writing is tested by 'make test' because
 that generates enough work and bugreports for now.
 
 rST writer testcases are generated for all files matching ``var/test-*.rst``.
+
 
 Dependencies
 ''''''''''''

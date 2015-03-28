@@ -17,7 +17,7 @@ import rstwriter_util
 def main(test_modules=[]):
 
     """
-    Run all tests.
+    Run unnitest after loading selected test modules.
     """
 
     for name in test_modules:

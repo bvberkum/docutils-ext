@@ -72,7 +72,7 @@ class Builder(builder.Builder):
         def get_transforms(self):
             return standalone.Reader.get_transforms(self) + [
                     addClass(Builder.Reader.add_class),
-                    logbook.LogBook
+                    #logbook.LogBook
                 ]
 
     class ReReader(builder.Builder.ReReader):
