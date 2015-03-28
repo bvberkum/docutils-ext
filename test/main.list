@@ -1,7 +1,15 @@
 comp
+builder
+frontend
 build
-form
+#FIXME form
+sql_storage
+# FIXME 
 rstwriter
+
+# TODO 
+#extractor
+#mediawiki
 #atlassianparser
 #atlassianwriter
 #confluence

@@ -16,6 +16,33 @@ from docutils import utils, nodes, frontend
 #from docutils.nodes import fully_normalize_name, make_id
 from docutils.parsers.rst import directives
 
+#from script_mpe.taxus.util import get_session
+from sqlalchemy.ext.declarative import declarative_base
+
+class_registry = {}
+SqlBase = declarative_base(class_registry=class_registry)
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+
+logdirs = [
+        './log',
+        './logs',
+        '/var/log/',
+        '/tmp/'
+]
+
+
+def get_session(dbref, initialize=False, metadata=SqlBase.metadata):
+    engine = create_engine(dbref)
+    metadata.bind = engine
+    if initialize:
+        log.info("Applying SQL DDL to DB %s..", dbref)
+        metadata.create_all()  # issue DDL create 
+        log.note('Updated schema for %s to %s', dbref, 'X')
+    session = sessionmaker(bind=engine)()
+    return session
 
 
 def new_document(source_path, settings=None):
@@ -57,7 +84,7 @@ def merge_level(d, *args, **kwds):
 
 
 def compare(obj1, obj2):
-    "Attr/key based compare to determine document.setting differences ?"
+    "TODO: Attr/key based compare to determine document.setting differences ?"
     pass
 
 """
@@ -407,17 +434,25 @@ Raise any exception or optparse.OptionValueError if needed.
 XXX: would be nice to have some extended attributes based on settings_spec
 """
 
-# Unused
+# XXX: Unused validate_path
 def validate_path(setting, value, option_parser):
     if not os.path.exists(value):
         raise optparse.OptionValueError, "Path does not exist: %s" % value
     return value
 
+# XXX These two are a bit abusive: should not init, just check..
 def optparse_init_anydbm(setting, value, option_parser):
     try:
         db = anydbm.open(value, 'c')
     except Exception, e:
         raise optparse.OptionValueError, "Cannot read from %s: %s" % (value, e)
+    return db
+
+def optparse_init_sqlalchemy(setting, value, option_parser):
+    try:
+        db = get_session(value, True)
+    except Exception, e:
+        raise optparse.OptionValueError, "Cannot connect to %s: %s" % (value, e)
     return db
 
 def validate_cs_list(setting, value, option_parser):
@@ -816,23 +851,43 @@ def first_and_last_field_list(document):
 
     else:
         return ()
-        
-def get_log(name, level=logging.DEBUG, stdout=True, stdout_level=logging.DEBUG,
+
+
+def get_log(
+        name, level=logging.DEBUG,
+        stdout=False, stdout_level=logging.INFO,
         fout=True, fout_level=logging.ERROR):
+
+    """
+    Set up really simple log configuration, using module path for name.
+    FIXME: should want to configure file-out log level though.
+    """
+
     logger = logging.getLogger(name)
     logger.setLevel(level)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter(
+            '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
     if fout:
         if not isinstance(fout, basestring):
-            fout = "%s.log" % name
+            for logdir in logdirs:
+                if os.path.isdir(logdir) and os.access(logdir, os.W_OK):
+                    fout = "%s/%s.log" % (logdir, name)
+        assert isinstance(fout, basestring), "No dir to log to"
         fh = logging.FileHandler(fout)
         fh.setLevel(fout_level)
         fh.setFormatter(formatter)
         logger.addHandler(fh)
+
     if stdout:
         ch = logging.StreamHandler()
         ch.setLevel(stdout_level)
         ch.setFormatter(formatter)
         logger.addHandler(ch)
+
     return logger 
+
+
+class DatabaseConnectionError(Exception):
+    pass
 

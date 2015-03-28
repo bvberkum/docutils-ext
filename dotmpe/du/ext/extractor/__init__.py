@@ -35,6 +35,8 @@ from itertools import chain
 from dotmpe.du import util
 from nabu import extract
 from nabu.extract import \
+        Extractor, \
+        ExtractorStorage, \
         SQLExtractorStorage as PgSQLExtractorStorage
 
 
@@ -105,11 +107,16 @@ class SQLiteExtractorStorage(extract.ExtractorStorage):
         for tname, rtype, schema in chain(self.sql_relations_unid,
                                           self.sql_relations):
             cursor.execute("SELECT * FROM main.sqlite_master "
-                "WHERE type='table' "
-                "AND name = ? ", (tname,))
-            if cursor.rowcount <= 0:
-                logger.info("Creating DB schema %s (%s)", tname, rtype)
-                cursor.execute(schema)
+                "WHERE type= ? "
+                "AND name = ? ", (rtype.lower(), tname,))
+            rs = cursor.fetchone()
+            if not rs:
+                try:
+                    logger.info("Creating DB schema %s (%s)", tname, rtype)
+                    cursor.execute(schema)
+                except Exception, e:
+                    print "Failed creating %s" % tname
+                    raise e
 
         self.connection.commit()
 
@@ -135,18 +142,24 @@ class SQLiteExtractorStorage(extract.ExtractorStorage):
 
         for tname, rtype, schema in chain(self.sql_relations_unid,
                                           self.sql_relations):
-            
+
             # Indexes are automatically destroyed with their attached tables,
             # don't do it explicitly.
             if rtype.upper() == 'INDEX':
                 continue
 
-            cursor.execute("""
-                SELECT * FROM main.sqlite_master WHERE type='table'
-                AND name = ?
-               """, (tname,))
-            if cursor.rowcount > 0:
-                cursor.execute("DROP %s %s CASCADE" % (rtype, tname))
+            cursor.execute("SELECT * FROM main.sqlite_master "
+                "WHERE type= ? "
+                "AND name = ? ", (rtype.lower(), tname,))
+
+            try:
+                cursor.fetchone()
+                cursor.execute("DROP %s %s;" % (rtype, tname))
+                logger.info("Destroyed table %s", tname)
+            except Exception, e:
+                print 'Error deleting %s: %s' % ( tname, e )
+                logger.error(e)
+
             cursor.execute(schema)
 
         self.connection.commit()

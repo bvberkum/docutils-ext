@@ -1,3 +1,0 @@
-var/test-rst.12.figure.xml:14: element figure: validity error : Element figure content does not follow the DTD, expecting (image , ((caption , legend?) | legend)), got (reference caption legend )
-  </figure>
-           ^

@@ -30,7 +30,7 @@ sys.path.insert(0, os.path.join(dirname(dirname(__file__)), 'lib', 'docutils-bra
 try:
     LOSSLESS_WRITER = __import__('rst') 
 except ImportError, e:
-    print "Cannot find lossless-rst-writer:", e
+    print "rst2rst-lossless: Cannot find lossless-rst-writer:", e
     sys.exit(1)
 
 reader_name='standalone'

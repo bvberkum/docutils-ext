@@ -73,12 +73,12 @@ try:
 except:
     pass
 
-from dotmpe.du import frontend, comp
+from dotmpe.du import util, frontend, comp
 import dotmpe.du.ext # register extensions
 
 
 description = ('')
-actions = ('proc','pub',)
+actions = ('proc','pub','run')
 
 # defaults
 tag = 'mpe'
@@ -107,7 +107,7 @@ if script_names:
 # only use tag-suffixed comp alias if available
 reader_name = tag
 if reader_name not in comp.readers:
-    print "Unknown", reader_name, "Using default reader 'standalone'"
+    #print "Unknown reader '%s'" % reader_name, "Using default reader 'standalone'"
     reader_name = 'standalone'
 
 parser_name = "%s-%s" % (source_format, tag)
@@ -141,23 +141,34 @@ else:
     parser = comp.get_parser_class(parser_name)()
 
 # Main
+
+log = util.get_log(None, fout=False, stdout=True)
+
 if action == 'proc':
+    log.info("Starting Du processor: "+tag)
     assert target_format == 'pseudoxml'
     # TODO: use source_format
     #frontend.cli_process(
     #        sys.argv[1:], builder_name=module_name)
-    frontend.cli_process(sys.argv[1:], 'dotmpe.du.builder.'+tag)
+    frontend.cli_process(sys.argv[1:], None, 'dotmpe.du.builder.'+tag)
     #frontend.cli_process(
     #        sys.argv[1:], builder_name=module_name)
 
 elif action == 'pub':
+    log.info("Starting Du publish")
     frontend.cli_render(
             sys.argv[1:], builder_name=module_name)
 
+elif action == 'run':
+    log.info("Starting Du command")
+    frontend.cli_run(
+            sys.argv[1:], builder_name=module_name)
+
 elif action == 'dupub':
+    log.info("Starting standard publisher")
     frontend.cli_du_publisher(
             reader_name=reader_name,
             parser=parser,
-            writer_name=writer_name, 
+            writer_name=writer_name,
             description=description)
 

@@ -95,10 +95,15 @@ def reader_(source, source_id):
 
 def builder_(source, source_id):
     builder = MyFormPage()
-    builder.initialize(strip_comments=True)
+    builder.prepare_initial_components()
+    builder.prepare()
+    #assert builder.reader.extractors
+    #builder.initialize(strip_comments=True)
     print "Building %s" % source_id
     # Build the document tree from source
     document = builder.build(source, source_id)
+    assert builder.extractors
+    builder.process(document, source_id)
     print document.settings.form_values
     return
     #print "Processing"
@@ -129,7 +134,7 @@ def main_():
         else:
             source_id = arg
     if not source_id:            
-        source_id = os.path.join(example_dir, 'form.rst')
+        source_id = os.path.join(example_dir, 'form-1.rst')
     print 'Source:',source_id        
     source = open(source_id).read()
 
@@ -159,7 +164,7 @@ expected = {
 class FormTest(unittest.TestCase):
 
     def test_1(self):
-        source_id = os.path.join(example_dir, 'form.rst')
+        source_id = os.path.join(example_dir, 'form-1.rst')
         source = open(source_id).read()
         builder = MyFormPage()
         #builder.initialize(strip_comments=True)
@@ -170,7 +175,13 @@ class FormTest(unittest.TestCase):
         for field_id, value in form_values:
             self.asertEquals(expected[field_id], value, "Value error for %s: %r" % (field_id, value)) 
 
+    def test_2(self):
+        pass
+
+
 if __name__ == '__main__':
-    unittest.main()
-    #main_()
+    if sys.argv:
+        main_()
+    else:
+        unittest.main()
 

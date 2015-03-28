@@ -1,10 +1,18 @@
 Extractors
 -----------
 
-Internal extractors
-
-- DocId -> unid
-- DuSettings -> 
+htdocs
+  - tinkering
+reference
+  - uriref only for now
+logbook
+  - journal keeper for rst content
+include
+  - dependency resolving extractor?
+inline
+  - to-be generic role indexer?
+index
+  - another indexer try
 
 Rationale
 __________

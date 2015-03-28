@@ -4,6 +4,7 @@ insecure) module import.
 """
 import logging
 import glob
+import traceback
 import os
 import sys
 
@@ -26,8 +27,9 @@ def load_module(module_path):
         module = __import__(module_path, fromlist=[super_module], level=0)
         return module    
     except ImportError, e:
-        logger.critical('Failed importing module %s from %s.  ',
-                super_module, module_path)
+        logger.critical('Failed importing module %s from %s: %s.  ',
+                super_module, module_path, e)
+        logger.critical(traceback.print_exc())
         raise e
 
 
@@ -172,6 +174,7 @@ def register_extension_components(ext_module_prefix, ext_tag, ext_type, ext_dir)
     if (os.path.isfile(ext_dir)):
         ext_dir = os.path.dirname(ext_dir)
 
+    assert ext_type in ( 'Reader', 'Writer', 'Parser' ), ext_type
     # get a ref to Du's Readers, Parsers and Writers module
     du_comp_mod = getattr(docutils, ext_type.lower()+'s')
     # also get a ref to our dict of aliases for current type
@@ -197,7 +200,7 @@ def register_extension_components(ext_module_prefix, ext_tag, ext_type, ext_dir)
             du_ext_comp_reg[ext_name] = ext_module
         #print 'du_ext_comp_reg', tagged_name, ext_module
         du_ext_comp_reg[tagged_name] = ext_module
-
+        logger.debug("New extension: %s %s %s", ext_type, tagged_name, ext_module)
 
 def split_class(mod_name, default_class_name):
     """

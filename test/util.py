@@ -365,4 +365,3 @@ def print_compare_writer(doc_file,
     print u"\n".join(out)
 
 
-
