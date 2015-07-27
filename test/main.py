@@ -26,12 +26,13 @@ def main(test_modules=[]):
         m = __import__(name, locals(), globals())
         if hasattr(m, 'create_tests'):
             m.create_tests()
+        print >>sys.stderr, "Loaded testmodule '%s'" % name
         setattr(sys.modules[__name__], name, m)
 
     unittest.main()
 
 
-if __name__ == '__main__': 
+if __name__ == '__main__':
     test_modules = sys.argv[1:]
     if test_modules:
         main(test_modules)

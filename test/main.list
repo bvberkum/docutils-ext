@@ -4,7 +4,8 @@ frontend
 build
 #FIXME form
 sql_storage
-# FIXME rstwriter
+# FIXME 
+rstwriter
 
 # TODO 
 #extractor

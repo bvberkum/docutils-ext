@@ -1,12 +1,10 @@
 Docutils extensions
 ===================
-:author: Berend (dotmpe)
-
-My collection of extensions for Python docutils.
-
+Collection of extensions on Python docutils.
 This document attempts to present an overview of the project tree.
-First a description is given of the command-line utilities in tools/,
-second a list summary is given of the source code, whose main files will be
+
+A description is given of the command-line utilities in tools/,
+then a list summary is given of the source code, whose main files will be
 documented themselves. Lastly a global log and list of further references 
 follows.
 
@@ -203,6 +201,16 @@ Log
   - Taking up Builder.process again for ~/htdocs.
     Started working on setup-file too, and considering Sitefile concept.
 
+2015-03-28
+  - Set up Sitefile_ as a Node.JS project. Maybe require Py Du extensions later
+    but for now writing the concept there in JS/Coffee-Script. 
+    
+    Not really a builder. A frontend. Maybe a HTTP publisher, but it has no real builder or
+    publisher component.
+    Perhaps, rename it to Expressfile.
+
+    Maybe want to investigate sitebuilder concept, ``wget -r`` and some patches would
+    seem to suffice though.
 
 
 .. __: doc/links.rst
@@ -213,6 +221,6 @@ Log
 .. _Blue Lines: http://blue-lines.appspot.com/
 .. _docs: doc/main.rst
 .. _Du/rST examples: examples/main.rst
-
+.. _Sitefile: //github.com/dotmpe/node-sitefile
 
 
