@@ -1,5 +1,3 @@
 # Date, Host, Branch, Revision, Testsuite, Passed, Errors
 1427507090, simza, dev, eb67f86b8e6efcf5e2fdb22722d59990b03e147b, test, 59, 0, 9
-1437947326, simza, dev, eb67f86b8e6efcf5e2fdb22722d59990b03e147b, test, 59, 0, 8
-1437949577, simza, dev, eb67f86b8e6efcf5e2fdb22722d59990b03e147b, test, 59, 0, 8
-1437966730, simza, dev, eb67f86b8e6efcf5e2fdb22722d59990b03e147b, test, 59, 0, 8
+1437967202, simza, dev, 3268de48dd4e2a88587b87b093ae081d0227bf88, test, 59, 0, 9
