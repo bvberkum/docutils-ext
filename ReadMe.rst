@@ -3,6 +3,17 @@ Docutils extensions
 :Created: Aug. 2009
 :Updated: Oct. 2015
 
+:Status:
+
+  .. image:: https://secure.travis-ci.org/dotmpe/docutils-ext.png
+    :target: https://travis-ci.org/dotmpe/docutils-ext
+    :alt: Build
+
+  .. image:: https://badge.fury.io/gh/dotmpe%2Fdocutils-ext.png
+    :target: http://badge.fury.io/gh/dotmpe%2Fdocutils-ext
+    :alt: GIT
+
+
 Collection of extensions on Python docutils.
 This document attempts to present an overview of the project tree.
 
