@@ -78,6 +78,7 @@ def merge_level(d, *args, **kwds):
     """
     Update and/or return dictionary found in `d` by keys provided in `args`.
     """
+    args = list(args)
     while args:
         d = d[args.pop()]
     if kwds:
@@ -704,12 +705,12 @@ def extract_extension_options(fields, options_spec, raise_fail=True, errors=[]):
 def extract_field_name(field_name):
     name = re.sub('[^\w]+', '-', field_name.astext())
     return name
+"""
 # Du impl.
     if len(field[0].astext().split()) != 1:
         raise BadOptionError(
             'extension option field name may not contain multiple words')
     name = str(field[0].astext().lower())
-
 
 # Du impl.
     body = field[1]
@@ -723,6 +724,7 @@ def extract_field_name(field_name):
     else:
         data = body[0][0].astext()
 
+"""
 """
 Errors from parsing field-lists as options.
 """
