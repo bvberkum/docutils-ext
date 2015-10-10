@@ -25,7 +25,7 @@ def load_module(module_path):
     super_module = module_path[p:]
     try:
         module = __import__(module_path, fromlist=[super_module], level=0)
-        return module    
+        return module
     except ImportError, e:
         logger.critical('Failed importing module %s from %s: %s.  ',
                 super_module, module_path, e)
@@ -53,7 +53,7 @@ def component_loader(component_type):
                         "Du `get_%s_class` can only load %s component classes named '%s'." \
                                 % (component_type, component_group, component_type.title())
                 du_component_loader = getattr(
-                        getattr(docutils, component_group), 
+                        getattr(docutils, component_group),
                         "get_%s_class" % component_type)
                 return du_component_loader(component_alias)
         return getattr(ext_component_modules[component_alias], klass)
@@ -94,7 +94,7 @@ _writers = {}
 
 get_writer_class = component_loader('Writer')
 
-                
+
 
 ERR_MISSING_BUILDER_MODNAME = "Missing builder module name. "
 
@@ -161,11 +161,14 @@ def register_extension_components(ext_module_prefix, ext_tag, ext_type, ext_dir)
     Helper function to register all submodules in `ext_module_prefix` (at
     system directory `ext_dir`) as `ext_type` components. This type is either
     'Reader', 'Writer' or 'Parser'. Each submodule's filename is used as the
-    alias, but only if the alias is not a known component of this `ext_type` to 
+    alias, but only if the alias is not a known component of this `ext_type` to
     standard docutils. The extension is always aliased using `ext_tag` as a
     suffix (separated by '-').
 
-    Ie., custom Writer component 'html' with `ext_tag` 'test' registers under alias 
+    XXX: why not load then and read the Component.supported attributes
+    for the name/aliases.
+
+    Ie., custom Writer component 'html' with `ext_tag` 'test' registers under alias
     'html-test', but not 'html' since it already exists. On the other hand 'rst'
     aliases to both 'rst' and 'rst-test'.
     """
@@ -175,6 +178,7 @@ def register_extension_components(ext_module_prefix, ext_tag, ext_type, ext_dir)
         ext_dir = os.path.dirname(ext_dir)
 
     assert ext_type in ( 'Reader', 'Writer', 'Parser' ), ext_type
+
     # get a ref to Du's Readers, Parsers and Writers module
     du_comp_mod = getattr(docutils, ext_type.lower()+'s')
     # also get a ref to our dict of aliases for current type
@@ -201,6 +205,7 @@ def register_extension_components(ext_module_prefix, ext_tag, ext_type, ext_dir)
         #print 'du_ext_comp_reg', tagged_name, ext_module
         du_ext_comp_reg[tagged_name] = ext_module
         logger.debug("New extension: %s %s %s", ext_type, tagged_name, ext_module)
+
 
 def split_class(mod_name, default_class_name):
     """

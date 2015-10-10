@@ -137,7 +137,7 @@ Testing
 
   make test
 
-runs some of the modules in ``test/``. See ``test/main.list``.
+runs some of the modules in ``test/``. See ``test/main.list`` for which.
 
 The main development is at the rST writer. All test files are located in ``./var``,
 basicly the bulk of the tests are based on comparison of output from the Du publisher.
@@ -152,10 +152,9 @@ demuxer, to tell us which are the metacharacters, and what the corpus\ [*]_.
 Maybe a writer that only picks out the character-data is something to be
 explored for testing.
 
-Until then, the main body of tests is run by the ``rstwriter`` module,
-running over all files from ``var/*demo.rst``. Lossy tests are implemented
-by re-parsing the rST output, and doing (trying) a compare of the AST content 
-and public attributes by generating and diff'ing the pseudoxml for both source and generated document. Iow. the test requires 3 publish actions, one of which the actually subject of test |---| that has the rST Writer component.
+Until then, the main body of tests is run by the ``rstwriter`` module, running over all files from ``var/*.rst``. Test files are named and divided into seperate syntax topics.
+
+Lossy tests are implemented by re-parsing the rST output, and doing (trying) a compare of the AST content and public attributes by generating and diff'ing the pseudoxml for both source and generated document. Iow. the test requires 3 publish actions, one of which the actually subject of test |---| that has the rST Writer component.
 
 
 .. [*] It will quite possibly require additional properties on the AST to support true lossless ``rst-to-rst``, since not all rST syntax choices are of consequences in other representations (ie. indentation depths). Rather, a rst2rst publisher may serve to normalize formatting, and also to run some transforms to reorder, renumber, rename, cross-reference, etc.
