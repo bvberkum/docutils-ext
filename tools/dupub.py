@@ -42,7 +42,7 @@ class DuFrontend(object):
 
 reader_name = 'standalone-mpe'
 parser = comp.get_parser_class('rst')()
-writer_name = 'pprint'
+writer_name = 'rst'#pprint'
 
 print 'Reader:', reader_name,
 print 'Parser:', parser,

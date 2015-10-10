@@ -1,9 +1,11 @@
 """
 Builder class testing
 
+XXX: Builder specs aren't really established..
+
 Builder
     prepare_source()
-        Test wether arguments give correct source_class/_id 
+        Test wether arguments give correct source_class/_id
     Reader
         settings_spec
             TODO
@@ -52,7 +54,7 @@ class DotmpeDuExtBuilderTest(unittest.TestCase):
         self.assertEquals(builder.source_class, docutils.io.StringInput)
         self.assertEquals(builder.source_id, "<id>")
 
-        self.assertRaises( AssertionError, builder.prepare_source, 
+        self.assertRaises( AssertionError, builder.prepare_source,
                 docutils.nodes.document("", ""))
 
         clss, prsr, rdr, sttngs = builder.prepare_source(

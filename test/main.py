@@ -5,6 +5,13 @@ Usage (see pydoc unittest.main)
 
 Ie.
     | python test/main.py rstwriter
+
+
+Each module is loaded, and create_tests() called if present.
+And subsequently unittest.main() started.
+
+XXX: modules are in test/main.list. Can add options here and do away/clean make
+   file.. maybe.
 """
 import os, re, unittest
 import sys
