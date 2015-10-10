@@ -151,7 +151,7 @@ class AbstractWriterTestCase(object):
 
     DOC_FILE = None
     VERBOSE = 0
-    corrupt_sources = ()
+    corrupt_sources = []
 
     def _test_writer(self, writer, lossy=True):
         """Do comparison on trees generated from rST files.
@@ -187,6 +187,7 @@ class AbstractWriterTestCase(object):
                 },
                 writer_name='pseudoxml')['whole']#writer_name='dotmpe-rst')
         warnings = warnings.getvalue()
+
         if warnings and self.DOC_FILE not in self.corrupt_sources:
             self.assertFalse(warnings.strip(), "Corrupt test source file: "+
                     ("on <%s>" % self.DOC_FILE )+"\n"+
@@ -228,10 +229,14 @@ class AbstractWriterTestCase(object):
                 },
                 writer_name='pseudoxml')['whole']
         warnings = warnings.getvalue()
+
         if warnings:
-            self.assertFalse(warnings.strip(), "Error re-parsing generated file\n "+
-                    ("on <%s>" % self.DOC_FILE )+"\n\n"+
-                    warnings)
+            if self.DOC_FILE not in self.corrupt_sources:
+                self.assertFalse(warnings.strip(), "Error re-parsing generated file\n "+
+                        ("on <%s>" % self.DOC_FILE )+"\n\n"+
+                        warnings)
+            else:
+                return
 
         diff = "\n".join(list(unified_diff(original_tree.split('\n'), generated_tree.split('\n'))))
 

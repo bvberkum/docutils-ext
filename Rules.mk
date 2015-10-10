@@ -50,13 +50,14 @@ TEST				+= \
 #	@-find ./ -iname "*.pyc" | while read c; do rm "$$c"; done;
 
 
-
+test_$d: M :=
 test_$d: D := $d
 test_$d:
 	@$(ll) attention "$@" "Testing modules listed in" test/main.list;
 	@\
 		TEST_PY=$(PY_TEST_$(D));\
-		TEST_PY_ARGV="$(call f_getlines,test/main.list)";\
+		test -n "$M" && TEST_PY_ARGV="$M" \
+			|| TEST_PY_ARGV="$(call f_getlines,test/main.list)";\
 		TEST_LIB=dotmpe;\
 		PYTHONPATH=$$PYTHONPATH:test; \
 		$(test-python) 2> test.log;
