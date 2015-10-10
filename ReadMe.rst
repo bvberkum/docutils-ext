@@ -1,5 +1,8 @@
 Docutils extensions
 ===================
+:Created: Aug. 2009
+:Updated: Oct. 2015
+
 Collection of extensions on Python docutils.
 This document attempts to present an overview of the project tree.
 
@@ -150,7 +153,9 @@ Maybe a writer that only picks out the character-data is something to be
 explored for testing.
 
 Until then, the main body of tests is run by the ``rstwriter`` module,
-running over all files from ``var/*demo.rst``.
+running over all files from ``var/*demo.rst``. Lossy tests are implemented
+by re-parsing the rST output, and doing (trying) a compare of the AST content 
+and public attributes by generating and diff'ing the pseudoxml for both source and generated document. Iow. the test requires 3 publish actions, one of which the actually subject of test |---| that has the rST Writer component.
 
 
 .. [*] It will quite possibly require additional properties on the AST to support true lossless ``rst-to-rst``, since not all rST syntax choices are of consequences in other representations (ie. indentation depths). Rather, a rst2rst publisher may serve to normalize formatting, and also to run some transforms to reorder, renumber, rename, cross-reference, etc.
@@ -252,5 +257,10 @@ Log
 .. _docs: doc/main.rst
 .. _Du/rST examples: examples/main.rst
 .. _Sitefile: //github.com/dotmpe/node-sitefile
+
+.. |---| unicode:: U+02014 .. em dash
+   :trim:
+.. |copy| unicode:: 0xA9 .. copyright sign
+.. |tm| unicode:: U+02122 .. trademark sign
 
 
