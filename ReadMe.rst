@@ -5,13 +5,20 @@ Docutils extensions
 
 :Status:
 
-  .. image:: https://secure.travis-ci.org/dotmpe/docutils-ext.png
+  .. image:: https://secure.travis-ci.org/dotmpe/docutils-ext.png?branch=test
     :target: https://travis-ci.org/dotmpe/docutils-ext
     :alt: Build
 
   .. image:: https://badge.fury.io/gh/dotmpe%2Fdocutils-ext.png
     :target: http://badge.fury.io/gh/dotmpe%2Fdocutils-ext
     :alt: GIT
+
+
+:rST writer:
+
+  .. image:: https://secure.travis-ci.org/dotmpe/docutils-ext.png?branch=test-rstwriter
+    :target: https://travis-ci.org/dotmpe/docutils-ext
+    :alt: Build
 
 
 Collection of extensions on Python docutils.
