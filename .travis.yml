@@ -12,9 +12,6 @@ branches:
 env:
   - ENV=
 
-# do nothing
-install:
-
 
 # Default travis Python build:
 #
