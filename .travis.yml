@@ -13,7 +13,7 @@ branches:
   - '/^[0-9]*\.[0-9]*\.[0-9]*/'
 
 env:
-  - ENV= M=rstwriter
+  - ENV= M="comp builder frontend build sql_storage rstwriter"
 
 install:
 #- "pip install ."
