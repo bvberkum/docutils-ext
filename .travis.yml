@@ -13,7 +13,10 @@ branches:
   - '/^[0-9]*\.[0-9]*\.[0-9]*/'
 
 env:
-  - ENV=
+  - ENV= M=comp
+  - ENV= M=builder
+  - ENV= M=frontend
+  - ENV= M=build
 
 install:
 #- "pip install ."
@@ -28,8 +31,8 @@ install:
 - ls -la lib/docutils-lossless/
 
 script: 
-- coverage run --source=dotmpe test/main.py comp builder frontend build
-# sql_storage rstwriter
+- coverage run --source=dotmpe test/main.py $M
+
 
 # Default travis Python build:
 #
