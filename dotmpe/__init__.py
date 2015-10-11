@@ -14,6 +14,6 @@ except ImportError:
 else:
     for p in __path__:
         modulefinder.AddPackagePath(__name__, p)
-    del p        
+    del p
 
 
