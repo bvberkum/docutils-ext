@@ -50,6 +50,7 @@ TEST				+= \
 #	@-find ./ -iname "*.pyc" | while read c; do rm "$$c"; done;
 
 
+# See $MK_SHARE/python/Main.mk for test-python routine, requires coverage
 test_$d: M :=
 test_$d: D := $d
 test_$d:

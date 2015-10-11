@@ -1,3 +1,4 @@
 docutils
 sqlalchemy
 #sqlite3
+coverage

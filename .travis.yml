@@ -14,6 +14,8 @@ branches:
 env:
   - ENV=
 
+script: 
+- coverage run --source=dotmpe test/main.py comp builder frontend
 
 # Default travis Python build:
 #
