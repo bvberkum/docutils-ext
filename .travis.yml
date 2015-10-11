@@ -15,7 +15,8 @@ env:
   - ENV=
 
 script: 
-- coverage run --source=dotmpe test/main.py comp builder frontend
+- coverage run --source=dotmpe test/main.py comp builder
+# frontend build sql_storage rstwriter
 
 # Default travis Python build:
 #
