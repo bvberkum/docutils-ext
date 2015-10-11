@@ -17,7 +17,8 @@ env:
 install:
 #- "pip install ."
 - "pip install -r requirements.txt"
-- "./build/rebuild-lib-links.sh"
+- ./build/rebuild-lib-links.sh
+- ./build/nabu-checkout.sh
 
 script: 
 - coverage run --source=dotmpe test/main.py
