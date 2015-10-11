@@ -18,7 +18,9 @@ install:
 #- "pip install ."
 - "pip install -r requirements.txt"
 - ./build/rebuild-lib-links.sh
+- ./build/docutils-checkout.sh
 - ./build/nabu-checkout.sh
+- ls -la lib/docutils-lossless/
 
 script: 
 - coverage run --source=dotmpe test/main.py
