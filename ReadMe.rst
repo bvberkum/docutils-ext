@@ -6,7 +6,7 @@ Docutils extensions
 :Status:
 
   .. image:: https://secure.travis-ci.org/dotmpe/docutils-ext.png?branch=test
-    :target: https://travis-ci.org/dotmpe/docutils-ext
+    :target: https://travis-ci.org/dotmpe/docutils-ext/branches
     :alt: Build
 
   .. image:: https://badge.fury.io/gh/dotmpe%2Fdocutils-ext.png
@@ -17,7 +17,7 @@ Docutils extensions
 :rST writer:
 
   .. image:: https://secure.travis-ci.org/dotmpe/docutils-ext.png?branch=test-rstwriter
-    :target: https://travis-ci.org/dotmpe/docutils-ext
+    :target: https://travis-ci.org/dotmpe/docutils-ext/branches
     :alt: Build
 
 
