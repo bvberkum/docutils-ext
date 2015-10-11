@@ -14,8 +14,14 @@ branches:
 env:
   - ENV=
 
+install:
+- "pip install ."
+- "pip install -r requirements.txt"
+- "./build/rebuild-lib-links.sh"
+
 script: 
-- coverage run --source=dotmpe test/main.py comp builder
+- coverage run --source=dotmpe test/main.py
+#comp builder
 # frontend build sql_storage rstwriter
 
 # Default travis Python build:
