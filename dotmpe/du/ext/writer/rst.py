@@ -1,4 +1,5 @@
-﻿"""Parse and serialize docutils documents from and to reStructuredText.
+﻿# pylint: disable=no-member
+"""Parse and serialize docutils documents from and to reStructuredText.
 
 XXX: This is a heavy work in progress. RstTranslator has some issues with
      inline nodes and does not do tables.
@@ -64,7 +65,7 @@ class RstPreTranslator(AbstractTranslator):
     def visit_target(self, node):
         pass
         #for i in ids.split(' '):
-        #    self.targets[i] = 
+        #    self.targets[i] =
 
     def visit_reference(self, node):
         # ????
@@ -94,7 +95,7 @@ class RstTranslator(AbstractTranslator):
     section_adornments = tuple('=-~^+"_`')
 
     enumeration_symbol = {
-        'arabic': lambda i: str(i),            
+        'arabic': lambda i: str(i),
         'loweralpha': lambda i: chr(i+ord('a')-1),
         'upperalpha': lambda i: chr(i+ord('A')-1),
         'upperroman': lambda i: roman.toRoman(i).upper(),
@@ -126,14 +127,14 @@ class RstTranslator(AbstractTranslator):
         "Context to stack variables during node traversal. "
         self.indented = 0
         "The offset already indented by the current line (substract from context.indent). "
-        self.section_adornments = [] # 0 is doctitle, then sectiontitles. 
+        self.section_adornments = [] # 0 is doctitle, then sectiontitles.
         "The sequence of section adornments. "
-        self.subtitle_adornment = None 
+        self.subtitle_adornment = None
         self.capture_text = None
         "Concatenate Text nodes onto `key` on context. "
         self.body = []
         "The list of document strings, to be concatenated to final file. "
-        self.anonymous_role_count = 0 
+        self.anonymous_role_count = 0
 
         self.preserve_ws = False
         self.capture_text = False
@@ -145,7 +146,7 @@ class RstTranslator(AbstractTranslator):
         self.body = []
         #self.targets = {}
         """Each stack level represents some node, but not all nodes need a
-        stacklevel though we may end up with that. 
+        stacklevel though we may end up with that.
         The stack is increased simply by setting a property, to replace a value
         use replace or increment functions.
         """
@@ -184,11 +185,11 @@ class RstTranslator(AbstractTranslator):
         if len(self.context.tree) < 2:
             return False
         return self.context.tree[-2].tagname in (
-                'document', 
-                'section', 
+                'document',
+                'section',
                 'footnote',
                 'list_item',
-                'definition', 
+                'definition',
                 'field_body')
 
     @property
@@ -265,7 +266,7 @@ class RstTranslator(AbstractTranslator):
     def _write_indented(self, *lines):
         """
         Write one or more lines. The indent on the context is used to prefix the
-        text. 
+        text.
 
         The 'indented' variable indicates the lenght the current line is padded.
         """
@@ -286,7 +287,7 @@ class RstTranslator(AbstractTranslator):
                 # indent already satisfied
                 if len(indent) <= self.indented:
                     self.body.append(text)
-                # not at required indent level yet 
+                # not at required indent level yet
                 else:
                     cindent += len(indent)
                     self.body.append(indent[self.indented:] + text)
@@ -311,7 +312,7 @@ class RstTranslator(AbstractTranslator):
                 u".. %s:: %s" % (name, ' '.join(args)))
         if kwds:
             self._write_options(kwds)
-            
+
     def _write_options(self, opts):
         self.context.indent += INDENT
         for name in opts:
@@ -333,7 +334,7 @@ class RstTranslator(AbstractTranslator):
         #else:
         self.roles.append((name, inherit, opts))
         return name
-   
+
     def _write_role(self, name, inherit, opts):
         assert name
         arg = name
@@ -344,13 +345,13 @@ class RstTranslator(AbstractTranslator):
         self._write_directive('role', arg, **opts)
         return name
 
-    def debugprint_indent(self):                        
+    def debugprint_indent(self):
         if self.debug or self.debug_indent:
             if self.indented:
                 self.body.append("(%i/%i)" % (self.indented,
                     len(self.context.indent)))
             else:
-                self.body.append("(%i)" % 
+                self.body.append("(%i)" %
                     len(self.context.indent))
 
     def _write_newline(self):
@@ -429,7 +430,7 @@ class RstTranslator(AbstractTranslator):
         self.sub_tree(node)
         self.context.index = 0
         self.doclevel += 1
-        self.set_title_adornment() 
+        self.set_title_adornment()
 
     def depart_document(self, node):
         # finalize
@@ -442,7 +443,7 @@ class RstTranslator(AbstractTranslator):
 
     def visit_Text(self, node):
         """At the leafs of the three there are the textnodes, the actual stream
-        of text. There's a division of into two forms: those in large pieces of 
+        of text. There's a division of into two forms: those in large pieces of
         inline text (paragraphs) with occasional embedded elements, or short pieces
         in elements of various structured. The document as a whole, is a mix of
         degrees of these two.
@@ -452,7 +453,7 @@ class RstTranslator(AbstractTranslator):
 
         - **capture_text**, tells wether to concatenate the text onto the current
           context; this is usually used together with
-        - **skip_content**, which will stop visit_Text from doing anything further. 
+        - **skip_content**, which will stop visit_Text from doing anything further.
           Otherwise
         - **tab_content** is one last bit that tells to either write indented
           blocks (_write_indented) or tabbed blocks (_write_tabbed).
@@ -527,7 +528,7 @@ class RstTranslator(AbstractTranslator):
         self.context.increment('index')
         self.context.index = 0
         self.doclevel += 1
-        self.set_title_adornment() 
+        self.set_title_adornment()
     def depart_section(self, node):
         self.pop_tree()
         self._assure_emptyline()
@@ -540,7 +541,7 @@ class RstTranslator(AbstractTranslator):
         if not self.block_level:
             self._assure_newblock()
         self.context.increment('index')
-        self.context.index = 0            
+        self.context.index = 0
     def depart_paragraph(self, node):
         self._assure_newblock()
         del self.context.index
@@ -635,7 +636,7 @@ class RstTranslator(AbstractTranslator):
             self._assure_newblock()
         self.context.increment('index')
         self.context.index = 0
-#        self.tab_content = ( 14, ) # indent into two cols, first is 14 
+#        self.tab_content = ( 14, ) # indent into two cols, first is 14
         #self.context.indent += 5 * INDENT
     def depart_option_list(self, node):
         self.pop_tree()
@@ -934,7 +935,7 @@ class RstTranslator(AbstractTranslator):
                 self.visit_directive(node, name='epigraph')
                 return
         self.sub_tree(node)
-        self._assure_newblock()            
+        self._assure_newblock()
         self.context.increment('index')
         self.context.index = 0
         self.context.indent += '  '
@@ -1071,8 +1072,8 @@ class RstTranslator(AbstractTranslator):
         self.sub_tree(node)
         self.context.increment('index') # increment to new item at parent level
         self.context.index = 0
-        enum_index = self.context.counter + ( self.context.offset and self.context.offset-1 or 0) 
-        is_bullet = self.in_tag('bullet_list', 1) 
+        enum_index = self.context.counter + ( self.context.offset and self.context.offset-1 or 0)
+        is_bullet = self.in_tag('bullet_list', 1)
         #assert is_bullet or self.in_tag('enumerated_list', 1), \
         #        "Illegal container for %s %s, %s" % (self.in_tag(), self.path, self.in_tag(None, 1))
         #self.debugprint(,node)
@@ -1081,7 +1082,7 @@ class RstTranslator(AbstractTranslator):
             self._write_indented(bullet_instance)
             lil = len(bullet_instance)
         else:
-            enum_instance = u'%s%s ' % ( 
+            enum_instance = u'%s%s ' % (
                     self.enumeration_symbol[self.context.enumtype](enum_index),
                     self.context.enumsuffix or ''
                 )
@@ -1095,14 +1096,14 @@ class RstTranslator(AbstractTranslator):
         del self.context.index
 
     # Definition lists
-    def visit_definition_list(self, node): 
+    def visit_definition_list(self, node):
         self.sub_tree(node)
         if not self.block_level:
             self._assure_newblock()
         self.context.increment('index')
         #self.expect('definition_list_item')
         self.context.index = 0
-    def depart_definition_list(self, node): 
+    def depart_definition_list(self, node):
         self.pop_tree()
         del self.context.index
 
@@ -1119,7 +1120,7 @@ class RstTranslator(AbstractTranslator):
     def visit_term(self, node):
         self.sub_tree(node)
         self.context.increment('index')
-    def depart_term(self, node): 
+    def depart_term(self, node):
         self._assure_emptyline()
         self.pop_tree()
 
@@ -1323,7 +1324,7 @@ class RstTranslator(AbstractTranslator):
             '%s departing unknown node type: %s'
             % (self.__class__, node.__class__.__name__))
 
-    # Generic handlers        
+    # Generic handlers
     def visit_directive(self, node, name=None):
         if not self.block_level:
             self._assure_newblock()
@@ -1360,11 +1361,11 @@ class ContextStack(object):
     """A stack of states. Setting an attribute overwrites the last
     value, but deleting the value reactivates the old one.
     Default values can be set on construction.
-    
+
     This is used for important states during output of rst,
     e.g. indent level, last bullet type.
     """
-    
+
     def __init__(self, defaults=None):
         '''Initialise _defaults and _stack, but avoid calling self.__setattr__'''
         if defaults is None:
@@ -1398,10 +1399,10 @@ class ContextStack(object):
         values = self._stack[name][:-1]
         self._stack[name] = values + [value]
         return value
-    
+
     def increment(self, name):
         old = self.current(name)
-        self.replace(name, self.current(name) + 1) 
+        self.replace(name, self.current(name) + 1)
         return self.current(name)
 
     def current(self, name):
@@ -1426,7 +1427,7 @@ class ContextStack(object):
         del self._stack[name][-1]
         if not self._stack[name] and not isinstance(self._stack[name], int):
             del self._stack[name]
-   
+
     def depth(self, name):
         l = len(self._stack[name])
         if l:
@@ -1486,7 +1487,7 @@ if __name__ == '__main__':
         for i in range(0, 5):
             p = os.path.dirname(p)
         PROJ_ROOT = p
-        
+
         TEST_DOC = [
 # References, targets are broken.
 # And other bugs: starting with least complex:
