@@ -17,6 +17,7 @@ env:
   - ENV= M=builder
   - ENV= M=frontend
   - ENV= M=build
+  - ENV= M=rstwriter
 
 install:
 #- "pip install ."
@@ -32,7 +33,7 @@ install:
 
 script: 
 - coverage run --source=dotmpe test/main.py $M
-
+# sql_storage
 
 # Default travis Python build:
 #
