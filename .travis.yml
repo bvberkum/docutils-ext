@@ -15,7 +15,7 @@ env:
   - ENV=
 
 install:
-- "pip install ."
+#- "pip install ."
 - "pip install -r requirements.txt"
 - "./build/rebuild-lib-links.sh"
 
