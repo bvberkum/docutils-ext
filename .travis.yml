@@ -27,8 +27,8 @@ install:
 - ls -la lib/docutils-lossless/
 
 script: 
-- coverage run --source=dotmpe test/main.py comp builder frontend
-# frontend build sql_storage rstwriter
+- coverage run --source=dotmpe test/main.py comp builder frontend build
+# sql_storage rstwriter
 
 # Default travis Python build:
 #
