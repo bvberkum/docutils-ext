@@ -20,6 +20,9 @@ install:
 - ./build/rebuild-lib-links.sh
 - ./build/docutils-checkout.sh
 - ./build/nabu-checkout.sh
+- ls -la $HOME/src/python-docutils
+- ls -la $HOME/src/python-docutils/docutils-svn/
+- ls -la $HOME/src/python-docutils/docutils-svn/branches
 - ls -la lib/docutils-lossless/
 
 script: 
