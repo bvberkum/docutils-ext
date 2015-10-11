@@ -9,6 +9,7 @@ python:
 branches:
   only:
   - test
+  - test-rstwriter
   - '/^[0-9]*\.[0-9]*\.[0-9]*/'
 
 env:
