@@ -49,8 +49,6 @@ class AbstractParserTestCase(object):
     TAG = None
     VERBOSE = 1
 
-    corrupt_sources = []
-
     def _test_parser(self, parser, lossy=True):
         """Do comparison on trees generated from rST files.
 
@@ -151,7 +149,6 @@ class AbstractWriterTestCase(object):
 
     DOC_FILE = None
     VERBOSE = 0
-    corrupt_sources = []
 
     def _test_writer(self, writer, lossy=True):
         """Do comparison on trees generated from rST files.
@@ -188,7 +185,7 @@ class AbstractWriterTestCase(object):
                 writer_name='pseudoxml')['whole']#writer_name='dotmpe-rst')
         warnings = warnings.getvalue()
 
-        if warnings and self.DOC_FILE not in self.corrupt_sources:
+        if warnings:
             self.assertFalse(warnings.strip(), "Corrupt test source file: "+
                     ("on <%s>" % self.DOC_FILE )+"\n"+
                     warnings)
@@ -231,12 +228,9 @@ class AbstractWriterTestCase(object):
         warnings = warnings.getvalue()
 
         if warnings:
-            if self.DOC_FILE not in self.corrupt_sources:
-                self.assertFalse(warnings.strip(), "Error re-parsing generated file\n "+
-                        ("on <%s>" % self.DOC_FILE )+"\n\n"+
-                        warnings)
-            else:
-                return
+            self.assertFalse(warnings.strip(), "Error re-parsing generated file\n "+
+                    ("on <%s>" % self.DOC_FILE )+"\n\n"+
+                    warnings)
 
         diff = "\n".join(list(unified_diff(original_tree.split('\n'), generated_tree.split('\n'))))
 
@@ -339,8 +333,8 @@ def print_compare_writer(doc_file,
     out += [u'']
 
     # print side-by-side view
-    original_out = doc.strip().decode('utf-8').split('\n')
-    generated_out = result.strip().decode('utf-8').split('\n')
+    original_out = unicode(doc.strip()).split('\n')
+    generated_out = unicode(result.strip()).split('\n')
     out += [ (u'Original ').ljust(width, '-') +u' '+ (u'Rewriter ').ljust(width, '-') ]
     while original_out or generated_out:
         p1 = u''

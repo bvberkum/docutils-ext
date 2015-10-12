@@ -645,7 +645,7 @@ class RstTranslator(AbstractTranslator):
         self.tab_content = None
         self._assure_emptyline()
 
-    def visit_option_list_item(selfh):
+    def visit_option_list_item(self):
         pass
     visit_option_list_item = _pass_visit
     depart_option_list_item = _pass_visit
@@ -722,9 +722,31 @@ class RstTranslator(AbstractTranslator):
     def visit_substitution_definition(self, node):
         self.sub_tree(node)
         self.context.increment('index')
+        self._assure_newblock()
+        self.skip_content = True
         #TODO: unicode
-        self.body.append('.. |%s| replace:: ' % node['names'][0])
+        directive = 'replace'
+        value = node.children[0]
+        if value.tagname == '#text':
+            node.rawsource = None
+            if node.rawsource:
+                value = node.rawsource.split('::')[1].lstrip()
+            else:
+                try:
+                    value.decode('ascii')
+                except UnicodeEncodeError, e:
+                    directive = 'unicode'
+                    assert len(value) == 1
+                    value = str(hex(ord(value)))
+                    #value = 'U+'+value[2:]
+        elif value.tagname == 'image':
+            directive = 'image'
+            value = value.attributes['uri']
+        self.body.append('.. |%s| %s:: ' % ( node['names'][0], directive ))
+        self.body.append(value)
+
     def depart_substitution_definition(self, node):
+        self.skip_content = False
         self.pop_tree()
         self._write_newline()
 
@@ -803,7 +825,7 @@ class RstTranslator(AbstractTranslator):
                     self._write_indented("%s: `%s`_" % (node['names'][0], refid))
                 else:
                     assert False, node
-                    self._write_indented("%s: %s_" % (node['names'][0], name))
+                    self._write_indented("%s: %s_" % (node['names'][0], names[0]))
             else:
                 self._write_indented("`")
         else:
@@ -868,6 +890,8 @@ class RstTranslator(AbstractTranslator):
 
     # Images
     def visit_image(self, node):
+        if self.in_tag('substitution_definition', '*'):
+            return
         self.sub_tree(node)
         self.context.increment('index')
         if self.in_tag('figure', '*'):
@@ -877,6 +901,8 @@ class RstTranslator(AbstractTranslator):
             self._assure_newblock()
             self._write_directive('image', node['uri'])
     def depart_image(self, node):
+        if self.in_tag('substitution_definition', '*'):
+            return
         self.pop_tree()
 
     def visit_figure(self, node):
