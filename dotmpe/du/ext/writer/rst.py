@@ -667,18 +667,20 @@ class RstTranslator(AbstractTranslator):
         self.sub_tree(node)
         self.context.increment('index')
         if not self.root and self.in_tag('figure', '*'):
-            pass
-        else:
-            if 'name' in node:
+            return
+
+        if 'name' in node:
+            return
+
+        elif 'refuri' in node:
+            if node['refuri'].startswith('mailto:') or node.astext() == node['refuri']:
                 pass
-            elif 'refuri' in node:
-                if node.astext() == node['refuri']:
-                    pass
-                else:
-                    self._write_indented('`')
-            elif 'refid' in node:
+            else:
                 self._write_indented('`')
-                #self.debugprint(node)
+
+        elif 'refid' in node:
+            self._write_indented('`')
+            #self.debugprint(node)
 
     def depart_reference(self, node):
         if self.in_tag('figure', '*'):
@@ -688,7 +690,7 @@ class RstTranslator(AbstractTranslator):
             if 'name' in node:
                 self.body.append('_')
             elif 'refuri' in node:
-                if node.astext() == node['refuri']:
+                if node['refuri'].startswith('mailto:') or node.astext() == node['refuri']:
                     pass
                 elif 'anonymous' in node:
                     self.body.append('`__')
