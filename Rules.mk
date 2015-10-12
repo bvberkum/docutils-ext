@@ -178,6 +178,27 @@ var/%.pxml: var/%.txt
 #	@-tidy -q -xml -utf8 -w 0 -i -m $@
 #
 
+doc-test:
+	sphinx-apidoc dotmpe -o pydoc/source
+	find ./ -iname '*.rst' -not -path '*pydoc*' | while read path; \
+	do \
+	  mkdir -vp pydoc/source/$$(dirname $$path); \
+	  cp $$path pydoc/source/$$path; \
+	done;
+	cd pydoc; make coverage doctest linkcheck
+
+docs:
+	sphinx-apidoc dotmpe -o pydoc/source
+	find ./ -iname '*.rst' -not -path '*pydoc*' | while read path; \
+	do \
+	  mkdir -vp pydoc/source/$$(dirname $$path); \
+	  cp $$path pydoc/source/$$path; \
+	done;
+	cd pydoc; make html
+
+
+
+
 #      ------------ -- 
 include                $(MK_SHARE)Core/Main.dirstack-pop.mk
 # vim:noet:
