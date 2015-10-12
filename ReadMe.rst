@@ -279,5 +279,5 @@ Log
    :trim:
 .. |copy| unicode:: 0xA9 .. copyright sign
 .. |tm| unicode:: U+02122 .. trademark sign
-
+.. |date| replace:: Date!
 

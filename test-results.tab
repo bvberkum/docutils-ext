@@ -1,3 +1,15 @@
 # Date, Host, Branch, Revision, Testsuite, Passed, Errors
 1427507090, simza, dev, eb67f86b8e6efcf5e2fdb22722d59990b03e147b, test, 59, 0, 9
 1437967202, simza, dev, 3268de48dd4e2a88587b87b093ae081d0227bf88, test, 59, 0, 9
+1444542024, simza, test-rstwriter, 624c626eb4e20c445eaeedc8010547fd977302aa, test, 61, 0, 8
+1444620773, simza, test-rstwriter, c3b7e849295bbd030c0337dd8b4dfbae34f27737, test, 62, 0, 9
+1444621792, simza, test-rstwriter, c3b7e849295bbd030c0337dd8b4dfbae34f27737, test, 0, 0, 0
+1444621832, simza, test-rstwriter, c3b7e849295bbd030c0337dd8b4dfbae34f27737, test, 0, 0, 0
+1444621866, simza, test-rstwriter, c3b7e849295bbd030c0337dd8b4dfbae34f27737, test, 61, 0, 7
+1444622041, simza, test-rstwriter, c3b7e849295bbd030c0337dd8b4dfbae34f27737, test, 0, 0, 0
+1444622071, simza, test-rstwriter, c3b7e849295bbd030c0337dd8b4dfbae34f27737, test, 61, 0, 0
+1444622149, simza, test-rstwriter, c3b7e849295bbd030c0337dd8b4dfbae34f27737, test, 0, 0, 0
+1444622198, simza, test-rstwriter, c3b7e849295bbd030c0337dd8b4dfbae34f27737, test, 19, 0, 42
+1444622452, simza, test-rstwriter, c3b7e849295bbd030c0337dd8b4dfbae34f27737, test, 41, 0, 20
+1444622610, simza, test-rstwriter, c3b7e849295bbd030c0337dd8b4dfbae34f27737, test, 60, 0, 1
+1444622632, simza, test-rstwriter, c3b7e849295bbd030c0337dd8b4dfbae34f27737, test, 61, 0, 0
