@@ -1,3 +1,7 @@
+"""
+See ReadMe 'testing' section for some docs.
+"""
+
 import sys
 
 import init
@@ -11,10 +15,10 @@ def create_lossy_pxml_compare_tests(tag, files):
         testcase_name = mkclassname(rst_file)
 
         # Lossy
-        
+
         TestCase = new_writer_testcase(tag, testcase_name, rst_file, True)
         if rst_file.endswith('demo.rst'):
-            TestCase.corrupt_sources = [rst_file]
+            TestCase.corrupt_sources += [rst_file]
         setattr(sys.modules[__name__], testcase_name, TestCase)
 
 
@@ -27,7 +31,9 @@ def create_lossess_compare_tests(files):
 
         TestCase = new_writer_testcase(testcase_name, rst_file, False)
         if rst_file.endswith('demo.rst'):
-            TestCase.corrupt_sources = [rst_file]
+            TestCase.corrupt_sources += [rst_file]
+        if rst_file.endswith('bug.rst'):
+            TestCase.corrupt_sources += [rst_file]
         setattr(sys.modules[__name__], testcase_name, TestCase)
 
 

@@ -1,0 +1,7 @@
+docutils
+sqlalchemy
+#sqlite3
+coverage
+#nabu
+roman
+uriref

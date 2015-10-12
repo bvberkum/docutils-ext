@@ -1,11 +1,9 @@
 """
 Test dotmpe.du.ext.extractor..
 
-The DBAPI-2.0 connection Storage wrapper in nabu looks like
-a PostrgreSQL wrapper really.
+The DBAPI-2.0 connection Storage wrapper in nabu looks like a PostrgreSQL wrapper really.
 
-
-
+TODO: just the beginning of extractor testing.
 
 """
 import os
@@ -20,8 +18,8 @@ class TestStorage( SQLiteExtractorStorage ):
 
     sql_relations_unid = [
         ('test_table', 'TABLE', '''
-            CREATE TABLE test_table ( 
-                unid VARCHAR PRIMARY KEY, 
+            CREATE TABLE test_table (
+                unid VARCHAR PRIMARY KEY,
                 label VARCHAR NOT NULL
             )
         '''), ]
@@ -49,7 +47,7 @@ class StorageTest(unittest.TestCase):
 
         store.clear()
         self.assertEquals( len( c.fetchall() ), 0 )
-        
+
         os.unlink( dbref )
 
 

@@ -35,12 +35,14 @@ logdirs = [
 
 
 def get_session(dbref, initialize=False, metadata=SqlBase.metadata):
+    print "dbref =", dbref
     engine = create_engine(dbref)
     metadata.bind = engine
     if initialize:
-        log.info("Applying SQL DDL to DB %s..", dbref)
-        metadata.create_all()  # issue DDL create 
-        log.note('Updated schema for %s to %s', dbref, 'X')
+        logger = get_log(__name__)
+        logger.debug("Applying SQL DDL to DB %s..", dbref)
+        metadata.create_all()  # issue DDL create
+        logger.info('Updated schema for %s to %s', dbref, 'X')
     session = sessionmaker(bind=engine)()
     return session
 
@@ -48,7 +50,7 @@ def get_session(dbref, initialize=False, metadata=SqlBase.metadata):
 def new_document(source_path, settings=None):
     if settings is None:
         settings = frontend.OptionParser().get_default_values()
-    return utils.new_document(source_path, settings=settings)        
+    return utils.new_document(source_path, settings=settings)
 
 
 def merge(d, **kwds):
@@ -76,6 +78,7 @@ def merge_level(d, *args, **kwds):
     """
     Update and/or return dictionary found in `d` by keys provided in `args`.
     """
+    args = list(args)
     while args:
         d = d[args.pop()]
     if kwds:
@@ -109,7 +112,7 @@ def parse_nested_list(tree, split, branch, item):
     - - item 2.1
       - item 2.2
       - - - item 2.3.1.1.1
-    - item 3  
+    - item 3
     """
     for sub in split(tree):
         if branch(sub[0]):
@@ -126,7 +129,7 @@ def parse_nested_list_with_headers(tree, split, branch, head, item):
 
         - leaf 1.1.1
 
-      - leaf 1.2  
+      - leaf 1.2
 
     - branch 2
 
@@ -148,12 +151,12 @@ def is_du_list(node):
 
 def is_du_headed_list(itemnode):
     return len(itemnode)==2 and isinstance(itemnode[0], nodes.paragraph) and\
-            is_du_list(itemnode[1]) 
+            is_du_list(itemnode[1])
 
 def du_nested_list_header(itemnode):
     return itemnode[0], itemnode[1]
 
-def find_first_element(node, node_class):    
+def find_first_element(node, node_class):
     while node:
         if isinstance(node, nodes.Element) and len(node) \
                 and not isinstance(node, node_class):
@@ -181,7 +184,7 @@ def du_astext(node):
 
 def du_unicode(node):
     "Return unicode, collapsed whitespace. "
-    return re.sub('\s+', ' ', du_astext(node)).strip()  
+    return re.sub('\s+', ' ', du_astext(node)).strip()
 
 def du_str(node, charset='ascii'):
     "Return string (default: ascii), collapsed whitespace. "
@@ -247,8 +250,8 @@ def validate_context(setting, value, option_parser):
     if 'host' not in gd or not gd['host']:
         raise ValueError("Context is missing host name: %s" % value)
     return value
-    
-# XXX: dotmpe du ext form validator    
+
+# XXX: dotmpe du ext form validator
 def v_absolute_uriref(data, proc=None):
     import uriref
     if not data:
@@ -266,7 +269,7 @@ def du_reference(node):
     rnode = find_first_element(node, nodes.reference)
     if not rnode:
         return None
-    elif not isinstance(rnode, nodes.reference):        
+    elif not isinstance(rnode, nodes.reference):
         raise ValueError, "expected reference, not %r. " % rnode
     span = du_str(rnode)
     href = du_uri_reference(rnode['refuri'])
@@ -279,7 +282,7 @@ def du_flag(node):
 
 def null_conv(datatype=str, conv=None):
     """
-    Create convertor for NoneType instances to type-specific empty instances. 
+    Create convertor for NoneType instances to type-specific empty instances.
     (Those for which ___nonzero__ == False holds)
 
     The convertor accepts a Node or string. Param `conv` may be provided for
@@ -401,8 +404,8 @@ def nonzero_validator(vdscr):
     def validate_nonzero(arg, proc=None):
         if not arg:
             raise ValueError, "you must enter %s." % vdscr
-        return True        
-    return validate_nonzero        
+        return True
+    return validate_nonzero
 
 # Unused
 def regex_validator(pattern, failmsg="invalid value: %(value)s", force=False):
@@ -466,7 +469,7 @@ def validate_cs_list(setting, value, option_parser):
     return ls
 
 
-def form_field_spec(value): 
+def form_field_spec(value):
     " Parse option value to spec for FormField construct.  "
     'id[,descr];type[;require[,append[,editable[,disabled]]]][;vldtors,]'
     partcnt = value.count(':')
@@ -493,7 +496,7 @@ def form_field_spec(value):
             raise "Spec attributes out of bound. " # parsing error
     if parts:
         vldtor_part = parts.pop(0)
-        kwds['validators'] = vldtor_part.split(',')        
+        kwds['validators'] = vldtor_part.split(',')
     return (field_id, convertorname), kwds
 
 def opt_form_field_spec(setting, value, option_parser):
@@ -515,7 +518,7 @@ def component_name(obj, strip_module=True):
         clssobj = obj.__class__
     cname = clssobj.__module__ +'.'+ clssobj.__name__
     # XXX: less confusing when uses (canonical) alias?
-    # XXX: Builder class scope is always lost. 
+    # XXX: Builder class scope is always lost.
     if strip_module:
         p = clssobj.__module__.rfind('.')
         #p = clssobj.__module__[p+1].rfind('.')
@@ -553,7 +556,7 @@ data_convertor = {
     'href': du_uri_reference,
     'ref': du_reference,
     'yesno': du_yesno,
-    #'timestamp': conv_timestamp, 
+    #'timestamp': conv_timestamp,
     #'isodate': conv_iso8801date,
     #'rfc822date': conv_rfc822date,
     # list types
@@ -573,7 +576,7 @@ def get_convertor(type_name):
     if ',' in type_name:
         complextype_names = type_name.split(',')
         basetype = data_convertor[complextype_names.pop(0)]
-        return basetype + tuple([ data_convertor[n] 
+        return basetype + tuple([ data_convertor[n]
                 for n in complextype_names ])
     else:
         return data_convertor[type_name]
@@ -582,7 +585,7 @@ validators = {
     'absolute-uri': v_absolute_uriref,
     #'href': du_reference,
     'email': v_email,
-    #'timestamp': conv_timestamp, 
+    #'timestamp': conv_timestamp,
     #'isodate': conv_iso8801date,
     #'rfc822date': conv_rfc822date,
 }
@@ -702,12 +705,12 @@ def extract_extension_options(fields, options_spec, raise_fail=True, errors=[]):
 def extract_field_name(field_name):
     name = re.sub('[^\w]+', '-', field_name.astext())
     return name
+"""
 # Du impl.
     if len(field[0].astext().split()) != 1:
         raise BadOptionError(
             'extension option field name may not contain multiple words')
     name = str(field[0].astext().lower())
-
 
 # Du impl.
     body = field[1]
@@ -721,6 +724,7 @@ def extract_field_name(field_name):
     else:
         data = body[0][0].astext()
 
+"""
 """
 Errors from parsing field-lists as options.
 """
@@ -885,7 +889,7 @@ def get_log(
         ch.setFormatter(formatter)
         logger.addHandler(ch)
 
-    return logger 
+    return logger
 
 
 class DatabaseConnectionError(Exception):

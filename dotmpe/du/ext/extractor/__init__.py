@@ -5,7 +5,7 @@ Interface::
 
     class Extractor(docutils.transforms.Transform):
         @classmethod
-        def init_parser(cls): 
+        def init_parser(cls):
             pass
         def apply(self, **kwargs):
             pass
@@ -27,9 +27,10 @@ Types come from:
 - Django and its db model.
 - GAE or Google app-engine big table datastore models.
 
-A transient storage type is defined here, as superclass for     
+A transient storage type is defined here, as superclass for
 for extractor modules, such as the ``form`` extractor?
 """
+
 from itertools import chain
 
 from dotmpe.du import util
@@ -43,6 +44,7 @@ from nabu.extract import \
 logger = util.get_log(__name__)
 
 class TransientStorage(extract.ExtractorStorage):
+
     "This keeps all extracted data on the instance. "
 
     def __init__(self, init={}, datakey='_storage', specs=None):

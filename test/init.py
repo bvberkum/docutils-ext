@@ -2,7 +2,8 @@ import sys, os, glob
 
 
 # add dotmpe to import path
-PROJ_ROOT = os.path.dirname(os.path.dirname(__file__))
+PROJ_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, PROJ_ROOT)
 PROJ_LIB = os.path.join(PROJ_ROOT, 'lib')
 sys.path.insert(0, PROJ_LIB)
 
@@ -30,7 +31,7 @@ RST_COMMON.sort()
 sys.path.insert(0, os.path.join(PROJ_LIB, 'docutils-lossless', 'writers'))
 # XXX: access extension module directly
 try:
-    LOSSLESS_WRITER = __import__('rst') 
+    LOSSLESS_WRITER = __import__('rst')
 except ImportError, e:
     print "test.init: Cannot find lossless-rst-writer:", e
     sys.exit(1)
@@ -40,7 +41,7 @@ except ImportError, e:
 ACW_DOC_FILES = filter(os.path.getsize,
         glob.glob(os.path.join('var', 'test-confluence.*.txt'))
     )
-ACW_DOC = [ (doc_file, doc_file.replace(".txt", ".pxml")) 
+ACW_DOC = [ (doc_file, doc_file.replace(".txt", ".pxml"))
         for doc_file in ACW_DOC_FILES]
 "Atlassian Confluence Wiki test documents and expected PXML. "
 
@@ -55,7 +56,7 @@ MW_DOC = filter(os.path.getsize,
 SMF_DOC_FILES = filter(os.path.getsize,
         glob.glob(os.path.join('var', 'test-simpleformat.*.txt'))
     )
-SMF_DOC = [ (doc_file, doc_file.replace(".txt", ".pxml")) 
+SMF_DOC = [ (doc_file, doc_file.replace(".txt", ".pxml"))
         for doc_file in SMF_DOC_FILES ]
 "Simple format (simpleformat) plain text markup test files for Du reader/parser/writer experimentation. "
 
@@ -63,6 +64,6 @@ SMF_DOC = [ (doc_file, doc_file.replace(".txt", ".pxml"))
 SMF_DOC_FILES = filter(os.path.getsize,
         glob.glob(os.path.join('var', 'test-*-simpleformat.txt'))
     )
-SMF_DOC = [ (doc_file, doc_file.replace(".txt", ".pxml")) 
+SMF_DOC = [ (doc_file, doc_file.replace(".txt", ".pxml"))
         for doc_file in SMF_DOC_FILES ]
 ""

@@ -1,5 +1,7 @@
 """
 dotmpe.du.frontend Module tests
+
+TODO: frontend tests for command-line options. Works, but really no test-data. Need to inspect lot of files and get the options to look for.
 """
 
 import sys
@@ -16,9 +18,9 @@ class Builder(builder.Builder):
 
     class Reader(readers.Reader):
         settings_spec = (
-            'My Reader', 
+            'My Reader',
             "My Description",
-            () 
+            ()
         )
 
 
@@ -31,7 +33,7 @@ class FrontendTest(unittest.TestCase):
         """
 
         out, sys.stdout = sys.stdout, StringIO()
-        #  Maybe parse output again. 
+        #  Maybe parse output again.
         # TODO: Verify My Reader is in there
         try:
             builder = Builder()

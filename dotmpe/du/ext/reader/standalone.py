@@ -1,6 +1,6 @@
 """
-An Du Reader component with all settings and transforms of the 
-normal standalone reader, plus new extensions. 
+An Du Reader component with all settings and transforms of the
+normal standalone reader, plus new extensions.
 
 Perhaps name this standalone, or find some scheme to dereference links.
 """
@@ -12,7 +12,7 @@ from dotmpe.du.ext.transform import template, generate, include, user, clean,\
 
 
 #MyPHPTemplate = template.TemplateSubstitutions
-#MyPHPTemplate.blocks = 
+#MyPHPTemplate.blocks =
 #MyPHPTemplate.format = ""
 
 
@@ -22,6 +22,12 @@ class Reader(readers.Reader):
     Reader with many transforms in priority range of 20 to 900.
     """
 
+    supported = ('standalone-mpe', 'mpe')
+    """Contexts this reader supports."""
+
+    document = None
+    """A single document tree."""
+
     settings_spec = (
             '.mpe Reader',
             'Standard \'standalone\' reader with extended set of transforms. ',
@@ -29,7 +35,7 @@ class Reader(readers.Reader):
             standalone.Reader.settings_spec[2] +
             user.UserSettings.settings_spec +
             include.Include.settings_spec +
-            #include.RecordDependencies.settings_spec + 
+            #include.RecordDependencies.settings_spec +
             #template.TemplateSubstitutions.settings_spec +
             generate.PathBreadcrumb.settings_spec +
             generate.Timestamp.settings_spec +

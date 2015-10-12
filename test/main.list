@@ -1,3 +1,5 @@
+# These correspond to python modules in dir ./test
+# See test/main.py
 comp
 builder
 frontend

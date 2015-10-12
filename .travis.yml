@@ -1,0 +1,43 @@
+language: python
+
+sudo: false
+
+python:
+  - "2.6"
+#  - "2.7"
+
+branches:
+  only:
+  - test
+  - test-rstwriter
+  - '/^[0-9]*\.[0-9]*\.[0-9]*/'
+
+env:
+  - ENV= M=comp
+  - ENV= M=builder
+  - ENV= M=frontend
+  - ENV= M=build
+
+install:
+#- "pip install ."
+- "pip install -r requirements.txt"
+- ./build/rebuild-lib-links.sh $HOME/src
+- ./build/docutils-checkout.sh
+- ./build/nabu-checkout.sh
+- ls -la $HOME/src/python-docutils
+- ls -la $HOME/src/python-docutils/docutils-svn/
+- ls -la $HOME/src/python-docutils/docutils-svn/branches
+- ls -la lib/
+- ls -la lib/docutils-lossless/
+
+script: 
+- coverage run --source=dotmpe test/main.py $M
+
+
+# Default travis Python build:
+#
+#install:
+#  - "pip install ."
+#  - "pip install -r requirements.txt"
+#
+#script: nosetests

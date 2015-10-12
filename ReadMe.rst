@@ -1,12 +1,31 @@
 Docutils extensions
 ===================
-:author: Berend (dotmpe)
+:Created: Aug. 2009
+:Updated: Oct. 2015
 
-My collection of extensions for Python docutils.
+:Status:
 
+  .. image:: https://secure.travis-ci.org/dotmpe/docutils-ext.png?branch=test
+    :target: https://travis-ci.org/dotmpe/docutils-ext/branches
+    :alt: Build
+
+  .. image:: https://badge.fury.io/gh/dotmpe%2Fdocutils-ext.png
+    :target: http://badge.fury.io/gh/dotmpe%2Fdocutils-ext
+    :alt: GIT
+
+
+:rST writer:
+
+  .. image:: https://secure.travis-ci.org/dotmpe/docutils-ext.png?branch=test-rstwriter
+    :target: https://travis-ci.org/dotmpe/docutils-ext/branches
+    :alt: Build
+
+
+Collection of extensions on Python docutils.
 This document attempts to present an overview of the project tree.
-First a description is given of the command-line utilities in tools/,
-second a list summary is given of the source code, whose main files will be
+
+A description is given of the command-line utilities in tools/,
+then a list summary is given of the source code, whose main files will be
 documented themselves. Lastly a global log and list of further references 
 follows.
 
@@ -15,7 +34,7 @@ follows.
 Utilities
 ---------
 ``tools/build.py``
-  Can be symlinked to any publisher wanted, ie. rst2latex, etc.  
+  Can be symlinked to any publisher wanted, ie. rst2latex, etc.
 
   This should be the main entry point, but ``dupub.py`` (docutils publisher with
   extensions) may be (more) functional..
@@ -136,11 +155,42 @@ Testing
 
   make test
 
-runs some of the modules in ``test/``. See ``test/main.list``.
+runs some of the modules in ``test/``. See ``test/main.list`` for which.
+
+The main development is at the rST writer. All test files are located in ``./var``,
+basicly the bulk of the tests are based on comparison of output from the Du publisher.
+
+This is the simplest way to test for absolute equivalent documents, ie.
+'lossless' publisher transormations. But that is quite a requirement, and probably
+only applies to the ``rst2rst`` chain. I think fully lossless representation at this point should be considered more of a convenience than requirement\ [*]_. The 'lossless' test approach is however suited to test the behaviour of chains of Parser, Reader, and Transform components when used with the ``pseudoxml`` writer.
+
+So for testing of a document publisher, a check for all the content from the
+source manuscript is the first device to have. What we really need is a Xanadu-esque
+demuxer, to tell us which are the metacharacters, and what the corpus\ [*]_.
+Maybe a writer that only picks out the character-data is something to be
+explored for testing.
+
+Until then, the main body of tests is run by the ``rstwriter`` module, running over all files from ``var/*.rst``. Test files are named and divided into seperate syntax topics.
+
+Lossy tests are implemented by re-parsing the rST output, and doing (trying) a compare of the AST content and public attributes by generating and diff'ing the pseudoxml for both source and generated document. Iow. the test requires 3 publish actions, one of which the actually subject of test |---| that has the rST Writer component.
 
 
-The main development is at the rST writer. The module is used as a crude 
-test script during bugfixing::
+.. [*] It will quite possibly require additional properties on the AST to support true lossless ``rst-to-rst``, since not all rST syntax choices are of consequences in other representations (ie. indentation depths). Rather, a rst2rst publisher may serve to normalize formatting, and also to run some transforms to reorder, renumber, rename, cross-reference, etc.
+
+.. [*] But we don't have one of those really. Until there is established and
+   accepted one, while virtually all modern virtual representation is an 
+   inseperable mix of text and context.
+
+   The functionality of 'hyper'-text was defined long ago, as the relation of
+   arbitrary spans of text. Three sets of them: the subject, predicate and object.
+   This radically abstract method of hyperlinking is essentially what Xanadu '88 (now known as Green) was.
+
+   .. It is from such interoperable base, that an entirely new medium can arise of
+      not seen before level of expression. And it will be screaming for consencus,
+      for acception and rejection, sharing and keeping, generalizing or specifying.
+
+
+The module is used as a crude test script during bugfixing::
 
   python dotmpe/du/ext/writer/rst.py [\*.rst]
 
@@ -203,6 +253,16 @@ Log
   - Taking up Builder.process again for ~/htdocs.
     Started working on setup-file too, and considering Sitefile concept.
 
+2015-03-28
+  - Set up Sitefile_ as a Node.JS project. Maybe require Py Du extensions later
+    but for now writing the concept there in JS/Coffee-Script. 
+    
+    Not really a builder. A frontend. Maybe a HTTP publisher, but it has no real builder or
+    publisher component.
+    Perhaps, rename it to Expressfile.
+
+    Maybe want to investigate sitebuilder concept, ``wget -r`` and some patches would
+    seem to suffice though.
 
 
 .. __: doc/links.rst
@@ -213,4 +273,11 @@ Log
 .. _Blue Lines: http://blue-lines.appspot.com/
 .. _docs: doc/main.rst
 .. _Du/rST examples: examples/main.rst
+.. _Sitefile: //github.com/dotmpe/node-sitefile
+
+.. |---| unicode:: U+02014 .. em dash
+   :trim:
+.. |copy| unicode:: 0xA9 .. copyright sign
+.. |tm| unicode:: U+02122 .. trademark sign
+
 
