@@ -2,8 +2,7 @@ Docutils extensions
 ===================
 :Created: Aug. 2009
 :Updated: Oct. 2015
-
-:Status:
+:Test:
 
   .. image:: https://secure.travis-ci.org/dotmpe/docutils-ext.png?branch=test
     :target: https://travis-ci.org/dotmpe/docutils-ext/branches
@@ -12,7 +11,6 @@ Docutils extensions
   .. image:: https://badge.fury.io/gh/dotmpe%2Fdocutils-ext.png
     :target: http://badge.fury.io/gh/dotmpe%2Fdocutils-ext
     :alt: GIT
-
 
 :rST writer:
 
@@ -31,37 +29,18 @@ follows.
 
 .. contents::
 
-Utilities
+
+Features
 ---------
-``tools/build.py``
-  Can be symlinked to any publisher wanted, ie. rst2latex, etc.
+Utilities
+  - Command line user tools.
 
-  This should be the main entry point, but ``dupub.py`` (docutils publisher with
-  extensions) may be (more) functional..
+rST Extensions
+  - Additional Du components.
 
-Development
------------
+rST Writer
+  - Work in progress lossy rST writer for rst2rst publish.
 
-Completed
-'''''''''
-- Left- and right-margin decoration.
-- Various document transforms and additional document settings (with
-  command-line options). See `Transforms`_ (``dotmpe.du.ext.transform``).
-- These transforms are used by ``dotmpe.du.ext.reader.mpe.``\ `Reader`.
-- Several Nabu `Extractor`, `Storage` pairs, see `Extractors`_ (``dotmpe.du.ext.extractor``) but nothing complex yet.
-- `rST forms`_ framework.
-  Use rST documents as forms, but gotten a bit out of use and no unittests.
-  The implementation includes retrieving data from a document according to the
-  `form specification`, which includes type conversion and value validation.
-- Monkey patched ``docutils.{readers,parser,writers}.get_*_class()`` to load
-  components from my lib. Enable 'extension' by importing ``dotmpe.du.ext``.
-
-In progress
-'''''''''''
-- ``dotmpe.du.builder`` has some packages with specific Reader/Parser/Writer
-  component configurations, but frontend is undergoing work.
-- Front-end development in `Blue Lines`_. Simplified frontend for NodeJS.
-- rST rewriter.  
 
 ToDo
 ''''
@@ -82,9 +61,11 @@ ToDo
 -  rST directives for breadcrumbs, testing etc? options?
 - `Issues`_
 
+
 Devel
 ''''''''''
-- `Docs`_
+-  Started docs per feature, to document specs, work to test scenarios.
+-  Fix accum. cruft in `Docs`_
 -  Validation. Relax-NG?
 -  I'd like an alternative (even less vertically hungry) markup for titles.
    What about ``=== title`` or ``= title =`` block formats. Nice and short
@@ -97,41 +78,41 @@ Devel
    a perhaps lossy representation? I think it loses some things, should keep
    track during rstwriter devel.
 
-Branches
-''''''''
-GIT
-  master
-    all development happened here until dev was branched.
-  dev
-    Sort of the master now. Testing only functional stuff, may be deceptive as
-    not everything is unit/systemtested?
 
-    :tests: 8 OK
+Branch docs
+'''''''''''
+master
+  all development happened here until dev was branched.
+dev
+  Sort of the master now. Testing only functional stuff, may be deceptive as
+  not everything is unit/systemtested?
 
-    dev_rstwriterobjects
-      separate development branch for rstwriter restructuring, 
-      trying to OO-ify and add some elegance.
+  :tests: 8 OK
 
-      :test: 57; 25 failures, 2 errors
+  dev_rstwriterobjects
+    separate development branch for rstwriter restructuring, 
+    trying to OO-ify and add some elegance.
 
-    dev_simplemuxdem
-      trying a lossless read/write using the rST SM base with a 
-      simple text format, to understand the rSt parser statemachine.
+    :test: 57; 25 failures, 2 errors
 
-      :tests: 2 OK
+  dev_simplemuxdem
+    trying a lossless read/write using the rST SM base with a 
+    simple text format, to understand the rSt parser statemachine.
 
-      Abandoned while I do get more insight into the rSt parser
-      machinery.
+    :tests: 2 OK
 
-    dev_form
-      Splitting topic of dev for separate testing. Possibly a few hacks while
-      core/frontend is in flux.
+    Abandoned while I do get more insight into the rSt parser
+    machinery.
 
-    dev_rstwriter
-      While things left to be desired before finishing dev_rstwriterobjects,
-      implement and test reStructuredText writer.
+  dev_form
+    Splitting topic of dev for separate testing. Possibly a few hacks while
+    core/frontend is in flux.
 
-      :tests: 66, 9 failed
+  dev_rstwriter
+    While things left to be desired before finishing dev_rstwriterobjects,
+    implement and test reStructuredText writer.
+
+    :tests: 66, 9 failed
 
 rST writer
 ----------
@@ -215,57 +196,10 @@ Dependencies
 
 Log
 -----
-2009 September
-  - Starting my own project for use with `Blue Lines`_, 
-    custom 'margin' directives and HTML writer components.
-
-2010-11-04
-  Stefan Merten published his xml2rST and included an installer.
-  He also has rST2gxl 'producing GXL which can be transformed to dot'
-  and rST2diff 'comparing two input files producing a marked up difference
-  output'.
-
-2010-12-01
-  - Integrating figure label patch by Alex @ du mailinglist.
-  - Created subclass of latex2e writter for this.
-
-2011-01-12
-  - Added summary directive and table attribute to comply with HTML4.
-  - Made `write-up on link relations in reStructuredText`__.
-
-2011-04-16
-  - Updated testing so dynamic test cases (generated from file) are handled as
-    usual by unittest.main, no more need to aggregate testsuites.
-    Lossless testing is disabled for now.
-
-2013 November
-  - Retaking to development. 
-  - Adding new tests. First unnittests for builder. 
-    Need frontent/CLI system tests.
-  - Splitting testing and non-functional stuff to sep. branches.
-  - Adding build log and validation for test markup files.
-    There should not be any log files in ``var/`` otherwise some test-file does not
-    completely check out (``rm var/test-rst*.log && make test-validate-files``).
-
-    Should clean/check out ``examples/`` too.
-
-2014 August
-  - Taking up Builder.process again for ~/htdocs.
-    Started working on setup-file too, and considering Sitefile concept.
-
-2015-03-28
-  - Set up Sitefile_ as a Node.JS project. Maybe require Py Du extensions later
-    but for now writing the concept there in JS/Coffee-Script. 
-    
-    Not really a builder. A frontend. Maybe a HTTP publisher, but it has no real builder or
-    publisher component.
-    Perhaps, rename it to Expressfile.
-
-    Maybe want to investigate sitebuilder concept, ``wget -r`` and some patches would
-    seem to suffice though.
+.. include:: ./journal.rst
 
 
-.. __: doc/links.rst
+
 .. _Issues: Issues.rst
 .. _rST forms: `docs`_
 .. _Transforms: doc/transforms.rst
