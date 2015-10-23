@@ -1,0 +1,7 @@
+Dev
+  Embedded
+    ..
+  Barebone
+    ..
+  Web
+    ..

@@ -4,6 +4,7 @@
 :build: @MK_BUILD
 :root: @MK_ROOT
 
+
 .. figure:: /.build/project/docutils-ext/doc/builder-sequence.svg
   :target: /project/docutils-ext/doc/builder-sequence.pic
 
@@ -50,6 +51,7 @@ See Components.rst#rst-forms-spec
 
 Forms allow for ``fields_spec`` which is used on the document tree like ``settings_spec`` is on argv.
 Enable validation, feedback and more structured definitions of extractors.
+
 
 Directives
 ''''''''''

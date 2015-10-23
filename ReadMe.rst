@@ -31,37 +31,18 @@ follows.
 
 .. contents::
 
-Utilities
+
+Features
 ---------
-``tools/build.py``
-  Can be symlinked to any publisher wanted, ie. rst2latex, etc.
+Utilities
+  - Command line user tools.
 
-  This should be the main entry point, but ``dupub.py`` (docutils publisher with
-  extensions) may be (more) functional..
+rST Extensions
+  - Additional Du components.
 
-Development
------------
+rST Writer
+  - Work in progress lossy rST writer for rst2rst publish.
 
-Completed
-'''''''''
-- Left- and right-margin decoration.
-- Various document transforms and additional document settings (with
-  command-line options). See `Transforms`_ (``dotmpe.du.ext.transform``).
-- These transforms are used by ``dotmpe.du.ext.reader.mpe.``\ `Reader`.
-- Several Nabu `Extractor`, `Storage` pairs, see `Extractors`_ (``dotmpe.du.ext.extractor``) but nothing complex yet.
-- `rST forms`_ framework.
-  Use rST documents as forms, but gotten a bit out of use and no unittests.
-  The implementation includes retrieving data from a document according to the
-  `form specification`, which includes type conversion and value validation.
-- Monkey patched ``docutils.{readers,parser,writers}.get_*_class()`` to load
-  components from my lib. Enable 'extension' by importing ``dotmpe.du.ext``.
-
-In progress
-'''''''''''
-- ``dotmpe.du.builder`` has some packages with specific Reader/Parser/Writer
-  component configurations, but frontend is undergoing work.
-- Front-end development in `Blue Lines`_. Simplified frontend for NodeJS.
-- rST rewriter.
 
 ToDo
 ''''
@@ -82,9 +63,11 @@ ToDo
 -  rST directives for breadcrumbs, testing etc? options?
 - `Issues`_
 
+
 Devel
 ''''''''''
-- `Docs`_
+-  Started docs per feature, to document specs, work to test scenarios.
+-  Fix accum. cruft in `Docs`_
 -  Validation. Relax-NG?
 -  I'd like an alternative (even less vertically hungry) markup for titles.
    What about ``=== title`` or ``= title =`` block formats. Nice and short
