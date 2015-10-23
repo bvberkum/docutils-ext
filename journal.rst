@@ -23,8 +23,8 @@
     Lossless testing is disabled for now.
 
 2013 November
-  - Retaking to development. 
-  - Adding new tests. First unnittests for builder. 
+  - Retaking to development.
+  - Adding new tests. First unnittests for builder.
     Need frontent/CLI system tests.
   - Splitting testing and non-functional stuff to sep. branches.
   - Adding build log and validation for test markup files.
@@ -47,6 +47,10 @@
 
     Maybe want to investigate sitebuilder concept, ``wget -r`` and some patches would
     seem to suffice though.
+
+2015-10-23
+  - Tried out Behat which is great. But PHP and does not fly on travis.
+    Maybe a python solution is called for. Should look at gherkin3.
 
 
 .. __: doc/links.rst

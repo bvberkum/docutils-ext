@@ -27,7 +27,7 @@ install:
 - ls -la $HOME/src/python-docutils/docutils-svn/branches
 - ls -la lib/
 - ls -la lib/docutils-lossless/
-- composer.phar install
+- composer install
 
 script: 
 - coverage run --source=dotmpe test/main.py $M
