@@ -3,6 +3,7 @@ Docutils extensions
 :Created: Aug. 2009
 :Updated: Jun. 2016
 :Version: 0.0.1
+
 :Status:
 
   .. image:: https://secure.travis-ci.org/dotmpe/docutils-ext.png?branch=test
@@ -79,6 +80,7 @@ Devel
 -  Is the XML tree the complete representation whereof the rST is a variant,
    a perhaps lossy representation? I think it loses some things, should keep
    track during rstwriter devel.
+
 
 Branches
 ''''''''
