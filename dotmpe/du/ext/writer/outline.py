@@ -12,7 +12,7 @@ import roman
 from optparse import Values
 
 from docutils import nodes, writers
-
+from dotmpe.du.ext.writer.rst import ContextStack
 
 
 __docformat__ = 'reStructuredText'
@@ -85,68 +85,56 @@ class OutlineExtractor(nodes.SparseNodeVisitor):
         nodes.NodeVisitor.__init__(self, document)
         self.data = {}
         "Dist-n-list struct for return JSON"
-        self.current_element = {}
-        "Dict for current element. "
-        self.previous_elements = []
-        "Stack for parent elements. "
-        if element == 'section':
-            self.visit_section = self.continue_outline
-            self.visit_title = self.capture_label
-            self.visit_subtitle = self.continue_label
-            self.depart_section = self.flush_outline
-        elif element == 'definition':
-            self.visit_definition_list_item = self.continue_outline
-            self.visit_term = self.capture_label
-            self.depart_definition_list_item = self.flush_outline
+
+        self.context = ContextStack(defaults={
+            'path': [],
+            'element': None
+        })
+
 
     def astext(self):
         return str(self.data)
 
-    def continue_outline(self, node):
-
-        """
-        If in previous element (or root), start new outline. Otherwise
-        continue where left off.
-        """
-
-        print 'start', node.tagname
-
-        if not self.previous_elements or is_parent( self.previous_elements[-1], node ):
-            self.current_element = {}
-            if not self.data:
-                print 'no-data'
-                self.data['root'] = self.current_element
-                self.data['_id'] = 'root'
-                self.data['_label'] = 'Root'
-                self.previous_elements = [ self.data ]
-
-            else:
-                previous = self.previous_elements[-1]
-                id = previous['_id']
-                #self.previous_element =
-                previous[id] = self.current_element
-
-
-    def capture_label(self, node):
+    def visit_definition_list_item(self, node):
 
         """
         """
 
-        self.current_element['_label'] = node.astext()
+        # pylint: disable=no-member
+        self.context.path += [node]
+        # pylint: enable=no-member
 
-    def continue_label(self, node):
-        self.current_element['_label'] += ': '+ node.astext()
-
-
-    def flush_outline(self, node):
+    def visit_term(self, node):
 
         """
-        There is nothing to add to current outline, finalize.
         """
 
-        ce = self.current_element
+    def depart_term(self, node):
+
+        self.context.element['_label'] = node.astext()
+        print 'term end', node.astext(), self.context.element
+
+
+    def depart_definition_list_item(self, node):
+
+        """
+        If there was a sub-dl in the item, then now there is nothing to add to
+        it. We don't care about content otherwise.
+        Finalize by copying the current outline path to data.
+        """
+
+        # pylint: disable=no-member
+        ce = self.context.element
+        # pylint: disable=no-member
+
         ce['_id'] = nodes.make_id(ce['_label'])
-        print 'end', self.current_element, self.previous_elements
+
+        print 'end', ce, self.context.path
+
+        # pylint: disable=no-member
+        if is_parent( self.context.path[-1], node ):
+            del self.context.path
+        # pylint: disable=no-member
 
 
 def is_parent(node1, node2):
