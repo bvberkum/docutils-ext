@@ -4,6 +4,7 @@
 :build: @MK_BUILD
 :root: @MK_ROOT
 
+
 .. figure:: /.build/project/docutils-ext/doc/builder-sequence.svg
   :target: /project/docutils-ext/doc/builder-sequence.pic
 
@@ -43,13 +44,13 @@ dotmpe extensions
 
 rST Forms
 ---------
-See Components.rst#rst-forms-spec
-
+- See Components.rst#rst-forms-spec
 - rST forms. TODO: docs.
   The ``dotmpe.du.form``\ `FormProcessor`, used in transforms (``form1``) and extractors (``form2``).
 
 Forms allow for ``fields_spec`` which is used on the document tree like ``settings_spec`` is on argv.
 Enable validation, feedback and more structured definitions of extractors.
+
 
 Directives
 ''''''''''

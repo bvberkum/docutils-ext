@@ -31,13 +31,18 @@ follows.
 
 .. contents::
 
-Utilities
----------
-``tools/build.py``
-  Can be symlinked to any publisher wanted, ie. rst2latex, etc.
 
-  This should be the main entry point, but ``dupub.py`` (docutils publisher with
-  extensions) may be (more) functional..
+Features
+---------
+Utilities
+  - Command line user tools.
+
+rST Extensions
+  - Additional Du components.
+
+rST Writer
+  - Work in progress lossy rST writer for rst2rst publish.
+
 
 Development
 -----------
@@ -82,9 +87,10 @@ ToDo
 -  rST directives for breadcrumbs, testing etc? options?
 - `Issues`_
 
+
 Devel
 ''''''''''
-- `Docs`_
+-  Fix accum. cruft in `Docs`_
 -  Validation. Relax-NG?
 -  I'd like an alternative (even less vertically hungry) markup for titles.
    What about ``=== title`` or ``= title =`` block formats. Nice and short
@@ -96,6 +102,7 @@ Devel
 -  Is the XML tree the complete representation whereof the rST is a variant,
    a perhaps lossy representation? I think it loses some things, should keep
    track during rstwriter devel.
+
 
 Branches
 ''''''''
@@ -201,5 +208,6 @@ Log
    :trim:
 .. |copy| unicode:: 0xA9 .. copyright sign
 .. |tm| unicode:: U+02122 .. trademark sign
+.. |date| replace:: Date!
 
 
