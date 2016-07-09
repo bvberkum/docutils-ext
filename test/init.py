@@ -10,6 +10,7 @@ sys.path.insert(0, PROJ_LIB)
 # list some resources for testing
 README = os.path.join(PROJ_ROOT, 'README.rst')
 
+vardir = os.path.join( PROJ_ROOT, 'var' )
 RST_DOC = filter(os.path.getsize,
         glob.glob(os.path.join(PROJ_ROOT, 'var', 'test-rst*.rst'))
 #            +
@@ -18,6 +19,14 @@ RST_DOC = filter(os.path.getsize,
 "reStructuredText documents (with size >0)"
 RST_DOC.sort()
 
+RST_LOSSY_DOC = filter(os.path.getsize,
+        [ os.path.join(vardir, testfile.strip()) for testfile in
+            open(os.path.join(vardir, 'test-rst-lossy.list')).readlines() if
+            testfile.strip() and not testfile.strip()[0] == '#' ] )
+RST_LOSSLESS_DOC = filter(os.path.getsize,
+        [ os.path.join(vardir, testfile.strip()) for testfile in
+            open(os.path.join(vardir, 'test-rst-lossless.list')).readlines() if
+            testfile.strip() and not testfile.strip()[0] == '#' ] )
 
 
 RST_COMMON = filter(os.path.getsize,

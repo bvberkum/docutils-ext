@@ -90,6 +90,7 @@ ToDo
 
 Devel
 ''''''''''
+-  Started docs per feature, to document specs, work to test scenarios.
 -  Fix accum. cruft in `Docs`_
 -  Validation. Relax-NG?
 -  I'd like an alternative (even less vertically hungry) markup for titles.
@@ -209,5 +210,4 @@ Log
 .. |copy| unicode:: 0xA9 .. copyright sign
 .. |tm| unicode:: U+02122 .. trademark sign
 .. |date| replace:: Date!
-
 

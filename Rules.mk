@@ -138,7 +138,7 @@ TEST_RST_XML_$d  := $(TEST_RST_$d:%.rst=%.xml)
 var-testfiles.log: $(TEST_RST_XML_$d)
 	@\
 		$(ll) attention "$@" "All XML files built, removing valid ones. "; \
-		for x in var/*.xml; do echo $$x; stat $$x.*.log > /dev/null 2> /dev/null || rm $$x ; done;
+		for x in var/*.xml; do stat -t $$x.*.log >/dev/null 2>/dev/null || rm "$$x"; done
 	@\
 	L=$$(ls var/|grep \.log);\
 	    for l in $$L; do echo $$l >> $@; cat var/$$l >> $@;echo >> $@;done;\

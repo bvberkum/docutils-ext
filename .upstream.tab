@@ -1,5 +1,5 @@
 # DONWSTREAM UPSTREAM[..]
-dev master
+dev master dev_rstwriter
 dev_xmlreader dev
 dev_rstwriter dev
-f-rst-forms dev dev_rstwriter
+f-rst-forms dev

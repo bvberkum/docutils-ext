@@ -76,7 +76,7 @@ def cli_render(argv, builder=None, builder_name='mpe'):
     """
     Accept invocations to render documents from source to dest or
     stdout. Subsequent invocations should be separated by '--'.
-    The initial group of arguments 
+    The initial group of arguments
     TODO: see cli_process.
 
     Setup publisher chain from builder class, and run them converting document(s)
@@ -154,19 +154,20 @@ def cli_run(argv, stdin=None, builder=None, builder_name='mpe'):
                 traceback.print_exception(*e.info)
 
 
-def cli_du_publisher(reader_name='mpe', parser=None, parser_name='rst', writer_name='pseudoxml', description=''):
+def cli_du_publisher(reader_name='mpe', parser=None, parser_name='rst',
+        writer=None, writer_name='pseudoxml', description=''):
 
     """
     Simple wrapper for ``docutils.core.publish_cmdline``.
     During development, this should still be working.
 
-    Shortcomings are it cannot load settings-specs from transforms, 
-    or perform processing only (without rendering). 
-    It does not handle stores for transforms directly as Nabu does. 
+    Shortcomings are it cannot load settings-specs from transforms,
+    or perform processing only (without rendering).
+    It does not handle stores for transforms directly as Nabu does.
     But, given that transforms could handle storage
     initialization themselves, and that the Reader/Parser/Writer 'parent'
     component can hold the settings-specs, should make it fairly easy to port
-    Builder code back to work with docutils. 
+    Builder code back to work with docutils.
     """
 
     # XXX: how far does inline customization go? parser = Parser(inliner=Inliner())
@@ -175,15 +176,17 @@ def cli_du_publisher(reader_name='mpe', parser=None, parser_name='rst', writer_n
     if not parser:
         parser_class = comp.get_parser_class(parser_name)
         parser = parser_class()
-    writer_class = comp.get_writer_class(writer_name)
+    if not writer:
+        writer_class = comp.get_writer_class(writer_name)
+        writer = writer_class()
 
     publish_cmdline(
-            parser=parser, 
+            parser=parser,
             parser_name=parser_name,
-            reader=reader_class(parser), 
-            reader_name=reader_name, 
-            writer=writer_class(), 
-            writer_name=writer_name, 
+            reader=reader_class(parser),
+            reader_name=reader_name,
+            writer=writer,
+            writer_name=writer_name,
             description=description)
 
 
@@ -194,7 +197,7 @@ def split_argv(argv):
     If what would be the first group does not contain options (-f --flag..)
     then take it to be a separate group and yield an initial empty group.
 
-    No other processing. 
+    No other processing.
     """
     if not argv:
         raise Exception("Arguments expected (use --help)")
@@ -237,7 +240,7 @@ def split_argv(argv):
 
 ### XXX:BVB: rewrite Du ext frontend for builder
 # old code for what would be an interface for du to run an HTTP server
-# main interface and should be reused for Builder 
+# main interface and should be reused for Builder
 #from gate import content, comp
 
 version = '0.1'
