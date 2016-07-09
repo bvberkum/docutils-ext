@@ -25,20 +25,21 @@ upgrade_all()
       echo "Merging $branch from $upstream"
       git checkout -q $upstream || {
         echo "Error checking out $upstream"
-        continue
+        return 1
       }
       git pull -q || {
         echo "Error updating $upstream"
-        continue
+        return 1
       }
       git checkout -q $branch || {
         echo "Error checking out $branch "
-        continue
+        return 1
       }
       git merge -q $upstream || {
         echo "Error merging $branch with $upstream"
-        continue
+        return 1
       }
+      echo "Downstream $branch up-to-date with $upstream"
     done
   done
 }
