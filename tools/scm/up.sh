@@ -18,6 +18,7 @@ upgrade_current()
 
 upgrade_all()
 {
+  test -n "$up" || up=merge
   read_nix_style_file .upstream.tab | while read branch rest
   do
     for upstream in $rest
@@ -35,7 +36,7 @@ upgrade_all()
         echo "Error checking out $branch "
         return 1
       }
-      git rebase -q $upstream || {
+      git $up -q $upstream || {
         echo "Error rebasing $branch with $upstream"
         return 1
       }
@@ -45,6 +46,8 @@ upgrade_all()
 }
 
 
+# TODO: rebase source changes instead of scm merging
+#up=rebase
 upgrade_all
 git checkout master
 
