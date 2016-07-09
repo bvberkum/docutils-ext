@@ -35,8 +35,8 @@ upgrade_all()
         echo "Error checking out $branch "
         return 1
       }
-      git merge -q $upstream || {
-        echo "Error merging $branch with $upstream"
+      git rebase -q $upstream || {
+        echo "Error rebasing $branch with $upstream"
         return 1
       }
       echo "Downstream $branch up-to-date with $upstream"
