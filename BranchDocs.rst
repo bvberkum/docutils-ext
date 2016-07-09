@@ -39,6 +39,11 @@ GIT
       Splitting topic of dev for separate testing. Possibly a few hacks while
       core/frontend is in flux.
 
+    dev-outlines
+      Extract outlines from rST. See `Feature: Outlines`__
+
+
+.. __: features/outlines.features
 
 .. include:: .refs.BranchDocs.rst
 
