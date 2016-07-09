@@ -188,7 +188,6 @@ Log
    :start-line: 3
 
 
-.. __: doc/links.rst
 .. _Issues: Issues.rst
 .. _rST forms: `docs`_
 .. _Transforms: doc/transforms.rst
