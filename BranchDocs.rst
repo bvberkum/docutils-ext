@@ -6,6 +6,8 @@ See ``.up.sh`` for automated downstream merging. Maybe rename file..
 GIT
   master
     all development happened here until dev was branched.
+    Sync with dev only.
+
   dev
     Sort of the master now. Testing only functional stuff, may be deceptive as
     not everything is unit/systemtested?
@@ -27,14 +29,14 @@ GIT
       Abandoned while I do get more insight into the rSt parser
       machinery.
 
-    dev_form
-      Splitting topic of dev for separate testing. Possibly a few hacks while
-      core/frontend is in flux.
-
     dev_rstwriter
       While things left to be desired before finishing dev_rstwriterobjects,
       implement and test reStructuredText writer.
 
       :tests: 66, 9 failed
+
+    f-rst-forms
+      Splitting topic of dev for separate testing. Possibly a few hacks while
+      core/frontend is in flux.
 
 
