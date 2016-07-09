@@ -39,5 +39,4 @@ GIT
       Splitting topic of dev for separate testing. Possibly a few hacks while
       core/frontend is in flux.
 
-      Synced with dev_rstwriter.
 

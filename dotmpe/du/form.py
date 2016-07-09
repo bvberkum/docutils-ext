@@ -2,9 +2,10 @@
 It may be convenient to treat a Du document as a form for user data. The
 objective here is to extract and validate, and to feedback any errors.
 
-To this end FormProcessor is implemented. In the package form2, an
-Nabu Extractor/Storage pattern implements validation, extraction and storage
-of information given in rSt documents.
+To this end FormProcessor is implemented. In the package form1, an
+transform handles parsing and validating. In form2, a Nabu Extractor/Storage
+pattern allows to store the results. A writer formwriter implements
+formatting a CSV table from the results.
 
 Du Forms
 ==========
@@ -16,18 +17,18 @@ The following Du structures lend themselves for such model:
 - sections: heading, body
 
 Note each of these structures can nest itself, and ofcourse rSt marked-up
-content. The initial version processes fields which text's mkid matches to 
+content. The initial version processes fields which text's mkid matches to
 a fieldspec.
 
 To process fields, structure `FormField` is initialized for each given spec.
-Specs are passed programmatically or using `--form-field`. 
+Specs are passed programmatically or using `--form-field`.
 
 Processing then consists of a conversion of the document node to
 primitive or complex data. Some basic types are implemented.
 
 When validation is done, the settings key 'validated' is set to true, so care
 must be taken by any calling code to properly match this status to a specific
-set of fields. 
+set of fields.
 
 Most interaction is programmatically to the FormProcessor instance, which is
 put on the document and vice versa, and which holds extracted values.
@@ -60,7 +61,7 @@ effective to divide some options for recognizing forms:
 
 This proposal does not introduce its own directives or nodes?
 
-.. 
+..
     A directive might be, but I've observed discussions on rSt where the concensus
     was that if a generic construct can do the job of a more specific one, then the
     former is preferred. Ie. the option-list would have been deprecated if e.g.

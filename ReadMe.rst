@@ -43,6 +43,10 @@ rST Extensions
 rST Writer
   - Work in progress lossy rST writer for rst2rst publish.
 
+`rST Forms`_
+  A processor for Du documents to extract or insert (structured) user content,
+  with validation.
+
 
 Development
 -----------
@@ -54,10 +58,6 @@ Completed
   command-line options). See `Transforms`_ (``dotmpe.du.ext.transform``).
 - These transforms are used by ``dotmpe.du.ext.reader.mpe.``\ `Reader`.
 - Several Nabu `Extractor`, `Storage` pairs, see `Extractors`_ (``dotmpe.du.ext.extractor``) but nothing complex yet.
-- `rST forms`_ framework.
-  Use rST documents as forms, but gotten a bit out of use and no unittests.
-  The implementation includes retrieving data from a document according to the
-  `form specification`, which includes type conversion and value validation.
 - Monkey patched ``docutils.{readers,parser,writers}.get_*_class()`` to load
   components from my lib. Enable 'extension' by importing ``dotmpe.du.ext``.
 
@@ -197,7 +197,7 @@ Log
 
 
 .. _Issues: Issues.rst
-.. _rST forms: `docs`_
+.. _rST Forms: doc/rst-forms.rst
 .. _Transforms: doc/transforms.rst
 .. _Extractors: doc/extractors.rst
 .. _Blue Lines: http://blue-lines.appspot.com/
