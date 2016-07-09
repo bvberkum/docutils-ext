@@ -22,11 +22,19 @@ upgrade_all()
   do
     for upstream in $rest
     do
-      echo "$branch from $upstream"
-      git checkout $upstream || return $?
-      git pull origin $upstream || return $?
-      echo git checkout $branch
-      echo git merge $upstream
+      echo "Merging $branch from $upstream"
+      git checkout -q $upstream || {
+        continue
+      }
+      git pull -q || {
+        continue
+      }
+      git checkout -q $branch || {
+        continue
+      }
+      git merge -q $upstream || {
+        continue
+      }
     done
   done
 }
