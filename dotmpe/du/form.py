@@ -546,8 +546,8 @@ def extract_form_field_label(field):
 class FormField:
 
     """
-    Struct for keeping metadata for form fields. Prolly should move some into
-    DOM?
+    Struct for keeping metadata for form fields.
+    XXX: Prolly should move some into DOM?
     """
 
     def __init__(self, field_id, convertor, required=True, append=False,
@@ -667,6 +667,7 @@ class AbstractFormVisitor(nodes.SparseNodeVisitor):
 
 
 class FormFieldSetVisitor(AbstractFormVisitor):
+    # TODO: FormFieldSetVisitor
 
     def visit_definition_list(self, node):
         if self.is_fieldset(node):
@@ -700,6 +701,16 @@ class FormFieldIDVisitor(AbstractFormVisitor):
         assert len(node.children) == 2
         if self.is_field(node):
             self.scan_field(node)
+
+
+class DocumentFormVisitor(nodes.SparseNodeVisitor):
+    """
+    Generic match of document elements as values for form validator.
+
+
+    section
+
+    """
 
 
 ## FormErrors
