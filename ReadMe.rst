@@ -26,7 +26,7 @@ This document attempts to present an overview of the project tree.
 
 A description is given of the command-line utilities in tools/,
 then a list summary is given of the source code, whose main files will be
-documented themselves. Lastly a global log and list of further references 
+documented themselves. Lastly a global log and list of further references
 follows.
 
 .. contents::
@@ -61,7 +61,7 @@ In progress
 - ``dotmpe.du.builder`` has some packages with specific Reader/Parser/Writer
   component configurations, but frontend is undergoing work.
 - Front-end development in `Blue Lines`_. Simplified frontend for NodeJS.
-- rST rewriter.  
+- rST rewriter.
 
 ToDo
 ''''
@@ -70,7 +70,7 @@ ToDo
 -  expose extractor and storage parameters on command line as other
    components.
 -  create a storage context that can provide Nabu stores. see Extractors_
--  ``--use-bibtex=USE_BIBTEX`` from latex2e may be nice practical example of 
+-  ``--use-bibtex=USE_BIBTEX`` from latex2e may be nice practical example of
    external resource framework/metadata integration.
 -  directive options are not all i18n'd
 - `Du/rST examples`_
@@ -99,39 +99,8 @@ Devel
 
 Branches
 ''''''''
-GIT
-  master
-    all development happened here until dev was branched.
-  dev
-    Sort of the master now. Testing only functional stuff, may be deceptive as
-    not everything is unit/systemtested?
-
-    :tests: 8 OK
-
-    dev_rstwriterobjects
-      separate development branch for rstwriter restructuring, 
-      trying to OO-ify and add some elegance.
-
-      :test: 57; 25 failures, 2 errors
-
-    dev_simplemuxdem
-      trying a lossless read/write using the rST SM base with a 
-      simple text format, to understand the rSt parser statemachine.
-
-      :tests: 2 OK
-
-      Abandoned while I do get more insight into the rSt parser
-      machinery.
-
-    dev_form
-      Splitting topic of dev for separate testing. Possibly a few hacks while
-      core/frontend is in flux.
-
-    dev_rstwriter
-      While things left to be desired before finishing dev_rstwriterobjects,
-      implement and test reStructuredText writer.
-
-      :tests: 66, 9 failed
+.. include:: BranchDocs.rst
+   :start-line: 3
 
 rST writer
 ----------
@@ -178,7 +147,7 @@ Lossy tests are implemented by re-parsing the rST output, and doing (trying) a c
 .. [*] It will quite possibly require additional properties on the AST to support true lossless ``rst-to-rst``, since not all rST syntax choices are of consequences in other representations (ie. indentation depths). Rather, a rst2rst publisher may serve to normalize formatting, and also to run some transforms to reorder, renumber, rename, cross-reference, etc.
 
 .. [*] But we don't have one of those really. Until there is established and
-   accepted one, while virtually all modern virtual representation is an 
+   accepted one, while virtually all modern virtual representation is an
    inseperable mix of text and context.
 
    The functionality of 'hyper'-text was defined long ago, as the relation of
@@ -215,54 +184,8 @@ Dependencies
 
 Log
 -----
-2009 September
-  - Starting my own project for use with `Blue Lines`_, 
-    custom 'margin' directives and HTML writer components.
-
-2010-11-04
-  Stefan Merten published his xml2rST and included an installer.
-  He also has rST2gxl 'producing GXL which can be transformed to dot'
-  and rST2diff 'comparing two input files producing a marked up difference
-  output'.
-
-2010-12-01
-  - Integrating figure label patch by Alex @ du mailinglist.
-  - Created subclass of latex2e writter for this.
-
-2011-01-12
-  - Added summary directive and table attribute to comply with HTML4.
-  - Made `write-up on link relations in reStructuredText`__.
-
-2011-04-16
-  - Updated testing so dynamic test cases (generated from file) are handled as
-    usual by unittest.main, no more need to aggregate testsuites.
-    Lossless testing is disabled for now.
-
-2013 November
-  - Retaking to development. 
-  - Adding new tests. First unnittests for builder. 
-    Need frontent/CLI system tests.
-  - Splitting testing and non-functional stuff to sep. branches.
-  - Adding build log and validation for test markup files.
-    There should not be any log files in ``var/`` otherwise some test-file does not
-    completely check out (``rm var/test-rst*.log && make test-validate-files``).
-
-    Should clean/check out ``examples/`` too.
-
-2014 August
-  - Taking up Builder.process again for ~/htdocs.
-    Started working on setup-file too, and considering Sitefile concept.
-
-2015-03-28
-  - Set up Sitefile_ as a Node.JS project. Maybe require Py Du extensions later
-    but for now writing the concept there in JS/Coffee-Script. 
-    
-    Not really a builder. A frontend. Maybe a HTTP publisher, but it has no real builder or
-    publisher component.
-    Perhaps, rename it to Expressfile.
-
-    Maybe want to investigate sitebuilder concept, ``wget -r`` and some patches would
-    seem to suffice though.
+.. include:: DevLog.rst
+   :start-line: 3
 
 
 .. __: doc/links.rst
