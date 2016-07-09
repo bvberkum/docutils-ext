@@ -32,6 +32,11 @@ Dev
   easier. But it requires the schema to be more specific. Want a translator to add
   form field classes. Before invoking processor.
 
+  May want to look at ``dev-outlines`` branch first to see about using
+  recursive type schemas, transformations on nested data. Once that produces
+  JSON can validate it externally before looking to integrate with rST forms
+  framework.
+
 
 .. include:: ../.refs.rst
 
