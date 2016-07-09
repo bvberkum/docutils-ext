@@ -21,6 +21,9 @@ XHT_$d				:= $(RST_$d:$/%.rst=$B%.xhtml)
 $(XHT_$d)  $(XML_$d)  $(PIC_PNG_$d)  $(PIC_SVG_$d) : $/Rules.mk
 
 
+doc/builder-sequence.png: doc/umlgraph-sequence.pic
+
+
 # Local to Global
 
 SRC					+= \
