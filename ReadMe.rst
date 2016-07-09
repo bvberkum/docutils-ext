@@ -105,11 +105,9 @@ Devel
    a perhaps lossy representation? I think it loses some things, should keep
    track during rstwriter devel.
 
+* `Branches <BranchDocs.rst>`__
+* `Journal <DevLog.rst>`__
 
-Branches
-''''''''
-.. include:: BranchDocs.rst
-   :start-line: 3
 
 rST writer
 ----------
@@ -191,25 +189,8 @@ Dependencies
 - my mkdocs project to build from ``Rules.mk``
 - xmllint
 
-Log
------
-.. include:: DevLog.rst
-   :start-line: 3
 
 
-.. _Issues: Issues.rst
-.. _rST Forms: doc/rst-forms.rst
-.. _Transforms: doc/transforms.rst
-.. _Extractors: doc/extractors.rst
-.. _Blue Lines: http://blue-lines.appspot.com/
-.. _docs: doc/main.rst
-.. _Du/rST examples: examples/main.rst
-.. _Sitefile: //github.com/dotmpe/node-sitefile
-
-.. |---| unicode:: U+02014 .. em dash
-   :trim:
-.. |copy| unicode:: 0xA9 .. copyright sign
-.. |tm| unicode:: U+02122 .. trademark sign
-.. |date| replace:: Date!
-
+.. include:: .refs.rst
+.. .. include:: .refs.BranchDocs.rst
 

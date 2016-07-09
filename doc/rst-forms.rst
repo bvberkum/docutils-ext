@@ -33,5 +33,5 @@ Dev
   form field classes. Before invoking processor.
 
 
-.. _rST Forms spec: Components#rst-forms-spec
+.. include:: ../.refs.rst
 
