@@ -1,8 +1,18 @@
 # DONWSTREAM UPSTREAM[..]
-dev master dev_rstwriter
+dev master dev_rstwriter dev_xmlreader
 dev_xmlreader dev
 dev_rstwriter dev
 f-rst-forms dev
+dev_outlines dev
 
-# TODO: dev-atlassian
-#
+# TODO: dev_simplemuxdem 
+# dev_rstwriterobjects
+# x_subtree
+# dev-atlassian 
+# dev_atlassian_confluence
+test dev
+test-rstwriter test
+test-outlines test
+
+# XXX: only if tests are ok:
+#dev test
