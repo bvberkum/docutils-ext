@@ -2,6 +2,10 @@
 
 set -e
 
+read_nix_style_file()
+{
+  cat $@ | grep -Ev '^\s*(#.*|\s*)$'
+}
 
 upgrade_current()
 {
@@ -14,7 +18,7 @@ upgrade_current()
 
 upgrade_all()
 {
-  cat .upstream.tab | while read branch res
+  read_nix_style_file .upstream.tab | while read branch res
   do
     for upstream in $rest
     do
