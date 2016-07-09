@@ -6,3 +6,4 @@
 bin/behat
 vendor/
 composer.lock
+doc/*.png
