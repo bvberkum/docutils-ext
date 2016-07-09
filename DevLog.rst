@@ -1,6 +1,7 @@
-
+DevLog
+--------
 2009 September
-  - Starting my own project for use with `Blue Lines`_, 
+  - Starting my own project for use with `Blue Lines`_,
     custom 'margin' directives and HTML writer components.
 
 2010-11-04
@@ -23,8 +24,8 @@
     Lossless testing is disabled for now.
 
 2013 November
-  - Retaking to development. 
-  - Adding new tests. First unnittests for builder. 
+  - Retaking to development.
+  - Adding new tests. First unnittests for builder.
     Need frontent/CLI system tests.
   - Splitting testing and non-functional stuff to sep. branches.
   - Adding build log and validation for test markup files.
@@ -39,7 +40,7 @@
 
 2015-03-28
   - Set up Sitefile_ as a Node.JS project. Maybe require Py Du extensions later
-    but for now writing the concept there in JS/Coffee-Script. 
+    but for now writing the concept there in JS/Coffee-Script.
 
     Not really a builder. A frontend. Maybe a HTTP publisher, but it has no real builder or
     publisher component.

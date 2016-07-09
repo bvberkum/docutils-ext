@@ -28,7 +28,7 @@
    .. not yet, this requires the subdoc branch of Du
 
    .. .. subdocument::
-   
+
       - :file: introduction.rst
       - :file: docutils-internals.rst
       - :file: transforms.rst
@@ -44,10 +44,11 @@ dotmpe extensions
 
 rST Forms
 ---------
-- `dotmpe.du.form``\ `FormField` 
-- rST forms. TODO: docs. The ``dotmpe.du.form``\ `FormProcessor`, used in transforms (``form1``) and extractors (``form2``).
+See Components.rst#rst-forms-spec
+- rST forms. TODO: docs.
+  The ``dotmpe.du.form``\ `FormProcessor`, used in transforms (``form1``) and extractors (``form2``).
 
-Forms allow for ``fields_spec`` which is used on the document tree like ``settings_spec`` is on argv. 
+Forms allow for ``fields_spec`` which is used on the document tree like ``settings_spec`` is on argv.
 Enable validation, feedback and more structured definitions of extractors.
 
 
@@ -59,23 +60,23 @@ There is at most one of each per page.
 ::
 
   .. margin:: left
-  
+
      Margin contents left-side.
-  
+
   .. margin:: right
      :class: my-doc
-     
+
      Margin contents right-side.
-  
+
   .. margin:: left
-  
+
      More contents left-side.
 
 Transforms
 ''''''''''
 Docutils includes setting specs for some of its transforms into core and
-frontend. The ``dotmpe.du.ext.reader.mpe`` Reader replaces some of these 
-transforms with implementations that provide their own flexible 
+frontend. The ``dotmpe.du.ext.reader.mpe`` Reader replaces some of these
+transforms with implementations that provide their own flexible
 settings spec.
 
 .. include:: transforms.rst

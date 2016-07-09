@@ -2,7 +2,8 @@ Docutils extensions
 ===================
 :Created: Aug. 2009
 :Updated: Oct. 2015
-:Test:
+
+:Status:
 
   .. image:: https://secure.travis-ci.org/dotmpe/docutils-ext.png?branch=test
     :target: https://travis-ci.org/dotmpe/docutils-ext/branches
@@ -11,6 +12,7 @@ Docutils extensions
   .. image:: https://badge.fury.io/gh/dotmpe%2Fdocutils-ext.png
     :target: http://badge.fury.io/gh/dotmpe%2Fdocutils-ext
     :alt: GIT
+
 
 :rST writer:
 
@@ -24,7 +26,7 @@ This document attempts to present an overview of the project tree.
 
 A description is given of the command-line utilities in tools/,
 then a list summary is given of the source code, whose main files will be
-documented themselves. Lastly a global log and list of further references 
+documented themselves. Lastly a global log and list of further references
 follows.
 
 .. contents::
@@ -79,40 +81,10 @@ Devel
    track during rstwriter devel.
 
 
-Branch docs
-'''''''''''
-master
-  all development happened here until dev was branched.
-dev
-  Sort of the master now. Testing only functional stuff, may be deceptive as
-  not everything is unit/systemtested?
-
-  :tests: 8 OK
-
-  dev_rstwriterobjects
-    separate development branch for rstwriter restructuring, 
-    trying to OO-ify and add some elegance.
-
-    :test: 57; 25 failures, 2 errors
-
-  dev_simplemuxdem
-    trying a lossless read/write using the rST SM base with a 
-    simple text format, to understand the rSt parser statemachine.
-
-    :tests: 2 OK
-
-    Abandoned while I do get more insight into the rSt parser
-    machinery.
-
-  dev_form
-    Splitting topic of dev for separate testing. Possibly a few hacks while
-    core/frontend is in flux.
-
-  dev_rstwriter
-    While things left to be desired before finishing dev_rstwriterobjects,
-    implement and test reStructuredText writer.
-
-    :tests: 66, 9 failed
+Branches
+''''''''
+.. include:: BranchDocs.rst
+   :start-line: 3
 
 rST writer
 ----------
@@ -196,8 +168,8 @@ Dependencies
 
 Log
 -----
-.. include:: ./journal.rst
-
+.. include:: DevLog.rst
+   :start-line: 3
 
 
 .. _Issues: Issues.rst
