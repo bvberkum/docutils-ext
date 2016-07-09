@@ -3,3 +3,7 @@
 .build
 /build
 .*/*.sqlite
+composer.lock
+vendor/
+bin/behat
+doc/*.png
