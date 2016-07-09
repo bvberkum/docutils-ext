@@ -47,10 +47,4 @@ GIT
 
 .. include:: .refs.BranchDocs.rst
 
-    dev-outlines
-      Extract outlines from rST. See `Feature: Outlines`__
-
-
-.. __: features/outlines.features
-
 
