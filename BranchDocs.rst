@@ -3,6 +3,8 @@ Branches
 GIT
   master
     all development happened here until dev was branched.
+    Sync with dev only.
+
   dev
     Sort of the master now. Testing only functional stuff, may be deceptive as
     not everything is unit/systemtested?
@@ -34,4 +36,5 @@ GIT
       Splitting topic of dev for separate testing. Possibly a few hacks while
       core/frontend is in flux.
 
+      Synced with dev_rstwriter.
 
