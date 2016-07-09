@@ -18,14 +18,23 @@ upgrade_current()
 
 upgrade_all()
 {
-  read_nix_style_file .upstream.tab | while read branch res
+  read_nix_style_file .upstream.tab | while read branch rest
   do
     for upstream in $rest
     do
-      git checkout $upstream || return $?
-      git pull origin $upstream || return $?
-      echo git checkout $branch
-      echo git merge $upstream
+      echo "Merging $branch from $upstream"
+      git checkout -q $upstream || {
+        continue
+      }
+      git pull -q || {
+        continue
+      }
+      git checkout -q $branch || {
+        continue
+      }
+      git merge -q $upstream || {
+        continue
+      }
     done
   done
 }
