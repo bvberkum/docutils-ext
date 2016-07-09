@@ -49,3 +49,7 @@ DevLog
     Maybe want to investigate sitebuilder concept, ``wget -r`` and some patches would
     seem to suffice though.
 
+2016-07-09
+  - Taking up a little development again. Started adding and updating Docs.
+
+
