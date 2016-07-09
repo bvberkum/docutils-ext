@@ -3,6 +3,7 @@ Docutils extensions
 :Created: Aug. 2009
 :Updated: Jun. 2016
 :Version: 0.0.1
+
 :Status:
 
   .. image:: https://secure.travis-ci.org/dotmpe/docutils-ext.png?branch=test
@@ -210,4 +211,5 @@ Log
 .. |copy| unicode:: 0xA9 .. copyright sign
 .. |tm| unicode:: U+02122 .. trademark sign
 .. |date| replace:: Date!
+
 

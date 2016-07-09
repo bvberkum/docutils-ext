@@ -32,7 +32,7 @@ install:
 script: 
 - coverage run --source=dotmpe test/main.py $M
 - ./bin/beehat
-
+# sql_storage
 
 # Default travis Python build:
 #
