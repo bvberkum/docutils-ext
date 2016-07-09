@@ -4,7 +4,7 @@ comp
 builder
 frontend
 build
-#FIXME form
+form
 sql_storage
 # FIXME 
 rstwriter
