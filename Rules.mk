@@ -207,6 +207,8 @@ docs:
 	done;
 	cd pydoc; make html
 
+up:
+	./tools/scm/up.sh
 
 
 
