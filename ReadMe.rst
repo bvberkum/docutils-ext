@@ -1,8 +1,8 @@
 Docutils extensions
 ===================
 :Created: Aug. 2009
-:Updated: Oct. 2015
-
+:Updated: Jun. 2016
+:Version: 0.0.1
 :Status:
 
   .. image:: https://secure.travis-ci.org/dotmpe/docutils-ext.png?branch=test
