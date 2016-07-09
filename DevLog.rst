@@ -53,3 +53,7 @@ DevLog
   - Taking up a little development again. Started adding and updating Docs.
 
 
+.. __: doc/links.rst
+.. _Blue Lines: http://blue-lines.appspot.com/
+.. _Sitefile: //github.com/dotmpe/node-sitefile
+
