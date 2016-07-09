@@ -41,3 +41,10 @@ GIT
 
       Synced with dev_rstwriter.
 
+    dev-outlines
+      Extract outlines from rST. See `Feature: Outlines`__
+
+
+.. __: features/outlines.features
+
+

@@ -44,6 +44,12 @@ rST Extensions
 rST Writer
   - Work in progress lossy rST writer for rst2rst publish.
 
+rST Outlines
+  - Planning: Extract outlines from rST. See `Feature: Outlines`__
+
+
+.. __: features/outlines.features
+
 
 Development
 -----------
