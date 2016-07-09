@@ -1,5 +1,8 @@
 Branches
 ========
+
+See ``.up.sh`` for automated downstream merging. Maybe rename file..
+
 GIT
   master
     all development happened here until dev was branched.
