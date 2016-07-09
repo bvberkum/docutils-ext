@@ -4,5 +4,5 @@
 /build
 .*/*.sqlite
 composer.lock
-vendor
-bin
+vendor/
+bin/behat

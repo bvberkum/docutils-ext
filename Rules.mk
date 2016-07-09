@@ -50,6 +50,14 @@ TEST				+= \
 #	@-find ./ -iname "*.pyc" | while read c; do rm "$$c"; done;
 
 
+doc/umlgraph-sequence.pic:
+	test -e $@ && printf "" || { \
+		test -h $@ && rm $@; \
+		wget \
+			https://raw.githubusercontent.com/dspinellis/UMLGraph/master/sequence.pic \
+			-O $@; }
+
+
 # See $MK_SHARE/python/Main.mk for test-python routine, requires coverage
 test_$d: M :=
 test_$d: D := $d

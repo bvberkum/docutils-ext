@@ -44,6 +44,30 @@ rST Writer
   - Work in progress lossy rST writer for rst2rst publish.
 
 
+Development
+-----------
+
+Completed
+'''''''''
+- Left- and right-margin decoration.
+- Various document transforms and additional document settings (with
+  command-line options). See `Transforms`_ (``dotmpe.du.ext.transform``).
+- These transforms are used by ``dotmpe.du.ext.reader.mpe.``\ `Reader`.
+- Several Nabu `Extractor`, `Storage` pairs, see `Extractors`_ (``dotmpe.du.ext.extractor``) but nothing complex yet.
+- `rST forms`_ framework.
+  Use rST documents as forms, but gotten a bit out of use and no unittests.
+  The implementation includes retrieving data from a document according to the
+  `form specification`, which includes type conversion and value validation.
+- Monkey patched ``docutils.{readers,parser,writers}.get_*_class()`` to load
+  components from my lib. Enable 'extension' by importing ``dotmpe.du.ext``.
+
+In progress
+'''''''''''
+- ``dotmpe.du.builder`` has some packages with specific Reader/Parser/Writer
+  component configurations, but frontend is undergoing work.
+- Front-end development in `Blue Lines`_. Simplified frontend for NodeJS.
+- rST rewriter.
+
 ToDo
 ''''
 -  re-evaluate include, literal and raw dereferencing.
@@ -51,7 +75,7 @@ ToDo
 -  expose extractor and storage parameters on command line as other
    components.
 -  create a storage context that can provide Nabu stores. see Extractors_
--  ``--use-bibtex=USE_BIBTEX`` from latex2e may be nice practical example of 
+-  ``--use-bibtex=USE_BIBTEX`` from latex2e may be nice practical example of
    external resource framework/metadata integration.
 -  directive options are not all i18n'd
 - `Du/rST examples`_
@@ -131,7 +155,7 @@ Lossy tests are implemented by re-parsing the rST output, and doing (trying) a c
 .. [*] It will quite possibly require additional properties on the AST to support true lossless ``rst-to-rst``, since not all rST syntax choices are of consequences in other representations (ie. indentation depths). Rather, a rst2rst publisher may serve to normalize formatting, and also to run some transforms to reorder, renumber, rename, cross-reference, etc.
 
 .. [*] But we don't have one of those really. Until there is established and
-   accepted one, while virtually all modern virtual representation is an 
+   accepted one, while virtually all modern virtual representation is an
    inseperable mix of text and context.
 
    The functionality of 'hyper'-text was defined long ago, as the relation of
