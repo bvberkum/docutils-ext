@@ -21,6 +21,9 @@ XHT_$d				:= $(RST_$d:$/%.rst=$B%.xhtml)
 $(XHT_$d)  $(XML_$d)  $(PIC_PNG_$d)  $(PIC_SVG_$d) : $/Rules.mk
 
 
+doc/builder-sequence.png: doc/umlgraph-sequence.pic
+
+
 # Local to Global
 
 SRC					+= \
@@ -48,6 +51,14 @@ TEST				+= \
 #
 #clean-pyc:
 #	@-find ./ -iname "*.pyc" | while read c; do rm "$$c"; done;
+
+
+doc/umlgraph-sequence.pic:
+	test -e $@ && printf "" || { \
+		test -h $@ && rm $@; \
+		wget \
+			https://raw.githubusercontent.com/dspinellis/UMLGraph/master/sequence.pic \
+			-O $@; }
 
 
 # See $MK_SHARE/python/Main.mk for test-python routine, requires coverage
@@ -196,6 +207,8 @@ docs:
 	done;
 	cd pydoc; make html
 
+up:
+	./tools/scm/up.sh
 
 
 

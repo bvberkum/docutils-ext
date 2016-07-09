@@ -1,8 +1,9 @@
 Docutils extensions
 ===================
 :Created: Aug. 2009
-:Updated: Oct. 2015
-:Test:
+:Updated: Jun. 2016
+:Version: 0.0.1
+:Status:
 
   .. image:: https://secure.travis-ci.org/dotmpe/docutils-ext.png?branch=test
     :target: https://travis-ci.org/dotmpe/docutils-ext/branches
@@ -11,6 +12,7 @@ Docutils extensions
   .. image:: https://badge.fury.io/gh/dotmpe%2Fdocutils-ext.png
     :target: http://badge.fury.io/gh/dotmpe%2Fdocutils-ext
     :alt: GIT
+
 
 :rST writer:
 
@@ -24,7 +26,7 @@ This document attempts to present an overview of the project tree.
 
 A description is given of the command-line utilities in tools/,
 then a list summary is given of the source code, whose main files will be
-documented themselves. Lastly a global log and list of further references 
+documented themselves. Lastly a global log and list of further references
 follows.
 
 .. contents::
@@ -42,6 +44,30 @@ rST Writer
   - Work in progress lossy rST writer for rst2rst publish.
 
 
+Development
+-----------
+
+Completed
+'''''''''
+- Left- and right-margin decoration.
+- Various document transforms and additional document settings (with
+  command-line options). See `Transforms`_ (``dotmpe.du.ext.transform``).
+- These transforms are used by ``dotmpe.du.ext.reader.mpe.``\ `Reader`.
+- Several Nabu `Extractor`, `Storage` pairs, see `Extractors`_ (``dotmpe.du.ext.extractor``) but nothing complex yet.
+- `rST forms`_ framework.
+  Use rST documents as forms, but gotten a bit out of use and no unittests.
+  The implementation includes retrieving data from a document according to the
+  `form specification`, which includes type conversion and value validation.
+- Monkey patched ``docutils.{readers,parser,writers}.get_*_class()`` to load
+  components from my lib. Enable 'extension' by importing ``dotmpe.du.ext``.
+
+In progress
+'''''''''''
+- ``dotmpe.du.builder`` has some packages with specific Reader/Parser/Writer
+  component configurations, but frontend is undergoing work.
+- Front-end development in `Blue Lines`_. Simplified frontend for NodeJS.
+- rST rewriter.
+
 ToDo
 ''''
 -  re-evaluate include, literal and raw dereferencing.
@@ -49,7 +75,7 @@ ToDo
 -  expose extractor and storage parameters on command line as other
    components.
 -  create a storage context that can provide Nabu stores. see Extractors_
--  ``--use-bibtex=USE_BIBTEX`` from latex2e may be nice practical example of 
+-  ``--use-bibtex=USE_BIBTEX`` from latex2e may be nice practical example of
    external resource framework/metadata integration.
 -  directive options are not all i18n'd
 - `Du/rST examples`_
@@ -79,40 +105,10 @@ Devel
    track during rstwriter devel.
 
 
-Branch docs
-'''''''''''
-master
-  all development happened here until dev was branched.
-dev
-  Sort of the master now. Testing only functional stuff, may be deceptive as
-  not everything is unit/systemtested?
-
-  :tests: 8 OK
-
-  dev_rstwriterobjects
-    separate development branch for rstwriter restructuring, 
-    trying to OO-ify and add some elegance.
-
-    :test: 57; 25 failures, 2 errors
-
-  dev_simplemuxdem
-    trying a lossless read/write using the rST SM base with a 
-    simple text format, to understand the rSt parser statemachine.
-
-    :tests: 2 OK
-
-    Abandoned while I do get more insight into the rSt parser
-    machinery.
-
-  dev_form
-    Splitting topic of dev for separate testing. Possibly a few hacks while
-    core/frontend is in flux.
-
-  dev_rstwriter
-    While things left to be desired before finishing dev_rstwriterobjects,
-    implement and test reStructuredText writer.
-
-    :tests: 66, 9 failed
+Branches
+''''''''
+.. include:: BranchDocs.rst
+   :start-line: 3
 
 rST writer
 ----------
@@ -159,7 +155,7 @@ Lossy tests are implemented by re-parsing the rST output, and doing (trying) a c
 .. [*] It will quite possibly require additional properties on the AST to support true lossless ``rst-to-rst``, since not all rST syntax choices are of consequences in other representations (ie. indentation depths). Rather, a rst2rst publisher may serve to normalize formatting, and also to run some transforms to reorder, renumber, rename, cross-reference, etc.
 
 .. [*] But we don't have one of those really. Until there is established and
-   accepted one, while virtually all modern virtual representation is an 
+   accepted one, while virtually all modern virtual representation is an
    inseperable mix of text and context.
 
    The functionality of 'hyper'-text was defined long ago, as the relation of
@@ -196,8 +192,8 @@ Dependencies
 
 Log
 -----
-.. include:: ./journal.rst
-
+.. include:: DevLog.rst
+   :start-line: 3
 
 
 .. _Issues: Issues.rst
