@@ -10,3 +10,7 @@ dev_outlines dev
 # dev-atlassian 
 # dev_atlassian_confluence
 test dev
+test-rstwriter test
+test-outlines test
+# XXX: only if tests are ok:
+#dev test
