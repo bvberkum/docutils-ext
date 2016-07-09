@@ -4,6 +4,7 @@ dev_xmlreader dev
 dev_rstwriter dev
 f-rst-forms dev
 dev_outlines dev
+
 # TODO: dev_simplemuxdem 
 # dev_rstwriterobjects
 # x_subtree
@@ -12,5 +13,6 @@ dev_outlines dev
 test dev
 test-rstwriter test
 test-outlines test
+
 # XXX: only if tests are ok:
 #dev test
