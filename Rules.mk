@@ -40,10 +40,16 @@ CLN 				+= \
 							 $(PIC_PNG_$d) \
 							 $(PIC_SVG_$d) \
 							 $(shell find ./test ./dotmpe -iname '*.pyc')
-TEST				+= \
-							 test_$d
 
-.PHONY: 			 test_$d
+TEST				+= \
+							 test_py_$d \
+							 test-common \
+							 test-form 
+#							 var-testfiles.log
+
+.PHONY: 			 test_py_$d \
+							 test-common \
+							 test-form
 
 
 #clean: clean-pyc
@@ -62,9 +68,9 @@ doc/umlgraph-sequence.pic:
 
 
 # See $MK_SHARE/python/Main.mk for test-python routine, requires coverage
-test_$d: M :=
-test_$d: D := $d
-test_$d:
+test_py_$d: M :=
+test_py_$d: D := $d
+test_py_$d:
 	@$(ll) attention "$@" "Testing modules listed in" test/main.list;
 	@\
 		TEST_PY=$(PY_TEST_$(D));\
@@ -128,7 +134,7 @@ test-common::
 test-form::
 	@\
 		$(ll) attention "$@" "Testing 'rst-form' reader" "tools/rst-form.py"; \
-		python tools/rst-form.py examples/form.rst
+		python tools/rst-form.py examples/form-1.rst
 
 
 
