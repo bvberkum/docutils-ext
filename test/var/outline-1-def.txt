@@ -1,0 +1,7 @@
+# No need for the first def, set that to default
+{
+  Outline node:document
+  Folder node:section
+  Folder node:definition_list
+  Item node:definition_list_item
+}

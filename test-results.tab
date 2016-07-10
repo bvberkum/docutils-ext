@@ -13,9 +13,5 @@
 1444622452, simza, test-rstwriter, c3b7e849295bbd030c0337dd8b4dfbae34f27737, test, 41, 0, 20
 1444622610, simza, test-rstwriter, c3b7e849295bbd030c0337dd8b4dfbae34f27737, test, 60, 0, 1
 1444622632, simza, test-rstwriter, c3b7e849295bbd030c0337dd8b4dfbae34f27737, test, 61, 0, 0
-1468075757, boreas, dev, 162d1287918a9ec5d77acb44243145dcb7c80792, test, 0, 0, 0
-1468075926, boreas, dev, 162d1287918a9ec5d77acb44243145dcb7c80792, test, 0, 0, 0
-1468075949, boreas, dev, 162d1287918a9ec5d77acb44243145dcb7c80792, test, 0, 0, 0
-1468081419, boreas, master, aadfa369dbecd7b60d24ecdeb75525425847f888, test, 0, 0, 0
-1468090743, boreas, dev_outlines, bfd8eeff352630362f45e09f642466c4b2fe68b4, test, 0, 0, 0
-1468090963, boreas, dev, 8fb417e27359212c9a48f1689801657d14e72b0d, test, 0, 0, 0
+1468113494, boreas, dev_outlines, f975cd4db63c4e76c5fb383959fc0907eeb86199, test, 62, 1, 0
+1468113565, boreas, dev_outlines, f975cd4db63c4e76c5fb383959fc0907eeb86199, test, 62, 1, 0

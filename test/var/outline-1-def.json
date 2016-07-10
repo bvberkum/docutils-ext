@@ -1,0 +1,9 @@
+{
+  "du-match": [ {
+    "node:document": "Outline",
+    "node:section": "Folder",
+    "node:definition_list": "Folder",
+    "node:definition_list_item": "Item"
+  } ],
+  "properties": { }
+}
