@@ -27,6 +27,6 @@ Traceback (most recent call last):
 AttributeError: Values instance has no attribute 'warning_stream'
 
 ----------------------------------------------------------------------
-Ran 63 tests in 0.944s
+Ran 63 tests in 0.927s
 
 FAILED (errors=1)
