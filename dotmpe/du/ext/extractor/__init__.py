@@ -5,7 +5,7 @@ Interface::
 
     class Extractor(docutils.transforms.Transform):
         @classmethod
-        def init_parser(cls): 
+        def init_parser(cls):
             pass
         def apply(self, **kwargs):
             pass
@@ -27,9 +27,10 @@ Types come from:
 - Django and its db model.
 - GAE or Google app-engine big table datastore models.
 
-A transient storage type is defined here, as superclass for     
+A transient storage type is defined here, as superclass for
 for extractor modules, such as the ``form`` extractor?
 """
+
 from itertools import chain
 
 from dotmpe.du import util
@@ -43,6 +44,7 @@ from nabu.extract import \
 logger = util.get_log(__name__)
 
 class TransientStorage(extract.ExtractorStorage):
+
     "This keeps all extracted data on the instance. "
 
     def __init__(self, init={}, datakey='_storage', specs=None):
@@ -108,11 +110,16 @@ class SQLiteExtractorStorage(extract.ExtractorStorage):
         for tname, rtype, schema in chain(self.sql_relations_unid,
                                           self.sql_relations):
             cursor.execute("SELECT * FROM main.sqlite_master "
-                "WHERE type='table' "
-                "AND name = ? ", (tname,))
-            if cursor.rowcount <= 0:
-                logger.info("Creating DB schema %s (%s)", tname, rtype)
-                cursor.execute(schema)
+                "WHERE type= ? "
+                "AND name = ? ", (rtype.lower(), tname,))
+            rs = cursor.fetchone()
+            if not rs:
+                try:
+                    logger.info("Creating DB schema %s (%s)", tname, rtype)
+                    cursor.execute(schema)
+                except Exception, e:
+                    print "Failed creating %s" % tname
+                    raise e
 
         self.connection.commit()
 
@@ -144,16 +151,16 @@ class SQLiteExtractorStorage(extract.ExtractorStorage):
             if rtype.upper() == 'INDEX':
                 continue
 
-            x = cursor.execute("""
-                SELECT * FROM main.sqlite_master WHERE type='table'
-                AND name = ?
-               """, (tname,))
+            cursor.execute("SELECT * FROM main.sqlite_master "
+                "WHERE type= ? "
+                "AND name = ? ", (rtype.lower(), tname,))
 
             try:
                 cursor.fetchone()
-                cursor.execute("DROP %s %s" % (rtype, tname))
+                cursor.execute("DROP %s %s;" % (rtype, tname))
                 logger.info("Destroyed table %s", tname)
             except Exception, e:
+                print 'Error deleting %s: %s' % ( tname, e )
                 logger.error(e)
 
             cursor.execute(schema)

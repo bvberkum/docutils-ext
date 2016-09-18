@@ -22,12 +22,13 @@ from docutils import nodes, frontend
 
 import uriref
 from dotmpe.du import util
+from dotmpe.du.util import SqlBase, get_session
 from dotmpe.du.ext import extractor
-from script_mpe.taxus.init import SqlBase
-from script_mpe.taxus.util import get_session
 
 
 logger = util.get_log(__name__, fout=False)
+
+logger = util.get_log(__name__)
 
 class ReferenceExtractor(extractor.Extractor):
 
@@ -124,16 +125,19 @@ class ReferenceStorage(extractor.SQLiteExtractorStorage):
     sql_relations_unid = []
     sql_relations = []
 
-    def __init__(self, engine=None, dbref=None, initdb=False):
-        if engine:
-            self.connection = engine
-            return
-
-        assert dbref, ( dbref, initdb )
-        # set for SA, get engine to use as DBAPI-2.0 compatible connection
-        self.session = get_session(dbref, True)
-        self.connection = SqlBase.metadata.bind.raw_connection()
-
+    def __init__(self, session=None, dbref=None, initdb=False):
+        if not session:
+            assert dbref, ( dbref, initdb )
+            # set for SA, get engine to use as DBAPI-2.0 compatible connection
+            self.session = get_session(dbref, True)
+            self.connection = SqlBase.metadata.bind.raw_connection()
+        else:
+            self.session = session
+        # XXX can I get raw-connection from self.session?
+        #self.connection = SqlBase.metadata.bind.raw_connection()
+        #logger.info("Connected to %s", self.connection)
+        logger.info("Extractor store to %s", self.session)
+        
     def store(self, source_id, *args):
         print 'store', source_id, args
 

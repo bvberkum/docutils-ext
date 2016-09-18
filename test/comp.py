@@ -1,3 +1,10 @@
+"""
+Assert that the component types or loaded correctly by name
+through the registry.
+
+One test for standard Docutils behaviour, and one for some .mpe extensions.
+"""
+
 import unittest
 
 import docutils
@@ -11,8 +18,8 @@ from dotmpe.du.ext.parser import \
 #        rst as rst_parser,  \
 from dotmpe.du.ext.writer import \
         atlassian as atlassian_writer,  \
-        formresults, html, \
-        rst as rst_writer, pydoc, latex2e, xhtml, \
+        formresults, html as mpe_html, \
+        rst as rst_writer, pydoc, latex2e, xhtml as mpe_xhtml, \
         htmlform
 from dotmpe.du.builder import Builder
 import dotmpe.du.builder.dotmpe_v5
@@ -28,7 +35,7 @@ class DuComponentLoaderMonkeyPatchTest(unittest.TestCase):
     def test_1_get_reader_class(self):
         for Reader, names in self.reader:
             for name in names:
-                self.assertEquals( Reader, 
+                self.assertEquals( Reader,
                         docutils.readers.get_reader_class(name) )
 
     parser = (
@@ -38,12 +45,12 @@ class DuComponentLoaderMonkeyPatchTest(unittest.TestCase):
     def test_2_get_parser_class(self):
         for Parser, names in self.parser:
             for name in names:
-                self.assertEquals( Parser, 
+                self.assertEquals( Parser,
                         docutils.parsers.get_parser_class(name) )
 
     writer = (
-            ( html.Writer, ('html-mpe', ) ),
-            ( xhtml.Writer, ('xhtml', 'xhtml-mpe') ),
+            ( mpe_html.Writer, ('html-mpe',) ),
+            ( mpe_xhtml.Writer, ('xhtml', 'xhtml-mpe') ),
             ( rst_writer.Writer, ('rst', 'rst-mpe') ),
 #            ( pydoc.Writer, ('pydoc', 'pydoc-mpe') ),
             ( latex2e.Writer, ('latex2e', 'latex2e-mpe') ),
@@ -54,7 +61,7 @@ class DuComponentLoaderMonkeyPatchTest(unittest.TestCase):
     def test_3_get_writer_class(self):
         for Writer, names in self.parser:
             for name in names:
-                self.assertEquals( Writer, 
+                self.assertEquals( Writer,
                         docutils.writers.get_writer_class(name) )
 
 
@@ -67,7 +74,7 @@ class DotmpeComponentLoaderTest(unittest.TestCase):
     def test_2_get_reader_class(self):
         for Reader, names in DuComponentLoaderMonkeyPatchTest.reader:
             for name in names:
-            	self.assert_( issubclass(Reader, docutils.readers.Reader), 
+            	self.assert_( issubclass(Reader, docutils.readers.Reader),
             	        Reader )
                 self.assertEquals( Reader, comp.get_reader_class(name) )
 

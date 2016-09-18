@@ -107,7 +107,7 @@ if script_names:
 # only use tag-suffixed comp alias if available
 reader_name = tag
 if reader_name not in comp.readers:
-    print "Unknown", reader_name, "Using default reader 'standalone'"
+    #print "Unknown reader '%s'" % reader_name, "Using default reader 'standalone'"
     reader_name = 'standalone'
 
 parser_name = "%s-%s" % (source_format, tag)
@@ -145,7 +145,7 @@ else:
 log = util.get_log(None, fout=False, stdout=True)
 
 if action == 'proc':
-    log.info("Starting Du processor")
+    log.info("Starting Du processor: "+tag)
     assert target_format == 'pseudoxml'
     # TODO: use source_format
     #frontend.cli_process(

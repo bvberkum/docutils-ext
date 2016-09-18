@@ -1,0 +1,12 @@
+Loaded testmodule 'comp'
+Loaded testmodule 'builder'
+Loaded testmodule 'frontend'
+Loaded testmodule 'build'
+Loaded testmodule 'form'
+Loaded testmodule 'sql_storage'
+Loaded testmodule 'rstwriter'
+...............................................................
+----------------------------------------------------------------------
+Ran 63 tests in 1.043s
+
+OK

@@ -1,7 +1,7 @@
 from nabu import extract
 
 from dotmpe.du import util
-from script_mpe.taxus.util import get_session
+from dotmpe.du.util import SqlBase, get_session
 
 
 

@@ -1,3 +1,7 @@
+"""
+There are some experimental parsers, but the parser module really serves to hold
+rst extensions (nodes, directives etc.)
+"""
 from dotmpe.du import comp
 
 from inliner import Inliner

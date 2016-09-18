@@ -60,13 +60,13 @@ class LogBookStorage(extractor.SQLiteExtractorStorage):
                date_end DATE,
                -- Location is the netpath without domain.
                location VARCHAR,
-               entry_count INT
+               entry_count INT,
 
                -- Disclosure is
                --  0: public
                --  1: shared
                --  2: private
-               disclosure INT DEFAULT 2,
+               disclosure INT DEFAULT 2
             )
 
         '''),
@@ -88,7 +88,7 @@ class LogBookStorage(extractor.SQLiteExtractorStorage):
 
             CREATE TABLE logbook_blockitem
             (
-               unid VARCHAR PRIMARY KEY,
+               unid VARCHAR PRIMARY KEY
             )
 
         '''),
@@ -115,7 +115,7 @@ class LogBookStorage(extractor.SQLiteExtractorStorage):
         ]
 
     sql_relations = [
-        ('tagindex_idx', 'INDEX',
+        ('logbook_tag_idx', 'INDEX',
          """CREATE INDEX logbook_tag_idx ON logbook_tag (label)""")
         ]
 

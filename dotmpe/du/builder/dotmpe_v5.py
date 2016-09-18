@@ -7,6 +7,7 @@ from dotmpe.du import builder, util
 from dotmpe.du.ext.transform import include, logbook
 from dotmpe.du.ext.reader import standalone
 from dotmpe.du.util import addClass
+from dotmpe.du.ext.extractor import reference
 
 
 def _get_logbook_store(options):
@@ -22,7 +23,10 @@ def _get_logbook_store(options):
 
 class Builder(builder.Builder):
 
+    HTSTORE = 'sqlite:///.cllct/HtdocsStorage.sqlite'
+
     settings_default_overrides = {
+        'halt_level': 2,
         '_disable_config': True,
         'stylesheet_path':'/media/style/default.css',
         'script': 'http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js,/media/script/default.js',
@@ -52,15 +56,32 @@ class Builder(builder.Builder):
     }
 
     # TODO: integrate with CLI/settings_spec
+    # spec use to populate builder.extractors to a list of extractor/storage
+    # pairs. extractors are initialized in XXX...?
+    # storage is
     extractor_spec = [
             ('nabu.extractors.document', 'dotmpe.du.ext.extractor.document'),
-            ('dotmpe.du.ext.extractor.settings', 'dotmpe.du.ext.extractor.settings.SettingsStorage')
-        ] 
+     #       ('dotmpe.du.ext.extractor.settings', 'dotmpe.du.ext.extractor.settings.SettingsStorage')
+        ]
+
+    settings_spec = (
+            'htdocs.mpe Builder',
+            '. ',
+            ((
+                 'Database to store titles. ',
+                 ['--dbref'],
+                 {
+                     'metavar':'PATH',
+                     'default': HTSTORE
+                     #'validator': util.optparse_init_sqlalchemy,
+                 }
+            ),) +
+            reference.Extractor.settings_spec[2]
+        )
 
     store_params = {
             'dotmpe.du.ext.extractor.document.Storage': (
-                (),
-                {'module':None, 'connection': _get_logbook_store}),
+                (), {'module':None, 'connection': _get_logbook_store}),
         }
 
     class Reader(standalone.Reader):
@@ -72,7 +93,7 @@ class Builder(builder.Builder):
         def get_transforms(self):
             return standalone.Reader.get_transforms(self) + [
                     addClass(Builder.Reader.add_class),
-                    logbook.LogBook
+                    #logbook.LogBook
                 ]
 
     class ReReader(builder.Builder.ReReader):

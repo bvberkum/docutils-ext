@@ -1,7 +1,17 @@
+# These correspond to python modules in dir ./test
+# See test/main.py
 comp
+builder
+frontend
 build
 form
-#rstwriter
+sql_storage
+# FIXME 
+rstwriter
+
+# TODO 
+#extractor
+#mediawiki
 #atlassianparser
 #atlassianwriter
 #confluence

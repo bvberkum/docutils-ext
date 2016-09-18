@@ -1,6 +1,6 @@
 """
-An Du Reader component with all settings and transforms of the 
-normal standalone reader, plus new extensions. 
+An Du Reader component with all settings and transforms of the
+normal standalone reader, plus new extensions.
 
 Perhaps name this standalone, or find some scheme to dereference links.
 """
@@ -12,7 +12,7 @@ from dotmpe.du.ext.transform import template, generate, include, user, clean,\
 
 
 #MyPHPTemplate = template.TemplateSubstitutions
-#MyPHPTemplate.blocks = 
+#MyPHPTemplate.blocks =
 #MyPHPTemplate.format = ""
 
 
@@ -22,6 +22,12 @@ class Reader(readers.Reader):
     Reader with many transforms in priority range of 20 to 900.
     """
 
+    supported = ('standalone-mpe', 'mpe')
+    """Contexts this reader supports."""
+
+    document = None
+    """A single document tree."""
+
     settings_spec = (
             '.mpe Reader',
             'Standard \'standalone\' reader with extended set of transforms. ',
@@ -29,7 +35,7 @@ class Reader(readers.Reader):
             standalone.Reader.settings_spec[2] +
             user.UserSettings.settings_spec +
             include.Include.settings_spec +
-            #include.RecordDependencies.settings_spec + 
+            #include.RecordDependencies.settings_spec +
             #template.TemplateSubstitutions.settings_spec +
             generate.PathBreadcrumb.settings_spec +
             generate.Timestamp.settings_spec +
@@ -59,17 +65,17 @@ class Reader(readers.Reader):
             #tables.TableCaption,            # 210
             #
             references.Substitutions,       # 220
-            #XXX:rstwriter dev:references.PropagateTargets,    # 260
+            references.PropagateTargets,    # 260
             frontmatter.DocTitle,           # 320
             frontmatter.SectionSubTitle,    # 340
             frontmatter.DocInfo,            # 340
-            #XXX:rstwriter dev:references.AnonymousHyperlinks, # 440
-            #XXX:rstwriter dev:references.IndirectHyperlinks,  # 460
+            references.AnonymousHyperlinks, # 440
+            references.IndirectHyperlinks,  # 460
             debug.Settings,                 # 500
             debug.Options,                  # 500
             references.Footnotes,           # 620
-            #XXX:rstwriter dev:references.ExternalTargets,     # 640
-            #XXX:rstwriter dev:references.InternalTargets,     # 660
+            references.ExternalTargets,     # 640
+            references.InternalTargets,     # 660
             universal.StripComments,        # 740
             universal.ExposeInternals,      # 840
 # Replaced by some generate.* transforms
@@ -77,7 +83,7 @@ class Reader(readers.Reader):
             misc.Transitions,               # 830
             references.DanglingReferences,  # 850
             clean.StripSubstitutionDefs,    # 900
-            #XXX:rstwriter dev:clean.StripAnonymousTargets,    # 900
+            clean.StripAnonymousTargets,    # 900
         ]
 
 
