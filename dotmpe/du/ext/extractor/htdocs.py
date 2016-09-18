@@ -1,22 +1,15 @@
 """
 .mpe htdocs extractor
 
-dev phase
-1. Uniquely identify each section, term or reference in a document.
-2. Interactively identify above nodes; need rSt document in-place rewrite.
+Inline (title, literal, reference)
+    ..
+Definition Terms
+    - The blocks or list/items under the term may be appended somehow to a
+      resource matching term.
 
-Phase I
--------
-- Work in progress extacting terms. 
-  Eventually many types of nodes could qualify.
-
-  Simple anydbm based storage. db is shared between extractors.  
-
-XXX can this be generic, or should build different one for note, journal, etc.
-    gonna need lots of path- or context-specific handlers to determine global
-    ID.
 """
 from datetime import datetime 
+from pprint import pformat
 
 import json
 
@@ -69,6 +62,8 @@ class HtdocsExtractor(extractor.Extractor):
         v = TinkerVisitor(self.document, storage)
         self.document.walk(v)
         v.finalize()
+        print pformat(v.terms)
+        print self.document.messages
 
 
 class HtdocsStorage(extractor.SQLiteExtractorStorage):
@@ -115,8 +110,13 @@ class HtdocsStorage(extractor.SQLiteExtractorStorage):
 
         logger.info("Connected to %s", self.connection)
 
+    # Extractor
     def store(self, source_id, *args):
-        pass
+        """
+        TODO main store api, node-subclass of document?
+        """
+        print 'store', source_id, args
+        this.sa.query(source_id)
 
     def clear(self, source_id):
         pass
@@ -146,60 +146,78 @@ class HtdocsStorage(extractor.SQLiteExtractorStorage):
                 session.commit()
                 print 'new', description.name
 
+    # 
+#    def retrieve_
+
+def now():
+    return datetime.now()
 
 class TinkerVisitor(nodes.SparseNodeVisitor):
+
+    """
+    Visit term nodes, interpret one or more references, and update.
+    """
 
     def __init__(self, doc, store):
         nodes.SparseNodeVisitor.__init__(self, doc)
         self.store = store
+        self.stack = []
+        self.terms = {}
 
     def finalize(self):
         pass
 
 #    def visit_definition_list(self, node):
-#        print 'visit_definition_list', node
-
+#        pass#print 'visit_definition_list', node
+#        return True
 #    def visit_definition_list_item(self, node):
 #        print 'visit_definition_list_item', node
 
+    def push_stack(self, node):
+        superterm = None
+        if self.stack:
+            superterm = self.stack[-1]
+        self.stack.append(node)
+
     def visit_term(self, node):
+        self.push_stack(node)
+        t = node.astext()
+        if t not in self.terms:
+            self.terms[t] = {}
+#        self.current = self.terms[t]
+        print 'visit_term', t
+        return
 
-        #def now():
-        #    return datetime.now()
+        for i, term in enumerate(terms):
+            print i, term
+            continue
 
-        #print 'visit_term', node.astext()
-        #terms = node.astext().split()
-        #for i, term in enumerate(terms):
-        #    print i, term
-        #    continue
-
-        #    sa = self.store.sa
-        #    matches = self.store.sa.query(taxus.semweb.Description)\
-        #            .filter(taxus.semweb.Description.name==term).all()
-        #    if not matches:
-        #        description = taxus.Description(
-        #                name=term, date_added=now())
-        #        sa.add(description)
-        #        sa.commit()
-        #        print 'new', description.name
-
-        s = self.store
-
-        s.find_term(node.astext())
+            sa = self.store.sa
+            matches = self.store.sa.query(taxus.semweb.Description)\
+                    .filter(taxus.semweb.Description.name==term).all()
+            if not matches:
+                description = taxus.Description(
+                        name=term, date_added=now())
+                sa.add(description)
+                sa.commit()
+                print 'new', description.name
 
         # XXX it is not the intention to do a string lookup, each node should
         # carry semantics so there may be term_1 term_2 to denote different terms
         # Currently this means the writer should be explicit
         # Another routine is needed (in taxus) to clean up unreferenced nodes
+    def depart_term(self, node):
+        assert self.stack.pop() == node
 
-    def visit_definition(self, node):
-        pass#print 'visit_description'#, node.astext()
-
-    def depart_definition(self, node):
-        pass#print 'depart_definition'#, node.astext()
-
-    def visit_list_item(self, node):
-        pass#print 'visit_list_item', node
+#    def visit_definition(self, node):
+#        print 'visit_description'#, node.astext()
+#
+#    def depart_definition(self, node):
+#        pass#print 'depart_definition'#, node.astext()
+#        #return True
+#
+#    def visit_list_item(self, node):
+#        pass#print 'visit_list_item', node
 
 
 Extractor = HtdocsExtractor
