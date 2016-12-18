@@ -61,6 +61,7 @@ class TransientStorage(extract.ExtractorStorage):
     data = property(__getdata__, __setdata__)
 
     def store(self, source_id, *args, **kwds):
+        print self,'store',source_id, args, kwds
         self.data[source_id] = args, kwds
 
     def clear(self, source_id):
