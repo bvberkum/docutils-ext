@@ -12,7 +12,7 @@
   license: GPL-3.0
 
   pd-meta:
-    check: ":make:stat :git:status"
+    check: ":make:stat sh:tools/ci/tags.sh:*.*:doc:dotmpe:examples:features:lib:log:test:tools:var :git:status"
     test: ":make:test"
     build: ""
     install: "sh:pip:install:."
