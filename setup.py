@@ -24,14 +24,14 @@ setup(
 	install_requires=[
 		# 'cllct-core'
 	],
-	packages=find_packages('lib/py'),
+	packages=find_packages('.'),
 	package_data={
-            '': ['lib/py']
+            '': ['.']
 	},
 	package_dir = {
-	    'cllct': 'lib/py/cllct',
-	    'dotmpe': 'lib/py/dotmpe',
-	    'dotmpe.du.ext': 'lib/py/dotmpe/du/ext'
+	    #'cllct': 'lib/py/cllct',
+	    #'dotmpe': 'dotmpe',
+	    #'dotmpe.du.ext': 'dotmpe/du/ext'
         },
 	eager_resources = [
 	],
@@ -39,9 +39,12 @@ setup(
 		# console_scripts': [ '<script-name> = <package-name>.main:main' ]
 	},
 	namespace_packages = [
-		'cllct',
+		#'cllct',
 		'dotmpe',
-		'dotmpe.du.ext'
+		'dotmpe.du',
+		#'dotmpe.du.ext',
+		#'dotmpe.du.ext.writer',
+		#'dotmpe.du.ext.parser'
 	]
 )
 
