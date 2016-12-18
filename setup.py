@@ -1,13 +1,10 @@
 """
 For setup example see end of http://www.sourceweaver.com/blog/view/private-python-egg-repository
+http://peak.telecommunity.com/DevCenter/setuptools#namespace-packages
+http://morepath.readthedocs.io/en/latest/organizing_your_project.html#namespace-packages
+http://setuptools.readthedocs.io/en/latest/setuptools.html#namespace-packages
 """
-#from distutils.core import setup
-try:
-	from setuptools import setup, find_packages
-except ImportError:
-	from ez_setup import use_setuptools
-	use_setuptools()
-	from setuptools import setup, find_packages
+from setuptools import setup, find_packages
 
 setup(
 	url="",
@@ -27,20 +24,25 @@ setup(
 	install_requires=[
 		# 'cllct-core'
 	],
-	packages=find_packages('lib'),
+	packages=find_packages('lib/py'),
 	package_data={
-		'': ['.']
+            '': ['lib/py']
 	},
-	package_dir = {'': 'lib'},
+	package_dir = {
+	    'cllct': 'lib/py/cllct',
+	    'dotmpe': 'lib/py/dotmpe',
+	    'dotmpe.du.ext': 'lib/py/dotmpe/du/ext'
+        },
 	eager_resources = [
 	],
 	entry_points = {
 		# console_scripts': [ '<script-name> = <package-name>.main:main' ]
 	},
-	namespace_packages = [ 
+	namespace_packages = [
 		'cllct',
 		'dotmpe',
 		'dotmpe.du.ext'
 	]
 )
+
 
