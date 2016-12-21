@@ -17,7 +17,7 @@ Feature: a rst2outline utility with JSON output format
 
       When the user runs:
         """
-        ./tools/rst-outline.py --outline test.json var/test-outline.1.json-1.rst
+        PYTHONPATH=$PYTHONPATH:. ./tools/rst-outline.py --outline test.json var/test-outline.1.json-1.rst
         """
 
       Then file "test.json" should be created, and contain the same as "var/test-outline.1.json-1.json"
