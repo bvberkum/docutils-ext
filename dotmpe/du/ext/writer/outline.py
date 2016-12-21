@@ -3,7 +3,7 @@
 Last time I looked there were a lot of tastes of outline format.
 
 The first req,. is to get nested, identified containers out.
-Get the ID from the title/term.
+Get the ID from the titles or term in the document.
 
 """
 import math
@@ -77,6 +77,12 @@ class Writer(writers.Writer):
 
         self.output = visitor.astext()
 
+        # XXX: no the proper Du way probably..
+        import json
+        fp = open(self.document.settings.outline_file, 'w+')
+        json.dump(visitor.data, fp)
+        fp.close()
+
 
 #class OutlineExtractor(nodes.NodeVisitor):
 class OutlineExtractor(nodes.SparseNodeVisitor):
@@ -86,33 +92,51 @@ class OutlineExtractor(nodes.SparseNodeVisitor):
         self.data = {}
         "Dist-n-list struct for return JSON"
 
+        # Initialize root context
         self.context = ContextStack(defaults={
-            'path': [],
-            'element': {}
+            'data': self.data,
+            'path': [ document ],
+            'element': {},
+            'outline_id': 'root'
         })
+
+    def pretty_ctx_path(self):
+        return "/".join([ p.tagname for p in self.context.path])
+
+    def pretty_path(self, node):
+        path = []
+        n = node
+        while n.parent:
+            path.append( n.parent )
+            n = n.parent
 
 
     def astext(self):
         return str(self.data)
 
+    def onpath(self, node):
+        return is_parent( self.context.path[-1], node ) or False
+
     def visit_definition_list_item(self, node):
 
-        """
-        """
+        ce = self.context.element
 
-        # pylint: disable=no-member
-        self.context.path += [node]
-        # pylint: enable=no-member
+        self.context.path = self.context.path + [ node ]
+        self.context.data = {}
 
     def visit_term(self, node):
 
-        """
-        """
+        self.context.element = {}
 
     def depart_term(self, node):
 
-        self.context.element['_label'] = node.astext()
-        print 'term end', node.astext(), self.context.element
+        ce = self.context.element
+        del self.context.element
+
+        ce['_label'] = node.astext()
+        ce['_id'] = nodes.make_id(ce['_label'])
+
+        self.context.outline_id = ce['_id']
 
 
     def depart_definition_list_item(self, node):
@@ -123,18 +147,21 @@ class OutlineExtractor(nodes.SparseNodeVisitor):
         Finalize by copying the current outline path to data.
         """
 
-        # pylint: disable=no-member
-        ce = self.context.element
-        # pylint: disable=no-member
+        data = self.context.data
+        del self.context.data
+        self.context.data[self.context.outline_id] = data
 
-        ce['_id'] = nodes.make_id(ce['_label'])
+        del self.context.path
+        del self.context.outline_id
 
-        print 'end', ce, self.context.path
 
-        # pylint: disable=no-member
-        if is_parent( self.context.path[-1], node ):
-            del self.context.path
-        # pylint: disable=no-member
+    def visit_definition(self, node):
+
+        pass
+
+    def depart_definition(self, node):
+
+        pass
 
 
 def is_parent(node1, node2):

@@ -1,0 +1,1 @@
+{"dev": {"web": {"client": {"style": {}}, "script": {}}, "barebone": {"raspbery-pi": {}, "banana-pi": {}, "orange-pi": {}}, "embedded": {"pic16x": {}, "attiny": {}, "atmega": {}}}}
