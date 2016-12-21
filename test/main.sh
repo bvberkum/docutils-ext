@@ -3,7 +3,8 @@
 # See test/main.py
 
 case "$(whoami)" in
-  travis|jenkins ) ;; # FIXME: see about the recursion in build #72
+  travis|jenkins ) ;;
+  # FIXME:du-ext.1: See about `test_1_get_reader_class` (comp) failure at Travis.
   * )
       echo comp
     ;;
@@ -16,7 +17,6 @@ frontend
 build
 form
 sql_storage
-
 rstwriter
 
 EOH
