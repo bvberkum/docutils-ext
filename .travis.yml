@@ -8,7 +8,11 @@ python:
 addons:
   apt:
     packages:
-      - composer
+      - curl
+      - php5-cli
+
+before_script:
+  - 'curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer'
 
 branches:
   only:
