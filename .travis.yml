@@ -15,6 +15,9 @@ branches:
   only:
   - '/^test.*/'
   - '/^[0-9]*\.[0-9]*\.[0-9]*/'
+  - features/simple-muxdem
+  - features/atlassian
+  - features/atlassian-confluence
 
 env:
   - ENV= M="$(./test/main.sh)"
@@ -37,7 +40,7 @@ before_script: []
 
 script: 
 - coverage run --source=dotmpe test/main.py $M
-# sql_storage
+
 
 # Default travis Python build:
 #
@@ -46,3 +49,5 @@ script:
 #  - "pip install -r requirements.txt"
 #
 #script: nosetests
+#
+
