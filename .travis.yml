@@ -17,10 +17,11 @@ branches:
   - '/^[0-9]*\.[0-9]*\.[0-9]*/'
 
 env:
-  - ENV= M="$(./test/main.sh)"
+  - ENV= M="$(./test/main.sh)" PYTHONPATH=$PYTHONPATH:.
 
 install:
 - "pip install -r requirements.txt"
+- "pip install -r optional.txt || echo 'Optional Py lib install failed'"
 - ./build/rebuild-lib-links.sh $HOME/src
 - ./build/docutils-checkout.sh
 - ./build/nabu-checkout.sh
