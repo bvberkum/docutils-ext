@@ -1,7 +1,7 @@
 Docutils extensions
 ===================
 :Created: Aug. 2009
-:Updated: Jun. 2016
+:Updated: Dec. 2016
 :Version: 0.0.1
 
 :Status:
@@ -71,6 +71,7 @@ In progress
 
 ToDo
 ''''
+-  Updated for Docutils 0.13
 -  re-evaluate include, literal and raw dereferencing.
    want something like subdocs but low on the list of wannahaves.
 -  expose extractor and storage parameters on command line as other
