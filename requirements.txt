@@ -1,0 +1,4 @@
+coverage
+docutils==0.12
+roman
+uriref

@@ -17,7 +17,8 @@ branches:
 env:
   - ENV= M="$(./test/main.sh)" PYTHONPATH=$PYTHONPATH:.
 
-install: []
+install:
+- "pip install -r requirements.txt"
 
 before_script: []
 
