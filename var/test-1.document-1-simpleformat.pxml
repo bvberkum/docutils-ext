@@ -1,6 +1,6 @@
-<document ids="test-document" names="test\ document" source="var/test-1.document-1-simpleformat.txt" title="Test Document">
-    <title>
-        Test Document
+<document source="var/test-1.document-1-simpleformat.txt">
+    <paragraph>
+        h1. Test Document
     <paragraph>
         Some paragraph 
         <strong>

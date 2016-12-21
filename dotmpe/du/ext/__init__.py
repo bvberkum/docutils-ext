@@ -15,6 +15,24 @@ TODO:
 
 __docformat__ = 'reStructuredText'
 
+try:
+    import pkg_resources
+    pkg_resources.declare_namespace(__name__)
+except ImportError:
+# don't prevent use of paste if pkg_resources isn't installed
+    from pkgutil import extend_path
+    __path__ = extend_path(__path__, __name__)
+
+try:
+    import modulefinder
+except ImportError:
+    pass
+else:
+    for p in __path__:
+        modulefinder.AddPackagePath(__name__, p)
+    del p
+
+
 
 import docutils
 import docutils.readers
@@ -24,6 +42,7 @@ import docutils.parsers.rst
 
 
 import dotmpe.du
+from dotmpe.du.util import get_log
 import transform
 #import extractor
 import node
@@ -34,6 +53,8 @@ import dotmpe.du.ext.writer
 from dotmpe.du.ext.parser.rst.directive.margin import Margin
 from dotmpe.du.ext.parser.rst.directive.images import Figure
 
+
+logger = get_log(__name__)
 
 ""
 
@@ -79,7 +100,15 @@ def get_reader_class(reader_name):
     if reader_name in dotmpe.du.comp.readers:
         reader = dotmpe.du.comp.get_reader_class(reader_name)
     else:
-        reader = _du_get_reader_class(reader_name)
+        try:
+            reader = _du_get_reader_class(reader_name)
+        except ImportError, e:
+            logger.warn("No Du Reader for name '%s'" % reader_name)
+            print 'Components'
+            print dir(dotmpe.du.comp)
+            print 'Readers'
+            print dotmpe.du.comp.readers
+            raise e
     assert issubclass(reader, docutils.readers.Reader), reader
     return reader
 docutils.readers.get_reader_class = get_reader_class

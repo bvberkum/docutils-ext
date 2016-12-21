@@ -1,0 +1,58 @@
+# FIXME: test-rst.1.document-1.rst
+# FIXME: test-rst.1.document-2.rst
+# FIXME: test-rst.1.document-3.rst
+# FIXME: test-rst.1.document-4.rst
+# FIXME: test-rst.1.document-6.rst
+# FIXME: test-rst.1.document-7.rst
+test-rst.1.title-subtitle.rst
+test-rst.1.title.rst
+# FIXME: test-rst.10.literal-block-1.rst
+# FIXME: test-rst.10.literal-block-2.rst
+# FIXME: test-rst.10.literal-block-3.rst
+# FIXME: test-rst.10.literal-block-4.rst
+# FIXME: test-rst.10.literal-block-5.rst
+# FIXME: test-rst.11.image.rst
+# FIXME: test-rst.12.figure.rst
+# FIXME: test-rst.13.table-2.rst
+# FIXME: test-rst.13.table-3.rst
+# FIXME: test-rst.13.table-4.rst
+# FIXME: test-rst.13.table.rst
+# FIXME: test-rst.14.line-block-2.rst
+# FIXME: test-rst.14.line-block.rst
+# FIXME: test-rst.15.blockquote-1.rst
+# FIXME: test-rst.15.blockquote.rst
+# FIXME: test-rst.16.block_quote.rst
+# FIXME: test-rst.17.tables-1.rst
+# FIXME: test-rst.17.tables-2.rst
+# FIXME: test-rst.18.doctext_block.rst
+# FIXME: test-rst.19.comments.rst
+test-rst.2.sections.rst
+# FIXME: test-rst.2.title-1.rst
+# FIXME: test-rst.20.epigraph.rst
+# FIXME: test-rst.21.transition-1.rst
+# FIXME: test-rst.22.docinfo.rst
+# FIXME: test-rst.23.option-list-1.rst
+# FIXME: test-rst.24.references.rst
+test-rst.25.substitutions.rst
+# FIXME: test-rst.3.subtitle-1.rst
+# FIXME: test-rst.4.paragraph-1.rst
+# FIXME: test-rst.5.inline-1.rst
+test-rst.5.inline-2.rst
+# FIXME: test-rst.5.inline-3.rst
+# FIXME: test-rst.5.inline-4.rst
+# FIXME: test-rst.5.inline-5.rst
+# FIXME: test-rst.5.inline-6.rst
+# FIXME: test-rst.5.inline-7.rst
+# FIXME: test-rst.6.bullet-list-2.rst
+# FIXME: test-rst.6.bullet-list.rst
+# FIXME: test-rst.7.enumerated-list-1.rst
+# FIXME: test-rst.7.enumerated-list-2.rst
+# FIXME: test-rst.7.enumerated-list-3.rst
+# FIXME: test-rst.8.field-list-2.rst
+# FIXME: test-rst.8.field-list-3.rst
+# FIXME: test-rst.8.field-list-4.rst
+test-rst.8.field-list.rst
+# FIXME: test-rst.9.definition-list-1.rst
+# FIXME: test-rst.9.definition-list-2.rst
+
+

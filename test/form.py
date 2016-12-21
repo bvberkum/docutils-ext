@@ -29,7 +29,7 @@ def validate_myform(frmextr, settings):
 
 
 class Form:
-    
+
     fields_spec = [
         ('my-integer','int',),
         ('my-string', 'str',),
@@ -40,7 +40,7 @@ class Form:
         ('my-colour','color',{ 'required': False }),
         #('my-uri': (util.du_uri,),
         #('my-integer-percentage': (util.percentage,),
-        ('my-unsigned-integer','int',{ 'required':False, 
+        ('my-unsigned-integer','int',{ 'required':False,
             'validators':(lambda i:i>=0,), 'help': 'Enter a non-negative integer. ' }),
         ('my-cs-list','cs-list,str',{ 'required':False, 'append':True }),
         #(util.cs_list, util.du_str)
@@ -62,7 +62,7 @@ class FormTransform(form1.DuForm):
 class FormReader(readers.Reader):
 
     settings_spec = (
-        'My form', 
+        'My form',
         None,
         form.FormProcessor.settings_spec + (
     ))
@@ -76,29 +76,35 @@ class FormReader(readers.Reader):
                 FormTransform ]
 
 
+from StringIO import StringIO
+warnings = StringIO()
+
 class MyFormPage(builder.Builder):
 
     Reader = FormReader
 
     settings_overrides = {
-        #'form_field': (),
-        #'form': 'name',
-#        'form_values': None
+        'warning_stream': warnings
     }
 
 
 def reader_(source, source_id):
-    doc = core.publish_string(source, source_id, 
+    doc = core.publish_string(source, source_id,
             settings_overrides=MyFormPage.settings_overrides,
             reader=FormReader(), writer_name='pseudoxml')
     return doc
 
 def builder_(source, source_id):
     builder = MyFormPage()
-    builder.initialize(strip_comments=True)
+    builder.prepare_initial_components()
+    builder.prepare()
+    #assert builder.reader.extractors
+    #builder.initialize(strip_comments=True)
     print "Building %s" % source_id
     # Build the document tree from source
     document = builder.build(source, source_id)
+    assert builder.extractors
+    builder.process(document, source_id)
     print document.settings.form_values
     return
     #print "Processing"
@@ -118,7 +124,7 @@ def builder_(source, source_id):
             "There where errors during processing. " %\
             builder.process_messages
 
-def main_():    
+def main_():
     args = sys.argv[1:]
     opts = {}
     source_id = None
@@ -128,9 +134,9 @@ def main_():
             opts[arg.lstrip('-')] = None
         else:
             source_id = arg
-    if not source_id:            
-        source_id = os.path.join(example_dir, 'form.rst')
-    print 'Source:',source_id        
+    if not source_id:
+        source_id = os.path.join(example_dir, 'form-1.rst')
+    print 'Source:',source_id
     source = open(source_id).read()
 
     if 'builder' in opts:
@@ -155,11 +161,11 @@ expected = {
         'my-error': u'',
     }
 
-# Main test: one test 
+# Main test: one test
 class FormTest(unittest.TestCase):
 
     def test_1(self):
-        source_id = os.path.join(example_dir, 'form.rst')
+        source_id = os.path.join(example_dir, 'form-1.rst')
         source = open(source_id).read()
         builder = MyFormPage()
         #builder.initialize(strip_comments=True)
@@ -168,9 +174,15 @@ class FormTest(unittest.TestCase):
                 repr(document.settings)
         form_values = getattr(document.settings, 'form_values', ())
         for field_id, value in form_values:
-            self.asertEquals(expected[field_id], value, "Value error for %s: %r" % (field_id, value)) 
+            self.asertEquals(expected[field_id], value, "Value error for %s: %r" % (field_id, value))
+
+    def test_2(self):
+        pass
+
 
 if __name__ == '__main__':
-    unittest.main()
-    #main_()
+    if sys.argv:
+        main_()
+    else:
+        unittest.main()
 

@@ -141,6 +141,29 @@ class HTMLTranslator(html4css1.HTMLTranslator):
                          % (node['type'], node['level'],
                             self.encode(node['source']), line, backref_text))
 
+    def visit_reference(self, node):
+        atts = {'class': 'reference'}
+        if 'refuri' in node:
+            refuri = node['refuri']
+            if self.settings.link_prefix:
+                refuri = self.settings.link_prefix + refuri
+            # TODO if is_relative(refuri): #    refuri = self.settings.base + refuri
+            atts['href'] = refuri
+            if ( self.settings.cloak_email_addresses
+                 and atts['href'].startswith('mailto:')):
+                atts['href'] = self.cloak_mailto(atts['href'])
+                self.in_mailto = True
+            atts['class'] += ' external'
+        else:
+            assert 'refid' in node, \
+                    'References must have "refuri" or "refid" attribute: %s' % node
+            atts['href'] = '#' + node['refid']
+            atts['class'] += ' internal'
+        if not isinstance(node.parent, nodes.TextElement):
+            assert len(node) == 1 and isinstance(node[0], nodes.image)
+            atts['class'] += ' image-reference'
+        self.body.append(self.starttag(node, 'a', '', **atts))
+
 # Use table directive instead
 # XXX: instead of summary attr, HTML5 suggest embedding <caption />
 #    def visit_table(self, node):
@@ -164,19 +187,32 @@ class Writer(html4css1.Writer):
     """Formats this writer supports."""
 
     settings_spec = html4css1.Writer.settings_spec + (
-        'dotmpe html4css1 extensions',
-        None,
-        (('Specify comma separated list of JavaScript URLs. ',
+        '.mpe extensions',
+        "Additional HTML output options. ",
+        (
+
+         ('Base URL for relative hyperlinks (HTTP links without complete path). ',
+          ['--base'],
+          { 'metavar': '<URL>' }),
+
+         ('Literal prefix to use for all hyperlinks (HTTP links). ',
+          ['--link-prefix'],
+          { 'metavar': '<URL>' }),
+
+         ('Specify comma separated list of JavaScript URLs. ',
           ['--script'],
           { 'metavar': '<URL>' }),
+
          ('Specify comma separated list of JavaScript URLs. ',
           ['--script-path'],
           { 'metavar': '<file>', 'overrides': 'script' }),
+
          ('Embed the script(s) in the output HTML file.  The script '
           'files must be accessible during processing. This is the default.',
           ['--embed-script'],
           {'default': 1, 'action': 'store_true',
            'validator': frontend.validate_boolean}),
+
          ('Link to the script(s) in the output HTML file. '
           'Default: embed scripts.',
           ['--link-script'],
