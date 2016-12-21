@@ -50,6 +50,7 @@ CLN 				+= \
 
 # XXX: convert this to test-python, see e.g. scrow
 test:: test-validate-files
+	@./test/main.sh >> test/main.list;\
 	@-test_listing=test/main.list;\
 		test_mods=$$(cat $$test_listing|grep -v '^#'|grep -v '^$$');\
 		test_listing=$$test_listing coverage run test/main.py $$test_mods \

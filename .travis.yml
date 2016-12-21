@@ -1,0 +1,36 @@
+language: python
+
+sudo: false
+
+python:
+  - "2.7"
+
+addons:
+  apt:
+    packages: []
+
+branches:
+  only:
+  - '/^test.*/'
+  - '/^[0-9]*\.[0-9]*\.[0-9]*/'
+
+env:
+  - ENV= M="$(./test/main.sh)" PYTHONPATH=$PYTHONPATH:.
+
+install: []
+
+before_script: []
+
+script: 
+- coverage run --source=dotmpe test/main.py $M
+
+
+# Default travis Python build:
+#
+#install:
+#  - "pip install ."
+#  - "pip install -r requirements.txt"
+#
+#script: nosetests
+#
+
