@@ -13,6 +13,6 @@
    inline Markdown hyperlink format. Is there any other format?
    Other inline Markdown is fine. 
 
-   Not sure where todo.txt @ or + is appropiate, it's not specified?
+   Todo.txt specified @ for context and + for project.
    See @dotmpe/script-mpe:tasks.rst and the todo.txt format by Gina Trapani.
 
