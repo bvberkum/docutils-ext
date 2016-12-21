@@ -11,9 +11,6 @@ addons:
       - curl
       - php5-cli
 
-before_script:
-  - 'curl -sS https://getcomposer.org/installer | php -- --install-dir=~/.local/bin --filename=composer'
-
 branches:
   only:
   - '/^test.*/'
@@ -23,7 +20,6 @@ env:
   - ENV= M="comp builder frontend build sql_storage rstwriter"
 
 install:
-#- "pip install ."
 - "pip install -r requirements.txt"
 - ./build/rebuild-lib-links.sh $HOME/src
 - ./build/docutils-checkout.sh
@@ -33,7 +29,10 @@ install:
 - ls -la $HOME/src/python-docutils/docutils-svn/branches
 - ls -la lib/
 - ls -la lib/docutils-lossless/
+- 'curl -sS https://getcomposer.org/installer | php -- --install-dir=~/.local/bin --filename=composer'
 - ~/.local/bin/composer --version
+
+before_script: []
 
 script: 
 - coverage run --source=dotmpe test/main.py $M
