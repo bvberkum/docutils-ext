@@ -172,13 +172,31 @@ class Builder(SettingsSpec, Publisher):
         self.destination_class = docutils.io.StringOutput
         assert self.reader and self.parser and self.writer
         assert self.source or os.path.exists(self.source_id)
-        self.settings.input_encoding = 'utf-8'
-        self.settings.output_encoding = 'utf-8'
         if 'halt_level' not in self.settings_default_overrides:
             self.settings.halt_level = 0
         if 'report_level' not in self.settings_default_overrides:
             self.settings.report_level = 6
+
+        # FIXME: check settingspec defaults
+        #if 'warning_stream' not in self.settings_default_overrides:
+        if not hasattr(self.settings, 'warning_stream'):
+            self.settings.warning_stream = StringIO.StringIO()
+        if not hasattr(self.settings, 'debug'):
+            self.settings.debug = False
+        for key in "input_encoding output_encoding error_encoding".split(' '):
+            if not hasattr(self.settings, key):
+                setattr(self.settings, key, 'utf-8')
+        if not hasattr(self.settings, 'error_encoding_error_handler'):
+            setattr(self.settings, 'error_encoding_error_handler', 'replace')
+
         self.settings.output_encoding_error_handler = 'backslashreplace'
+        self.settings.tab_width = 4
+        self.settings.language_code = 'en_US'
+        self.settings.pep_references = False
+        self.settings.rfc_references = False
+        self.settings.smart_quotes = ''
+        self.settings.id_prefix = ''
+
         # XXX
         #from dotmpe.du.frontend import get_option_parser
         #option_parser = get_option_parser(

@@ -1,7 +1,7 @@
 Docutils extensions
 ===================
 :Created: Aug. 2009
-:Updated: Jun. 2016
+:Updated: Dec. 2016
 :Version: 0.0.1
 
 :Status:
@@ -44,6 +44,10 @@ rST Extensions
 rST Writer
   - Work in progress lossy rST writer for rst2rst publish.
 
+`rST Forms`_
+  A processor for Du documents to extract or insert (structured) user content,
+  with validation.
+
 
 Development
 -----------
@@ -55,10 +59,6 @@ Completed
   command-line options). See `Transforms`_ (``dotmpe.du.ext.transform``).
 - These transforms are used by ``dotmpe.du.ext.reader.mpe.``\ `Reader`.
 - Several Nabu `Extractor`, `Storage` pairs, see `Extractors`_ (``dotmpe.du.ext.extractor``) but nothing complex yet.
-- `rST forms`_ framework.
-  Use rST documents as forms, but gotten a bit out of use and no unittests.
-  The implementation includes retrieving data from a document according to the
-  `form specification`, which includes type conversion and value validation.
 - Monkey patched ``docutils.{readers,parser,writers}.get_*_class()`` to load
   components from my lib. Enable 'extension' by importing ``dotmpe.du.ext``.
 
@@ -71,6 +71,7 @@ In progress
 
 ToDo
 ''''
+-  Updated for Docutils 0.13
 -  re-evaluate include, literal and raw dereferencing.
    want something like subdocs but low on the list of wannahaves.
 -  expose extractor and storage parameters on command line as other
@@ -105,11 +106,9 @@ Devel
    a perhaps lossy representation? I think it loses some things, should keep
    track during rstwriter devel.
 
+* `Branches <BranchDocs.rst>`__
+* `Journal <DevLog.rst>`__
 
-Branches
-''''''''
-.. include:: BranchDocs.rst
-   :start-line: 3
 
 rST writer
 ----------
@@ -191,25 +190,8 @@ Dependencies
 - my mkdocs project to build from ``Rules.mk``
 - xmllint
 
-Log
------
-.. include:: DevLog.rst
-   :start-line: 3
 
 
-.. _Issues: Issues.rst
-.. _rST forms: `docs`_
-.. _Transforms: doc/transforms.rst
-.. _Extractors: doc/extractors.rst
-.. _Blue Lines: http://blue-lines.appspot.com/
-.. _docs: doc/main.rst
-.. _Du/rST examples: examples/main.rst
-.. _Sitefile: //github.com/dotmpe/node-sitefile
-
-.. |---| unicode:: U+02014 .. em dash
-   :trim:
-.. |copy| unicode:: 0xA9 .. copyright sign
-.. |tm| unicode:: U+02122 .. trademark sign
-.. |date| replace:: Date!
-
+.. include:: .refs.rst
+.. .. include:: .refs.BranchDocs.rst
 
