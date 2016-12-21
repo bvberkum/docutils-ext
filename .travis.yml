@@ -36,6 +36,8 @@ install:
 - ~/.local/bin/composer --version
 - composer install
 
+- ./tools/rst-outline.py --outline test.json var/test-outline.1.json-1.rst
+
 before_script: []
 
 script: 
