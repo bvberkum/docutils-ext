@@ -29,15 +29,18 @@ install:
 - ls -la $HOME/src/python-docutils/docutils-svn/branches
 - ls -la lib/
 - ls -la lib/docutils-lossless/
+
 - mkdir -vp ~/.local/{bin,lib,share}
 - 'curl -sS https://getcomposer.org/installer | php -- --install-dir=$HOME/.local/bin --filename=composer'
 - ~/.local/bin/composer --version
+- composer install
 
 before_script: []
 
 script: 
 - coverage run --source=dotmpe test/main.py $M
-# sql_storage
+- ./vendor/behat/behat/bin/behat
+
 
 # Default travis Python build:
 #
@@ -46,3 +49,5 @@ script:
 #  - "pip install -r requirements.txt"
 #
 #script: nosetests
+#
+
