@@ -2,7 +2,7 @@ Docutils extensions
 ===================
 :Created: Aug. 2009
 :Updated: Dec. 2016
-:Version: 0.0.1
+:Version: 0.0.2-dev
 
 :Status:
 
