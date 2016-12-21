@@ -2,7 +2,7 @@ Docutils extensions
 ===================
 :Created: Aug. 2009
 :Updated: Dec. 2016
-:Version: 0.0.1
+:Version: 0.0.2-dev
 
 :Status:
 
@@ -47,6 +47,12 @@ rST Writer
 `rST Forms`_
   A processor for Du documents to extract or insert (structured) user content,
   with validation.
+
+rST Outlines
+  - Planning: Extract outlines from rST. See `Feature: Outlines`__
+
+
+.. __: features/outlines.features
 
 
 Development

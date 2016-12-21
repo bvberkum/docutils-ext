@@ -71,11 +71,11 @@ doc/umlgraph-sequence.pic:
 test_py_$d: M :=
 test_py_$d: D := $d
 test_py_$d:
-	@$(ll) attention "$@" "Testing modules listed in" test/main.list;
+	@$(ll) attention "$@" "Testing modules listed in" test/main.sh;
 	@\
 		TEST_PY=$(PY_TEST_$(D));\
 		test -n "$M" && TEST_PY_ARGV="$M" \
-			|| TEST_PY_ARGV="$(call f_getlines,test/main.list)";\
+			|| TEST_PY_ARGV="$(shell ./test/main.sh)";\
 		TEST_LIB=dotmpe;\
 		PYTHONPATH=$$PYTHONPATH:test; \
 		$(test-python) 2> test.log;
