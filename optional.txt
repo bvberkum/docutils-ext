@@ -1,4 +1,4 @@
 aafigure
 sqlalchemy
-sqlite3
+#sqlite3
 nabu
