@@ -1,7 +1,7 @@
 Docutils extensions
 ===================
 :Created: Aug. 2009
-:Updated: Jun. 2016
+:Updated: Dec. 2016
 :Version: 0.0.1
 
 :Status:
@@ -65,10 +65,6 @@ Completed
   command-line options). See `Transforms`_ (``dotmpe.du.ext.transform``).
 - These transforms are used by ``dotmpe.du.ext.reader.mpe.``\ `Reader`.
 - Several Nabu `Extractor`, `Storage` pairs, see `Extractors`_ (``dotmpe.du.ext.extractor``) but nothing complex yet.
-- `rST forms`_ framework.
-  Use rST documents as forms, but gotten a bit out of use and no unittests.
-  The implementation includes retrieving data from a document according to the
-  `form specification`, which includes type conversion and value validation.
 - Monkey patched ``docutils.{readers,parser,writers}.get_*_class()`` to load
   components from my lib. Enable 'extension' by importing ``dotmpe.du.ext``.
 
@@ -81,6 +77,7 @@ In progress
 
 ToDo
 ''''
+-  Updated for Docutils 0.13
 -  re-evaluate include, literal and raw dereferencing.
    want something like subdocs but low on the list of wannahaves.
 -  expose extractor and storage parameters on command line as other

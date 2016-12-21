@@ -1,0 +1,27 @@
+# git-versioning main: docutils-ext-mpe
+
+- type: application/vnd.dotmpe.project
+  main: docutils-ext-mpe
+  id: docutils-ext-mpe
+
+  version: 0.0.1-dev # docutils-ext-mpe
+  environments: [ 'development' ]
+
+  vendor: dotmpe
+  distribution: public
+  license: GPL-3.0
+
+  pd-meta:
+    check: ":make:stat sh:tools/ci/tags.sh:*.*:doc:dotmpe:examples:features:lib:log:test:tools:var :git:status"
+    test: ":make:test"
+    build: ""
+    install: "sh:pip:install:."
+
+    tasks:
+      tags:
+        - TODO # tasks:no-check
+        - XXX # tasks:no-check
+        - FIXME # tasks:no-check
+        - BUG # tasks:no-check
+        - NOTE # tasks:no-check
+

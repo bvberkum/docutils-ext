@@ -58,6 +58,6 @@ DevLog
 
 
 .. __: doc/links.rst
-.. _Blue Lines: http://blue-lines.appspot.com/
-.. _Sitefile: //github.com/dotmpe/node-sitefile
+.. include:: .refs.rst
+
 

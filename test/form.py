@@ -77,14 +77,15 @@ class FormReader(readers.Reader):
                 FormTransform ]
 
 
+from StringIO import StringIO
+warnings = StringIO()
+
 class MyFormPage(builder.Builder):
 
     Reader = FormReader
 
     settings_overrides = {
-        #'form_field': (),
-        #'form': 'name',
-#        'form_values': None
+        'warning_stream': warnings
     }
 
 

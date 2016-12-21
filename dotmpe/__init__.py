@@ -16,4 +16,3 @@ else:
         modulefinder.AddPackagePath(__name__, p)
     del p
 
-
