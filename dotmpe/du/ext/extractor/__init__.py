@@ -5,7 +5,7 @@ Interface::
 
     class Extractor(docutils.transforms.Transform):
         @classmethod
-        def init_parser(cls): 
+        def init_parser(cls):
             pass
         def apply(self, **kwargs):
             pass
@@ -27,13 +27,24 @@ Types come from:
 - Django and its db model.
 - GAE or Google app-engine big table datastore models.
 
-A transient storage type is defined here, as superclass for     
+A transient storage type is defined here, as superclass for
 for extractor modules, such as the ``form`` extractor?
 """
-from nabu import extract
 
+from itertools import chain
+
+from dotmpe.du import util
+from nabu import extract
+from nabu.extract import \
+        Extractor, \
+        ExtractorStorage, \
+        SQLExtractorStorage as PgSQLExtractorStorage
+
+
+logger = util.get_log(__name__)
 
 class TransientStorage(extract.ExtractorStorage):
+
     "This keeps all extracted data on the instance. "
 
     def __init__(self, init={}, datakey='_storage', specs=None):
@@ -50,6 +61,7 @@ class TransientStorage(extract.ExtractorStorage):
     data = property(__getdata__, __setdata__)
 
     def store(self, source_id, *args, **kwds):
+        print self,'store',source_id, args, kwds
         self.data[source_id] = args, kwds
 
     def clear(self, source_id):
@@ -65,4 +77,95 @@ class SimpleSourceMap(extract.ExtractorStorage): pass # TODO
 
 class ComplexDictSourceMap(extract.ExtractorStorage): pass
     # define source_id -> key, value mapping storages
+
+
+class SQLiteExtractorStorage(extract.ExtractorStorage):
+
+    """
+    Extractor storage base class for storage that uses a DBAPI-2.0 connection.
+
+    Note: all of the declared tables should have a non-null unid column, to
+    enable clearing obsolete data when reloading a source document.
+    """
+
+    # Override this in the derived class.
+    # This should be a map from the table name to the table schema.
+
+    # Tables that have a unid mapping.  The data associated with the document's
+    # unid are cleared automatically.
+    sql_relations_unid = []
+
+    # Accessory tables that do not have a unid mapping.
+    sql_relations = []
+
+    def __init__(self, module, connection):
+        self.module, self.connection = module, connection
+
+        logger.debug("New SQLiteExtractorStorage for %s, with %s", module,
+                connection)
+
+        cursor = self.connection.cursor()
+
+        # Check that the database tables exist and if they don't, create them.
+        for tname, rtype, schema in chain(self.sql_relations_unid,
+                                          self.sql_relations):
+            cursor.execute("SELECT * FROM main.sqlite_master "
+                "WHERE type= ? "
+                "AND name = ? ", (rtype.lower(), tname,))
+            rs = cursor.fetchone()
+            if not rs:
+                try:
+                    logger.info("Creating DB schema %s (%s)", tname, rtype)
+                    cursor.execute(schema)
+                except Exception, e:
+                    print "Failed creating %s" % tname
+                    raise e
+
+        self.connection.commit()
+
+    def clear(self, unid=None):
+        """
+        Default implementation that clears the entries/tables.
+        """
+        cursor = self.connection.cursor()
+
+        for tname, rtype, schema in self.sql_relations_unid:
+            query = "DELETE FROM %s" % tname
+            if unid is not None:
+                query += " WHERE unid = '%s'" % unid
+            cursor.execute(query)
+
+        self.connection.commit()
+
+    def reset_schema(self):
+        """
+        Default implementation that drops the tables.
+        """
+        cursor = self.connection.cursor()
+
+        for tname, rtype, schema in chain(self.sql_relations_unid,
+                                          self.sql_relations):
+
+            # Indexes are automatically destroyed with their attached tables,
+            # don't do it explicitly.
+            if rtype.upper() == 'INDEX':
+                continue
+
+            cursor.execute("SELECT * FROM main.sqlite_master "
+                "WHERE type= ? "
+                "AND name = ? ", (rtype.lower(), tname,))
+
+            try:
+                cursor.fetchone()
+                cursor.execute("DROP %s %s;" % (rtype, tname))
+                logger.info("Destroyed table %s", tname)
+            except Exception, e:
+                print 'Error deleting %s: %s' % ( tname, e )
+                logger.error(e)
+
+            cursor.execute(schema)
+
+        self.connection.commit()
+
+
 

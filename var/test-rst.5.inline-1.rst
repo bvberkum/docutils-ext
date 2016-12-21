@@ -1,12 +1,4 @@
-.. role:: my-role(strong)
-
-`inline1`
-*inline2*
-**inline3**
+`title` inline1
+*emphasis* inline2
+**strong** inline3
 ``literal``
-:my-role:`role-fu`
-_`target`
-reference_
-
-.. _reference: target_
-

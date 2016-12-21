@@ -28,7 +28,13 @@ is possible::
     and continue here
   and end here.
 
-Per-line quoting can also be used on
-unindented literal blocks::
+Quoted literal blocks are slightly more 
+involved format could do with a bit of 
+extra parsing imo::
 
+>>> Here it is.
+>> What is this? No thread parsing?
+>> I think I saw that somewhere..
 > Useful for quotes from email and 
+> stuff.
+

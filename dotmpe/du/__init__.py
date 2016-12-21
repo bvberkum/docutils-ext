@@ -1,12 +1,11 @@
+try:
+    import pkg_resources
+    pkg_resources.declare_namespace(__name__)
+except ImportError:
+# don't prevent use of paste if pkg_resources isn't installed
+    from pkgutil import extend_path
+    __path__ = extend_path(__path__, __name__)
 
-#try:
-#    import pkg_resources
-#    pkg_resources.declare_namespace(__name__)
-#except ImportError:
-## don't prevent use of paste if pkg_resources isn't installed
-#    from pkgutil import extend_path
-#    __path__ = extend_path(__path__, __name__)
-#
 #try:
 #    import modulefinder
 #except ImportError:
@@ -26,9 +25,11 @@ import docutils
 #if (du_version[0] != 0 or (du_version[0] == 0 and du_version[1] != 8)):
 #    raise Exception("Unkown version: "+docutils.__version__)
 
+import util
 import comp
 #import flatten
 #import form
-#import frontend
+import frontend
 import ext
+
 

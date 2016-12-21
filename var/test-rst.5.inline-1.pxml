@@ -1,0 +1,13 @@
+<document source="var/test-rst.5.inline-1.rst">
+    <paragraph>
+        <title_reference>
+            title
+         inline1
+        <emphasis>
+            emphasis
+         inline2
+        <strong>
+            strong
+         inline3
+        <literal>
+            literal

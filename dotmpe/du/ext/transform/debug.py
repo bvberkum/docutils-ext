@@ -9,9 +9,11 @@ class Settings(transforms.Transform):
 
     default_priority = 500
 
-    settings_spec = (('Expose current settings in field-list. ', 
-            ['--expose-settings'],
-            {'action':'store_true','default':False}),
+    settings_spec = (
+                ('Expose current settings in field-list. ', 
+                    ['--expose-settings'],
+                    {'action':'store_true','default':False}
+                ),
         )
 
     def apply(self):

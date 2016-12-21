@@ -1,9 +1,14 @@
 Docutils publishing
--------------------
+===================
 .. note::
 
    This is a short overview of the docutils publisher.
 
+.. contents::
+
+
+Hacking intro
+-------------
 The Docutils publisher reads stream data from source, parses this to a raw tree, 
 transforms it into some document structure and finally writes that structure to
 an output format.
@@ -93,4 +98,6 @@ Extended roles
   class name.
 
 ----  
+
+- More on specs and settings, config perhaps.
 

@@ -1,13 +1,13 @@
 <document source="var/test-1.document-2-simpleformat.txt">
-    <section ids="section-1" names="section\ 1">
-        <title>
-            Section 1
-    <section ids="section-1-2" names="section\ 1.2">
-        <title>
-            Section 1.2
-        <section ids="section-1-2-1" names="section\ 1.2.1">
-            <title>
-                Section 1.2.1
-    <section ids="section-2" names="section\ 2">
-        <title>
-            Section 2
+    <paragraph>
+        h1. Section 1
+    <paragraph>
+        h2. Section 1.1
+    <paragraph>
+        h2. Section 1.2
+    <paragraph>
+        h3. Section 1.2.1
+    <paragraph>
+        h2. Section 1.3
+    <paragraph>
+        h1. Section 2
