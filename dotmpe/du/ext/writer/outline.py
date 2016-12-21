@@ -88,7 +88,7 @@ class OutlineExtractor(nodes.SparseNodeVisitor):
 
         self.context = ContextStack(defaults={
             'path': [],
-            'element': None
+            'element': {}
         })
 
 
