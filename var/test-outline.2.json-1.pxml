@@ -1,0 +1,67 @@
+<document source="var/test-outline.2.json-1.rst">
+    <definition_list>
+        <definition_list_item>
+            <term>
+                Dev
+            <definition>
+                <definition_list>
+                    <definition_list_item>
+                        <term>
+                            Embedded
+                        <definition>
+                            <definition_list>
+                                <definition_list_item>
+                                    <term>
+                                        Atmega
+                                    <definition>
+                                        <comment xml:space="preserve">
+                                <definition_list_item>
+                                    <term>
+                                        Attiny
+                                    <definition>
+                                        <comment xml:space="preserve">
+                                <definition_list_item>
+                                    <term>
+                                        PIC16x
+                                    <definition>
+                                        <comment xml:space="preserve">
+                    <definition_list_item>
+                        <term>
+                            Barebone
+                        <definition>
+                            <definition_list>
+                                <definition_list_item>
+                                    <term>
+                                        Raspbery Pi
+                                    <definition>
+                                        <comment xml:space="preserve">
+                                <definition_list_item>
+                                    <term>
+                                        Banana Pi
+                                    <definition>
+                                        <comment xml:space="preserve">
+                                <definition_list_item>
+                                    <term>
+                                        Orange Pi
+                                    <definition>
+                                        <comment xml:space="preserve">
+                    <definition_list_item>
+                        <term>
+                            Web
+                        <definition>
+                            <definition_list>
+                                <definition_list_item>
+                                    <term>
+                                        Client
+                                    <definition>
+                                        <definition_list>
+                                            <definition_list_item>
+                                                <term>
+                                                    Style
+                                                <definition>
+                                                    <comment xml:space="preserve">
+                                <definition_list_item>
+                                    <term>
+                                        Script
+                                    <definition>
+                                        <comment xml:space="preserve">

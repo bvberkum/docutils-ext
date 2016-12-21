@@ -1,1 +1,1 @@
-{"Dev": { "Embedded": {}, "Barebone": {}, "Web": {}}}
+{"dev": {"web": {}, "barebone": {}, "embedded": {}}}

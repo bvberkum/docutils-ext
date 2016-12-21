@@ -3,7 +3,7 @@
 Last time I looked there were a lot of tastes of outline format.
 
 The first req,. is to get nested, identified containers out.
-Get the ID from the title/term.
+Get the ID from the titles or term in the document.
 
 """
 import math
@@ -12,7 +12,7 @@ import roman
 from optparse import Values
 
 from docutils import nodes, writers
-
+from dotmpe.du.ext.writer.rst import ContextStack
 
 
 __docformat__ = 'reStructuredText'
@@ -77,6 +77,12 @@ class Writer(writers.Writer):
 
         self.output = visitor.astext()
 
+        # XXX: no the proper Du way probably..
+        import json
+        fp = open(self.document.settings.outline_file, 'w+')
+        json.dump(visitor.data, fp)
+        fp.close()
+
 
 #class OutlineExtractor(nodes.NodeVisitor):
 class OutlineExtractor(nodes.SparseNodeVisitor):
@@ -85,68 +91,77 @@ class OutlineExtractor(nodes.SparseNodeVisitor):
         nodes.NodeVisitor.__init__(self, document)
         self.data = {}
         "Dist-n-list struct for return JSON"
-        self.current_element = {}
-        "Dict for current element. "
-        self.previous_elements = []
-        "Stack for parent elements. "
-        if element == 'section':
-            self.visit_section = self.continue_outline
-            self.visit_title = self.capture_label
-            self.visit_subtitle = self.continue_label
-            self.depart_section = self.flush_outline
-        elif element == 'definition':
-            self.visit_definition_list_item = self.continue_outline
-            self.visit_term = self.capture_label
-            self.depart_definition_list_item = self.flush_outline
+
+        # Initialize root context
+        self.context = ContextStack(defaults={
+            'data': self.data,
+            'path': [ document ],
+            'element': {},
+            'outline_id': 'root'
+        })
+
+    def pretty_ctx_path(self):
+        return "/".join([ p.tagname for p in self.context.path])
+
+    def pretty_path(self, node):
+        path = []
+        n = node
+        while n.parent:
+            path.append( n.parent )
+            n = n.parent
+
 
     def astext(self):
         return str(self.data)
 
-    def continue_outline(self, node):
+    def onpath(self, node):
+        return is_parent( self.context.path[-1], node ) or False
 
-        """
-        If in previous element (or root), start new outline. Otherwise
-        continue where left off.
-        """
+    def visit_definition_list_item(self, node):
 
-        print 'start', node.tagname
+        ce = self.context.element
 
-        if not self.previous_elements or is_parent( self.previous_elements[-1], node ):
-            self.current_element = {}
-            if not self.data:
-                print 'no-data'
-                self.data['root'] = self.current_element
-                self.data['_id'] = 'root'
-                self.data['_label'] = 'Root'
-                self.previous_elements = [ self.data ]
+        self.context.path = self.context.path + [ node ]
+        self.context.data = {}
 
-            else:
-                previous = self.previous_elements[-1]
-                id = previous['_id']
-                #self.previous_element =
-                previous[id] = self.current_element
+    def visit_term(self, node):
 
+        self.context.element = {}
 
-    def capture_label(self, node):
+    def depart_term(self, node):
 
-        """
-        """
+        ce = self.context.element
+        del self.context.element
 
-        self.current_element['_label'] = node.astext()
-
-    def continue_label(self, node):
-        self.current_element['_label'] += ': '+ node.astext()
-
-
-    def flush_outline(self, node):
-
-        """
-        There is nothing to add to current outline, finalize.
-        """
-
-        ce = self.current_element
+        ce['_label'] = node.astext()
         ce['_id'] = nodes.make_id(ce['_label'])
-        print 'end', self.current_element, self.previous_elements
+
+        self.context.outline_id = ce['_id']
+
+
+    def depart_definition_list_item(self, node):
+
+        """
+        If there was a sub-dl in the item, then now there is nothing to add to
+        it. We don't care about content otherwise.
+        Finalize by copying the current outline path to data.
+        """
+
+        data = self.context.data
+        del self.context.data
+        self.context.data[self.context.outline_id] = data
+
+        del self.context.path
+        del self.context.outline_id
+
+
+    def visit_definition(self, node):
+
+        pass
+
+    def depart_definition(self, node):
+
+        pass
 
 
 def is_parent(node1, node2):

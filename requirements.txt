@@ -1,7 +1,5 @@
-docutils==0.12
-sqlalchemy
-#sqlite3
 coverage
-#nabu
+docutils==0.12
 roman
+sqlalchemy
 uriref

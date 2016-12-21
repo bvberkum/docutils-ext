@@ -5,17 +5,23 @@ sudo: false
 python:
   - "2.7"
 
+addons:
+  apt:
+    packages:
+      - curl
+      - php5-cli
+
 branches:
   only:
   - '/^test.*/'
   - '/^[0-9]*\.[0-9]*\.[0-9]*/'
 
 env:
-  - ENV= M="comp builder frontend build sql_storage rstwriter"
+  - ENV= M="$(./test/main.sh)" PYTHONPATH=$PYTHONPATH:.
 
 install:
-#- "pip install ."
 - "pip install -r requirements.txt"
+- "pip install -r optional.txt || echo 'Optional Py lib install failed'"
 - ./build/rebuild-lib-links.sh $HOME/src
 - ./build/docutils-checkout.sh
 - ./build/nabu-checkout.sh
@@ -25,9 +31,19 @@ install:
 - ls -la lib/
 - ls -la lib/docutils-lossless/
 
+- mkdir -vp ~/.local/{bin,lib,share}
+- 'curl -sS https://getcomposer.org/installer | php -- --install-dir=$HOME/.local/bin --filename=composer'
+- ~/.local/bin/composer --version
+- composer install
+
+- ./tools/rst-outline.py --outline test.json var/test-outline.1.json-1.rst
+
+before_script: []
+
 script: 
 - coverage run --source=dotmpe test/main.py $M
-# sql_storage
+- ./vendor/behat/behat/bin/behat
+
 
 # Default travis Python build:
 #
@@ -36,3 +52,5 @@ script:
 #  - "pip install -r requirements.txt"
 #
 #script: nosetests
+#
+

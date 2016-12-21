@@ -1,5 +1,5 @@
 DevLog
---------
+------
 2009 September
   - Starting my own project for use with `Blue Lines`_,
     custom 'margin' directives and HTML writer components.
@@ -48,6 +48,13 @@ DevLog
 
     Maybe want to investigate sitebuilder concept, ``wget -r`` and some patches would
     seem to suffice though.
+
+2015-10-23
+  - Tried out Behat which is great. But PHP and does not fly on travis.
+    Maybe a python solution is called for. Should look at gherkin3.
+
+2016-07-09
+  - Taking up a little development again. Started adding and updating Docs.
 
 
 .. __: doc/links.rst

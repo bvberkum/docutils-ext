@@ -8,6 +8,7 @@ from pprint import pprint
 test_dir = os.path.dirname(__file__)
 example_dir = os.path.realpath(os.path.join(test_dir, '..', 'examples'))
 sys.path.insert(0, os.path.realpath(os.path.join(example_dir, '..', 'lib')))
+import dotmpe.du
 from dotmpe.du import builder, util, form
 from dotmpe.du.ext.transform import form1
 from dotmpe.du.ext.extractor import form2

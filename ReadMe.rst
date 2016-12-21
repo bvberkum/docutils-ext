@@ -48,6 +48,12 @@ rST Writer
   A processor for Du documents to extract or insert (structured) user content,
   with validation.
 
+rST Outlines
+  - Planning: Extract outlines from rST. See `Feature: Outlines`__
+
+
+.. __: features/outlines.features
+
 
 Development
 -----------
