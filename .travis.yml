@@ -17,7 +17,7 @@ branches:
   - '/^[0-9]*\.[0-9]*\.[0-9]*/'
 
 env:
-  - ENV= M="builder frontend build sql_storage rstwriter"
+  - ENV= M="$(./test/main.sh)"
 
 install:
 - "pip install -r requirements.txt"
