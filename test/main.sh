@@ -1,18 +1,32 @@
+#!/bin/bash
 # These correspond to python modules in dir ./test
 # See test/main.py
-comp
+
+case "$(whoami)" in
+  travis|jenkins ) ;; # FIXME: see about the recursion in build #72
+  * )
+      echo comp
+    ;;
+esac
+
+cat <<EOH
+
 builder
 frontend
 build
 form
 sql_storage
-# FIXME 
+
 rstwriter
 
-# TODO 
+EOH
+
+
+# TODO
 #extractor
 #mediawiki
 #atlassianparser
 #atlassianwriter
 #confluence
 #simplemuxdem
+
