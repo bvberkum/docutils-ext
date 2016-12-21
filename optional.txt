@@ -1,0 +1,4 @@
+aafigure
+sqlalchemy
+sqlite3
+nabu
