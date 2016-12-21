@@ -3,7 +3,7 @@
 # See test/main.py
 
 case "$(whoami)" in
-  travis|jenkins ) ;;
+  travis|jenkins ) ;; # FIXME: see about the recursion in build #72
   * )
       echo comp
     ;;
