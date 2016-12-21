@@ -17,8 +17,10 @@ build
 form
 sql_storage
 
-# FIXME
 rstwriter
+
+EOH
+
 
 # TODO
 #extractor
@@ -27,7 +29,4 @@ rstwriter
 #atlassianwriter
 #confluence
 #simplemuxdem
-
-EOH
-
 
