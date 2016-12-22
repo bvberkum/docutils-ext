@@ -13,10 +13,10 @@
 
   pd-meta:
     run:
-      check-tags: "sh:./tools/ci/tags.sh:*.*:doc:dotmpe:examples:features:lib:log:test:tools:var"
+      check-tags: "./tools/ci/tags.sh:*.*:doc:dotmpe:examples:features:lib:log:test:tools:var"
 
-    check: ":make:stat sh:tools/ci/tags.sh:*.*:doc:dotmpe:examples:features:lib:log:test:tools:var :git:status"
-    test: ":make:test"
+    check: "make:stat sh:tools/ci/tags.sh:*.*:doc:dotmpe:examples:features:lib:log:test:tools:var :git:status"
+    test: "make:test"
     build: ""
     install: "sh:pip:install:."
 

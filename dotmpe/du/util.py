@@ -90,7 +90,8 @@ def compare(obj1, obj2):
     "TODO: Attr/key based compare to determine document.setting differences ?"
     pass
 
-"""
+
+"""
 Document tree parsing, used by some convertors.
 """
 
