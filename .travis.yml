@@ -1,7 +1,5 @@
 language: python
 
-sudo: false
-
 python:
   - "2.7"
 
@@ -11,20 +9,9 @@ addons:
       - curl
       - php5-cli
 
-branches:
-  only:
-  - '/^test.*/'
-  - '/^[0-9]*\.[0-9]*\.[0-9]*/'
-  - features/simple-muxdem
-  - features/atlassian
-  - features/atlassian-confluence
-
-env:
-  - ENV= M="$(./test/main.sh)" PYTHONPATH=$PYTHONPATH:.
-
 install:
-- "pip install -r requirements.txt"
-- "pip install -r optional.txt || echo 'Optional Py lib install failed'"
+- pip install -r requirements.txt
+- pip install -r optional.txt || echo 'Optional Py lib install failed'
 - ./build/rebuild-lib-links.sh $HOME/src
 - ./build/docutils-checkout.sh
 - ./build/nabu-checkout.sh
@@ -47,6 +34,26 @@ script:
 - coverage run --source=dotmpe test/main.py $M
 - ./vendor/behat/behat/bin/behat
 
+env:
+  global:
+    - DEP_PREFIX=$HOME/.local
+    - PATH=$PATH:$DEP_PREFIX/bin:$PREFIX/bin
+    - PYTHONPATH=$PYTHONPATH:.
+  matrix:
+  - ENV= M="$(./test/main.sh)"
+
+branches:
+  only:
+  - '/^test.*/'
+  - '/^[0-9]*\.[0-9]*\.[0-9]*/'
+  - features/simple-muxdem
+  - features/atlassian
+  - features/atlassian-confluence
+
+notifications:
+  email:
+    on_success: never
+
 
 # Default travis Python build:
 #
@@ -55,5 +62,4 @@ script:
 #  - "pip install -r requirements.txt"
 #
 #script: nosetests
-#
 

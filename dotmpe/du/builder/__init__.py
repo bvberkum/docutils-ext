@@ -189,6 +189,7 @@ class Builder(SettingsSpec, Publisher):
         if not hasattr(self.settings, 'error_encoding_error_handler'):
             setattr(self.settings, 'error_encoding_error_handler', 'replace')
 
+        # FIXME proper config init
         self.settings.output_encoding_error_handler = 'backslashreplace'
         self.settings.tab_width = 4
         self.settings.language_code = 'en_US'
@@ -196,6 +197,7 @@ class Builder(SettingsSpec, Publisher):
         self.settings.rfc_references = False
         self.settings.smart_quotes = ''
         self.settings.id_prefix = ''
+        self.settings.character_level_inline_markup = ''
 
         # XXX
         #from dotmpe.du.frontend import get_option_parser

@@ -10,7 +10,9 @@ import sys
 
 import docutils
 
-from dotmpe.du import util
+#from dotmpe.du import util
+#from . import util
+import util
 
 
 logger = util.get_log(__name__)

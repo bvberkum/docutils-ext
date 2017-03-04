@@ -11,6 +11,13 @@
   distribution: public
   license: GPL-3.0
 
+  scripts:
+    check:
+      - make stat
+      - "./tools/ci/tags.sh *.* doc dotmpe examples features lib log test tools var"
+    test: make build test
+    build: make build
+
   pd-meta:
     run:
       check-tags: "./tools/ci/tags.sh:*.*:doc:dotmpe:examples:features:lib:log:test:tools:var"

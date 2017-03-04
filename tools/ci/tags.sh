@@ -1,11 +1,11 @@
 #!/bin/sh
 set -e
 scriptname=tools/tags
-test -n "$scriptdir" || scriptdir=~/bin/
+test -n "$scriptpath" || scriptpath=~/bin/
 test -n "$verbose" || verbose=true
 test -n "$exit" || exit=true
 
-type lib_load 2> /dev/null 1> /dev/null || . $scriptdir/util.sh load-ext
+type lib_load 2> /dev/null 1> /dev/null || . $scriptpath/util.sh load-ext
 lib_load sys os std str
 out=$(setup_tmpf .out)
 
