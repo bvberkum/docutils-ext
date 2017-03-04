@@ -1,5 +1,6 @@
 # Generic options
 sitefile: 0.0.3
+port: 3504
 routes:
     _du: du:**/*.rst
 params:

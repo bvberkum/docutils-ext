@@ -28,3 +28,12 @@
         - BUG # tasks:no-check
         - NOTE # tasks:no-check
 
+  scripts:
+    install:
+      - "sudo apt-get install $(./env-deps.sh apt)"
+    check:
+      - make stat
+    build:
+      - make build
+    test:
+      - make build test
