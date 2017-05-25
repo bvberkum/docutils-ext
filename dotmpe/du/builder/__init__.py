@@ -324,12 +324,12 @@ class Builder(SettingsSpec, Publisher):
         document.transformer.apply_transforms()
         # clean doc
         if document.transform_messages:
-            print 'document transformed', document.transform_messages
+            print 'XXX: document transformed, messages:', document.transform_messages
         document.transform = document.reporter = document.form_processor = None
         # FIXME: what about when FP needs run during process i.o. build?
         # what about values from FP then.
         if document.transform_messages:
-            print 'Transformation messages:', map(str,document.transform_messages)
+            print 'XXX: Transformation messages:', map(str,document.transform_messages)
 
     def render(self, source, source_id='<render>', writer_name=None,
             overrides={}, parts=['whole']):
@@ -449,7 +449,7 @@ class Builder(SettingsSpec, Publisher):
         return self.source_class, self.parser, self.reader, self.settings
 
     def __str__(self):
-        return type(self).__module__+'.'+type(self).__name__
+        return 'Builder:'+type(self).__module__+'.'+type(self).__name__
 
     #def __keep_messages(self):
     #    " "
@@ -501,10 +501,9 @@ class Builder(SettingsSpec, Publisher):
         source_id = self.settings._source
         source = open(source_id)
 
-        print '_do_process', source, source_id
+        #print '_do_process', source, source_id
         from pprint import pprint
-        pprint(self.settings)
-
+        #pprint(self.settings)
         logger.info("Loaded, building %s" % source_id)
 
         document = self.build(source, source_id, overrides={})

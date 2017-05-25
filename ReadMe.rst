@@ -4,19 +4,18 @@ Docutils extensions
 :Updated: Dec. 2016
 :Version: 0.0.2-dev
 
-:Status:
-
+:Build status:
   .. image:: https://secure.travis-ci.org/dotmpe/docutils-ext.png?branch=test
     :target: https://travis-ci.org/dotmpe/docutils-ext/branches
     :alt: Build
 
+:Package status:
   .. image:: https://badge.fury.io/gh/dotmpe%2Fdocutils-ext.png
     :target: http://badge.fury.io/gh/dotmpe%2Fdocutils-ext
     :alt: GIT
 
 
 :rST writer:
-
   .. image:: https://secure.travis-ci.org/dotmpe/docutils-ext.png?branch=test-rstwriter
     :target: https://travis-ci.org/dotmpe/docutils-ext/branches
     :alt: Build

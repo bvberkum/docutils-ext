@@ -3,7 +3,7 @@
 A front-end to a toy Form reader. Convenient to test various field settings with
 `--form-field`.
 
-Does also extract to CSV format. 
+Does also extract to CSV format.
 FIXME: does not parse command-line options.
 
 Copyleft 2010  Berend van Berkum <dev@dotmpe.com>
@@ -46,7 +46,6 @@ from docutils.core import publish_cmdline, default_description,\
         Publisher
 from dotmpe.du.ext.writer.formresults import Writer as FormResultsWriter
 
-
 #publish_cmdline(reader=FormReader(), writer_name='pseudoxml')#writer=xhtmlform.Writer())
 
 source_path  = sys.argv[1]
@@ -54,7 +53,7 @@ source = open(source_path)
 #doctree = publish_doctree(source, reader=FormReader())#, writer_name='pseudoxml')
 #print doctree
 
-pub = Publisher(FormReader(), 
+pub = Publisher(FormReader(),
         writer=FormResultsWriter(),
         source_class=io.FileInput,
         destination_class=io.StringOutput)#, parser, writer, settings=settings,

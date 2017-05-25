@@ -15,7 +15,18 @@
     check:
       - make stat
       - "./tools/ci/tags.sh *.* doc dotmpe examples features lib log test tools var"
-    test: make build test
+    test:
+      - make build test
+      - ./tools/rst-form.py examples/form-1.rst
+      #- ./tools/rst-form.py var/test-form.1.field-id.rst
+      - ./tools/rst-outline.py examples/main.rst
+      - python ./tools/rst-definitions.py examples/main.rst
+      # FIXME ./tools/mpe-sitefile.py examples/main.rst
+      # FIXME ./tools/rst2rst-mpe.py examples/main.rst
+      # FIXME ./tools/brx-crm-pub.py
+      #- ./tools/rst2latex-brx examples/main.rst
+      #- ./tools/rst2pprint-brx examples/main.rst
+      #- ./tools/rst2xml-brx examples/main.rst
     build: make build
 
   pd-meta:

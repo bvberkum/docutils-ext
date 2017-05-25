@@ -60,7 +60,10 @@ class Builder(builder.Builder):
     # pairs. extractors are initialized in XXX...?
     # storage is
     extractor_spec = [
-            ('nabu.extractors.document', 'dotmpe.du.ext.extractor.document'),
+            ('dotmpe.du.ext.extractor.fragment',
+                'dotmpe.du.ext.extractor.fragment'),
+            #('nabu.extractors.document.DocumentExtractor',
+            #    'dotmpe.du.ext.extractor.document'),
      #       ('dotmpe.du.ext.extractor.settings', 'dotmpe.du.ext.extractor.settings.SettingsStorage')
         ]
 

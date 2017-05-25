@@ -15,8 +15,6 @@ from docutils.core import publish_cmdline, default_description, \
 
 
 if __name__ == '__main__':
-
-    #import sys
     fn = '/srv/project-local/script-mpe/test/pd-spec.rst'
     source = open(fn).read()
 
@@ -26,5 +24,4 @@ if __name__ == '__main__':
         settings=None, settings_spec=None, settings_overrides=None, config_section=None,
         enable_exit_status=False)
     print(doctree)
-
 

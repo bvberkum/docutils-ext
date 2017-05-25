@@ -75,13 +75,10 @@ class Writer(writers.Writer):
                 self.element, self.content)
         self.document.walkabout(visitor)
 
-        self.output = visitor.astext()
+        self.data = visitor.data
 
-        # XXX: no the proper Du way probably..
         import json
-        fp = open(self.document.settings.outline_file, 'w+')
-        json.dump(visitor.data, fp)
-        fp.close()
+        self.output = json.dumps(visitor.data)
 
 
 #class OutlineExtractor(nodes.NodeVisitor):
@@ -112,7 +109,7 @@ class OutlineExtractor(nodes.SparseNodeVisitor):
 
 
     def astext(self):
-        return str(self.data)
+        return self.data
 
     def onpath(self, node):
         return is_parent( self.context.path[-1], node ) or False
