@@ -1369,7 +1369,7 @@ class RstTranslator(AbstractTranslator):
         del self.context.index
 
     def debugprint(self, node):
-        self.body.append("[XXX:%s %r %r %r %s]" % (node.tagname, self.context.index,
+        self.body.append("[du.rst:XXX:%s %r %r %r %s]" % (node.tagname, self.context.index,
             self.indented, self.context.indent, node['classes']))
 
 trailing_ws = re.compile('^.*(?<!\s)(\s+)$')

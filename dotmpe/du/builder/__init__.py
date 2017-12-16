@@ -22,7 +22,7 @@ import sqlite3
 #import nabu
 #import nabu.server
 import dotmpe
-from dotmpe.du.util import get_session, SqlBase
+from dotmpe.du.mpe_du_util import get_session, SqlBase
 from dotmpe.du import comp, util
 
 
@@ -163,21 +163,15 @@ class Builder(SettingsSpec, Publisher):
         if not self.writer:
             self.writer = comp.get_writer_class('null')()
         self.components = (self.parser, self.reader, self.writer, self)
-        # FIXME: get defaults for components
-        if not self.settings:\
-            self.settings = frontend.Values({})
-        if cli:
-            self.process_command_line() # replace settings for initial components
-        else:
-            self.build_doc()
+        if not self.settings:
+            if self.cli:
+                self.process_command_line()
+            else:
+                self.get_settings()
         assert self.settings or isinstance(self.settings, frontend.Values), self.settings
         self.destination_class = docutils.io.StringOutput
         assert self.reader and self.parser and self.writer
         assert self.source or os.path.exists(self.source_id)
-        if 'halt_level' not in self.settings_default_overrides:
-            self.settings.halt_level = 0
-        if 'report_level' not in self.settings_default_overrides:
-            self.settings.report_level = 6
 
         # FIXME: check settingspec defaults
         #if 'warning_stream' not in self.settings_default_overrides:
@@ -297,21 +291,23 @@ class Builder(SettingsSpec, Publisher):
         if not self.extractors:
             logger.info("Process: no extractors to run. ")
             return u''
-        logger.debug("Processing %r. ", source_id)
+        logger.debug("Processing %r. " % source_id)
         document.transformer = transforms.Transformer(document)
         # before extract, remove existing msg.level < reporter.report_level from tree
         #document.transformer.add_transform(universal.FilterMessages, priority=1)
         # Sanity check assert not document.parse_messages, '\n'.join(map(str, document.parse_messages))
         if document.parse_messages:
-# print 'Parser messages:', map(str,document.parse_messages)
             for msg in document.parse_messages:
                 #if msg.get('level') > 2: # 3=ERROR
-                if msg.get('level') > 3: # 4=
+                if msg.get('level') >= self.settings.halt_level:
                     assert not msg, msg
-        assert not document.transform_messages, '\n'.join(map(str,
-            document.transform_messages))
+        #assert not document.transform_messages, '\n'.join(map(str,
+        #    document.transform_messages))
+        if document.transform_messages:
+            for msg in document.transform_messages:
+                if msg.get('level') >= self.settings.halt_level:
+                    assert not msg, msg
         # Populate with transforms.
-        print('process', self, self.extractors)
         for tclass, storage in self.extractors:
             document.transformer.add_transform(
                 tclass, unid=source_id, storage=storage,
@@ -325,15 +321,15 @@ class Builder(SettingsSpec, Publisher):
         # Run extractor transforms on the document tree.
         document.transformer.apply_transforms()
         # clean doc
-        if document.transform_messages:
-            print('XXX: document transformed, messages:',
-                    document.transform_messages)
+        #if document.transform_messages:
+        #    print('XXX: document transformed, messages:',
+        #            document.transform_messages)
         document.transform = document.reporter = document.form_processor = None
         # FIXME: what about when FP needs run during process i.o. build?
         # what about values from FP then.
-        if document.transform_messages:
-            print('XXX: Transformation messages:',
-                    map(str,document.transform_messages))
+        #if document.transform_messages:
+        #    print('XXX: Transformation messages:',
+        #            map(str,document.transform_messages))
 
     def render(self, source, source_id='<render>', writer_name=None,
             overrides={}, parts=['whole']):
@@ -343,7 +339,7 @@ class Builder(SettingsSpec, Publisher):
         writer_name = writer_name or self.default_writer
         assert writer_name
         self.writer = comp.get_writer_class(writer_name)()
-        logger.info('Rendering %r as %r with parts %r.', source_id, writer_name, parts)
+        logger.info('Rendering %r as %r with parts %r.' % (source_id, writer_name, parts))
         assert not overrides
         #logger.info("source-length: %i", not source or len(source))
         document = self.build(source, source_id)
@@ -351,7 +347,7 @@ class Builder(SettingsSpec, Publisher):
         #parts = ['html_title', 'script', 'stylesheet']
         #logger.info("output-length: %i", not output or len(output))
         #logger.info([(part, self.writer.parts.get(part)) for part in parts])
-        logger.info("Deps for %s: %s", source_id, self.document.settings.record_dependencies)
+        logger.info("Deps for %s: %s" % (source_id, self.document.settings.record_dependencies))
         output = self.writer.write(document, self.destination)
         return output
 
@@ -477,7 +473,7 @@ class Builder(SettingsSpec, Publisher):
 
     def reset_schema(self, argv):
         self.prepare_initial_components()
-        self.process_command_line(argv=argv)
+        self.process_command_line(argv)
         # XXX self.prepare(None, **self.store_params)
         session = get_session(self.settings.dbref, True)
         conn = SqlBase.metadata.bind.raw_connection()
@@ -504,29 +500,24 @@ class Builder(SettingsSpec, Publisher):
         # XXX Builder.process self.set_io()
         source_id = self.settings._source
         source = open(source_id)
-
         logger.info("Loaded, building %s" % source_id)
-
         document = self.build(source, source_id, overrides={})
-
         logger.info("Built document")
 
         self.prepare(None, **self.store_params)
-
         logger.info("Prepared extractors")
 
         self.process(document, source_id, overrides={}, pickle_receiver=None)
-
         logger.info("Processed document")
 
         # TODO render messages as reST doc
         for msg_list in document.parse_messages, document.transform_messages:
             if msg_list:
-                print("Messages:")
+                print("Messages:", file=sys.stderr)
             for msg in msg_list:
                 #print type(msg), dir(msg)
                 #print msg.asdom()
-                print(msg.astext())
+                print(msg.astext(), file=sys.stderr)
 
     @classmethod
     def getting(Klass):

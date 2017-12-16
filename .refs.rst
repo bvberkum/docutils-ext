@@ -21,4 +21,3 @@
 
 .. FIXME: refs to other sitefiles
 .. _rel-values: htdocs:note/links#html-link-relations
-

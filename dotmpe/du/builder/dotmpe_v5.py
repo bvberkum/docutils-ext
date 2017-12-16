@@ -6,8 +6,7 @@ This is an aggregation and configuration of Du components.
 from dotmpe.du import builder, util
 from dotmpe.du.ext.transform import include, logbook
 from dotmpe.du.ext.reader import standalone
-from dotmpe.du.util import addClass
-from dotmpe.du.ext.extractor import reference
+from dotmpe.du.ext.extractor import reference, doctitle
 
 
 def _get_logbook_store(options):
@@ -60,8 +59,10 @@ class Builder(builder.Builder):
     # pairs. extractors are initialized in XXX...?
     # storage is
     extractor_spec = [
-            ('dotmpe.du.ext.extractor.fragment',
-                'dotmpe.du.ext.extractor.fragment'),
+            ('dotmpe.du.ext.extractor.doctitle',
+                'dotmpe.du.ext.extractor.doctitle'),
+            #('dotmpe.du.ext.extractor.fragment',
+            #    'dotmpe.du.ext.extractor.fragment'),
             #('nabu.extractors.document.DocumentExtractor',
             #    'dotmpe.du.ext.extractor.document'),
      #       ('dotmpe.du.ext.extractor.settings', 'dotmpe.du.ext.extractor.settings.SettingsStorage')
@@ -79,7 +80,7 @@ class Builder(builder.Builder):
                      #'validator': util.optparse_init_sqlalchemy,
                  }
             ),) +
-            reference.Extractor.settings_spec[2]
+            doctitle.Extractor.settings_spec[2]
         )
 
     store_params = {
@@ -95,7 +96,7 @@ class Builder(builder.Builder):
 
         def get_transforms(self):
             return standalone.Reader.get_transforms(self) + [
-                    addClass(Builder.Reader.add_class),
+                    util.addClass(Builder.Reader.add_class),
                     #logbook.LogBook
                 ]
 
@@ -127,7 +128,7 @@ class Page(Builder):
 
         def get_transforms(self):
             return standalone.Reader.get_transforms(self) + [
-                    addClass(Page.Reader.add_class),
+                    util.addClass(Page.Reader.add_class),
                 ]
 
 
@@ -146,6 +147,4 @@ class Frontpage(Page):
 
         def get_transforms(self):
             return standalone.Reader.get_transforms(self) + [
-                addClass(Frontpage.Reader.add_class) ]
-
-
+                util.addClass(Frontpage.Reader.add_class) ]

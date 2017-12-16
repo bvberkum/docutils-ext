@@ -145,9 +145,8 @@ else:
 
 log = util.get_log(None, fout=False, stdout=True)
 
-if action == 'proc': # 
+if action == 'proc': #
     log.info("Starting Du processor: "+tag)
-    print(frontend.__file__)
     frontend.cli_process(sys.argv[1:], None, module_name)
 
 elif action == 'pub': # Render src to dest

@@ -17,7 +17,7 @@ from sqlalchemy import Table
 
 from docutils import nodes
 from dotmpe.du import util
-from dotmpe.du.util import SqlBase, get_session
+from dotmpe.du.mpe_du_util import SqlBase, get_session
 from dotmpe.du.ext import extractor
 
 

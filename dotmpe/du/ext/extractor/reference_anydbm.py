@@ -22,7 +22,6 @@ from docutils import nodes, frontend
 
 import uriref
 from dotmpe.du import util
-from dotmpe.du.util import SqlBase, get_session
 from dotmpe.du.ext import extractor
 
 
@@ -179,8 +178,8 @@ class ReferenceStorage(extractor.SQLiteExtractorStorage):
         if not session:
             assert dbref, ( dbref, initdb )
             # set for SA, get engine to use as DBAPI-2.0 compatible connection
-            self.session = get_session(dbref, True)
-            self.connection = SqlBase.metadata.bind.raw_connection()
+            self.session = util.get_session(dbref, True)
+            self.connection = util.SqlBase.metadata.bind.raw_connection()
         else:
             self.session = session
         # XXX can I get raw-connection from self.session?

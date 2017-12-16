@@ -8,9 +8,11 @@ try:
     locale.setlocale(locale.LC_ALL, '')
 except:
     pass
+import logging
 import os
 import sys
 import traceback
+from pprint import pprint, pformat
 
 from docutils.core import publish_cmdline
 from docutils.parsers.rst import Parser
@@ -49,17 +51,16 @@ def cli_process(argv, builder=None, builder_name='mpe', description=''):
 
     # raises exception if no argv
     argvs = split_argv(argv)
-    print('argv', argv)
 
     builder.prepare_initial_components()
-    logger.info('cli-process components', builder.components)
+    logger.info('cli-process components: %s', builder.components)
 
     # replace settings for initial components
     builder.process_command_line(argv=argvs.next())
 
     # Rest deals with argv handling and defers to run_process (tmp)
     for argv in argvs:
-        logger.info('cli-process', argv)
+        logger.info('cli-process: %s', argv)
 
         # replace settings for initial components
         builder.process_command_line(argv=argv)
@@ -192,6 +193,9 @@ def cli_du_publisher(reader_name='mpe', parser=None, parser_name='rst',
 def split_argv(argv):
     """
     Split argv at '--', yield subsequent groups.
+
+    The initial group is used to initialize the settings, but it can have no
+    arguments only options. The second for file arguments and specific settings.
 
     If what would be the first group does not contain options (-f --flag..)
     then take it to be a separate group and yield an initial empty group.

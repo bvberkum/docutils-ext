@@ -12,8 +12,11 @@ class Builder(builder.Builder):
 
     HTSTORE = 'sqlite:///%s' % os.path.expanduser('~/.cllct/htdocs.sqlite')
 
-    settings_defaults_overrides = {
-            }
+    settings_default_overrides = {
+        'file_insertion_enabled': 'include',
+        'halt_level': 3,
+        'report_level': 6
+    }
 
     extractor_spec = [
 #            ('dotmpe.du.ext.extractor.htdocs', ),

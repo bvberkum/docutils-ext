@@ -11,7 +11,19 @@
   distribution: public
   license: GPL-3.0
 
+  repositories:
+    dandy.10-1: /srv/git-local/bvberkum/docutils-ext-mpe.git
+    dotmpe: dotmpe:domains/dotmpe.com/htdocs/git/docutils-mpe
+    origin: git@github.com:dotmpe/docutils-ext.git
+
   scripts:
+    init:
+    - htd package update
+    - htd package remotes-init
+    - vc regenerate
+    - test -d ~/.pyvenv/du-ext || virtualenv ~/.pyvenv/du-ext
+    - source ~/.pyvenv/du-ext/bin/activate
+    - pip install -r requirements.txt
     check:
       - make stat
       - "./tools/ci/tags.sh *.* doc dotmpe examples features lib log test tools var"
@@ -45,4 +57,3 @@
         - FIXME # tasks:no-check
         - BUG # tasks:no-check
         - NOTE # tasks:no-check
-
