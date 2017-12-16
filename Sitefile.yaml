@@ -1,5 +1,9 @@
 # Generic options
 sitefile: 0.0.3
+upstream: '*'
+packages: 
+  - 'sitefile/context.coffee'
+  - 'cors.coffee'
 routes:
     _du: du:**/*.rst
 params:

@@ -614,7 +614,7 @@ class Body(SimpleParserState):
         source = "h%i. %s" % (level+1, title)
 
         if level == 0 and mylevel == 0:
-        	return 1 # first section
+            return 1 # first section
 
         if level <= mylevel:            # sibling or supersection
             memo.section_level = level   # bubble up to parent section

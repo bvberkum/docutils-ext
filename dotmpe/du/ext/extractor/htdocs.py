@@ -8,7 +8,7 @@ Definition Terms
       resource matching term.
 
 """
-from datetime import datetime 
+from datetime import datetime
 from pprint import pformat
 
 import json
@@ -53,7 +53,7 @@ class HtdocsExtractor(extractor.Extractor):
         # - get (new) ref for each definition term
         # - accumulated definition descriptions:
         #   append lists to some log,
-        #   
+        #
         # XXX print unid, storage, kwds
         # create visitor for doc, add storage for lookup and possible updates to existing items
         # xxx: must rewrite document for updates, but rst2rst is not happening yet
@@ -131,9 +131,6 @@ class HtdocsStorage(extractor.SQLiteExtractorStorage):
         s = self.session
         q = s.query(self.Title)
 
-        def now():
-            return datetime.now()
-
         terms = node.astext().split()
         for i, t in enumerate(terms):
             if t.isalnum():
@@ -152,12 +149,9 @@ class HtdocsStorage(extractor.SQLiteExtractorStorage):
         s.add(t)
         s.commit()
 
-
-    # 
+    #
 #    def retrieve_
 
-def now():
-    return datetime.now()
 
 class TinkerVisitor(nodes.SparseNodeVisitor):
 
@@ -198,7 +192,7 @@ class TinkerVisitor(nodes.SparseNodeVisitor):
                     .filter(taxus.semweb.Description.name==term).all()
             if not matches:
                 description = taxus.Description(
-                        name=term, date_added=now())
+                        name=term, date_added=datetime.now())
                 sa.add(description)
                 sa.commit()
                 print 'new', description.name
@@ -215,4 +209,3 @@ class TinkerVisitor(nodes.SparseNodeVisitor):
 
 Extractor = HtdocsExtractor
 Storage = HtdocsStorage
-

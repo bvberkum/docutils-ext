@@ -6,6 +6,7 @@ The goal is to have a component interface for multiple input and output formats,
 perhaps to experiment with content-negotiation later. Until then this serves as
 as a thin wrapper to the Du publisher framework.
 """
+from __future__ import print_function
 import os
 import sys
 import traceback
@@ -25,7 +26,8 @@ from dotmpe.du.util import get_session, SqlBase
 from dotmpe.du import comp, util
 
 
-logger = util.get_log(__name__)#, stdout=True, fout=False)
+logger = util.get_log(__name__, fout_level=logging.INFO)
+
 
 class Builder(SettingsSpec, Publisher):
 
@@ -40,7 +42,7 @@ class Builder(SettingsSpec, Publisher):
     interface/base-class.
 
     Like the du publisher, it retrieves settings from the commandline arguments
-    using process_command_line.
+    using ``docutils.core.Publisher``'s ``process_command_line``.
 
     For further ease of development, there is a third exec mode besides
     rendering or processing: interactive. This aims to relieve the
@@ -309,7 +311,7 @@ class Builder(SettingsSpec, Publisher):
         assert not document.transform_messages, '\n'.join(map(str,
             document.transform_messages))
         # Populate with transforms.
-        print self, self.extractors
+        print('process', self, self.extractors)
         for tclass, storage in self.extractors:
             document.transformer.add_transform(
                 tclass, unid=source_id, storage=storage,
@@ -324,12 +326,14 @@ class Builder(SettingsSpec, Publisher):
         document.transformer.apply_transforms()
         # clean doc
         if document.transform_messages:
-            print 'XXX: document transformed, messages:', document.transform_messages
+            print('XXX: document transformed, messages:',
+                    document.transform_messages)
         document.transform = document.reporter = document.form_processor = None
         # FIXME: what about when FP needs run during process i.o. build?
         # what about values from FP then.
         if document.transform_messages:
-            print 'XXX: Transformation messages:', map(str,document.transform_messages)
+            print('XXX: Transformation messages:',
+                    map(str,document.transform_messages))
 
     def render(self, source, source_id='<render>', writer_name=None,
             overrides={}, parts=['whole']):
@@ -351,7 +355,7 @@ class Builder(SettingsSpec, Publisher):
         output = self.writer.write(document, self.destination)
         return output
 
-        print output
+        print(output)
         assert self.writer.parts
         # XXX: right to the internal of the writer. Is this interface?
         assert parts
@@ -501,9 +505,6 @@ class Builder(SettingsSpec, Publisher):
         source_id = self.settings._source
         source = open(source_id)
 
-        #print '_do_process', source, source_id
-        from pprint import pprint
-        #pprint(self.settings)
         logger.info("Loaded, building %s" % source_id)
 
         document = self.build(source, source_id, overrides={})
@@ -520,11 +521,16 @@ class Builder(SettingsSpec, Publisher):
 
         # TODO render messages as reST doc
         for msg_list in document.parse_messages, document.transform_messages:
+            if msg_list:
+                print("Messages:")
             for msg in msg_list:
                 #print type(msg), dir(msg)
                 #print msg.asdom()
-                print msg.astext()
+                print(msg.astext())
 
+    @classmethod
+    def getting(Klass):
+        pass
 
 
 # XXX: prep store-params
@@ -536,4 +542,3 @@ def parse_params(args, kwds, options):
         if callable(v):
             kwds[k] = v(options)
     return args, kwds
-

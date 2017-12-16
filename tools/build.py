@@ -145,26 +145,22 @@ else:
 
 log = util.get_log(None, fout=False, stdout=True)
 
-if action == 'proc':
+if action == 'proc': # 
     log.info("Starting Du processor: "+tag)
-    #assert target_format == 'pseudoxml'
-    # TODO: use source_format
+    print(frontend.__file__)
     frontend.cli_process(sys.argv[1:], None, module_name)
-    #frontend.cli_process(sys.argv[1:], None, 'dotmpe.du.builder.'+tag)
-    #frontend.cli_process(
-    #        sys.argv[1:], builder_name=module_name)
 
-elif action == 'pub':
+elif action == 'pub': # Render src to dest
     log.info("Starting Du publish")
     frontend.cli_render(
             sys.argv[1:], builder_name=module_name)
 
-elif action == 'run':
+elif action == 'run': # Batch mode
     log.info("Starting Du command")
     frontend.cli_run(
             sys.argv[1:], builder_name=module_name)
 
-elif action == 'dupub':
+elif action == 'dupub': # Std. docutils publish (with comp ext monkey patch )
     log.info("Starting standard publisher")
     frontend.cli_du_publisher(
             reader_name=reader_name,
@@ -174,4 +170,3 @@ elif action == 'dupub':
 
 else:
     raise Exception("Invalid action %s" % action)
-

@@ -26,31 +26,31 @@ class Writer(writers.Writer):
     """
 
     defaults = Values(dict(
-        outline_format = 'json',
-        outline_file = 'outline.json',
-        element = 'definition',
-        content = 'none',
+        #outline_format = 'json',
+        outline_file = None
+        #element = 'definition',
+        #content = 'none',
     ))
 
     settings_spec = (
         'Outline writer',
         None,
         (
-            ( "Element, grab either section (titles) or definition (terms).",
-                ['--element'],
-                { 'default': defaults.element, 'metavar': '[section|definition]' }),
-            ( "Content, 'body' to grab any block element, 'list' to grab the first list. ",
-                ['--content'],
-                { 'default': defaults.content, 'metavar': '[none,body,list]' }),
+            #( "Element, grab either section (titles) or definition (terms).",
+            #    ['--element'],
+            #    { 'default': defaults.element, 'metavar': '[section|definition]' }),
+            #( "Content, 'body' to grab any block element, 'list' to grab the first list. ",
+            #    ['--content'],
+            #    { 'default': defaults.content, 'metavar': '[none,body,list]' }),
 
             ( "Outline file, (default: %default). ",
                 ['--outline'],
                 { 'default': defaults.outline_file, 'dest': 'outline_file', 'metavar': '<FILE>' }),
 
-            ( "Outline format, '%default' for now. ",
-                ['--format'],
-                { 'default': defaults.outline_format, 'dest': 'outline_format',
-                    'metavar': '<FORMAT>' }),
+            #( "Outline format, '%default' for now. ",
+            #    ['--format'],
+            #    { 'default': defaults.outline_format, 'dest': 'outline_format',
+            #        'metavar': '<FORMAT>' }),
         )
     )
 
@@ -61,41 +61,42 @@ class Writer(writers.Writer):
         settings = self.document.settings
         self.outline_file = getattr(settings, 'outline_file',
                 self.__class__.defaults.outline_file)
-        self.outline_format = getattr(settings, 'outline_format',
-                self.__class__.defaults.outline_format)
-        self.element = getattr(settings, 'element',
-                self.__class__.defaults.element)
-        self.content = getattr(settings, 'content',
-                self.__class__.defaults.content)
+        #self.element = getattr(settings, 'element',
+        #        self.__class__.defaults.element)
+        #self.content = getattr(settings, 'content',
+        #        self.__class__.defaults.content)
 
     def translate(self):
         self.init_from_settings()
 
-        visitor = OutlineExtractor(self.document,
-                self.element, self.content)
+        visitor = OutlineExtractor(self.document)#, self.element, self.content)
         self.document.walkabout(visitor)
 
         self.data = visitor.data
 
         import json
         self.output = json.dumps(visitor.data)
+        if self.outline_file:
+            open(self.outline_file, 'w+').write(self.output)
 
 
 #class OutlineExtractor(nodes.NodeVisitor):
 class OutlineExtractor(nodes.SparseNodeVisitor):
 
-    def __init__(self, document, element, content):
+    def __init__(self, document):#, element, content):
         nodes.NodeVisitor.__init__(self, document)
-        self.data = {}
+        self.data = { 'names': {} }
         "Dist-n-list struct for return JSON"
 
         # Initialize root context
         self.context = ContextStack(defaults={
             'data': self.data,
+            'terms': {},
             'path': [ document ],
             'element': {},
             'outline_id': 'root'
         })
+
 
     def pretty_ctx_path(self):
         return "/".join([ p.tagname for p in self.context.path])
@@ -114,27 +115,29 @@ class OutlineExtractor(nodes.SparseNodeVisitor):
     def onpath(self, node):
         return is_parent( self.context.path[-1], node ) or False
 
+
     def visit_definition_list_item(self, node):
-
-        ce = self.context.element
-
+        #print 'visit-dl-li', node.line, node
         self.context.path = self.context.path + [ node ]
-        self.context.data = {}
+        self.context.terms = {}
+        self.context.data = {
+                'names': {}
+            }
 
     def visit_term(self, node):
-
-        self.context.element = {}
+        #print 'visit-dt', node.line, node
+        ce = {
+                # FIXME: '_line': node.line always last line in dl tree?
+                '_label': node.astext()
+            }
+        ce['_id'] = nodes.make_id(ce['_label'])
+        self.context.element = ce
 
     def depart_term(self, node):
-
         ce = self.context.element
         del self.context.element
-
-        ce['_label'] = node.astext()
-        ce['_id'] = nodes.make_id(ce['_label'])
-
         self.context.outline_id = ce['_id']
-
+        self.context.terms[ce['_id']] = ce
 
     def depart_definition_list_item(self, node):
 
@@ -146,13 +149,27 @@ class OutlineExtractor(nodes.SparseNodeVisitor):
 
         data = self.context.data
         del self.context.data
-        self.context.data[self.context.outline_id] = data
+        data.update( self.context.terms[ self.context.outline_id ] )
+        del self.context.terms
+        self.context.data['names'][self.context.outline_id] = data
 
         del self.context.path
         del self.context.outline_id
 
 
     def visit_definition(self, node):
+        assert not node.line, "Always None?"
+        #print 'visit-dd', node.line, node
+
+        pass
+
+    def visit_section(self, node):
+        #print 'visit-section', node.line, node
+
+        pass
+
+    def visit_paragraph(self, node):
+        #print 'visit-p', node.line, node
 
         pass
 

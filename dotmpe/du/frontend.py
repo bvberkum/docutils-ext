@@ -23,8 +23,7 @@ import dotmpe.du.ext
 from dotmpe.du.ext.parser import Inliner
 
 
-
-logger = util.get_log(__name__)
+logger = util.get_log(__name__, fout_level=logging.INFO, stdout=True)
 
 
 def cli_process(argv, builder=None, builder_name='mpe', description=''):
@@ -50,16 +49,17 @@ def cli_process(argv, builder=None, builder_name='mpe', description=''):
 
     # raises exception if no argv
     argvs = split_argv(argv)
+    print('argv', argv)
 
     builder.prepare_initial_components()
-    #print 'components', builder.components
+    logger.info('cli-process components', builder.components)
 
     # replace settings for initial components
     builder.process_command_line(argv=argvs.next())
 
     # Rest deals with argv handling and defers to run_process (tmp)
-
     for argv in argvs:
+        logger.info('cli-process', argv)
 
         # replace settings for initial components
         builder.process_command_line(argv=argv)
@@ -101,7 +101,6 @@ def cli_render(argv, builder=None, builder_name='mpe'):
 
     assert builder.settings
     print builder.render(None, builder.settings._source)
-    return
     print builder.document.parse_messages
     print builder.document.transform_messages
 
@@ -167,7 +166,7 @@ def cli_du_publisher(reader_name='mpe', parser=None, parser_name='rst',
     But, given that transforms could handle storage
     initialization themselves, and that the Reader/Parser/Writer 'parent'
     component can hold the settings-specs, should make it fairly easy to port
-    Builder code back to work with docutils.
+    Builder code back to work with vanilla docutils.
     """
 
     # XXX: how far does inline customization go? parser = Parser(inliner=Inliner())

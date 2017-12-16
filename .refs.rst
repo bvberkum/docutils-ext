@@ -18,3 +18,7 @@
 .. |tm| unicode:: U+02122 .. trademark sign
 .. |date| replace:: Date!
 
+
+.. FIXME: refs to other sitefiles
+.. _rel-values: htdocs:note/links#html-link-relations
+

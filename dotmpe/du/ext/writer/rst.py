@@ -151,7 +151,7 @@ class RstTranslator(AbstractTranslator):
         use replace or increment functions.
         """
         self.context = ContextStack(defaults={
-        	    # a list of all the elements up to the level, though not all
+                # a list of all the elements up to the level, though not all
                 'tree': [],
                 'bullet': u'',
                 'indent': u'',
@@ -261,7 +261,7 @@ class RstTranslator(AbstractTranslator):
     def set_title_adornment(self):
         adornments = list(self.__class__.section_adornments)
         if self.doclevel > len(self.section_adornments):
-        	self.sub_section()
+            self.sub_section()
 
     def _write_indented(self, *lines):
         """

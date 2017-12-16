@@ -895,4 +895,3 @@ def get_log(
 
 class DatabaseConnectionError(Exception):
     pass
-

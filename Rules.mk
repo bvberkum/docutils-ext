@@ -219,5 +219,13 @@ up:
 
 
 #      ------------ -- 
+
+$/tags: $/Rules.mk ./dotmpe
+	ctags -R -o $@ \
+    ./dotmpe /usr/local/lib/python2.7/site-packages/docutils
+
+
+
+#      ------------ -- 
 include                $(MK_SHARE)Core/Main.dirstack-pop.mk
 # vim:noet:

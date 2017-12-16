@@ -25,11 +25,10 @@ from dotmpe.du import util
 from dotmpe.du.util import SqlBase, get_session
 from dotmpe.du.ext import extractor
 
-from script_mpe import taxus
-
 
 logger = util.get_log(__name__, fout=False)
 
+logger = util.get_log(__name__)
 
 class ReferenceExtractor(extractor.Extractor):
 
@@ -70,6 +69,13 @@ ie. raw HTML, script.
                  'metavar': 'SPEC'
              }
         ),(
+             'Database to store references. ',
+             ['--reference-database'],
+             {
+                 'metavar':'PATH',
+                 'validator': util.optparse_init_anydbm,
+             }
+        ),(
             'Resolve: request, take note of abnormal status, otherwise '
             'use identifier or update locator. ',
              ['--resolve-references'],
@@ -91,14 +97,15 @@ ie. raw HTML, script.
     default_priority = 900
 
     def apply(self, unid=None, store=None, **kwargs):
-
         v = RefVisitor(self.document)
-
-        g = self.document.settings
-        g.dbref = taxus.ScriptMixin.assert_dbref(g.dbref)
-        v.session = self.session = get_session(g.dbref)
-
         self.document.walk(v)
+
+        refdb = getattr(self.document.settings, 'reference_database', None)
+        if refdb == None:
+            return
+        v = RefDbVisitor(self.document)
+        self.document.walk(v)
+        refdb.close()
 
 
 class RefVisitor(nodes.GenericNodeVisitor):
@@ -111,19 +118,26 @@ class RefVisitor(nodes.GenericNodeVisitor):
             link = node.attributes['refuri']
             logger.debug("Found uriref %s", link)
 
-            scheme, d,p,r,q,f = urlparse.urlparse(link)
-            #if scheme in ('sip', 'mailto', 'ssh'):
-            #    return
-            self.store(node)
 
     def default_departure(self, node):
         """Override for generic, uniform traversals."""
 
-    def store(self, node):
 
-        taxus.htd.TNode.filter( ( TNode.global_id == prefix_path  ))
-        #print(dir(self))
-        return
+class RefDbVisitor(nodes.SparseNodeVisitor):
+
+    """
+    """
+
+    def visit_reference(self, node):
+        if 'refuri' in node.attributes:
+            link = node.attributes['refuri']
+            logger.debug("Found uriref %s", link)
+            #scheme, d,p,r,q,f = urlparse.urlparse(link)
+            #if scheme in ('sip', 'mailto', 'ssh'):
+            #    return
+            #self.store(node)
+
+    def store(self, node):
 
         refdb = self.document.settings.reference_database
         ctx = self.document.settings.reference_context
@@ -132,7 +146,6 @@ class RefVisitor(nodes.GenericNodeVisitor):
             link = unicode(link)
 
         if not uriref.scheme.match(link):
-
             # Allow site-wide absolute paths:
             if not os.path.exists(link) and link.startswith(os.sep):
                 link = link[1:]
@@ -184,3 +197,65 @@ class ReferenceStorage(extractor.SQLiteExtractorStorage):
 
 Extractor = ReferenceExtractor
 Storage = ReferenceStorage
+
+
+
+## App-engine storage
+
+# XXX: Currently unused code
+try:
+
+    from google.appengine.ext import db
+
+except ImportError, e:
+    pass#print 'Not loading GAE reference store.'
+
+else:
+
+    class Reference(db.Model):
+        url = db.LinkProperty()
+        unid = db.StringProperty()
+
+    class ReferenceStorage(extractor.ExtractorStorage):
+        def store(self, unid, url):
+            ref = Reference()
+            ref.unid = unid
+            ref.url = url
+            ref.put()
+
+        def clear(self, unid=None):
+            if unid:
+                refs = Reference.gql('WHERE unid = :1', unid).fetch(1)
+            else:
+                refs = Reference.all().fetch(1000)
+
+            if refs:
+                for ref in refs:
+                    ref.delete()
+
+        def reset_schema(self):
+            raise Exception( 'reset_schema'+repr(self) )
+
+
+## Maintenance?
+
+class RefDbOptionParser(frontend.OptionParser):
+    standard_config_files = []
+    settings_spec = Extractor.settings_spec
+
+def run_refdb_cli():
+    # No help, just initalize refdb
+    prsr = RefDbOptionParser()
+    settings = prsr.parse_args()
+    refdb = settings.reference_database
+    if refdb:
+        # Iter contents
+        for link in refdb:
+            print link, pickle.loads(refdb[link])
+    else:
+        import sys
+        print >>sys.stderr, "No references"
+
+if __name__ == '__main__':
+    run_refdb_cli()
+

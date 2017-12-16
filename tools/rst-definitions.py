@@ -23,5 +23,5 @@ if __name__ == '__main__':
         parser=None, parser_name='restructuredtext',
         settings=None, settings_spec=None, settings_overrides=None, config_section=None,
         enable_exit_status=False)
-    print(doctree)
+    #print(doctree)
 
