@@ -26,6 +26,17 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 
+# MIME header format
+TIMEFMT = '%a, %d %b %Y %H:%M:%S GMT'
+ISO_8601_DATETIME = '%Y-%m-%dT%H:%M:%SZ'
+datetime_formats = [
+        TIMEFMT,
+        TIMEFMT[:-4],
+        '%Y-%m-%d',
+        ISO_8601_DATETIME,
+        '%b. %Y'
+    ]
+
 logdirs = [
         './log',
         './logs',

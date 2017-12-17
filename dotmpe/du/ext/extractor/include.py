@@ -31,5 +31,3 @@ class DependenciesVisitor(nodes.SparseNodeVisitor):
 
     def visit_include(self, node):
         pass
-
-

@@ -6,7 +6,7 @@ This is an aggregation and configuration of Du components.
 from dotmpe.du import builder, util
 from dotmpe.du.ext.transform import include, logbook
 from dotmpe.du.ext.reader import standalone
-from dotmpe.du.ext.extractor import reference, doctitle
+from dotmpe.du.ext.extractor import reference, fragment, docinfo
 
 
 def _get_logbook_store(options):
@@ -59,17 +59,20 @@ class Builder(builder.Builder):
     # pairs. extractors are initialized in XXX...?
     # storage is
     extractor_spec = [
-            ('dotmpe.du.ext.extractor.doctitle',
-                'dotmpe.du.ext.extractor.doctitle'),
-            #('dotmpe.du.ext.extractor.fragment',
-            #    'dotmpe.du.ext.extractor.fragment'),
+            ('dotmpe.du.ext.extractor.docinfo',
+                'dotmpe.du.ext.extractor.docinfo'),
+            ('dotmpe.du.ext.extractor.reference',
+                'dotmpe.du.ext.extractor.reference'),
+            ('dotmpe.du.ext.extractor.fragment',
+                'dotmpe.du.ext.extractor.fragment'),
             #('nabu.extractors.document.DocumentExtractor',
             #    'dotmpe.du.ext.extractor.document'),
-     #       ('dotmpe.du.ext.extractor.settings', 'dotmpe.du.ext.extractor.settings.SettingsStorage')
+            #('dotmpe.du.ext.extractor.settings',
+            #    'dotmpe.du.ext.extractor.settings.SettingsStorage')
         ]
 
     settings_spec = (
-            'htdocs.mpe Builder',
+            'mpe Builder',
             '. ',
             ((
                  'Database to store titles. ',
@@ -80,7 +83,9 @@ class Builder(builder.Builder):
                      #'validator': util.optparse_init_sqlalchemy,
                  }
             ),) +
-            doctitle.Extractor.settings_spec[2]
+            docinfo.Extractor.settings_spec[2] +
+            fragment.Extractor.settings_spec[2] +
+            reference.Extractor.settings_spec[2]
         )
 
     store_params = {

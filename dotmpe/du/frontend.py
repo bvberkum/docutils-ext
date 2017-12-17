@@ -53,17 +53,17 @@ def cli_process(argv, builder=None, builder_name='mpe', description=''):
     argvs = split_argv(argv)
 
     builder.prepare_initial_components()
-    logger.info('cli-process components: %s', builder.components)
 
     # replace settings for initial components
     builder.process_command_line(argv=argvs.next())
+    builder.settings_default = builder.settings
 
     # Rest deals with argv handling and defers to run_process (tmp)
     for argv in argvs:
-        logger.info('cli-process: %s', argv)
-
         # replace settings for initial components
-        builder.process_command_line(argv=argv)
+        builder.process_command_line(argv=argv, usage=None, description=None,
+                settings_spec=None, config_section=None,
+                **builder.settings_default.__dict__)
 
         builder._do_process()
 

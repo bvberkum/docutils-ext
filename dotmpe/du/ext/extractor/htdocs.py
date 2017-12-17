@@ -1,5 +1,5 @@
 """
-.mpe htdocs extractor
+TODO: .mpe htdocs extractor
 
 Inline (title, literal, reference)
     ..
@@ -42,6 +42,16 @@ class HtdocsExtractor(extractor.Extractor):
     Global could mean include <doc-id>. Var. URIRef options here.
     """
 
+    # XXX: not used by Builder unless staticly hardcoded into its specs.
+    settings_spec = (
+        'Htdocs extractor',
+        None,
+        ((
+             '',
+             ['--no-proc'], { 'action': 'store_true' }
+        ),)
+    )
+
     default_priority = 500
 
     def init_parser(cls):
@@ -50,6 +60,9 @@ class HtdocsExtractor(extractor.Extractor):
     fields_spec = []
 
     def apply(self, unid=None, storage=None, **kwds):
+        g = self.document.settings
+        if g.no_proc:
+            return
         # - get (new) ref for each definition term
         # - accumulated definition descriptions:
         #   append lists to some log,
@@ -98,12 +111,11 @@ class HtdocsStorage(extractor.SQLiteExtractorStorage):
     ]
 
     def __init__(self, session=None, dbref=None):
+        self.session = session
         if not session:
             assert dbref, ("Missing SQL-alchemy DB ref", self)
             # set for SA, then get engine to use as DBAPI-2.0 compatible connection
             self.session = get_session(dbref, True)
-        else:
-            self.session = session
         # XXX can I get raw-connection from self.session?
         #self.connection = SqlBase.metadata.bind.raw_connection()
         #logger.info("Connected to %s", self.connection)
