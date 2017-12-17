@@ -83,7 +83,7 @@ class Extractor(nabu.extract.Extractor):
         elif self.document.settings.print_docnames:
             a += ( ",".join(self.document['names']), )
 
-        print(" ".join(a))
+        print(u" ".join(a))
 
 
 class Storage(ExtractorStorage):
