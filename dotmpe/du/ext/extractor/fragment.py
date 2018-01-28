@@ -16,14 +16,19 @@ class Extractor(nabu.extract.Extractor):
                  'metavar':'PATH',
                  'validator': util.optparse_init_anydbm,
              }
+        ),(
+             'Dont run fragment extractor, even if dbref is given. ',
+             ['--no-fragment'], { 'action': 'store_true' }
         ),)
     )
 
     default_priority = 900
 
     def apply(self, unid=None, storage=None, **kwargs):
-        v = SectionVisitor(self.document, storage)
-        self.document.walk(v)
+        g = self.document.settings
+        if not g.no_db and not g.no_fragment:
+            v = SectionVisitor(self.document, storage)
+            self.document.walk(v)
 
 
 class Storage(ExtractorStorage):
@@ -58,5 +63,3 @@ class SectionVisitor(nodes.SparseNodeVisitor):
         self.push_stack(node)
     def depart_section(self, node):
         assert self.stack.pop() == node
-
-

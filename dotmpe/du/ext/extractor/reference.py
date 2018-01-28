@@ -85,6 +85,9 @@ ie. raw HTML, script.
                  'metavar': 'URI',
                  'validator': util.validate_context,
              }
+        ),(
+             'Dont run reference extractor, even if dbref is given. ',
+             ['--no-reference'], { 'action': 'store_true' }
         ),)
     )
 
@@ -92,13 +95,15 @@ ie. raw HTML, script.
 
     def apply(self, unid=None, store=None, **kwargs):
 
-        v = RefVisitor(self.document)
-
         g = self.document.settings
-        g.dbref = taxus.ScriptMixin.assert_dbref(g.dbref)
-        v.session = self.session = get_session(g.dbref)
+        if not g.no_db and not g.no_reference:
+            v = RefVisitor(self.document)
 
-        self.document.walk(v)
+            g = self.document.settings
+            g.dbref = taxus.ScriptMixin.assert_dbref(g.dbref)
+            v.session = self.session = get_session(g.dbref)
+
+            self.document.walk(v)
 
 
 class RefVisitor(nodes.GenericNodeVisitor):
@@ -121,6 +126,7 @@ class RefVisitor(nodes.GenericNodeVisitor):
 
     def store(self, node):
 
+        return
         taxus.htd.TNode.filter( ( TNode.global_id == prefix_path  ))
         #print(dir(self))
         return
@@ -163,13 +169,12 @@ class ReferenceStorage(extractor.SQLiteExtractorStorage):
     sql_relations = []
 
     def __init__(self, session=None, dbref=None, initdb=False):
-        if not session:
-            assert dbref, ( dbref, initdb )
-            # set for SA, get engine to use as DBAPI-2.0 compatible connection
-            self.session = get_session(dbref, True)
-            self.connection = SqlBase.metadata.bind.raw_connection()
-        else:
-            self.session = session
+        self.session = session
+        #if not session:
+        #    assert dbref, ( dbref, initdb )
+        #    # set for SA, get engine to use as DBAPI-2.0 compatible connection
+        #    self.session = get_session(dbref, True)
+        #    self.connection = SqlBase.metadata.bind.raw_connection()
         # XXX can I get raw-connection from self.session?
         #self.connection = SqlBase.metadata.bind.raw_connection()
         #logger.info("Connected to %s", self.connection)
