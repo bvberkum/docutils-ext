@@ -73,7 +73,7 @@ try:
 except:
     pass
 
-from dotmpe.du import util, frontend, comp
+from dotmpe.du import mpe_du_util as util, frontend, comp
 import dotmpe.du.ext # register extensions
 
 

@@ -28,7 +28,7 @@
       - make stat
       - "./tools/ci/tags.sh *.* doc dotmpe examples features lib log test tools var"
     test:
-      - make build test
+      - htd ispyvenv || source ~/.pyvenv/du-ext/bin/activate; choice_interactive=1 htd ispyvenv; make build test
       - ./tools/rst-form.py examples/form-1.rst
       #- ./tools/rst-form.py var/test-form.1.field-id.rst
       - ./tools/rst-outline.py examples/main.rst

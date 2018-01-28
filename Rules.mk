@@ -77,7 +77,7 @@ test_py_$d:
 		test -n "$M" && TEST_PY_ARGV="$M" \
 			|| TEST_PY_ARGV="$(shell ./test/main.sh)";\
 		TEST_LIB=dotmpe;\
-		PYTHONPATH=$$PYTHONPATH:test; \
+		export PYTHONPATH=$(pwd):$$PYTHONPATH:test; \
 		$(test-python) 2> test.log;
 	@\
 		if [ -n "$$(tail -1 test.log|grep OK)" ]; then \

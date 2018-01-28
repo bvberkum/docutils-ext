@@ -3,7 +3,7 @@ from dotmpe.du.ext import extractor
 
 class IncludeDoctree(extract.Extractor):
 
-    "Include nodes in doctree, resolves <include /> nodes. "
+    "TODO: Include nodes in doctree, resolves <include /> nodes. "
     "Optionally rewrite relative reference. "
 
 
