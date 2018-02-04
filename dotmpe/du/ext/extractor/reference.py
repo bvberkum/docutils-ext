@@ -1,4 +1,11 @@
 """
+:Created: 2010-05-09
+
+..
+
+    TODO: migrate core functions to dotmpe.du.ext.transform.reference,
+    and base this extractor on that. See also htdocs extractor.
+
 Back `in 2004 there was a nice post`__ on the mailing list about handling of
 references in docutils.
 

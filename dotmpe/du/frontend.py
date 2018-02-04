@@ -364,5 +364,3 @@ def cgi_main(usage=cgi_usage, description=cgi_description, argv=[]):
     "Invoke to run as HTTP resource in CGI envorionment."
 
     main(usage=usage, description=description, argv=[])
-
-

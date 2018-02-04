@@ -2,11 +2,13 @@
 dotmpe.com v5 writer
 
 This is an aggregation and configuration of Du components.
+
+TODO: make htdocs components compatible (outline, reference extractor)
 """
 from dotmpe.du import builder, util
 from dotmpe.du.ext.transform import include, logbook
 from dotmpe.du.ext.reader import standalone
-from dotmpe.du.ext.extractor import reference, fragment, docinfo
+from dotmpe.du.ext.extractor import reference, docinfo
 
 
 def _get_logbook_store(options):
@@ -63,8 +65,8 @@ class Builder(builder.Builder):
                 'dotmpe.du.ext.extractor.docinfo'),
             ('dotmpe.du.ext.extractor.reference',
                 'dotmpe.du.ext.extractor.reference'),
-            ('dotmpe.du.ext.extractor.fragment',
-                'dotmpe.du.ext.extractor.fragment'),
+            #('dotmpe.du.ext.extractor.htdocs',
+            #    'dotmpe.du.ext.extractor.htdocs'),
             #('nabu.extractors.document.DocumentExtractor',
             #    'dotmpe.du.ext.extractor.document'),
             #('dotmpe.du.ext.extractor.settings',
@@ -84,7 +86,7 @@ class Builder(builder.Builder):
                  }
             ),) +
             docinfo.Extractor.settings_spec[2] +
-            fragment.Extractor.settings_spec[2] +
+            #htdocs.Extractor.settings_spec[2] +
             reference.Extractor.settings_spec[2]
         )
 

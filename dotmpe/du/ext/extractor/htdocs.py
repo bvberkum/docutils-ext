@@ -28,7 +28,7 @@ logger = util.get_log(__name__)
 class HtdocsExtractor(extractor.Extractor):
 
     """
-    TODO: store titles in rel. DB.
+    TODO: run different recorders at once from one extractor
 
     Record:
         - value (unicode string)

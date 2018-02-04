@@ -8,7 +8,7 @@ from docutils import Component, readers
 from docutils.readers import standalone
 from docutils.transforms import universal, frontmatter, references, misc
 from dotmpe.du.ext.transform import template, generate, include, user, clean,\
-    debug, reference
+    debug, reference, outline
 
 
 #MyPHPTemplate = template.TemplateSubstitutions
@@ -41,6 +41,7 @@ class Reader(readers.Reader):
             generate.Timestamp.settings_spec +
             generate.CCLicenseLink.settings_spec +
             generate.SourceLink.settings_spec +
+            outline.RecordOutline.settings_spec +
             reference.RecordReferences.settings_spec +
             clean.StripSubstitutionDefs.settings_spec +
             clean.StripAnonymousTargets.settings_spec +
@@ -83,6 +84,7 @@ class Reader(readers.Reader):
 #            universal.Decorations,         # 820
             misc.Transitions,               # 830
             references.DanglingReferences,  # 850
+            outline.RecordOutline,          # 880
             reference.RecordReferences,     # 880
             clean.StripSubstitutionDefs,    # 900
             clean.StripAnonymousTargets,    # 900
