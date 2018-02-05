@@ -1,1 +1,1 @@
-nose-parameterized
+parameterized

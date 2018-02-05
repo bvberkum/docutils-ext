@@ -87,3 +87,22 @@ type test_nok_nonempty >/dev/null 2>&1 || {
   }
 }
 
+
+
+test -n "$uname" || export uname="$(uname -s)"
+
+filesize()
+{
+  while test $# -gt 0
+  do
+    case "$uname" in
+      Darwin )
+          stat -L -f '%z' "$1" || return 1
+        ;;
+      Linux )
+          stat -L -c '%s' "$1" || return 1
+        ;;
+      * ) error "filesize: $1?" 1 ;;
+    esac; shift
+  done
+}
