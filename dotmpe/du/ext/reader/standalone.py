@@ -11,6 +11,7 @@ from dotmpe.du.ext.transform import template, generate, include, user, clean,\
     debug, reference, outline
 
 
+# XXX: cleanup MyPHPTemplate
 #MyPHPTemplate = template.TemplateSubstitutions
 #MyPHPTemplate.blocks =
 #MyPHPTemplate.format = ""
@@ -89,5 +90,3 @@ class Reader(readers.Reader):
             clean.StripSubstitutionDefs,    # 900
             clean.StripAnonymousTargets,    # 900
         ]
-
-

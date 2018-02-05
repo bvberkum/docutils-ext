@@ -79,45 +79,7 @@ class SimpleRefParser:
             return url
 
 
-class AbstractReferenceRecorder(SimpleRefParser, transforms.Transform):
-
-    def apply(self, f=None):
-        g = self.document.settings
-        if not getattr(g, 'record_references', None):
-            return
-
-        self.format = g.record_reference_format
-
-        if getattr(g, 'records', None):
-            f = g.records
-
-        if f:
-            self.f = g.records
-        else:
-            mode = g.append_reference_records and 'a+' or 'w+'
-            self.f = open(g.record_references, mode)
-
-        if getattr(g, 'record_outgoing_refs', None):
-
-            self.types = g.record_outgoing_refs
-            ref_tags = [ getattr(nodes, t) for t in self.types ]
-
-            for ref_type in ref_tags:
-                for ref_node in self.document.traverse(ref_type):
-                    ref = self._parse_link(ref_type, ref_node, g)
-                    if ref:
-                        self._record_reference(ref_type, ref, ref_node)
-
-        if getattr(g, 'record_incoming_refs', None):
-            pass # TODO: record-incoming-refs
-
-    def finish(self):
-        self.f.seek(0)
-        results = [ l.strip() for l in self.f.readlines() ]
-        return results
-
-
-class RecordReferences(AbstractReferenceRecorder):
+class RecordReferences(SimpleRefParser, transforms.Transform):
 
     """
     Write references from document to file.
@@ -199,3 +161,39 @@ class RecordReferences(AbstractReferenceRecorder):
     )
 
     default_priority = 880
+
+
+    def apply(self, f=None):
+        g = self.document.settings
+        if not getattr(g, 'record_references', None):
+            return
+
+        self.format = g.record_reference_format
+
+        if getattr(g, 'records', None):
+            f = g.records
+
+        if f:
+            self.f = g.records
+        else:
+            mode = g.append_reference_records and 'a+' or 'w+'
+            self.f = open(g.record_references, mode)
+
+        if getattr(g, 'record_outgoing_refs', None):
+
+            self.types = g.record_outgoing_refs
+            ref_tags = [ getattr(nodes, t) for t in self.types ]
+
+            for ref_type in ref_tags:
+                for ref_node in self.document.traverse(ref_type):
+                    ref = self._parse_link(ref_type, ref_node, g)
+                    if ref:
+                        self._record_reference(ref_type, ref, ref_node)
+
+        if getattr(g, 'record_incoming_refs', None):
+            pass # TODO: record-incoming-refs
+
+    def finish(self):
+        self.f.seek(0)
+        results = [ l.strip() for l in self.f.readlines() ]
+        return results
