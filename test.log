@@ -7,7 +7,7 @@ Loaded testmodule 'sql_storage'
 Loaded testmodule 'rstwriter'
 Loaded testmodule 'du_ext_transform_reference'
 ..F.F......INFO:dotmpe.du.form:Validating /Volumes/Zephyr/src/github.com/bvberkum/docutils-ext/examples/form-1.rst
-..DEBUG:dotmpe.du.ext.extractor:New SQLiteExtractorStorage for None, with <sqlite3.Connection object at 0x10ced2dc8>
+..DEBUG:dotmpe.du.ext.extractor:New SQLiteExtractorStorage for None, with <sqlite3.Connection object at 0x1033cddc8>
 INFO:dotmpe.du.ext.extractor:Creating DB schema test_table (TABLE)
 INFO:dotmpe.du.ext.extractor:Creating DB schema var_idx (INDEX)
 INFO:dotmpe.du.ext.extractor:Destroyed table test_table
@@ -34,7 +34,7 @@ FAIL: test_3_get_writer_class (comp.DotmpeComponentLoaderTest)
 Traceback (most recent call last):
   File "/Volumes/Zephyr/src/github.com/bvberkum/docutils-ext/test/comp.py", line 93, in test_3_get_writer_class
     self.assertEquals( Writer, comp.get_writer_class(name) )
-AssertionError: <class dotmpe.du.ext.writer.xhtml.Writer at 0x10c78f8d8> != <class docutils.writers.html5_polyglot.Writer at 0x10cfe59a8>
+AssertionError: <class dotmpe.du.ext.writer.xhtml.Writer at 0x102c8a8d8> != <class docutils.writers.html5_polyglot.Writer at 0x1034e09a8>
 
 ======================================================================
 FAIL: test_1_get_reader_class (comp.DuComponentLoaderMonkeyPatchTest)
@@ -42,9 +42,9 @@ FAIL: test_1_get_reader_class (comp.DuComponentLoaderMonkeyPatchTest)
 Traceback (most recent call last):
   File "/Volumes/Zephyr/src/github.com/bvberkum/docutils-ext/test/comp.py", line 39, in test_1_get_reader_class
     docutils.readers.get_reader_class(name) )
-AssertionError: <class dotmpe.du.ext.reader.standalone.Reader at 0x10c803530> != <class docutils.readers.standalone.Reader at 0x10c8777a0>
+AssertionError: <class dotmpe.du.ext.reader.standalone.Reader at 0x102cfe530> != <class docutils.readers.standalone.Reader at 0x102d727a0>
 
 ----------------------------------------------------------------------
-Ran 71 tests in 2.044s
+Ran 71 tests in 1.938s
 
 FAILED (failures=2)
