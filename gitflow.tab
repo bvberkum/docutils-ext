@@ -1,6 +1,5 @@
 master dev false
 
-dev features/rst-forms true
 dev features/rst-writer-objects true
 dev features/rstwriter true
 dev features/subtree true
@@ -18,6 +17,7 @@ dev features/simple-muxdem true
 test tests/simple-muxdem
 
 # Merged
+#dev features/rst-forms true
 #dev features/xml-reader true
 #test tests/xml-reader
 #dev features/outliners true
