@@ -2,23 +2,32 @@
 dotmpe.com v5 writer
 
 This is an aggregation and configuration of Du components.
+
+TODO: make htdocs components compatible (outline, reference extractor)
 """
 from dotmpe.du import builder, util
 from dotmpe.du.ext.transform import include, logbook
-from dotmpe.du.ext.reader import mpe
-from dotmpe.du.util import addClass
+from dotmpe.du.ext.reader import standalone
+from dotmpe.du.ext.extractor import reference, docinfo
 
 
 def _get_logbook_store(options):
     """Temporary stuff until storage component instances are properly managed.
     """
     import sqlite3
-    return sqlite3.connect(options['logbook_db'])
+    dbf = options['logbook_db']
+    try:
+        return sqlite3.connect(dbf)
+    except sqlite3.OperationalError:
+        raise util.DatabaseConnectionError("Cannot connect to %s" % dbf)
 
 
 class Builder(builder.Builder):
 
+    HTSTORE = 'sqlite:///.cllct/HtdocsStorage.sqlite'
+
     settings_default_overrides = {
+        'halt_level': 2,
         '_disable_config': True,
         'stylesheet_path':'/media/style/default.css',
         'script': 'http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js,/media/script/default.js',
@@ -48,27 +57,54 @@ class Builder(builder.Builder):
     }
 
     # TODO: integrate with CLI/settings_spec
+    # spec use to populate builder.extractors to a list of extractor/storage
+    # pairs. extractors are initialized in XXX...?
+    # storage is
     extractor_spec = [
-            ('nabu.extractors.document', 'dotmpe.du.ext.extractor.document'),
-            ('dotmpe.du.ext.extractor.settings', 'dotmpe.du.ext.extractor.settings.SettingsStorage')
-        ] 
+            ('dotmpe.du.ext.extractor.docinfo',
+                'dotmpe.du.ext.extractor.docinfo'),
+            ('dotmpe.du.ext.extractor.reference',
+                'dotmpe.du.ext.extractor.reference'),
+            #('dotmpe.du.ext.extractor.htdocs',
+            #    'dotmpe.du.ext.extractor.htdocs'),
+            #('nabu.extractors.document.DocumentExtractor',
+            #    'dotmpe.du.ext.extractor.document'),
+            #('dotmpe.du.ext.extractor.settings',
+            #    'dotmpe.du.ext.extractor.settings.SettingsStorage')
+        ]
+
+    settings_spec = (
+            'mpe Builder',
+            '. ',
+            ((
+                 'Database to store titles. ',
+                 ['--dbref'],
+                 {
+                     'metavar':'PATH',
+                     'default': HTSTORE
+                     #'validator': util.optparse_init_sqlalchemy,
+                 }
+            ),) +
+            docinfo.Extractor.settings_spec[2] +
+            #htdocs.Extractor.settings_spec[2] +
+            reference.Extractor.settings_spec[2]
+        )
 
     store_params = {
             'dotmpe.du.ext.extractor.document.Storage': (
-                (),
-                {'module':None, 'connection': _get_logbook_store}),
+                (), {'module':None, 'connection': _get_logbook_store}),
         }
 
-    class Reader(mpe.Reader):
+    class Reader(standalone.Reader):
 
         add_class = [
                 'document[0]/section[0],dotmpe-v5'
             ]
 
         def get_transforms(self):
-            return mpe.Reader.get_transforms(self) + [
-                    addClass(Builder.Reader.add_class),
-                    logbook.LogBook
+            return standalone.Reader.get_transforms(self) + [
+                    util.addClass(Builder.Reader.add_class),
+                    #logbook.LogBook
                 ]
 
     class ReReader(builder.Builder.ReReader):
@@ -98,8 +134,8 @@ class Page(Builder):
             ]
 
         def get_transforms(self):
-            return mpe.Reader.get_transforms(self) + [
-                    addClass(Page.Reader.add_class),
+            return standalone.Reader.get_transforms(self) + [
+                    util.addClass(Page.Reader.add_class),
                 ]
 
 
@@ -117,7 +153,5 @@ class Frontpage(Page):
             ]
 
         def get_transforms(self):
-            return mpe.Reader.get_transforms(self) + [
-                addClass(Frontpage.Reader.add_class) ]
-
-
+            return standalone.Reader.get_transforms(self) + [
+                util.addClass(Frontpage.Reader.add_class) ]

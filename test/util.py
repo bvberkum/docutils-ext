@@ -1,5 +1,12 @@
+# pylint: disable=no-member
 """
 Utils to test re-writer, intended to be the reverse of the given parser.
+
+Pylint should ignore AbstractTestCase members as these will be bound to the
+test-runner instead.
+
+[2018-02-04] TODO: integrate nose.parameterized, cleanup below. Use testcase
+baseclasses to deal with var. components. make this more readable.
 """
 import os, re, unittest
 
@@ -40,10 +47,10 @@ width = 79
 class AbstractParserTestCase(object):
 
     DOC_FILE = None
+    DOC_PXML_FILE = None
+
     TAG = None
     VERBOSE = 1
-
-    corrupt_sources = []
 
     def _test_parser(self, parser, lossy=True):
         """Do comparison on trees generated from rST files.
@@ -92,10 +99,10 @@ class AbstractParserTestCase(object):
         diff = "\n".join(list(unified_diff(expected_pxml.split('\n'), generated_tree.split('\n'))))
 
         if self.VERBOSE:
-            out = [u''] 
+            out = [u'']
             original_out = expected_pxml.strip().split('\n')
             generated_out = generated_tree.strip().split('\n')
-            out += [ (u'Original Tree ').ljust(width, '-') +u' '+ (u'Generated Tree ').ljust(width, '-') ] 
+            out += [ (u'Original Tree ').ljust(width, '-') +u' '+ (u'Generated Tree ').ljust(width, '-') ]
             while original_out or generated_out:
                 p1 = u''
                 p2 = u''
@@ -104,19 +111,19 @@ class AbstractParserTestCase(object):
                 if generated_out:
                     p2 = generated_out.pop(0)
                 out += [ p1.ljust(width) +u' '+ p2.ljust(width) ]
-            out += [u''] 
+            out += [u'']
             diff += "\n".join(out)
 
 #        if self.VERBOSE:
 #            print diff
 
-        self.assertEqual( expected_pxml, generated_tree, 
+        self.assertEqual( expected_pxml, generated_tree,
                     "pxml tree mismatch \n "+
                     ("on <%s>" % self.DOC_FILE )+"\n\n"+
                     diff )
-        
+
         if warnings:
-            self.assertFalse(warnings.strip(), 
+            self.assertFalse(warnings.strip(),
                     "Error parsing test document\n "+
                     ("on <%s>" % self.DOC_FILE )+"\n\n"+
                     warnings)
@@ -129,7 +136,7 @@ def new_parser_testcase(tag, testcase_name, doc_file, pxml_file, lossy=False):
     suffix = "%s%sParserTestCase" % (lossy_str, tag.title())
     parser_class = dotmpe.du.comp.get_parser_class(tag)
     class TestCase(unittest.TestCase, AbstractParserTestCase):
-        DOC_FILE = doc_file 
+        DOC_FILE = doc_file
         DOC_PXML_FILE = pxml_file
         PARSER_CLASS = parser_class
         TAG = tag
@@ -145,7 +152,7 @@ class AbstractWriterTestCase(object):
 
     DOC_FILE = None
     VERBOSE = 0
-    corrupt_sources = ()
+
 
     def _test_writer(self, writer, lossy=True):
         """Do comparison on trees generated from rST files.
@@ -170,7 +177,7 @@ class AbstractWriterTestCase(object):
         # Generate pseudoxml from source
         warnings = StringIO()
         original_tree = docutils.core.publish_parts(
-                source=rst, 
+                source=rst,
                 source_path=self.DOC_FILE,
                 #reader_name=self.TAG,
                 settings_overrides={
@@ -181,7 +188,8 @@ class AbstractWriterTestCase(object):
                 },
                 writer_name='pseudoxml')['whole']#writer_name='dotmpe-rst')
         warnings = warnings.getvalue()
-        if warnings and self.DOC_FILE not in self.corrupt_sources:
+
+        if warnings:
             self.assertFalse(warnings.strip(), "Corrupt test source file: "+
                     ("on <%s>" % self.DOC_FILE )+"\n"+
                     warnings)
@@ -203,7 +211,7 @@ class AbstractWriterTestCase(object):
                 },
                 writer=writer)['whole']#writer_name='dotmpe-rst')
         if not lossy:
-            self.assertEqual( result, rst, 
+            self.assertEqual( result, rst,
                     ("on <%s>" % self.DOC_FILE )+"\n"+
                     rst+'\n'+(''.rjust(79,'='))+'\n'+result )
 
@@ -222,6 +230,7 @@ class AbstractWriterTestCase(object):
                 },
                 writer_name='pseudoxml')['whole']
         warnings = warnings.getvalue()
+
         if warnings:
             self.assertFalse(warnings.strip(), "Error re-parsing generated file\n "+
                     ("on <%s>" % self.DOC_FILE )+"\n\n"+
@@ -229,7 +238,7 @@ class AbstractWriterTestCase(object):
 
         diff = "\n".join(list(unified_diff(original_tree.split('\n'), generated_tree.split('\n'))))
 
-        self.assertEqual( original_tree, generated_tree, 
+        self.assertEqual( original_tree, generated_tree,
                     "pxml tree mismatch \n "+
                     ("on <%s>" % self.DOC_FILE )+"\n\n"+
                     diff )
@@ -247,7 +256,7 @@ def new_writer_testcase(tag, testcase_name, doc_file, lossy=False):
     suffix = "%s%sWriterTestCase" % (lossy_str, tag.title())
     writer_class = dotmpe.du.comp.get_writer_class(tag)
     class TestCase(unittest.TestCase, AbstractWriterTestCase):
-        DOC_FILE = doc_file 
+        DOC_FILE = doc_file
         TAG = tag
         def runTest(self):
             self._test_writer(writer_class(), lossy=lossy)
@@ -268,9 +277,9 @@ def mkclassname(filename):
 
 
 def print_compare_writer(doc_file,
-        writer_name='rst', writer_class=None, 
+        writer_name='rst', writer_class=None,
         reader_name='mpe', reader_class=None,
-        parser_name='rst', parser_class=None, 
+        parser_name='rst', parser_class=None,
         max_width=158, encoding='utf-8'):
 
     """
@@ -291,13 +300,13 @@ def print_compare_writer(doc_file,
 
     original_tree = docutils.core.publish_parts(
             reader=reader_class(parser_class()),
-            source=doc, 
+            source=doc,
             writer_name='pseudoxml',
             settings_overrides={'input_encoding':'utf-8'})['whole']
     assert isinstance(original_tree, unicode)
     result = docutils.core.publish_parts(
             reader=reader_class(parser_class()),
-            source=doc, 
+            source=doc,
             writer=writer_class())['whole']
     assert isinstance(result, unicode)
     try:
@@ -316,7 +325,7 @@ def print_compare_writer(doc_file,
 
     original_out = original_tree.strip().split('\n')
     generated_out = generated_tree.strip().split('\n')
-    out += [ (u'Original Tree ').ljust(width, '-') +u' '+ (u'Generated Tree ').ljust(width, '-') ] 
+    out += [ (u'Original Tree ').ljust(width, '-') +u' '+ (u'Generated Tree ').ljust(width, '-') ]
     while original_out or generated_out:
         p1 = u''
         p2 = u''
@@ -325,12 +334,12 @@ def print_compare_writer(doc_file,
         if generated_out:
             p2 = generated_out.pop(0)
         out += [ p1.ljust(width) +u' '+ p2.ljust(width) ]
-    out += [u''] 
+    out += [u'']
 
     # print side-by-side view
-    original_out = doc.strip().decode('utf-8').split('\n')
-    generated_out = result.strip().decode('utf-8').split('\n')
-    out += [ (u'Original ').ljust(width, '-') +u' '+ (u'Rewriter ').ljust(width, '-') ] 
+    original_out = unicode(doc.strip()).split('\n')
+    generated_out = unicode(result.strip()).split('\n')
+    out += [ (u'Original ').ljust(width, '-') +u' '+ (u'Rewriter ').ljust(width, '-') ]
     while original_out or generated_out:
         p1 = u''
         p2 = u''
@@ -341,14 +350,14 @@ def print_compare_writer(doc_file,
         # TODO: wrap lines
         #if len(p1) > width or len(p2) > width:
         out += [ p1.ljust(width) +u' '+ p2.ljust(width) ]
-    out += [u''] 
+    out += [u'']
 
     #else:
 
     #    out += [ ('Original ').ljust(width, '-') ]
     #    out += [ doc.strip(), u'']
 
-    #    out += [ ('Generated ').ljust(width, '-') ] 
+    #    out += [ ('Generated ').ljust(width, '-') ]
     #    out += [ result.strip(), u'' ]
 
     out += [ ('Result ').ljust(max_width, '-')]
@@ -365,4 +374,64 @@ def print_compare_writer(doc_file,
     print u"\n".join(out)
 
 
+class DotmpeDuTest(unittest.TestCase):
+
+    READER_CLASS = dotmpe.du.comp.get_reader_class('standalone')
+    PARSER_CLASS = dotmpe.du.comp.get_parser_class('rst')
+
+    @classmethod
+    def set_reader_class(klass, tagstr):
+        klass.READER_CLASS = dotmpe.du.comp.get_reader_class(tagstr)
+
+    @classmethod
+    def set_parser_class(klass, tagstr):
+        klass.PARSER_CLASS = dotmpe.du.comp.get_parser_class(tagstr)
+
+    def _prepare_source(self, doc_file):
+        return doc_file, open(doc_file).read().decode('utf-8')
+
+    def _publish_file(self, doc_file, reader_name='standalone',
+            parser_class=None, settings_spec=None, settings_overrides={}):
+        source_path, source = self._prepare_source(doc_file)
+        self.warnings = StringIO()
+        settings_overrides.update({
+                'warning_stream': self.warnings,
+            })
+        if reader_name: self.set_reader_class(reader_name)
+        self.reader = self.READER_CLASS()
+        if not parser_class: parser_class = self.PARSER_CLASS
+        self.parser = parser_class()
+        doctree = docutils.core.publish_doctree(
+                source, source_path=source_path,
+                reader=self.reader, reader_name=reader_name,
+                parser=self.parser,
+                settings=None,
+                settings_spec=settings_spec,
+                settings_overrides=settings_overrides,
+                config_section=None, enable_exit_status=False)
+
+        return doctree
+
+    # TODO:  make other core.publish_parts code use this
+    def _publish_file_to_parts(self, doc_file, writer='pprint', parser_class=None):
+        source_path, source = self._prepare_source(doc_file)
+        self.warnings = StringIO()
+        if not parser_class: parser_class = self.PARSER_CLASS
+        self.parser = parser_class()
+        parts = docutils.core.publish_parts(
+                source=source,
+                source_path=source_path,
+                parser=self.parser,
+                settings_overrides={
+                    'warning_stream': self.warnings,
+                    #'input_encoding': 'unicode',
+                    #'output_encoding': 'unicode',
+                    #'error_encoding': 'unicode',
+                    #'error_encoding_error_handler': 'replace',
+                    #'warnings': 'test.log',
+                },
+                writer_name=writer)
+        print(parts.keys())
+        #warnings = self.warnings.getvalue()
+        return generated_doc
 

@@ -1,0 +1,24 @@
+master dev false
+
+dev test false
+
+dev features/rst-writer-objects true
+dev features/subtree true
+
+test tests/rst-writer-objects
+test tests/subtree
+
+# Conflicts
+dev features/atlassian-confluence true
+dev features/atlassian true
+dev features/simple-muxdem true
+test tests/simple-muxdem
+
+# Merged
+#dev features/rstwriter true
+#test tests/rstwriter
+#dev features/rst-forms true
+#dev features/xml-reader true
+#test tests/xml-reader
+#dev features/outliners true
+#test tests/outliners

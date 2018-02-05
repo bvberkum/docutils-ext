@@ -3,7 +3,7 @@ mpe Transform 'LogBook'
 
 For documentation see Extractor 'LogBook'.
 
-
+TODO: see about including in outline xform and htdocs extractor
 """
 from docutils import transforms, nodes
 import sqlite3

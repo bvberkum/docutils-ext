@@ -1,6 +1,6 @@
 #!/bin/bash
-# These correspond to python modules in dir ./test
-# See test/main.py
+# These correspond to python modules in dir ./test, passed as arguments to
+# test/main.py. See Rules.mk's test_py_. rule.
 
 case "$(whoami)" in
   travis|jenkins ) ;;
@@ -19,6 +19,7 @@ build
 form
 sql_storage
 rstwriter
+du_ext_transform_reference
 
 EOH
 

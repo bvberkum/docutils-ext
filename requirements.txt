@@ -1,4 +1,6 @@
 coverage
 docutils==0.12
 roman
+sqlalchemy
 uriref
+https://bitbucket.org/blais/nabu/get/default.zip

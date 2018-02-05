@@ -2,9 +2,10 @@
 It may be convenient to treat a Du document as a form for user data. The
 objective here is to extract and validate, and to feedback any errors.
 
-To this end FormProcessor is implemented. In the package form2, an
-Nabu Extractor/Storage pattern implements validation, extraction and storage
-of information given in rSt documents.
+To this end FormProcessor is implemented. In the package form1, an
+transform handles parsing and validating. In form2, a Nabu Extractor/Storage
+pattern allows to store the results. A writer formwriter implements
+formatting a CSV table from the results.
 
 Du Forms
 ==========
@@ -16,18 +17,18 @@ The following Du structures lend themselves for such model:
 - sections: heading, body
 
 Note each of these structures can nest itself, and ofcourse rSt marked-up
-content. The initial version processes fields which text's mkid matches to 
+content. The initial version processes fields which text's mkid matches to
 a fieldspec.
 
 To process fields, structure `FormField` is initialized for each given spec.
-Specs are passed programmatically or using `--form-field`. 
+Specs are passed programmatically or using `--form-field`.
 
 Processing then consists of a conversion of the document node to
 primitive or complex data. Some basic types are implemented.
 
 When validation is done, the settings key 'validated' is set to true, so care
 must be taken by any calling code to properly match this status to a specific
-set of fields. 
+set of fields.
 
 Most interaction is programmatically to the FormProcessor instance, which is
 put on the document and vice versa, and which holds extracted values.
@@ -60,7 +61,7 @@ effective to divide some options for recognizing forms:
 
 This proposal does not introduce its own directives or nodes?
 
-.. 
+..
     A directive might be, but I've observed discussions on rSt where the concensus
     was that if a generic construct can do the job of a more specific one, then the
     former is preferred. Ie. the option-list would have been deprecated if e.g.
@@ -276,7 +277,7 @@ class FormProcessor:
 
     def __iter__(self):
         for field_id in self.nodes:
-        	yield field_id
+            yield field_id
 
     def __getitem__(self, field_id):
         """Return cached value. """
@@ -446,7 +447,7 @@ class FormProcessor:
         node = self.nodes[field_id]
         if isinstance(node, list):
             if len(node) == 1:
-            	node = node[0]
+                node = node[0]
         assert not isinstance(node, list), \
                 "Multiple fields not supported (field %s, %s). " % (field_id, node)
         name = extract_form_field_label(node)
@@ -545,8 +546,8 @@ def extract_form_field_label(field):
 class FormField:
 
     """
-    Struct for keeping metadata for form fields. Prolly should move some into
-    DOM?
+    Struct for keeping metadata for form fields.
+    XXX: Prolly should move some into DOM?
     """
 
     def __init__(self, field_id, convertor, required=True, append=False,
@@ -635,9 +636,9 @@ class AbstractFormVisitor(nodes.SparseNodeVisitor):
         If the element matches as a field, capture it.
         """
         if self.settings.form == 'class' or self.settings.form == 'class-and-name':
-        	pass
+            pass
         if self.settings.form == 'name' or self.settings.form == 'class-and-name':
-        	pass
+            pass
         field_id = nodes.make_id(extract_form_field_label(node))
         if self.field_class not in node['classes']:
             node['classes'].append(self.field_class)
@@ -666,6 +667,7 @@ class AbstractFormVisitor(nodes.SparseNodeVisitor):
 
 
 class FormFieldSetVisitor(AbstractFormVisitor):
+    # TODO: FormFieldSetVisitor
 
     def visit_definition_list(self, node):
         if self.is_fieldset(node):
@@ -699,6 +701,16 @@ class FormFieldIDVisitor(AbstractFormVisitor):
         assert len(node.children) == 2
         if self.is_field(node):
             self.scan_field(node)
+
+
+class DocumentFormVisitor(nodes.SparseNodeVisitor):
+    """
+    Generic match of document elements as values for form validator.
+
+
+    section
+
+    """
 
 
 ## FormErrors

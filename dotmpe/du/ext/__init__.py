@@ -15,6 +15,24 @@ TODO:
 
 __docformat__ = 'reStructuredText'
 
+try:
+    import pkg_resources
+    pkg_resources.declare_namespace(__name__)
+except ImportError:
+# don't prevent use of paste if pkg_resources isn't installed
+    from pkgutil import extend_path
+    __path__ = extend_path(__path__, __name__)
+
+try:
+    import modulefinder
+except ImportError:
+    pass
+else:
+    for p in __path__:
+        modulefinder.AddPackagePath(__name__, p)
+    del p
+
+
 
 import docutils
 import docutils.readers
@@ -24,6 +42,7 @@ import docutils.parsers.rst
 
 
 import dotmpe.du
+from dotmpe.du.mpe_du_util import get_log
 import transform
 #import extractor
 import node
@@ -34,6 +53,8 @@ import dotmpe.du.ext.writer
 from dotmpe.du.ext.parser.rst.directive.margin import Margin
 from dotmpe.du.ext.parser.rst.directive.images import Figure
 
+
+logger = get_log(__name__)
 
 ""
 
@@ -62,9 +83,10 @@ try:
 except ImportError, e:
     pass
 
+
+# XXX: Cruft
 #from pub import Publisher
 "XXX: see blue-lines.appspot.com"
-
 
 """
 Override ``docutils.{reader,parser,writer}s.get_*_class`` because these cannot load
@@ -74,33 +96,46 @@ See ``dotmpe.du.ext.{reader,parser,writer}`` for the extension components and ho
 they're loaded (``dotmpe.du.comp``).
 """
 
-_du_get_reader_class = docutils.readers.get_reader_class
-def get_reader_class(reader_name):
-    if reader_name in dotmpe.du.comp.readers:
-        reader = dotmpe.du.comp.get_reader_class(reader_name)
-    else:
-        reader = _du_get_reader_class(reader_name)
-    assert issubclass(reader, docutils.readers.Reader), reader
-    return reader
-docutils.readers.get_reader_class = get_reader_class
+"""
+if not hasattr(docutils, 'ext'):
 
-_du_get_parser_class = docutils.parsers.get_parser_class
-def get_parser_class(parser_name):
-    if parser_name in dotmpe.du.comp.parsers:
-        parser = dotmpe.du.comp.get_parser_class(parser_name)
-    else:
-        parser = _du_get_parser_class(parser_name)
-    assert issubclass(parser, docutils.parsers.Parser), parser
-    return parser
-docutils.parsers.get_parser_class = get_parser_class
+    _du_get_reader_class = docutils.readers.get_reader_class
+    def get_reader_class(reader_name):
+        if reader_name in dotmpe.du.comp.readers:
+            reader = dotmpe.du.comp.get_reader_class(reader_name)
+        else:
+            try:
+                reader = _du_get_reader_class(reader_name)
+            except ( RuntimeError, ImportError ), e:
+                logger.warn("No Du Reader for name '%s'" % reader_name)
+                #print 'Failed getting reader %r' % reader_name
+                #print 'Components:', dir(dotmpe.du.comp)
+                #print 'Readers:', dotmpe.du.comp.readers
+                raise e
+        assert issubclass(reader, docutils.readers.Reader), reader
+        return reader
+    docutils.readers.get_reader_class = get_reader_class
 
-_du_get_writer_class = docutils.writers.get_writer_class
-def get_writer_class(writer_name):
-    if writer_name in dotmpe.du.comp.writers:
-        writer = dotmpe.du.comp.get_writer_class(writer_name)
-    else:
-        writer = _du_get_writer_class(writer_name)
-    assert issubclass(writer, docutils.writers.Writer), writer
-    return writer
-docutils.writers.get_writer_class = get_writer_class
+    _du_get_parser_class = docutils.parsers.get_parser_class
+    def get_parser_class(parser_name):
+        if parser_name in dotmpe.du.comp.parsers:
+            parser = dotmpe.du.comp.get_parser_class(parser_name)
+        else:
+            parser = _du_get_parser_class(parser_name)
+        assert issubclass(parser, docutils.parsers.Parser), parser
+        return parser
+    docutils.parsers.get_parser_class = get_parser_class
 
+    _du_get_writer_class = docutils.writers.get_writer_class
+    def get_writer_class(writer_name):
+        if writer_name in dotmpe.du.comp.writers:
+            writer = dotmpe.du.comp.get_writer_class(writer_name)
+        else:
+            writer = _du_get_writer_class(writer_name)
+        assert issubclass(writer, docutils.writers.Writer), writer
+        return writer
+    docutils.writers.get_writer_class = get_writer_class
+
+    setattr(docutils, 'ext', 'mpe')
+
+"""

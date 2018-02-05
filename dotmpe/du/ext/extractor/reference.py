@@ -1,14 +1,15 @@
 """
+:Created: 2010-05-09
+
+..
+
+    TODO: migrate core functions to dotmpe.du.ext.transform.reference,
+    and base this extractor on that. See also htdocs extractor.
+
 Back `in 2004 there was a nice post`__ on the mailing list about handling of
-references in docutils. 
+references in docutils.
 
 .. __: http://thread.gmane.org/gmane.text.docutils.devel/2060/focus=2066
-
-
-FIXME this does not use the extractor interface, but can be used as normal
-xform.
-
-TODO: link resolver
 
 1. If no scheme.
 
@@ -25,14 +26,17 @@ TODO: link resolver
 import os, pickle, socket, urlparse
 
 from docutils import nodes, frontend
-from nabu import extract
 
 import uriref
 from dotmpe.du import util
+from dotmpe.du.mpe_du_util import SqlBase, get_session
+from dotmpe.du.ext import extractor, transform
 
 
+logger = util.get_log(__name__, fout=False)
 
-class Extractor(extract.Extractor):
+
+class ReferenceExtractor(extractor.Extractor):
 
     """
     Stores all external references in an index.
@@ -40,13 +44,35 @@ class Extractor(extract.Extractor):
 
     settings_spec = (
         'Reference Extractor Options',
-        None,
+        """The reference extractor analyzes URLs from the document, and classes
+them into four types: external references for other domains, local references
+for inter-document links, and two uncovered rest groups: query/fragment
+references in the same protocol, and other sorts of URI which do not dereference
+into a document. E.g. mailto.
+
+References can result from several document syntax structures. Inline URL's,
+hyperlink reference targets, image onclick targets. Inline code is not covered,
+ie. raw HTML, script.
+
+""",
         ((
-             'Database to store references. ',
-             ['--reference-database'],
+             """Turn on external reference extraction. External references are
+""",
+             ['--external-refs'],
              {
-                 'metavar':'PATH', 
-                 'validator': util.optparse_init_anydbm,
+                 'metavar': 'SPEC'
+             }
+        ),(
+             'Turn on local inter-document reference extraction. ',
+             ['--cross-refs'],
+             {
+                 'metavar': 'SPEC'
+             }
+        ),(
+             'Extract both external local and external reference extraction. ',
+             ['--all-refs'],
+             {
+                 'metavar': 'SPEC'
              }
         ),(
             'Resolve: request, take note of abnormal status, otherwise '
@@ -64,119 +90,51 @@ class Extractor(extract.Extractor):
                  'metavar': 'URI',
                  'validator': util.validate_context,
              }
-        ),) 
+        ),(
+             'Dont run reference extractor, even if dbref is given. ',
+             ['--no-reference'], { 'action': 'store_true' }
+        ),)
     )
 
     default_priority = 900
 
     def apply(self, unid=None, store=None, **kwargs):
-        refdb = getattr(self.document.settings, 'reference_database', None)
-        if refdb == None:
-            return
-        v = RefDbVisitor(self.document)
-        self.document.walk(v)
-        refdb.close()
+
+        g = self.document.settings
+        if not g.no_db and not g.no_reference:
+            v = transform.reference.RefVisitor(self.document)
+
+            g = self.document.settings
+            #g.dbref = taxus.ScriptMixin.assert_dbref(g.dbref)
+            v.session = self.session = get_session(g.dbref)
+
+            self.document.walk(v)
 
 
-class RefDbVisitor(nodes.SparseNodeVisitor):
+class ReferenceStorage(extractor.SQLiteExtractorStorage):
 
-    def visit_reference(self, node):
-        if 'refuri' in node.attributes:
-            link = node.attributes['refuri']
-            #scheme, d,p,r,q,f = urlparse.urlparse(link)
-            #if scheme in ('sip', 'mailto', 'ssh'):
-            #    return
-            self.store(node)
+    sql_relations_unid = []
+    sql_relations = []
 
-    def store(self, node):
-        refdb = self.document.settings.reference_database
-        ctx = self.document.settings.reference_context
-        link = node.attributes['refuri']
-        if not isinstance(link, unicode):
-            link = unicode(link)
+    def __init__(self, session=None, dbref=None, initdb=False):
+        self.session = session
+        #if not session:
+        #    assert dbref, ( dbref, initdb )
+        #    # set for SA, get engine to use as DBAPI-2.0 compatible connection
+        #    self.session = get_session(dbref, True)
+        #    self.connection = SqlBase.metadata.bind.raw_connection()
+        # XXX can I get raw-connection from self.session?
+        #self.connection = SqlBase.metadata.bind.raw_connection()
+        #logger.info("Connected to %s", self.connection)
+        logger.info("Extractor store to %s", self.session)
 
-        if not uriref.scheme.match(link):
-            # Allow site-wide absolute paths:
-            if not os.path.exists(link) and link.startswith(os.sep):
-                link = link[1:]
-            if link.startswith('~'):
-                link = os.path.expanduser(link)
-            if not os.path.exists(link):
-                self.document.reporter.warning(
-                    "Reference %s does not provide an explicit scheme, but is "
-                    "also not a local path. " % (link))
-                return
-            if ctx:
-                link = ctx + link
-            else:
-                link = "file://%s%s" % (socket.gethostname(),
-                        os.path.abspath(os.path.normpath(link)))
+    def store(self, source_id, *args):
+        #taxus.htd.TNode.filter( ( TNode.global_id == prefix_path  ))
+        print 'store', source_id, args
 
-        key = link.encode('utf-8')
-        if key in refdb:
-            #node.childnodes.append(nodes..)
-            self.document.reporter.warning("Duplicate reference to %s" % link)
-        else:
-            refdb[key] = pickle.dumps({'name':node.get('name'),'href':link})
-
-                
-
-## App-engine storage
-
-# XXX: Unused code
-try:
-
-    from google.appengine.ext import db
-
-except ImportError, e:
-    pass#print 'Not loading GAE reference model.'
-
-else:
-
-    class Reference(db.Model):
-        url = db.LinkProperty()
-        unid = db.StringProperty()
-
-    class ReferenceStorage(extract.ExtractorStorage):
-        def store(self, unid, url):
-            ref = Reference()
-            ref.unid = unid
-            ref.url = url
-            ref.put()
-
-        def clear(self, unid=None):
-            if unid:
-                refs = Reference.gql('WHERE unid = :1', unid).fetch(1)
-            else:
-                refs = Reference.all().fetch(1000)
-                
-            if refs:
-                for ref in refs:
-                    ref.delete()
-
-        def reset_schema(self):
-            raise Exception, 'reset_schema'+repr(self)
+    def clear(self, source_id):
+        pass
 
 
-## Maintenance?
-
-class RefDbOptionParser(frontend.OptionParser):
-    standard_config_files = []
-    settings_spec = Extractor.settings_spec
-
-def run_refdb_cli():
-    # No help, just initalize refdb
-    prsr = RefDbOptionParser()
-    settings = prsr.parse_args()
-    refdb = settings.reference_database
-    if refdb:
-        # Iter contents
-        for link in refdb:
-            print link, pickle.loads(refdb[link])
-    else:
-        import sys
-        print >>sys.stderr, "No references"
-
-if __name__ == '__main__':
-    run_refdb_cli()
-
+Extractor = ReferenceExtractor
+Storage = ReferenceStorage
