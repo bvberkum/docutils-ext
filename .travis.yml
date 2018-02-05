@@ -40,7 +40,7 @@ before_script: []
 
 script: 
 - coverage run --source=dotmpe test/main.py $M
-
+- bats test/*.bats
 
 # Default travis Python build:
 #

@@ -4,9 +4,45 @@ Loaded testmodule 'frontend'
 Loaded testmodule 'build'
 Loaded testmodule 'form'
 Loaded testmodule 'sql_storage'
+Loaded testmodule 'rstwriter'
+..F.F......E...................................................
+======================================================================
+ERROR: test_1 (form.FormTest)
+----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "test/main.py", line 45, in <module>
-    main(test_modules)
-  File "test/main.py", line 33, in main
-    m = __import__(name, locals(), globals())
-ImportError: No module named #
+  File "/Volumes/Zephyr/src/github.com/bvberkum/docutils-ext/test/form.py", line 172, in test_1
+    document = builder.build(source, source_id)
+  File "/Volumes/Zephyr/src/github.com/bvberkum/docutils-ext/dotmpe/du/builder/__init__.py", line 212, in build
+    self.document = self.reader.read(source, self.parser, self.settings)
+  File "/usr/local/lib/python2.7/site-packages/docutils/readers/__init__.py", line 72, in read
+    self.parse()
+  File "/usr/local/lib/python2.7/site-packages/docutils/readers/__init__.py", line 78, in parse
+    self.parser.parse(self.input, document)
+  File "/usr/local/lib/python2.7/site-packages/docutils/parsers/rst/__init__.py", line 185, in parse
+    self.statemachine.run(inputlines, document, inliner=self.inliner)
+  File "/usr/local/lib/python2.7/site-packages/docutils/parsers/rst/states.py", line 157, in run
+    inliner.init_customizations(document.settings)
+  File "/usr/local/lib/python2.7/site-packages/docutils/parsers/rst/states.py", line 470, in init_customizations
+    if settings.character_level_inline_markup:
+AttributeError: Values instance has no attribute 'character_level_inline_markup'
+
+======================================================================
+FAIL: test_3_get_writer_class (comp.DotmpeComponentLoaderTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Zephyr/src/github.com/bvberkum/docutils-ext/test/comp.py", line 93, in test_3_get_writer_class
+    self.assertEquals( Writer, comp.get_writer_class(name) )
+AssertionError: <class dotmpe.du.ext.writer.xhtml.Writer at 0x10cc7da78> != <class docutils.writers.html5_polyglot.Writer at 0x10ce01b48>
+
+======================================================================
+FAIL: test_1_get_reader_class (comp.DuComponentLoaderMonkeyPatchTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Zephyr/src/github.com/bvberkum/docutils-ext/test/comp.py", line 39, in test_1_get_reader_class
+    docutils.readers.get_reader_class(name) )
+AssertionError: <class dotmpe.du.ext.reader.standalone.Reader at 0x10cd092c0> != <class docutils.readers.standalone.Reader at 0x10cd7ea10>
+
+----------------------------------------------------------------------
+Ran 63 tests in 1.562s
+
+FAILED (failures=2, errors=1)
