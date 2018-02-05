@@ -164,7 +164,7 @@ class Builder(SettingsSpec, Publisher):
             self.writer = comp.get_writer_class('null')()
         self.components = (self.parser, self.reader, self.writer, self)
         if not self.settings:
-            if self.cli:
+            if cli:
                 self.process_command_line()
             else:
                 self.get_settings()

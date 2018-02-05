@@ -23,7 +23,7 @@ FAIL: test_3_get_writer_class (comp.DotmpeComponentLoaderTest)
 Traceback (most recent call last):
   File "/Volumes/Zephyr/src/github.com/bvberkum/docutils-ext/test/comp.py", line 93, in test_3_get_writer_class
     self.assertEquals( Writer, comp.get_writer_class(name) )
-AssertionError: <class dotmpe.du.ext.writer.xhtml.Writer at 0x10a8fb598> != <class docutils.writers.html5_polyglot.Writer at 0x10b01a460>
+AssertionError: <class dotmpe.du.ext.writer.xhtml.Writer at 0x11142b870> != <class docutils.writers.html5_polyglot.Writer at 0x111c80940>
 
 ======================================================================
 FAIL: test_1_get_reader_class (comp.DuComponentLoaderMonkeyPatchTest)
@@ -31,9 +31,9 @@ FAIL: test_1_get_reader_class (comp.DuComponentLoaderMonkeyPatchTest)
 Traceback (most recent call last):
   File "/Volumes/Zephyr/src/github.com/bvberkum/docutils-ext/test/comp.py", line 39, in test_1_get_reader_class
     docutils.readers.get_reader_class(name) )
-AssertionError: <class dotmpe.du.ext.reader.standalone.Reader at 0x10a720328> != <class docutils.readers.standalone.Reader at 0x10a710598>
+AssertionError: <class dotmpe.du.ext.reader.standalone.Reader at 0x11149e4c8> != <class docutils.readers.standalone.Reader at 0x11151a738>
 
 ----------------------------------------------------------------------
-Ran 71 tests in 2.042s
+Ran 71 tests in 1.994s
 
 FAILED (failures=2, errors=1)
