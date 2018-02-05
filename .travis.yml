@@ -10,21 +10,18 @@ addons:
       - php5-cli
 
 install:
-- "pip install -r requirements.txt"
-- "pip install -r optional.txt || echo 'Optional Py lib install failed'"
+- . ./tools/ci/install-composer.sh
+- test -x "$(which composer)" -a -x "$(which pip)"
+- . ./tools/ci/install-deps.sh
 - ./build/rebuild-lib-links.sh $HOME/src
 - ./build/docutils-checkout.sh
 - ./build/nabu-checkout.sh
+
 - ls -la $HOME/src/python-docutils
 - ls -la $HOME/src/python-docutils/docutils-svn/
 - ls -la $HOME/src/python-docutils/docutils-svn/branches
 - ls -la lib/
 - ls -la lib/docutils-lossless/
-
-- mkdir -vp ~/.local/{bin,lib,share}
-- 'curl -sS https://getcomposer.org/installer | php -- --install-dir=$HOME/.local/bin --filename=composer'
-- ~/.local/bin/composer --version
-- composer install
 
 before_script: []
 

@@ -24,8 +24,8 @@
     - htd package remotes-init
     - vc regenerate
     - test -d ~/.pyvenv/du-ext || virtualenv ~/.pyvenv/du-ext
-    - source ~/.pyvenv/du-ext/bin/activate ; pip install -r requirements.txt ; pip install -r optional.txt || echo 'Optional Py lib install failed'
-    - composer install
+    - test -x "$(which composer)" -a -x "$(which pip)"
+    - source ~/.pyvenv/du-ext/bin/activate ; . ./tools/ci/install-deps.sh
     check:
       - make stat
       - "./tools/ci/tags.sh *.* doc dotmpe examples features lib log test tools var"
