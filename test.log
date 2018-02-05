@@ -6,24 +6,35 @@ Loaded testmodule 'form'
 Loaded testmodule 'sql_storage'
 Loaded testmodule 'rstwriter'
 Loaded testmodule 'du_ext_transform_reference'
-..F.F......E...........................................................
-======================================================================
-ERROR: test_1 (form.FormTest)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/Volumes/Zephyr/src/github.com/bvberkum/docutils-ext/test/form.py", line 173, in test_1
-    document = builder.build(source, source_id)
-  File "/Volumes/Zephyr/src/github.com/bvberkum/docutils-ext/dotmpe/du/builder/__init__.py", line 167, in build
-    if self.cli:
-AttributeError: MyFormPage instance has no attribute 'cli'
-
+..F.F......INFO:dotmpe.du.form:Validating /Volumes/Zephyr/src/github.com/bvberkum/docutils-ext/examples/form-1.rst
+..DEBUG:dotmpe.du.ext.extractor:New SQLiteExtractorStorage for None, with <sqlite3.Connection object at 0x1038f8dc8>
+INFO:dotmpe.du.ext.extractor:Creating DB schema test_table (TABLE)
+INFO:dotmpe.du.ext.extractor:Creating DB schema var_idx (INDEX)
+INFO:dotmpe.du.ext.extractor:Destroyed table test_table
+..................................................DEBUG:dotmpe.du.ext.transform.generate:TODO: timestamp xform
+DEBUG:dotmpe.du.ext.transform.generate:TODO: sourcelink xform
+.DEBUG:dotmpe.du.ext.transform.generate:TODO: timestamp xform
+DEBUG:dotmpe.du.ext.transform.generate:TODO: sourcelink xform
+.DEBUG:dotmpe.du.ext.transform.generate:TODO: timestamp xform
+DEBUG:dotmpe.du.ext.transform.generate:TODO: sourcelink xform
+.DEBUG:dotmpe.du.ext.transform.generate:TODO: timestamp xform
+DEBUG:dotmpe.du.ext.transform.generate:TODO: sourcelink xform
+.DEBUG:dotmpe.du.ext.transform.generate:TODO: timestamp xform
+DEBUG:dotmpe.du.ext.transform.generate:TODO: sourcelink xform
+.DEBUG:dotmpe.du.ext.transform.generate:TODO: timestamp xform
+DEBUG:dotmpe.du.ext.transform.generate:TODO: sourcelink xform
+.DEBUG:dotmpe.du.ext.transform.generate:TODO: timestamp xform
+DEBUG:dotmpe.du.ext.transform.generate:TODO: sourcelink xform
+.DEBUG:dotmpe.du.ext.transform.generate:TODO: timestamp xform
+DEBUG:dotmpe.du.ext.transform.generate:TODO: sourcelink xform
+.
 ======================================================================
 FAIL: test_3_get_writer_class (comp.DotmpeComponentLoaderTest)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
   File "/Volumes/Zephyr/src/github.com/bvberkum/docutils-ext/test/comp.py", line 93, in test_3_get_writer_class
     self.assertEquals( Writer, comp.get_writer_class(name) )
-AssertionError: <class dotmpe.du.ext.writer.xhtml.Writer at 0x11142b870> != <class docutils.writers.html5_polyglot.Writer at 0x111c80940>
+AssertionError: <class dotmpe.du.ext.writer.xhtml.Writer at 0x10326f530> != <class docutils.writers.html5_polyglot.Writer at 0x10398d4c8>
 
 ======================================================================
 FAIL: test_1_get_reader_class (comp.DuComponentLoaderMonkeyPatchTest)
@@ -31,9 +42,9 @@ FAIL: test_1_get_reader_class (comp.DuComponentLoaderMonkeyPatchTest)
 Traceback (most recent call last):
   File "/Volumes/Zephyr/src/github.com/bvberkum/docutils-ext/test/comp.py", line 39, in test_1_get_reader_class
     docutils.readers.get_reader_class(name) )
-AssertionError: <class dotmpe.du.ext.reader.standalone.Reader at 0x11149e4c8> != <class docutils.readers.standalone.Reader at 0x11151a738>
+AssertionError: <class dotmpe.du.ext.reader.standalone.Reader at 0x1030942c0> != <class docutils.readers.standalone.Reader at 0x103084530>
 
 ----------------------------------------------------------------------
-Ran 71 tests in 1.994s
+Ran 71 tests in 1.959s
 
-FAILED (failures=2, errors=1)
+FAILED (failures=2)
