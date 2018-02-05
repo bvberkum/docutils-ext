@@ -10,17 +10,17 @@ That is what the UserSettings transform does.
 """
 import logging
 from docutils import transforms, nodes
-from dotmpe.du import util
+from dotmpe.du import mpe_du_util as util
 
 
 class UserSettings(transforms.Transform):
 
     """
-    Override document settings with values from a field-list. However, the field 
+    Override document settings with values from a field-list. However, the field
     list(s) must be in a decorator (header, footer, margin) or in the first list
     of the document (the latter also used in the docinfo transforms).
 
-    Settings that have been loaded from config or command-line options may be 
+    Settings that have been loaded from config or command-line options may be
     overridden by the document author if the ``--user-settings`` option lists
     it. Ofcourse, the normal Du frontend may be used to inspect the options of a
     particular publisher configuration.
@@ -40,24 +40,23 @@ class UserSettings(transforms.Transform):
             'Important! ``--user-settings`` poses a security risk. '
             'Also, it can *only* override settings specific to most transforms '
             'and the writer, as it runs too late to influence the reader/parser. ',
-            ['--user-settings'], 
-            {'default':[], 'action':'append','metavar':'NAME[,NAME]',
-                'validator': util.validate_cs_list } 
+            ['--user-settings'],
+            {'default':[], 'action':'append','metavar':'NAME[,NAME]', 'validator': util.validate_cs_list }
         ),(
             'Discard settings overrides fields from content. '
             'This is the default. ',
-            ['--strip-user-settings', '--strip-settings'], 
+            ['--strip-user-settings', '--strip-settings'],
             {'dest':'strip_user_settings', 'default':True, 'action':'store_true',}
         ),(
             'Do not discard setting fields from content. '
             'Default is to strip all named settings. ',
-            ['--leave-user-settings', '--leave-settings'], 
+            ['--leave-user-settings', '--leave-settings'],
             {'dest':'strip_user_settings', 'action':'store_false',}
         ),(
             'Always these fields from content. Multiple values allowed. ',
-            ['--strip-settings-names'], 
+            ['--strip-settings-names'],
             {'default':[], 'action':'append', 'metavar':'NAME[,NAME]',
-                'validator': util.validate_cs_list } 
+                'validator': util.validate_cs_list }
         )
     )
 
@@ -82,17 +81,17 @@ class UserSettings(transforms.Transform):
             logging.info('settings but no field-lists')
             return
         for list in field_lists:
-            nodelist = [] 
+            nodelist = []
 
-            # scan the list, process recognized settings 
+            # scan the list, process recognized settings
             # and filter stripped fields, rewrite tree
             for r in self.extract_spec(list):
                 if isinstance(r, nodes.field):
                     nodelist.append(r) # keep field
-                                    
+
             if not nodelist:
                 pass#list.parent.remove(list)
-            #else:    
+            #else:
             #    list[:] = nodelist
 
     def find_setting(self, name):
@@ -116,7 +115,7 @@ class UserSettings(transforms.Transform):
                 field.replace_self([])
 
             elif normedname in settings.user_settings and \
-                    settings.strip_settings_names:                
+                    settings.strip_settings_names:
                 field.replace_self([])
 
             else:
@@ -126,7 +125,7 @@ class UserSettings(transforms.Transform):
             if not getattr(settings, normedid, ''):
             # TODO: unset uptions are ignored for now
                 continue
-          
+
             #print normedname, normedname in settings.user_settings
             #print normedid, normedid in settings.user_settings
 
@@ -140,22 +139,23 @@ class UserSettings(transforms.Transform):
 
     def candidate_field_lists(self):
         return self.document.traverse(nodes.field_list)
-    #
+
+    # XXX: cleanup
         "Returns at most five lists, from header, margin left/right, footer "
         "and/or the first from the document body."
         deco = self.document.get_decorator()
         for node in (deco.get_header(), deco.get_footer()):
             if isinstance(node, nodes.field_list):
                 pass#yield node
-        
-    def _parse_names(self, attr): 
+
+    def _parse_names(self, attr):
         "Read ','-separated values. "
         settings = self.document.settings
-        names = [name for name in 
+        names = [name for name in
                 getattr(settings, attr) if ',' not in name]
         #print '_parse_names', names
 
-        [names.extend(name.split(',')) for name in 
+        [names.extend(name.split(',')) for name in
                 getattr(settings, attr) if ',' in name]
         setattr(settings, attr, names)
 

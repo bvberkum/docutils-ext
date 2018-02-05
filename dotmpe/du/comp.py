@@ -11,6 +11,8 @@ import sys
 import docutils
 
 from dotmpe.du import util
+#from . import util
+#import util
 
 
 logger = util.get_log(__name__)
@@ -134,6 +136,8 @@ def get_extractor_class(mod_name, class_name='Extractor'):
     #if not class_name or (restrict and class_name not in restrict):
     #    class_name = 'Extractor'
     module = get_extractor_module(mod_name)
+    if not hasattr(module, class_name):
+        raise Exception("No %r for %s" % ( class_name, mod_name ))
     return getattr(module, class_name)
 
 

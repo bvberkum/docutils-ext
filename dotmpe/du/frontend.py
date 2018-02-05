@@ -8,9 +8,11 @@ try:
     locale.setlocale(locale.LC_ALL, '')
 except:
     pass
+import logging
 import os
 import sys
 import traceback
+from pprint import pprint, pformat
 
 from docutils.core import publish_cmdline
 from docutils.parsers.rst import Parser
@@ -23,8 +25,7 @@ import dotmpe.du.ext
 from dotmpe.du.ext.parser import Inliner
 
 
-
-logger = util.get_log(__name__)
+logger = util.get_log(__name__, fout_level=logging.INFO, stdout=True)
 
 
 def cli_process(argv, builder=None, builder_name='mpe', description=''):
@@ -52,17 +53,17 @@ def cli_process(argv, builder=None, builder_name='mpe', description=''):
     argvs = split_argv(argv)
 
     builder.prepare_initial_components()
-    #print 'components', builder.components
 
     # replace settings for initial components
     builder.process_command_line(argv=argvs.next())
+    builder.settings_default = builder.settings
 
     # Rest deals with argv handling and defers to run_process (tmp)
-
     for argv in argvs:
-
         # replace settings for initial components
-        builder.process_command_line(argv=argv)
+        builder.process_command_line(argv=argv, usage=None, description=None,
+                settings_spec=None, config_section=None,
+                **builder.settings_default.__dict__)
 
         builder._do_process()
 
@@ -101,7 +102,6 @@ def cli_render(argv, builder=None, builder_name='mpe'):
 
     assert builder.settings
     print builder.render(None, builder.settings._source)
-    return
     print builder.document.parse_messages
     print builder.document.transform_messages
 
@@ -167,7 +167,7 @@ def cli_du_publisher(reader_name='mpe', parser=None, parser_name='rst',
     But, given that transforms could handle storage
     initialization themselves, and that the Reader/Parser/Writer 'parent'
     component can hold the settings-specs, should make it fairly easy to port
-    Builder code back to work with docutils.
+    Builder code back to work with vanilla docutils.
     """
 
     # XXX: how far does inline customization go? parser = Parser(inliner=Inliner())
@@ -193,6 +193,9 @@ def cli_du_publisher(reader_name='mpe', parser=None, parser_name='rst',
 def split_argv(argv):
     """
     Split argv at '--', yield subsequent groups.
+
+    The initial group is used to initialize the settings, but it can have no
+    arguments only options. The second for file arguments and specific settings.
 
     If what would be the first group does not contain options (-f --flag..)
     then take it to be a separate group and yield an initial empty group.
@@ -361,5 +364,3 @@ def cgi_main(usage=cgi_usage, description=cgi_description, argv=[]):
     "Invoke to run as HTTP resource in CGI envorionment."
 
     main(usage=usage, description=description, argv=[])
-
-

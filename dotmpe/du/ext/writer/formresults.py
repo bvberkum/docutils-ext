@@ -6,7 +6,7 @@ import re
 
 from optparse import Values
 
-from docutils import writers, nodes, frontend  
+from docutils import writers, nodes, frontend
 from docutils.transforms import writer_aux
 
 
@@ -34,23 +34,23 @@ class Writer(writers.Writer):
                 ['--form-results-format'],
                 { 'default': defaults.output_format, 'metavar': '<FORMAT>' }),
             (
-                "Field delimiter. ", 
+                "Field delimiter. ",
                 ['--form-results-delimiter'],
                 { 'default': defaults.field_delimiter, 'metavar': '<DELIM>' }),
             (
-                "Automatically quote fiels. ", 
+                "Automatically quote fiels. ",
                 ['--form-results-auto-quote'],
-                { 'default': defaults.auto_quote, 
+                { 'default': defaults.auto_quote,
                     'action': defaults.auto_quote and 'store_false' or 'store_true' }),
             (
                 "For list values, output a row for each value. "
-                "", 
+                "",
                 ['--form-denormalize-lists'],
-                { 'default': defaults.denormalize_lists, 'action': 
+                { 'default': defaults.denormalize_lists, 'action':
                     defaults.denormalize_lists and 'store_false' or 'store_true' }),
             (
                 "For list values, concatenate. "
-                "", 
+                "",
                 ['--form-append-lists'],
                 { 'default': defaults.concat_lists, 'action':
                     defaults.concat_lists and 'store_false' or 'store_true' }),
@@ -90,14 +90,14 @@ class Writer(writers.Writer):
         delimited_fields = [ field.field_id ]
         val = formproc[field.field_id]
         if field.append and self.denormalize_lists:
-            self.nested_write(delimited_fields, val) 
-            return 
+            self.nested_write(delimited_fields, val)
+            return
         if self.concat_lists and isinstance(val, list):
             delimited_fields += val
         else:
             delimited_fields.append(val)
         self.write_delimited(*delimited_fields)
-        
+
     def nested_write(self, path, values):
         path = list(path)
         for i, val in enumerate(values):
@@ -116,9 +116,9 @@ class Writer(writers.Writer):
                 if re.search('\s', f):
                     f = repr(f) # unicode
             if not f:
-            	f = ''
+                f = ''
             if not isinstance(f, basestring):
-            	f = str(f)
+                f = str(f)
             line.append(f)
         self.lines.append(self.delimiter.join(line))
 

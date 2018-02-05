@@ -42,7 +42,7 @@ import docutils.parsers.rst
 
 
 import dotmpe.du
-from dotmpe.du.util import get_log
+from dotmpe.du.mpe_du_util import get_log
 import transform
 #import extractor
 import node

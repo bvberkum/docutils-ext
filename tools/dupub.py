@@ -44,12 +44,11 @@ reader_name = 'standalone-mpe'
 parser = comp.get_parser_class('rst')()
 writer_name = 'rst'#pprint'
 
-print 'Reader:', reader_name,
-print 'Parser:', parser,
-print 'Writer:', writer_name
+#print 'Reader:', reader_name,
+#print 'Parser:', parser,
+#print 'Writer:', writer_name
 
 frontend.cli_du_publisher(
         reader_name=reader_name,
         parser=parser,
         writer_name=writer_name)
-
