@@ -1,9 +1,14 @@
+#!/usr/bin/env bats
+
+load helper
+bin=./tools/build.py
+
 
 setup()
 {
+  . ./tools/sh/env.sh
   TEST=var/test-rst.1.document-5.full-rst-demo.rst
   TEST=var/test-rst.24.references.rst
-  export PYTHONPATH=.:$PYTHONPATH
 }
 
 @test "build.py can record outgoing refs, in todo.txt format" {

@@ -65,6 +65,7 @@ XXX: not all parser/reader pairs will work. Likewise not all documents with ever
 """
 import os
 import sys
+import re
 
 try:
     import locale
@@ -87,15 +88,18 @@ target_format = 'pseudoxml'
 action = 'pub'
 
 # parse script name
-script_names = os.path.basename(sys.argv[0]).split('-')
+script_name = os.path.basename(sys.argv[0])
+script_names = re.sub(r'\.py$', '', script_name).split('-')
+
 # first part: convert, other action or tag
 if '2' in script_names[0]:
     source_format, target_format = script_names.pop(0).split('2')
 elif script_names[0] in actions: # action- prefix
     action = script_names.pop(0)
-elif script_names[0] == 'build.py':
-    pass
-if script_names:
+elif script_name == 'build.py': # also an action but actually our scriptname
+    tag = 'mpe'
+
+if not tag and script_names:
     tag = script_names.pop(0)
 if script_names:
     target_format = script_names.pop(0) # otherwise first part is target format
@@ -107,8 +111,8 @@ assert not script_names
 # only use tag-suffixed comp alias if available
 reader_name = tag
 if reader_name not in comp.readers:
-    #print "Unknown reader '%s'" % reader_name, "Using default reader 'standalone'"
     reader_name = 'standalone'
+    #print "Unknown reader '%s'" % reader_name, "Using default reader 'standalone'"
 
 parser_name = "%s-%s" % (source_format, tag)
 if parser_name not in comp.parsers:
@@ -133,7 +137,8 @@ action: %s""" % (source_format, target_format, tag, action)
     print >>sys.stderr, """reader_name: %s,
 parser_name: %s,
 writer_name: %s,
-builder_module: %s""" % (reader_name, parser_name, writer_name, module_name)
+builder.module_name: %s""" % (reader_name, parser_name, writer_name, module_name)
+
 
 if source_format == 'mime':
     parser = comp.get_parser_class('rst')(rfc2822=1)
