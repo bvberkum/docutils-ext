@@ -15,9 +15,7 @@ branches:
   only:
   - '/^test.*/'
   - '/^[0-9]*\.[0-9]*\.[0-9]*/'
-  - features/simple-muxdem
-  - features/atlassian
-  - features/atlassian-confluence
+  - features/.*
 
 env:
   - ENV= M="$(./test/main.sh)" PYTHONPATH=$PYTHONPATH:.
