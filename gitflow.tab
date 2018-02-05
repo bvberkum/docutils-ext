@@ -1,5 +1,5 @@
 master dev false
-dev features/atlassian true
+
 dev features/atlassian-confluence true
 dev features/rst-forms true
 dev features/rst-writer-objects true
@@ -11,6 +11,9 @@ test tests/rst-writer-objects
 test tests/rstwriter
 test tests/simple-muxdem
 test tests/subtree
+
+# Conflicts
+dev features/atlassian true
 
 # Merged
 #dev features/xml-reader true
