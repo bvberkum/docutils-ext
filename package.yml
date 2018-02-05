@@ -24,7 +24,8 @@
     - htd package remotes-init
     - vc regenerate
     - test -d ~/.pyvenv/du-ext || virtualenv ~/.pyvenv/du-ext
-    - source ~/.pyvenv/du-ext/bin/activate ; pip install -r requirements.txt
+    - source ~/.pyvenv/du-ext/bin/activate ; pip install -r requirements.txt ; pip install -r optional.txt || echo 'Optional Py lib install failed'
+    - composer install
     check:
       - make stat
       - "./tools/ci/tags.sh *.* doc dotmpe examples features lib log test tools var"
@@ -38,6 +39,7 @@
       #- ./tools/rst2latex-brx examples/main.rst
       #- ./tools/rst2pprint-brx examples/main.rst
       #- ./tools/rst2xml-brx examples/main.rst
+      - ./vendor/behat/behat/bin/behat
     build: make build
 
   pd-meta:
