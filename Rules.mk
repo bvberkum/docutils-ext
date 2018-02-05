@@ -111,7 +111,7 @@ test_py_$d:
 
 test-coverage::
 	@\
-    coverage report --include="test/*,dotmpe/*"
+		coverage report --include="test/*,dotmpe/*"
 
 
 #test-atlassian
@@ -220,7 +220,7 @@ bats:
 
 $/tags: $/Rules.mk ./dotmpe
 	ctags -R -o $@ \
-    ./dotmpe /usr/local/lib/python2.7/site-packages/docutils
+		./dotmpe /usr/local/lib/python2.7/site-packages/docutils
 
 
 

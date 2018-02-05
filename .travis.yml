@@ -10,8 +10,8 @@ addons:
       - php5-cli
 
 install:
-- pip install -r requirements.txt
-- pip install -r optional.txt || echo 'Optional Py lib install failed'
+- "pip install -r requirements.txt"
+- "pip install -r optional.txt || echo 'Optional Py lib install failed'"
 - ./build/rebuild-lib-links.sh $HOME/src
 - ./build/docutils-checkout.sh
 - ./build/nabu-checkout.sh
@@ -50,6 +50,7 @@ branches:
   - features/simple-muxdem
   - features/atlassian
   - features/atlassian-confluence
+
 
 notifications:
   email:
