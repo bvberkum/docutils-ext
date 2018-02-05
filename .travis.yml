@@ -31,6 +31,7 @@ before_script: []
 script: 
 - coverage run --source=dotmpe test/main.py $M
 - ./vendor/behat/behat/bin/behat
+- bats test/*.bats
 
 env:
   global:
