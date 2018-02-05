@@ -3,9 +3,9 @@
 This is nowhere near finished. Duck-tape and moving parts follow, keep clear ;)
 
 - Each section, title or term is scanned for a name.
-  An reference target for this node is generated and noted in the storage.  
+  An reference target for this node is generated and noted in the storage.
 
-- Each title reference is scanned for a known name, and an index entry is made 
+- Each title reference is scanned for a known name, and an index entry is made
   if a known target is referenced. Optionally the title element is converted for
   the first or all occurence in a document. Ie. a numbered list of cross-links
   is added, or the title replaced itself by another reference.
@@ -14,7 +14,7 @@ This is nowhere near finished. Duck-tape and moving parts follow, keep clear ;)
   same or another document. The target is added if needed.
 
 - The stored data can be used to generate an index, a sorted list of names and
-  references to their original occurences. 
+  references to their original occurences.
 
 several options are made
   available to rewrite the reference.
@@ -29,7 +29,7 @@ class IndexRegistryExtractor(extract.Extractor):
     """
     Extract named index items from multiple documents, and gather references to those
     names. Multiple registries possible but default to 'Index'.
- 
+
     Named Registry of Indices for Named Items.
     """
 
@@ -65,9 +65,9 @@ class IndexRegistryExtractor(extract.Extractor):
             'exclusive groups of alternative options. '
 """
 
-- ``primary-link`` causes the element to be rewritten to refer to the 
+- ``primary-link`` causes the element to be rewritten to refer to the
   *primary target*. If the matched element was a reference this obviously
-  replaces semantics, quite likely generalizing it. 
+  replaces semantics, quite likely generalizing it.
 - ``link`` varies from primary-link in that it only rewrite non-reference
   elements.
 
@@ -90,10 +90,10 @@ class IndexRegistryExtractor(extract.Extractor):
     def apply(self, unid=None, store=None, **kwargs):
         """
         This transform performs two traverse on the document.
-        
-        First the actual data extraction to find new names, 
+
+        First the actual data extraction to find new names,
         secondly the tree is rewritten, inserting reference targets and
-        rewriting inline structures. 
+        rewriting inline structures.
 
         FIXME: Note that each new target invalidates all other build documents
         that reference that target, ie. mentioning the particular .
@@ -104,7 +104,7 @@ class IndexRegistryExtractor(extract.Extractor):
             targets = settings.target_references.get(reg)
             for node in self.traverse(*targets):
                 node
-            
+
         for reg in self.settings.indexed_references:
             references = self.settings.indexed_references.get()
             for node in self.traverse(*references):
@@ -118,11 +118,11 @@ class RegistryIndexGenerator(generate.Generator):
 
     With the data in the store, it is possibly to generate several documents
     serving as cross indexes for use in e.g. manifests or appendices.
-    
+
     Each generally consists of a list of name, references pairs.
-   
+
     The source-id or UNID is opaque, but with breadcrumb there is an hierarchical
-    relationship that establishes paths. 
+    relationship that establishes paths.
     That, at it's turn, is probably subsumed by subdocs.
     """
 
@@ -137,8 +137,8 @@ class RegistryIndexGenerator(generate.Generator):
                 page.append(item)
 
             self.document.append(page)
-            pages.append(page)                
-        return pages                
+            pages.append(page)
+        return pages
 
     def generate_index(self, registry, name):
         index_item = nodes.list_item(names=name)
@@ -170,7 +170,7 @@ try:
 except ImportError, e:
     print globals()
 
-finally:    
+finally:
 
     class Registry(db.Model):
         name = db.StringProperty()
@@ -191,4 +191,3 @@ finally:
             pass
         def clear(self, source_id, name=None, type=None, registry='Index'):
             pass
-

@@ -30,5 +30,3 @@ rST Forms 0.0.1
 
   dotmpe.du.ext.writer.formresults
     CSV writer for documents with ``form-processor``.
-
-

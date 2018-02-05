@@ -1,6 +1,6 @@
 :created: 2011-01-12
 :updated: 2013-11-19
-:description: 
+:description:
   reStructuredText has a construct to write meta elements from flat lists.
   But there is not a way to explicitly write out complete links, or to specify
   the relation that is made by a reference.
@@ -10,7 +10,7 @@
 
 .. contents::
 
-Links are always made up of two different endpoints described at different locations, 
+Links are always made up of two different endpoints described at different locations,
 except in the case of anonymous links, which are single inline constructs but
 which still will have a target point. I think about it as a blank node in a
 network graph but I should check rST references/targets out further.
@@ -23,7 +23,7 @@ So whatever the feelings about HTML or the use for such a structure in output fo
 At the very least, without it the following is impossible:
 
 - specifying the style document to be used with the current document.
-- specifying the current document as a node in a sequence or graph. 
+- specifying the current document as a node in a sequence or graph.
   E.g. to link to the owner or to provide previous/next metadata.
 
 Though the latter is to some extent possible through anchors and other elements, iow. falling back to (X)HTML in concord with microformats.
@@ -43,6 +43,8 @@ At its simplest form, the functionality offered by HTML is expressed in::
      :rel: stylesheet
 
 The relation (``rel`` attribute) is available for anchors (``<a/>``) in HTML too.
+Some values are listed in rel-values.
+
 But in HTML, ``link`` definitions are made in the document's header, and not in any way tied to the anchors within the document.
 Perhaps there is some microformat that extends on that, I don't know.
 
@@ -52,7 +54,7 @@ but can or should sometimes be stored at the destination point.
 Lets introduce storage point and reference point to indicate link endpoints
 based on storage regardless of their direction.
 
-Because HTML introduces a peculiarity. 
+Because HTML introduces a peculiarity.
 The reference-poin may be some kind of HTML anchor, because the URI-ref may include a fragment identifier.
 Addressing document substructures using URI-ref 'hash' or 'fragment' identifiers
 is not really a well-defined practice.
@@ -61,7 +63,7 @@ URI part and so containers in the document can be addressable.
 
 Again a microformat may step in.
 The goal would be to have multiple origin points and target points in two
-distinct sets ``from`` and ``to``, and a third one of such a set to denote type. 
+distinct sets ``from`` and ``to``, and a third one of such a set to denote type.
 Perhaps a fourth ``homedoc`` to indicate the storage location.
 That would be the full Xanadu 88.1 spec I think for links and their end-sets.
 
@@ -107,7 +109,7 @@ Taking HTML as example, the complete list of options could be:
   .. link:: url-or-name
      :name: used to generate id
      :id: explicit-id
-     :href: 
+     :href:
      :hreflang:
      :rel:
      :rev:
@@ -118,11 +120,11 @@ Where the type describes the content type of the target resource,
 not the type of the link itself, which is expressed by the relation.
 This relation is indicated by a forward or backward label.
 
-This in basis is good to express relations between documents. 
+This in basis is good to express relations between documents.
 But afaics there are two issues still:
 
 1. There is really only a standard for single-point targets.
-2. There is no standard interaction between anchors and links.   
+2. There is no standard interaction between anchors and links.
 
 Also, reStructuredText already facilitates in defining targets using URLs.
 Lets reuse this.
@@ -172,7 +174,7 @@ The fragment according to this text is::
 
   <target refid="name">
   <paragraph ids="name" names="name">
-      This link 
+      This link
       <reference name="name" refid="name">
           name
        refers to this paragraph.
@@ -182,28 +184,28 @@ Note that the target and the reference share the same name.
 Here is the rest::
 
   ...
-      And 
+      And
       <reference name="name" refid="name">
           name
-       referred to it again and 
+       referred to it again and
       <reference anonymous="1" name="again" refid="name">
           again
-      , 
+      ,
       <reference name="etc" refid="name">
           etc
       , possibly from other documents.
   <target anonymous="1" ids="id1" refid="name">
   <target ids="etc" names="etc" refid="name">
   <paragraph>
-      We could also have written it inline, like to 
+      We could also have written it inline, like to
       <target ids="a-target-name" names="a\ target\ name">
           a target name
-       from 
+       from
       <reference name="a target name" refid="a-target-name">
           a target name
       .
 
-----   
+----
 
 The link directive can use a title or name to claim a new link or 'tie' a relation to an existing reference by name
 
@@ -216,7 +218,7 @@ Then the first part of the structure could look like::
 
    <target refid="link-name">
    <paragraph ids="link-name" names="link\ name">
-       Link target is this paragraph, where 
+       Link target is this paragraph, where
        <reference name="link name" refid="link-name" relation="jump">
            link name
         refers too.
@@ -286,7 +288,7 @@ Options
   ``rev``
      The indicator for the target-reference relation type.
   ``inv``
-     Inverse the relation. 
+     Inverse the relation.
 
 If a `name`  is provided as argument, it serves as `name` *and* ``refname``.
 Otherwise `name` should be specified and no argument given to the directive.
@@ -301,3 +303,4 @@ Left undiscussed here:
 - The types of relation, wether it is symmetric and what labels are used to indicate an endpoint.
   and how the direction of the link and thus of the rel/rev semantics might be changed by an additional flag.
 
+.. include:: .default.rst

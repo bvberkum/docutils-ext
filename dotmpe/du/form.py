@@ -277,7 +277,7 @@ class FormProcessor:
 
     def __iter__(self):
         for field_id in self.nodes:
-        	yield field_id
+            yield field_id
 
     def __getitem__(self, field_id):
         """Return cached value. """
@@ -447,7 +447,7 @@ class FormProcessor:
         node = self.nodes[field_id]
         if isinstance(node, list):
             if len(node) == 1:
-            	node = node[0]
+                node = node[0]
         assert not isinstance(node, list), \
                 "Multiple fields not supported (field %s, %s). " % (field_id, node)
         name = extract_form_field_label(node)
@@ -636,9 +636,9 @@ class AbstractFormVisitor(nodes.SparseNodeVisitor):
         If the element matches as a field, capture it.
         """
         if self.settings.form == 'class' or self.settings.form == 'class-and-name':
-        	pass
+            pass
         if self.settings.form == 'name' or self.settings.form == 'class-and-name':
-        	pass
+            pass
         field_id = nodes.make_id(extract_form_field_label(node))
         if self.field_class not in node['classes']:
             node['classes'].append(self.field_class)

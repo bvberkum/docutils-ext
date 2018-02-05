@@ -44,12 +44,15 @@ CLN 				+= \
 TEST				+= \
 							 test_py_$d \
 							 test-common \
-							 test-form 
+							 test-form \
+							 bats
+
 #							 var-testfiles.log
 
 .PHONY: 			 test_py_$d \
 							 test-common \
-							 test-form
+							 test-form \
+							 bats
 
 
 #clean: clean-pyc
@@ -71,13 +74,12 @@ doc/umlgraph-sequence.pic:
 test_py_$d: M :=
 test_py_$d: D := $d
 test_py_$d:
-	@$(ll) attention "$@" "Testing modules listed in" test/main.list;
+	@$(ll) attention "$@" "Testing modules listed in" test/main.sh;
 	@\
 		TEST_PY=$(PY_TEST_$(D));\
 		test -n "$M" && TEST_PY_ARGV="$M" \
-			|| TEST_PY_ARGV="$(call f_getlines,test/main.list)";\
+			|| TEST_PY_ARGV="$(shell ./test/main.sh)";\
 		TEST_LIB=dotmpe;\
-		PYTHONPATH=$$PYTHONPATH:test; \
 		$(test-python) 2> test.log;
 	@\
 		if [ -n "$$(tail -1 test.log|grep OK)" ]; then \
@@ -106,29 +108,18 @@ test_py_$d:
 	@$(ll) Done "$@" "see coverage with 'make test-coverage'" ;
 
 
-# XXX: old, using test-python above now
-test_old:
-	@$(ll) attention "$@" "Testing modules listed in" test/main.list;
-	@-test_listing=test/main.list;\
-		test_mods=$$(cat $$test_listing|grep -v '^#'|grep -v '^$$');\
-		test_listing=$$test_listing coverage run test/main.py $$test_mods \
-		             2> test.log
-	@if [ -n "$$(tail -1 test.log|grep OK)" ]; then \
-	    $(ll) Success "$@" "see unit result in" test.log; \
-	else \
-	    $(ll) Errors "$@" "$$(tail -1 test.log)"; \
-	    $(ll) Errors "$@" "see unit result in" test.log; \
-	fi;
-
 
 test-coverage::
-	@coverage report --include="test/*,dotmpe/*"
+	@\
+		coverage report --include="test/*,dotmpe/*"
+
 
 #test-atlassian
 test-common::
 	@\
 		$(ll) attention "$@" "Running 'common' test-suite" "test/main.py"; \
 		python test/main.py common
+
 
 #test-rstwriter
 test-form::
@@ -138,6 +129,8 @@ test-form::
 
 
 
+# Compare rST docs with expected XML
+#
 TEST_RST_$d      := $(wildcard var/test-rst.*.rst)
 TEST_RST_XML_$d  := $(TEST_RST_$d:%.rst=%.xml)
 
@@ -195,6 +188,8 @@ var/%.pxml: var/%.txt
 #	@-tidy -q -xml -utf8 -w 0 -i -m $@
 #
 
+# XXX: old sphinx targets
+#
 doc-test:
 	sphinx-apidoc dotmpe -o pydoc/source
 	find ./ -iname '*.rst' -not -path '*pydoc*' | while read path; \
@@ -215,6 +210,17 @@ docs:
 
 up:
 	./tools/scm/up.sh
+
+
+bats:
+	@bats test/*.bats
+
+
+#      ------------ -- 
+
+$/tags: $/Rules.mk ./dotmpe
+	ctags -R -o $@ \
+		./dotmpe /usr/local/lib/python2.7/site-packages/docutils
 
 
 

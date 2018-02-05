@@ -1,19 +1,53 @@
 # git-versioning main: docutils-ext-mpe
 
-- type: application/vnd.dotmpe.project
-  main: docutils-ext-mpe
-  id: docutils-ext-mpe
-
+- id: docutils-ext-2009-mpe
+  type: application/vnd.org.wtwta.project
+  main: docutils-ext-2009-mpe
+  name: docutils-ext-mpe
+  #created: 2009-08-20
   version: 0.0.1-dev # docutils-ext-mpe
-  environments: [ 'development' ]
-
   vendor: dotmpe
   distribution: public
   license: GPL-3.0
 
+  environments: [ 'development' ]
+  repositories:
+    origin: git@github.com:dotmpe/docutils-ext
+    dotmpe: ~/domains/dotmpe.com/htdocs/git/docutils-mpe
+    dandy.10-1: /srv/git-local/bvberkum/docutils-ext-mpe.git
+    boreas.16-4: /srv/git-local/bvberkum/docutils-ext-mpe
+
+  env: . ./tools/sh/env.sh
+  scripts:
+    init:
+    - htd package update
+    - htd package remotes-init
+    - vc regenerate
+    - test -d ~/.pyvenv/du-ext || virtualenv ~/.pyvenv/du-ext
+    - test -x "$(which composer)" -a -x "$(which pip)"
+    - source ~/.pyvenv/du-ext/bin/activate ; . ./tools/ci/install-deps.sh
+    check:
+      - make stat
+      - "./tools/ci/tags.sh *.* doc dotmpe examples features lib log test tools var"
+    test:
+      - make build test
+      - ./tools/rst-form.py examples/form-1.rst
+      #- ./tools/rst-form.py var/test-form.1.field-id.rst
+      # FIXME ./tools/mpe-sitefile.py examples/main.rst
+      # FIXME ./tools/rst2rst-mpe.py examples/main.rst
+      # FIXME ./tools/brx-crm-pub.py
+      #- ./tools/rst2latex-brx examples/main.rst
+      #- ./tools/rst2pprint-brx examples/main.rst
+      #- ./tools/rst2xml-brx examples/main.rst
+      - ./vendor/behat/behat/bin/behat
+    build: make build
+
   pd-meta:
-    check: ":make:stat sh:tools/ci/tags.sh:*.*:doc:dotmpe:examples:features:lib:log:test:tools:var :git:status"
-    test: ":make:test"
+    run:
+      check-tags: "./tools/ci/tags.sh:*.*:doc:dotmpe:examples:features:lib:log:test:tools:var"
+
+    check: "make:stat sh:tools/ci/tags.sh:*.*:doc:dotmpe:examples:features:lib:log:test:tools:var :git:status"
+    test: "make:test"
     build: ""
     install: "sh:pip:install:."
 
@@ -24,4 +58,3 @@
         - FIXME # tasks:no-check
         - BUG # tasks:no-check
         - NOTE # tasks:no-check
-

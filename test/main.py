@@ -46,4 +46,3 @@ if __name__ == '__main__':
     else:
         print >>sys.stderr, "Must pass test modules to load"
         sys.exit(1)
-

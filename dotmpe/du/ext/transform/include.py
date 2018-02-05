@@ -4,7 +4,7 @@
 Insert raw data at location.
 
 Use to include external raw xml, latex or html data in the document
-at publication time. 
+at publication time.
 """
 import re
 from docutils import nodes
@@ -15,7 +15,7 @@ class Include(Transform):
 
     """
     This is a helper baseclass for transforms that need to insert at certain
-    locations. It can be used on itself to insert raw nodes too.
+    locations. It can be used on it own to insert raw nodes too.
     """
 
     settings_spec = (
@@ -26,8 +26,8 @@ class Include(Transform):
                 'in the document. Use index -1 for append and 0 for prepend. '
                 'Data may be raw string prefixed by ``type:``. '
                 'Use a second ``file:`` prefix to read raw data from filename. ',
-                ['--include'], 
-                {'action':'append', 'default':[], 'metavar':'XPATH,IDX,DATA|file:...', 
+                ['--include'],
+                {'action':'append', 'default':[], 'metavar':'XPATH,IDX,DATA|file:...',
                     #TODO:'validate': util.xpath_insert
                 }
             ),)
@@ -80,7 +80,7 @@ class Include(Transform):
         for p in parts:
             g = match(p).groups()
             path.append((g[0], int(g[1])))
-        return path            
+        return path
 
     def find_location(self, path):
         decoration = self.document.get_decoration()
@@ -104,7 +104,7 @@ class Include(Transform):
                             break
                         index -= 1
 
-            assert not parts, 'illegal path %s' % path                            
+            assert not parts, 'illegal path %s' % path
             return doc
 
 

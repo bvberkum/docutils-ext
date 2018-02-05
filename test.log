@@ -5,57 +5,46 @@ Loaded testmodule 'build'
 Loaded testmodule 'form'
 Loaded testmodule 'sql_storage'
 Loaded testmodule 'rstwriter'
-.....................................................Traceback (most recent call last):
-  File "test/main.py", line 45, in <module>
-    main(test_modules)
-  File "test/main.py", line 39, in main
-    unittest.main()
-  File "/usr/local/Cellar/python/2.7.12_2/Frameworks/Python.framework/Versions/2.7/lib/python2.7/unittest/main.py", line 95, in __init__
-    self.runTests()
-  File "/usr/local/Cellar/python/2.7.12_2/Frameworks/Python.framework/Versions/2.7/lib/python2.7/unittest/main.py", line 232, in runTests
-    self.result = testRunner.run(self.test)
-  File "/usr/local/Cellar/python/2.7.12_2/Frameworks/Python.framework/Versions/2.7/lib/python2.7/unittest/runner.py", line 151, in run
-    test(result)
-  File "/usr/local/Cellar/python/2.7.12_2/Frameworks/Python.framework/Versions/2.7/lib/python2.7/unittest/suite.py", line 70, in __call__
-    return self.run(*args, **kwds)
-  File "/usr/local/Cellar/python/2.7.12_2/Frameworks/Python.framework/Versions/2.7/lib/python2.7/unittest/suite.py", line 108, in run
-    test(result)
-  File "/usr/local/Cellar/python/2.7.12_2/Frameworks/Python.framework/Versions/2.7/lib/python2.7/unittest/suite.py", line 70, in __call__
-    return self.run(*args, **kwds)
-  File "/usr/local/Cellar/python/2.7.12_2/Frameworks/Python.framework/Versions/2.7/lib/python2.7/unittest/suite.py", line 108, in run
-    test(result)
-  File "/usr/local/Cellar/python/2.7.12_2/Frameworks/Python.framework/Versions/2.7/lib/python2.7/unittest/suite.py", line 70, in __call__
-    return self.run(*args, **kwds)
-  File "/usr/local/Cellar/python/2.7.12_2/Frameworks/Python.framework/Versions/2.7/lib/python2.7/unittest/suite.py", line 108, in run
-    test(result)
-  File "/usr/local/Cellar/python/2.7.12_2/Frameworks/Python.framework/Versions/2.7/lib/python2.7/unittest/case.py", line 393, in __call__
-    return self.run(*args, **kwds)
-  File "/usr/local/Cellar/python/2.7.12_2/Frameworks/Python.framework/Versions/2.7/lib/python2.7/unittest/case.py", line 329, in run
-    testMethod()
-  File "/Volumes/Zephyr/project/docutils-ext/test/util.py", line 258, in runTest
-    self._test_writer(writer_class(), lossy=lossy)
-  File "/Volumes/Zephyr/project/docutils-ext/test/util.py", line 161, in _test_writer
-    self.__test_writer(writer, lossy=lossy)
-  File "/Volumes/Zephyr/project/docutils-ext/test/util.py", line 208, in __test_writer
-    writer=writer)['whole']#writer_name='dotmpe-rst')
-  File "/Library/Python/2.7/site-packages/docutils/core.py", line 448, in publish_parts
-    enable_exit_status=enable_exit_status)
-  File "/Library/Python/2.7/site-packages/docutils/core.py", line 659, in publish_programmatically
-    settings_spec, settings_overrides, config_section)
-  File "/Library/Python/2.7/site-packages/docutils/core.py", line 141, in process_programmatic_settings
-    **defaults)
-  File "/Library/Python/2.7/site-packages/docutils/core.py", line 128, in get_settings
-    usage, description, settings_spec, config_section, **defaults)
-  File "/Library/Python/2.7/site-packages/docutils/core.py", line 115, in setup_option_parser
-    usage=usage, description=description)
-  File "/Library/Python/2.7/site-packages/docutils/frontend.py", line 565, in __init__
-    self.populate_from_components(self.components)
-  File "/Library/Python/2.7/site-packages/docutils/frontend.py", line 596, in populate_from_components
-    **kwargs)
-  File "/usr/local/Cellar/python/2.7.12_2/Frameworks/Python.framework/Versions/2.7/lib/python2.7/optparse.py", line 1013, in add_option
-    option = self.option_class(*args, **kwargs)
-  File "/usr/local/Cellar/python/2.7.12_2/Frameworks/Python.framework/Versions/2.7/lib/python2.7/optparse.py", line 578, in __init__
-    checker(self)
-  File "/usr/local/Cellar/python/2.7.12_2/Frameworks/Python.framework/Versions/2.7/lib/python2.7/optparse.py", line 653, in _check_type
-    (hasattr(self.type, "__name__") and
-KeyboardInterrupt
+Loaded testmodule 'du_ext_transform_reference'
+..F.F......INFO:dotmpe.du.form:Validating /Volumes/Zephyr/src/github.com/bvberkum/docutils-ext/examples/form-1.rst
+..DEBUG:dotmpe.du.ext.extractor:New SQLiteExtractorStorage for None, with <sqlite3.Connection object at 0x1033cddc8>
+INFO:dotmpe.du.ext.extractor:Creating DB schema test_table (TABLE)
+INFO:dotmpe.du.ext.extractor:Creating DB schema var_idx (INDEX)
+INFO:dotmpe.du.ext.extractor:Destroyed table test_table
+..................................................DEBUG:dotmpe.du.ext.transform.generate:TODO: timestamp xform
+DEBUG:dotmpe.du.ext.transform.generate:TODO: sourcelink xform
+.DEBUG:dotmpe.du.ext.transform.generate:TODO: timestamp xform
+DEBUG:dotmpe.du.ext.transform.generate:TODO: sourcelink xform
+.DEBUG:dotmpe.du.ext.transform.generate:TODO: timestamp xform
+DEBUG:dotmpe.du.ext.transform.generate:TODO: sourcelink xform
+.DEBUG:dotmpe.du.ext.transform.generate:TODO: timestamp xform
+DEBUG:dotmpe.du.ext.transform.generate:TODO: sourcelink xform
+.DEBUG:dotmpe.du.ext.transform.generate:TODO: timestamp xform
+DEBUG:dotmpe.du.ext.transform.generate:TODO: sourcelink xform
+.DEBUG:dotmpe.du.ext.transform.generate:TODO: timestamp xform
+DEBUG:dotmpe.du.ext.transform.generate:TODO: sourcelink xform
+.DEBUG:dotmpe.du.ext.transform.generate:TODO: timestamp xform
+DEBUG:dotmpe.du.ext.transform.generate:TODO: sourcelink xform
+.DEBUG:dotmpe.du.ext.transform.generate:TODO: timestamp xform
+DEBUG:dotmpe.du.ext.transform.generate:TODO: sourcelink xform
+.
+======================================================================
+FAIL: test_3_get_writer_class (comp.DotmpeComponentLoaderTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Zephyr/src/github.com/bvberkum/docutils-ext/test/comp.py", line 93, in test_3_get_writer_class
+    self.assertEquals( Writer, comp.get_writer_class(name) )
+AssertionError: <class dotmpe.du.ext.writer.xhtml.Writer at 0x102c8a8d8> != <class docutils.writers.html5_polyglot.Writer at 0x1034e09a8>
+
+======================================================================
+FAIL: test_1_get_reader_class (comp.DuComponentLoaderMonkeyPatchTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Zephyr/src/github.com/bvberkum/docutils-ext/test/comp.py", line 39, in test_1_get_reader_class
+    docutils.readers.get_reader_class(name) )
+AssertionError: <class dotmpe.du.ext.reader.standalone.Reader at 0x102cfe530> != <class docutils.readers.standalone.Reader at 0x102d727a0>
+
+----------------------------------------------------------------------
+Ran 71 tests in 1.938s
+
+FAILED (failures=2)
