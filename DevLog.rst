@@ -56,8 +56,9 @@ DevLog
 2016-07-09
   - Taking up a little development again. Started adding and updating Docs.
 
+2018-02-06
+  - Testing. Merging. Removing obsolete branches. Added reference recorder.
+
 
 .. __: doc/links.rst
 .. include:: .refs.rst
-
-
