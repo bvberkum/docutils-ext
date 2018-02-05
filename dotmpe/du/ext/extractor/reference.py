@@ -30,7 +30,7 @@ from docutils import nodes, frontend
 import uriref
 from dotmpe.du import util
 from dotmpe.du.mpe_du_util import SqlBase, get_session
-from dotmpe.du.ext import extractor
+from dotmpe.du.ext import extractor, transform
 
 from script_mpe import taxus
 
@@ -104,70 +104,13 @@ ie. raw HTML, script.
 
         g = self.document.settings
         if not g.no_db and not g.no_reference:
-            v = RefVisitor(self.document)
+            v = transform.reference.RefVisitor(self.document)
 
             g = self.document.settings
             g.dbref = taxus.ScriptMixin.assert_dbref(g.dbref)
             v.session = self.session = get_session(g.dbref)
 
             self.document.walk(v)
-
-
-class RefVisitor(nodes.GenericNodeVisitor):
-
-    def default_visit(self, node):
-        """Override for generic, uniform traversals."""
-        if not hasattr(node, 'attributes'):
-            return
-        if 'refuri' in node.attributes:
-            link = node.attributes['refuri']
-            logger.debug("Found uriref %s", link)
-
-            scheme, d,p,r,q,f = urlparse.urlparse(link)
-            #if scheme in ('sip', 'mailto', 'ssh'):
-            #    return
-            self.store(node)
-
-    def default_departure(self, node):
-        """Override for generic, uniform traversals."""
-
-    def store(self, node):
-
-        return
-        taxus.htd.TNode.filter( ( TNode.global_id == prefix_path  ))
-        #print(dir(self))
-        return
-
-        refdb = self.document.settings.reference_database
-        ctx = self.document.settings.reference_context
-        link = node.attributes['refuri']
-        if not isinstance(link, unicode):
-            link = unicode(link)
-
-        if not uriref.scheme.match(link):
-
-            # Allow site-wide absolute paths:
-            if not os.path.exists(link) and link.startswith(os.sep):
-                link = link[1:]
-            if link.startswith('~'):
-                link = os.path.expanduser(link)
-            if not os.path.exists(link):
-                self.document.reporter.warning(
-                    "Reference %s does not provide an explicit scheme, but is "
-                    "also not a local path. " % (link))
-                return
-            if ctx:
-                link = ctx + link
-            else:
-                link = "file://%s%s" % (socket.gethostname(),
-                        os.path.abspath(os.path.normpath(link)))
-
-        key = link.encode('utf-8')
-        if key in refdb:
-            #node.childnodes.append(nodes..)
-            self.document.reporter.warning("Duplicate reference to %s" % link)
-        else:
-            refdb[key] = pickle.dumps({'name':node.get('name'),'href':link})
 
 
 class ReferenceStorage(extractor.SQLiteExtractorStorage):
@@ -188,6 +131,7 @@ class ReferenceStorage(extractor.SQLiteExtractorStorage):
         logger.info("Extractor store to %s", self.session)
 
     def store(self, source_id, *args):
+        #taxus.htd.TNode.filter( ( TNode.global_id == prefix_path  ))
         print 'store', source_id, args
 
     def clear(self, source_id):

@@ -10,8 +10,16 @@ Copyleft 2010  Berend van Berkum <dev@dotmpe.com>
 This file has been placed in the Public Domain.
 """
 import sys, os
-sys.path.insert(0, os.path.realpath(os.path.join(os.path.dirname(__file__),
-    '..', 'lib')))
+
+try:
+    import locale
+    locale.setlocale(locale.LC_ALL, '')
+    locale.setlocale(locale.LC_CTYPE, '')
+except:
+    pass
+
+#sys.path.insert(0, os.path.realpath(os.path.join(os.path.dirname(__file__),
+#    '..', 'lib')))
 from dotmpe.du import form
 from dotmpe.du.ext.transform import form1
 from dotmpe.du.ext.reader import mpe
@@ -25,11 +33,6 @@ from test.form import FormReader
 
 
 
-try:
-    import locale
-    locale.setlocale(locale.LC_ALL, '')
-except:
-    pass
 
 from dotmpe.du.frontend import cli_du_publisher
 

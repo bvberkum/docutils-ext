@@ -17,16 +17,107 @@ Usage with .mpe Reader::
             --record-references=/tmp/ref.list \
             --record-reference-format=todo.txt \
             document.rst /dev/null
-
 """
 from __future__ import print_function
 
+import os
+import urlparse
+import socket
+
+import uriref
 from docutils import transforms, nodes
 from dotmpe.du import mpe_du_util as util
 
 
+logger = util.get_log(__name__, fout=False)
 
-class RecordReferences(transforms.Transform):
+
+class SimpleRefParser:
+
+    def _record_reference(self, ref_type, ref, node):
+        if self.format == 'url':
+            line = ref
+
+        elif self.format == 'text':
+            if 'anonymous' in node: line = ref
+            elif 'name' not in node: line = ref
+            else: line = ref +'  '+ node['name']
+
+        elif self.format == 'todo.txt':
+            line = "<%s>" % ref
+            at = dict(node.attlist())
+            del at['refuri']
+            if 'name' in at:
+                line = at['name']+' '+line
+                del at['name']
+            for k, v in at.items():
+                line += ' %s:%s' % ( k, v )
+
+        self.f.write(line+'\n')
+
+    def _parse_link(self, ref_type, node, g):
+        if 'refuri' in node:
+            url = node['refuri']
+            if not isinstance(url, unicode):
+                url = unicode(url)
+
+            if not uriref.scheme.match(url):
+                # Allow site-wide absolute paths:
+                if not os.path.exists(url) and url.startswith(os.sep):
+                    url = url[1:]
+                if url.startswith('~'):
+                    url = os.path.expanduser(url)
+                if g.ctx_local_exists and not os.path.exists(url):
+                    self.document.reporter.warning(
+                        "Reference %s does not provide an explicit scheme, but is "
+                        "also not a local path. " % (url))
+                    return
+                url = g.ctx_fmt % {
+                        'hostname': socket.gethostname(),
+                        'ref': os.path.abspath(os.path.normpath(url))
+                    }
+            return url
+
+
+class AbstractReferenceRecorder(SimpleRefParser, transforms.Transform):
+
+    def apply(self, f=None):
+        g = self.document.settings
+        if not getattr(g, 'record_references', None):
+            return
+
+        self.format = g.record_reference_format
+
+        if getattr(g, 'records', None):
+            f = g.records
+
+        if f:
+            self.f = g.records
+        else:
+            mode = g.append_reference_records and 'a+' or 'w+'
+            self.f = open(g.record_references, mode)
+
+        if getattr(g, 'record_outgoing_refs', None):
+
+            self.types = g.record_outgoing_refs
+            ref_tags = [ getattr(nodes, t) for t in self.types ]
+
+            for ref_type in ref_tags:
+                for ref_node in self.document.traverse(ref_type):
+                    ref = self._parse_link(ref_type, ref_node, g)
+                    if ref:
+                        self._record_reference(ref_type, ref, ref_node)
+
+        if getattr(g, 'record_incoming_refs', None):
+            pass # TODO: record-incoming-refs
+
+    def finish(self):
+        self.f.seek(0)
+        results = [ l.strip() for l in self.f.readlines() ]
+        return results
+
+
+class RecordReferences(AbstractReferenceRecorder):
 
     """
     Write references from document to file.
@@ -73,85 +164,38 @@ class RecordReferences(transforms.Transform):
             {'default':None, 'metavar':'FILE' }
         ), (
             'Record outgoing references (default: %s). Disable by clearing. ',
-            ['--record-outging-refs'],
+            ['--record-outgoing-refs'],
             {'default':['reference'], 'action':'append', 'metavar':'NAME[,NAME]',
                 'validator': util.validate_cs_list }
         ), (
             'Record (incoming) reference targets (default: %s). Disable by clearing. ',
             ['--record-incoming-refs'],
             {'default':[], 'action':'append', 'metavar':'NAME[,NAME]',
-                'validator': util.validate_cs_list }
+                'validator':util.validate_cs_list }
         ), (
             'Append recorded references to file iso. truncating existing file',
             ['--append-reference-records'],
-            {'default':False, 'action':'store_true' }
+            {'default':False, 'action':'store_true'}
         ), (
             'Format for references file: url, text or todo.txt. ',
             ['--record-reference-format'],
-            {'default': 'url', 'metavar':'NAME' }
+            {'default':'url', 'metavar':'NAME'}
+        ), (
+            'Format local references using pattern. ',
+            ['--record-reference-local-context'],
+            {'default':'file://%()s%()s', 'dest':'ctx_fmt', 'metavar':'NAME'}
+        ), (
+            '. ',
+            ['--record-reference-local-exists'],
+            {'default':True, 'dest':'ctx_local_exists' }
+        ), (
+            '. ',
+            ['--no-record-reference-local-exists'],
+            {'default':True, 'dest':'ctx_local_exists', 'action':'store_false'}
         ), (
             'Dont record references, even if file was given. ',
-            ['--no-references-record'], { 'dest': 'record_references', 'action': 'store_false' }
+            ['--no-references-record'], {'dest':'record_references', 'action': 'store_false'}
         ),
     )
 
     default_priority = 880
-
-    def apply(self, f=None):
-        g = self.document.settings
-        if not getattr(g, 'record_references', None):
-            return
-
-        if getattr(g, 'records', None):
-            f = g.records
-
-        if f:
-            self.f = g.records
-        else:
-            mode = g.append_reference_records and 'a+' or 'w+'
-            self.f = open(g.record_references, mode)
-
-        if getattr(g, 'record_outgoing_refs', None):
-
-            self.format = g.record_reference_format
-            self.types = g.record_outgoing_refs
-
-            ref_tags = [ getattr(nodes, t) for t in self.types ]
-
-            for ref_type in ref_tags:
-                for ref in self.document.traverse(ref_type):
-                    self._record_reference(ref_type, ref)
-
-        if getattr(g, 'record_incoming_refs', None):
-            pass # TODO: record-incoming-refs
-
-    def finish(self):
-        self.f.seek(0)
-        results = [ l.strip() for l in self.f.readlines() ]
-        return results
-
-    def _record_reference(self, ref_type, ref):
-
-        if not 'refuri' in ref:
-            # TODO: warn no refuri
-            return
-
-        if self.format == 'url':
-            line = ref['refuri']
-
-        elif self.format == 'text':
-            if 'anonymous' in ref: line = ref['refuri']
-            elif 'name' not in ref: line = ref['refuri']
-            else: line = ref['refuri'] +'  '+ ref['name']
-
-        elif self.format == 'todo.txt':
-            line = "<%s>" % ref['refuri']
-            at = dict(ref.attlist())
-            del at['refuri']
-            if 'name' in at:
-                line = at['name']+' '+line
-                del at['name']
-            for k, v in at.items():
-                line += ' %s:%s' % ( k, v )
-
-        self.f.write(line+'\n')

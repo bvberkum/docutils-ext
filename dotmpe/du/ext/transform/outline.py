@@ -104,33 +104,55 @@ class RecordOutline(transforms.Transform):
     default_priority = 880
 
     def apply(self, f=None, unid=None, storage=None, **kwargs):
-        g = self.document.settings
+        doc = self.document
+        g = doc.settings
         #if g.dbref and ( g.no_db or g.no_outline):
         if not getattr(g, 'record_outline', None):
             return
-
         if f:
             self.f = f
         else:
             mode = g.append_outline_records and 'a+' or 'w+'
             self.f = open(g.record_outline, mode)
 
-
         if g.outline_schema:
             assert not g.outline_schema, 'TODO'
 
         else:
             #value_ntypes = [ getattr(nodes, nt) for nt in g.outline_schema_values ]
-
             #term_ntypes = [ getattr(nodes, nt) for nt in g.outline_schema_terms ]
+
+            # FIXME: rewrite to descending visitor
             for i, nt in enumerate(g.outline_schema_terms):
-                for term in self.document.traverse(getattr(nodes, nt)):
-                    print(term, file=sys.stderr)
+                for term in doc.traverse(getattr(nodes, nt)):
+                    np = self._nodepath(term)
+                    p = self._outlinepath(term, g)
+                    print(np, p, term, file=sys.stderr)
                     #print(term.parent, file=sys.stderr)
                     #values = term.parent.traverse( nt[i] ):
 
-        #v = OutlineVisitor(self.document, storage)
-        #self.document.walk(v)
+        #v = OutlineVisitor(doc, storage)
+        #doc.walk(v)
+
+    def _outlinepath(self, term, g):
+        p = [ nodes.make_id(term.astext()) ]
+        while term.parent:
+            term = term.parent
+            if term.__class__.__name__ in g.outline_schema_terms:
+                key = nodes.make_id(term.astext())
+                p.insert(0, key)
+        return '.'.join(p)
+
+    def _nodepath(self, term):
+        p = []
+        while term.parent:
+            term = term.parent
+            if term.parent and len(term.parent.children) > 1:
+                idx = term.parent.children.index(term)+1
+                key = "%s[%i]" % ( term.__class__.__name__, idx )
+            else: key = term.__class__.__name__
+            p.insert(0, key)
+        return '/'.join(p)
 
 
 import sys
