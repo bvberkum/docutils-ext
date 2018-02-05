@@ -1,7 +1,5 @@
 language: python
 
-sudo: false
-
 python:
   - "2.7"
 
@@ -11,41 +9,49 @@ addons:
       - curl
       - php5-cli
 
-branches:
-  only:
-  - '/^test.*/'
-  - '/^[0-9]*\.[0-9]*\.[0-9]*/'
-  - features/simple-muxdem
-  - features/atlassian
-  - features/atlassian-confluence
-
-env:
-  - ENV= M="$(./test/main.sh)" PYTHONPATH=$PYTHONPATH:.
-
 install:
-- "pip install -r requirements.txt"
-- "pip install -r optional.txt || echo 'Optional Py lib install failed'"
+- . ./tools/ci/install-composer.sh
+- test -x "$(which composer)" -a -x "$(which pip)"
+- . ./tools/ci/install-deps.sh
 - ./build/rebuild-lib-links.sh $HOME/src
 - ./build/docutils-checkout.sh
 - ./build/nabu-checkout.sh
+
 - ls -la $HOME/src/python-docutils
 - ls -la $HOME/src/python-docutils/docutils-svn/
 - ls -la $HOME/src/python-docutils/docutils-svn/branches
 - ls -la lib/
 - ls -la lib/docutils-lossless/
 
-- mkdir -vp ~/.local/{bin,lib,share}
-- 'curl -sS https://getcomposer.org/installer | php -- --install-dir=$HOME/.local/bin --filename=composer'
-- ~/.local/bin/composer --version
-- composer install
-
-- ./tools/rst-outline.py --outline test.json var/test-outline.1.json-1.rst
-
 before_script: []
 
 script: 
-- coverage run --source=dotmpe test/main.py $M
+- coverage run --source=dotmpe test/main.py $M || true
 - ./vendor/behat/behat/bin/behat
+- bats test/*.bats
+
+env:
+  global:
+    - DEP_PREFIX=$HOME/.local
+    - PATH=$PATH:$DEP_PREFIX/bin:$PREFIX/bin
+    - PYTHONPATH=$PYTHONPATH:.
+  matrix:
+  - ENV= M="$(./test/main.sh)"
+
+branches:
+  only:
+  - master
+  - '/^test.*/'
+  - '/^dev.*/'
+  - '/^[0-9]*\.[0-9]*\.[0-9]*/'
+  - features/simple-muxdem
+  - features/atlassian
+  - features/atlassian-confluence
+
+
+notifications:
+  email:
+    on_success: never
 
 
 # Default travis Python build:
@@ -55,5 +61,4 @@ script:
 #  - "pip install -r requirements.txt"
 #
 #script: nosetests
-#
 

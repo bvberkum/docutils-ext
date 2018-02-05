@@ -1,5 +1,5 @@
 """
-.mpe htdocs extractor
+TODO: .mpe htdocs extractor
 
 Inline (title, literal, reference)
     ..
@@ -8,7 +8,7 @@ Definition Terms
       resource matching term.
 
 """
-from datetime import datetime 
+from datetime import datetime
 from pprint import pformat
 
 import json
@@ -17,7 +17,7 @@ from sqlalchemy import Table
 
 from docutils import nodes
 from dotmpe.du import util
-from dotmpe.du.util import SqlBase, get_session
+from dotmpe.du.mpe_du_util import SqlBase, get_session
 from dotmpe.du.ext import extractor
 
 
@@ -28,7 +28,7 @@ logger = util.get_log(__name__)
 class HtdocsExtractor(extractor.Extractor):
 
     """
-    TODO: store titles in rel. DB.
+    TODO: run different recorders at once from one extractor
 
     Record:
         - value (unicode string)
@@ -42,6 +42,16 @@ class HtdocsExtractor(extractor.Extractor):
     Global could mean include <doc-id>. Var. URIRef options here.
     """
 
+    # XXX: not used by Builder unless staticly hardcoded into its specs.
+    settings_spec = (
+        'Htdocs extractor',
+        None,
+        ((
+             '',
+             ['--no-proc'], { 'action': 'store_true' }
+        ),)
+    )
+
     default_priority = 500
 
     def init_parser(cls):
@@ -50,10 +60,13 @@ class HtdocsExtractor(extractor.Extractor):
     fields_spec = []
 
     def apply(self, unid=None, storage=None, **kwds):
+        g = self.document.settings
+        if g.no_proc:
+            return
         # - get (new) ref for each definition term
         # - accumulated definition descriptions:
         #   append lists to some log,
-        #   
+        #
         # XXX print unid, storage, kwds
         # create visitor for doc, add storage for lookup and possible updates to existing items
         # xxx: must rewrite document for updates, but rst2rst is not happening yet
@@ -98,12 +111,11 @@ class HtdocsStorage(extractor.SQLiteExtractorStorage):
     ]
 
     def __init__(self, session=None, dbref=None):
+        self.session = session
         if not session:
             assert dbref, ("Missing SQL-alchemy DB ref", self)
             # set for SA, then get engine to use as DBAPI-2.0 compatible connection
             self.session = get_session(dbref, True)
-        else:
-            self.session = session
         # XXX can I get raw-connection from self.session?
         #self.connection = SqlBase.metadata.bind.raw_connection()
         #logger.info("Connected to %s", self.connection)
@@ -131,9 +143,6 @@ class HtdocsStorage(extractor.SQLiteExtractorStorage):
         s = self.session
         q = s.query(self.Title)
 
-        def now():
-            return datetime.now()
-
         terms = node.astext().split()
         for i, t in enumerate(terms):
             if t.isalnum():
@@ -152,12 +161,9 @@ class HtdocsStorage(extractor.SQLiteExtractorStorage):
         s.add(t)
         s.commit()
 
-
-    # 
+    #
 #    def retrieve_
 
-def now():
-    return datetime.now()
 
 class TinkerVisitor(nodes.SparseNodeVisitor):
 
@@ -198,7 +204,7 @@ class TinkerVisitor(nodes.SparseNodeVisitor):
                     .filter(taxus.semweb.Description.name==term).all()
             if not matches:
                 description = taxus.Description(
-                        name=term, date_added=now())
+                        name=term, date_added=datetime.now())
                 sa.add(description)
                 sa.commit()
                 print 'new', description.name
@@ -215,4 +221,3 @@ class TinkerVisitor(nodes.SparseNodeVisitor):
 
 Extractor = HtdocsExtractor
 Storage = HtdocsStorage
-

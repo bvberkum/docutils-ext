@@ -1,0 +1,105 @@
+sitefile: 0.0.5-dev
+upstream: '*'
+routes:
+
+  _du: docutils:**/*.rst
+  '': redir:ReadMe
+
+
+  # Configure client (JS/CSS, require.js) endpoints
+  
+  media/style/default.css: sass:sitefile-lib:style/default.sass
+
+  # Look for packages as Node libs in Sitefile installation
+  npm/packages/: 'static:sitefile:node_modules/'
+
+  # Some HTTP redirect handlers configured on JSON mappings
+  vendor/:package.:format: http.vendor:cdn.json
+
+  # FIXME: display current PM2 procs and/or preconfigured apps status
+  #proc/pm2: pm2:pm2-apps.json
+
+  app: 'static:{app,sitefile:lib/sitefile/client}'
+  app/rjs-sf-v0.json: rjs.config:paths=$ref:sitefile:cdn.json#/js/http/packages;shim=$ref:sitefile:cdn-deps.json#/shim;deps=["css","cs!sf-v0"];baseUrl=/app;map=$ref:sitefile:cdn-deps.json#/map
+  # The JSON is wrapped in a script to initialize RequireJS
+  app/rjs-sf-v0.js: rjs.main:app/rjs-sf-v0.json
+  # Finally a specific router is wired to display a pug template with all of the
+  # above.
+  app/v0: pug:sitefile-client:sf-v0.pug
+  app/: redir:app/v0
+  'r:app/(.*).sass.css': sass:sitefile-lib:client/
+  'r:app/(.*).pug.html': pug:sitefile-lib:client/
+
+
+options:
+  global:
+    docutils:
+      $ref: '#/options/global/rst2html'
+    rst2html:
+      link_stylesheets: true
+      flags:
+      - "--no-toc-backlinks"
+      - '--field-name-limit=0'
+      $ref: '#/options/global/pug/merge'
+    pug:
+      merge:
+        clients:
+          $ref: '#/defs/app/v0/clients'
+        meta:
+          $ref: '#/defs/app/v0/meta'
+        stylesheets:
+          $ref: '#/defs/stylesheets/default'
+        scripts:
+          $ref: '#/defs/scripts/default'
+
+    # XXX old Du Sitefile diddles from initial development
+    store: 
+        - 'sitedir:build/site/'
+        - 'sitefile:'
+        - 'sitestore:build/site.sqlite3'
+    extractors:
+    transforms:
+
+# XXX: rather verbose basic style config, Sf should to suites or packages for
+# that someday
+defs:
+  scripts:
+    default:
+      - /vendor/jquery.js
+      - /vendor/jquery-ui.js
+      - /vendor/jquery-terminal.js
+      - /vendor/jq-console.js
+      #- /vendor/require.js
+      #- /vendor/source-map-support.js
+      - /vendor/bootstrap.js
+      - /vendor/bootstrap-table.js
+      - /vendor/coffee-script.js
+  stylesheets:
+    default:
+      - url: /vendor/jquery-ui.css
+      - url: /vendor/jquery-terminal.css
+      - url: /vendor/bootstrap.css
+      - url: /vendor/bootstrap-theme.css
+      - url: /vendor/bootstrap-table.css
+      - url: /media/style/default.css
+        #path: build/style/default.css
+  app:
+    v0:
+      meta:
+        - sitefile.main: 'sitefile'
+        - sitefile-client-modules:
+          - 'cs!sf-v0/page'
+          - 'cs!sf-v0/storage'
+          - 'cs!sf-v0/microformats/live-code'
+          - 'cs!sf-v0/microformats/href-registry'
+          - 'cs!sf-v0/tilda'
+      clients:
+        - type: require-js
+          id: require-js-sitefile-v0-app
+          href: /vendor/require.js
+          main: /app/rjs-sf-v0.js
+      stylesheets:
+        $ref: '#/defs/stylesheets/default'
+      scripts: []
+
+# vim:ft=yaml:

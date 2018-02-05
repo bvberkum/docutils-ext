@@ -4,6 +4,9 @@ Utils to test re-writer, intended to be the reverse of the given parser.
 
 Pylint should ignore AbstractTestCase members as these will be bound to the
 test-runner instead.
+
+[2018-02-04] TODO: integrate nose.parameterized, cleanup below. Use testcase
+baseclasses to deal with var. components. make this more readable.
 """
 import os, re, unittest
 
@@ -149,6 +152,7 @@ class AbstractWriterTestCase(object):
 
     DOC_FILE = None
     VERBOSE = 0
+
 
     def _test_writer(self, writer, lossy=True):
         """Do comparison on trees generated from rST files.
@@ -369,4 +373,65 @@ def print_compare_writer(doc_file,
 
     print u"\n".join(out)
 
+
+class DotmpeDuTest(unittest.TestCase):
+
+    READER_CLASS = dotmpe.du.comp.get_reader_class('standalone')
+    PARSER_CLASS = dotmpe.du.comp.get_parser_class('rst')
+
+    @classmethod
+    def set_reader_class(klass, tagstr):
+        klass.READER_CLASS = dotmpe.du.comp.get_reader_class(tagstr)
+
+    @classmethod
+    def set_parser_class(klass, tagstr):
+        klass.PARSER_CLASS = dotmpe.du.comp.get_parser_class(tagstr)
+
+    def _prepare_source(self, doc_file):
+        return doc_file, open(doc_file).read().decode('utf-8')
+
+    def _publish_file(self, doc_file, reader_name='standalone',
+            parser_class=None, settings_spec=None, settings_overrides={}):
+        source_path, source = self._prepare_source(doc_file)
+        self.warnings = StringIO()
+        settings_overrides.update({
+                'warning_stream': self.warnings,
+            })
+        if reader_name: self.set_reader_class(reader_name)
+        self.reader = self.READER_CLASS()
+        if not parser_class: parser_class = self.PARSER_CLASS
+        self.parser = parser_class()
+        doctree = docutils.core.publish_doctree(
+                source, source_path=source_path,
+                reader=self.reader, reader_name=reader_name,
+                parser=self.parser,
+                settings=None,
+                settings_spec=settings_spec,
+                settings_overrides=settings_overrides,
+                config_section=None, enable_exit_status=False)
+
+        return doctree
+
+    # TODO:  make other core.publish_parts code use this
+    def _publish_file_to_parts(self, doc_file, writer='pprint', parser_class=None):
+        source_path, source = self._prepare_source(doc_file)
+        self.warnings = StringIO()
+        if not parser_class: parser_class = self.PARSER_CLASS
+        self.parser = parser_class()
+        parts = docutils.core.publish_parts(
+                source=source,
+                source_path=source_path,
+                parser=self.parser,
+                settings_overrides={
+                    'warning_stream': self.warnings,
+                    #'input_encoding': 'unicode',
+                    #'output_encoding': 'unicode',
+                    #'error_encoding': 'unicode',
+                    #'error_encoding_error_handler': 'replace',
+                    #'warnings': 'test.log',
+                },
+                writer_name=writer)
+        print(parts.keys())
+        #warnings = self.warnings.getvalue()
+        return generated_doc
 

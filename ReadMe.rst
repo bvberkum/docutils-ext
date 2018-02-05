@@ -4,19 +4,18 @@ Docutils extensions
 :Updated: Dec. 2016
 :Version: 0.0.2-dev
 
-:Status:
-
+:Build status:
   .. image:: https://secure.travis-ci.org/dotmpe/docutils-ext.png?branch=test
     :target: https://travis-ci.org/dotmpe/docutils-ext/branches
     :alt: Build
 
+:Package status:
   .. image:: https://badge.fury.io/gh/dotmpe%2Fdocutils-ext.png
     :target: http://badge.fury.io/gh/dotmpe%2Fdocutils-ext
     :alt: GIT
 
 
 :rST writer:
-
   .. image:: https://secure.travis-ci.org/dotmpe/docutils-ext.png?branch=test-rstwriter
     :target: https://travis-ci.org/dotmpe/docutils-ext/branches
     :alt: Build
@@ -48,11 +47,12 @@ rST Writer
   A processor for Du documents to extract or insert (structured) user content,
   with validation.
 
-rST Outlines
+`rST Outlines <doc/rst-outlines.rst>`_
   - Planning: Extract outlines from rST. See `Feature: Outlines`__
+  - `JSON outline <features/utilities-json-outline.feature>`__
+    (`doc <features/utilities-json-outline.rst>`__)
 
-
-.. __: features/outlines.features
+.. __: features/outlines.feature
 
 
 Development
@@ -97,7 +97,7 @@ ToDo
 
 
 Devel
-''''''''''
+'''''
 -  Started docs per feature, to document specs, work to test scenarios.
 -  Fix accum. cruft in `Docs`_
 -  Validation. Relax-NG?
@@ -200,4 +200,3 @@ Dependencies
 
 .. include:: .refs.rst
 .. .. include:: .refs.BranchDocs.rst
-

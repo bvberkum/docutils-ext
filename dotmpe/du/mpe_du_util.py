@@ -26,6 +26,17 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 
+# MIME header format
+TIMEFMT = '%a, %d %b %Y %H:%M:%S GMT'
+ISO_8601_DATETIME = '%Y-%m-%dT%H:%M:%SZ'
+datetime_formats = [
+        TIMEFMT,
+        TIMEFMT[:-4],
+        '%Y-%m-%d',
+        ISO_8601_DATETIME,
+        '%b. %Y'
+    ]
+
 logdirs = [
         './log',
         './logs',
@@ -90,7 +101,8 @@ def compare(obj1, obj2):
     "TODO: Attr/key based compare to determine document.setting differences ?"
     pass
 
-"""
+
+"""
 Document tree parsing, used by some convertors.
 """
 
@@ -167,7 +179,7 @@ def find_first_element(node, node_class):
         return node
 
 
-"""
+"""
 Parsing/validating of data from document nodes.
 
 Generic convertors for simple types from document nodes.
@@ -300,7 +312,7 @@ def null_conv(datatype=str, conv=None):
             return i
     return du_null
 
-"""
+"""
 docutils.parser.rst.directives has some more argument validators which could
 easy be added here by generating a wrapper for this series.
 
@@ -429,7 +441,7 @@ def v_email(data, proc=None):
         raise ValueError, "expected mailto reference, not %r" % href
     return True
 
-"""
+"""
 Corresponding Option parser validators.
 
 Raise any exception or optparse.OptionValueError if needed.
@@ -526,7 +538,7 @@ def component_name(obj, strip_module=True):
     return cname
 
 
-"""
+"""
 Registry of convertors(/validators?) for form-framework and other user entry
 parsers.
 
@@ -592,7 +604,7 @@ validators = {
 "Form validators.. "
 #XXX: or split into form and option validators.. each has own call-spec.
 
-"""
+"""
 Parse settings from field-lists.
 """
 
@@ -725,7 +737,7 @@ def extract_field_name(field_name):
         data = body[0][0].astext()
 
 """
-"""
+"""
 Errors from parsing field-lists as options.
 """
 
@@ -775,7 +787,7 @@ def addClass(classnames):
     return AddClass
 
 
-"""
+"""
 Regex field-list parsing.
 """
 
@@ -814,7 +826,7 @@ def read_buildline(source, strip=False,
     return builder_name, default_class
 
 
-"""
+"""
 Document visitors.
 """
 
@@ -894,4 +906,3 @@ def get_log(
 
 class DatabaseConnectionError(Exception):
     pass
-
