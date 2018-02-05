@@ -2,13 +2,6 @@
 import os
 import sys
 
-try:
-    import locale
-    locale.setlocale(locale.LC_ALL, '')
-    locale.setlocale(locale.LC_CTYPE, '')
-except:
-    pass
-
 from dotmpe.du import frontend, comp
 
 

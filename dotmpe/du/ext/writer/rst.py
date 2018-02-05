@@ -151,7 +151,7 @@ class RstTranslator(AbstractTranslator):
         use replace or increment functions.
         """
         self.context = ContextStack(defaults={
-        	    # a list of all the elements up to the level, though not all
+                # a list of all the elements up to the level, though not all
                 'tree': [],
                 'bullet': u'',
                 'indent': u'',
@@ -261,7 +261,7 @@ class RstTranslator(AbstractTranslator):
     def set_title_adornment(self):
         adornments = list(self.__class__.section_adornments)
         if self.doclevel > len(self.section_adornments):
-        	self.sub_section()
+            self.sub_section()
 
     def _write_indented(self, *lines):
         """
@@ -1369,7 +1369,7 @@ class RstTranslator(AbstractTranslator):
         del self.context.index
 
     def debugprint(self, node):
-        self.body.append("[XXX:%s %r %r %r %s]" % (node.tagname, self.context.index,
+        self.body.append("[du.rst:XXX:%s %r %r %r %s]" % (node.tagname, self.context.index,
             self.indented, self.context.indent, node['classes']))
 
 trailing_ws = re.compile('^.*(?<!\s)(\s+)$')
