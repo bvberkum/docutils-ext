@@ -1,17 +1,22 @@
 master dev false
-dev features/atlassian true
+
 dev features/atlassian-confluence true
-dev features/outliners true
 dev features/rst-forms true
 dev features/rst-writer-objects true
 dev features/rstwriter true
 dev features/simple-muxdem true
 dev features/subtree true
-dev features/xml-reader true
 dev test false
-test tests/outliners
 test tests/rst-writer-objects
 test tests/rstwriter
 test tests/simple-muxdem
 test tests/subtree
-test tests/xml-reader
+
+# Conflicts
+dev features/atlassian true
+
+# Merged
+#dev features/xml-reader true
+#test tests/xml-reader
+#dev features/outliners true
+#test tests/outliners

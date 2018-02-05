@@ -6,13 +6,13 @@
   name: docutils-ext-mpe
   #created: 2009-08-20
   version: 0.0.1-dev # docutils-ext-mpe
-  vendor: dotmpe
+  vendor: bvberkum
   distribution: public
   license: GPL-3.0
 
   environments: [ 'development' ]
   repositories:
-    origin: git@github.com:dotmpe/docutils-ext
+    origin: git@github.com:bvberkum/docutils-ext
     dotmpe: ~/domains/dotmpe.com/htdocs/git/docutils-mpe
     dandy.10-1: /srv/git-local/bvberkum/docutils-ext-mpe.git
     boreas.16-4: /srv/git-local/bvberkum/docutils-ext-mpe
