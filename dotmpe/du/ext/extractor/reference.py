@@ -32,8 +32,6 @@ from dotmpe.du import util
 from dotmpe.du.mpe_du_util import SqlBase, get_session
 from dotmpe.du.ext import extractor, transform
 
-from script_mpe import taxus
-
 
 logger = util.get_log(__name__, fout=False)
 
@@ -107,7 +105,7 @@ ie. raw HTML, script.
             v = transform.reference.RefVisitor(self.document)
 
             g = self.document.settings
-            g.dbref = taxus.ScriptMixin.assert_dbref(g.dbref)
+            #g.dbref = taxus.ScriptMixin.assert_dbref(g.dbref)
             v.session = self.session = get_session(g.dbref)
 
             self.document.walk(v)

@@ -18,7 +18,7 @@ setup()
               --record-references=/tmp/ref.list \
               --record-reference-format=todo.txt \
               $TEST /dev/null
-  test $(stat -f '%z' /tmp/ref.list) -eq 208
+  test $(filesize /tmp/ref.list) -eq 208
 
   test "$(cat /tmp/ref.list)" = "$(cat <<EOM
 example-ref-name-1 <http://www.python.org/>
@@ -38,7 +38,7 @@ EOM
               --record-references=/tmp/ref.out \
               --record-reference-format=text \
               $TEST /dev/null
-  test $(stat -f '%z' /tmp/ref.out) -eq 175
+  test $(filesize /tmp/ref.out) -eq 175
   test "$(cat /tmp/ref.out)" = "$(cat <<EOM
 http://www.python.org/  example-ref-name-1
 http://www.python.org/

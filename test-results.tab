@@ -22,3 +22,5 @@
 1517868691, boreas, test, b3bc6fc3629b1ecb1ef1796776ce5735e7418cdf, test, 68, 1, 2
 1517868809, boreas, test, 8c2748dbca23e6f92c206f7eb0c279c138c4b5c3, test, 69, 0, 2
 1517868900, boreas, master, 535f50d23a047910e1430a90ad6e0e6286cdb94b, test, 69, 0, 2
+1517869131, boreas, features/subtree, 18e4a7e3b7b66dfbbc22ee6370fdb4b00d26b9a1, test, 69, 0, 2
+1517870508, boreas, features/rstwriter, 5a4959dbfb9f25efab124e59f6feb865a4311007, test, 69, 0, 2
