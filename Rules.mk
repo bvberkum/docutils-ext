@@ -128,6 +128,16 @@ test-form::
 		python tools/rst-form.py examples/form-1.rst
 
 
+test-shell: bats
+
+bats:
+	@bats test/*.bats
+
+
+test-feature:
+	@./vendor/behat/behat/bin/behat
+
+
 
 # Compare rST docs with expected XML
 #
@@ -210,10 +220,6 @@ docs:
 
 up:
 	./tools/scm/up.sh
-
-
-bats:
-	@bats test/*.bats
 
 
 #      ------------ -- 

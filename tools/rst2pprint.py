@@ -31,9 +31,5 @@ writer_name='pseudoxml'
 
 publish_cmdline(
         parser_name=parser_name,
-        reader_name=reader_name, 
+        reader_name=reader_name,
         writer_name=writer_name)
-
-
-
-

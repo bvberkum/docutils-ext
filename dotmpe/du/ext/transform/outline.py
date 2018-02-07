@@ -22,13 +22,15 @@ Usage with .mpe Reader::
 """
 from __future__ import print_function
 
+import sys
+
 from docutils import transforms, nodes
 import nabu.extract
 from nabu.extract import ExtractorStorage
 from dotmpe.du import util
 
 
-#class RecordOutline(nabu.extract.Extractor): spec is different
+#class RecordOutline(nabu.extract.Extractor): XXX: spec is different
 class RecordOutline(transforms.Transform):
 
     """
@@ -58,47 +60,30 @@ class RecordOutline(transforms.Transform):
     """
 
     settings_spec = (
-        #'Outline transform options',
-        #None,
-        #((
-        #     'Database to store outline. ',
-        #     ['--outline-database'],
-        #     {
-        #         'metavar':'PATH',
-        #         'validator': util.optparse_init_anydbm,
-        #     }
-        #),(
         (
             'Record extracted outlines, each item to a line',
             ['--record-outline'],
             {'default':None, 'metavar':'FILE' }
         ), (
-            'TODO: Define outline schema. The default is to generate one, from '
-            +'instances found for outline-schema-terms, and the first paragarph '
-            +'or the text content of paired values node-type instance, found '
-            +'after the term in the same container',
-            ['--outline-schema'],
-            {'default':None, 'metavar':'FILE' }
-        ), (
             'The nodes to extract as terms, and find an according value for',
             ['--outline-schema-terms'],
-            {'default': ['title', 'term', 'field_name'], 'metavar':'TYPE' }
-        ), (
-            'The value types to extract',
-            ['--outline-schema-values'],
-            {'default': ['paragraph', 'definition/paragraph', 'field_body/paragraph'], 'metavar':'TYPE' }
+            {'default': [
+                'title',
+                'term',
+                'field_name'
+              ], 'metavar':'TYPE' }
         ), (
             'Append recorded outlines at end of file iso. truncating existing file',
             ['--append-outline-records'],
             {'default':False, 'action':'store_true' }
         ), (
-            'Format for outlines file: path, text or todo.txt. ',
+            'Format for outlines file: path, or json. ',
             ['--record-outline-format'],
-            {'default': 'url', 'metavar':'NAME' }
+            {'default':'path', 'metavar':'NAME' }
         ), (
             'Dont run outline extractor, even if file/dbref is given. ',
             ['--no-outline-record'], { 'dest': 'record_outline', 'action': 'store_false' }
-        ),#)
+        ),
     )
 
     default_priority = 880
@@ -106,83 +91,87 @@ class RecordOutline(transforms.Transform):
     def apply(self, f=None, unid=None, storage=None, **kwargs):
         doc = self.document
         g = doc.settings
-        #if g.dbref and ( g.no_db or g.no_outline):
+
         if not getattr(g, 'record_outline', None):
             return
+
+        v = OutlineVisitor(doc, g.outline_schema_terms)
+        doc.walk(v)
+        self.outline = v.terms
+
+        self.write_outline(f)
+
+    def write_outline(self, f=None):
+        g = self.document.settings
+
         if f:
             self.f = f
         else:
             mode = g.append_outline_records and 'a+' or 'w+'
             self.f = open(g.record_outline, mode)
 
-        if g.outline_schema:
-            assert not g.outline_schema, 'TODO'
+        format = getattr(self, 'format_%s' % g.record_outline_format)
+        self.f.write(format(self.outline, g))
+        self.f.close()
 
-        else:
-            #value_ntypes = [ getattr(nodes, nt) for nt in g.outline_schema_values ]
-            #term_ntypes = [ getattr(nodes, nt) for nt in g.outline_schema_terms ]
+    def format_json(self, outline, g):
+        import json
+        return json.dumps([
+                util.node_idspath(n) for n in outline
+            ])
 
-            # FIXME: rewrite to descending visitor
-            for i, nt in enumerate(g.outline_schema_terms):
-                for term in doc.traverse(getattr(nodes, nt)):
-                    np = self._nodepath(term)
-                    p = self._outlinepath(term, g)
-                    print(np, p, term, file=sys.stderr)
-                    #print(term.parent, file=sys.stderr)
-                    #values = term.parent.traverse( nt[i] ):
+    def format_path(self, outline, g):
+        return "\n".join([
+                "/".join(util.node_idspath(n, g)) for n in outline
+            ])
 
-        #v = OutlineVisitor(doc, storage)
-        #doc.walk(v)
-
-    def _outlinepath(self, term, g):
-        p = [ nodes.make_id(term.astext()) ]
-        while term.parent:
-            term = term.parent
-            if term.__class__.__name__ in g.outline_schema_terms:
-                key = nodes.make_id(term.astext())
-                p.insert(0, key)
-        return '.'.join(p)
-
-    def _nodepath(self, term):
-        p = []
-        while term.parent:
-            term = term.parent
-            if term.parent and len(term.parent.children) > 1:
-                idx = term.parent.children.index(term)+1
-                key = "%s[%i]" % ( term.__class__.__name__, idx )
-            else: key = term.__class__.__name__
-            p.insert(0, key)
-        return '/'.join(p)
-
-
-import sys
-
-class OutlineVisitor(nodes.SparseNodeVisitor):
-
-    def __init__(self, doc, store):
-        nodes.SparseNodeVisitor.__init__(self, doc)
-        self.store = store
-        self.stack = []
-        self.sections = {}
+        """TODO: table output format with some fields
+    def format_tab(self, outline, g):
+            print(srcname, s.line,
+        for outline_node in outline:
+            l = outline_format[g.record_outline_format](outline_node, g)
         srcname = doc.settings._source
-        print(srcname, file=sys.stderr)
+        print('--------------')
+        for n in v.terms:
+            s = n
+            while not s.line:
+                print(s)
+                s = s.parent
+            #print(srcname, s.line, "/".join(util.node_idspath(n, g)))
+        """
 
-    def push_stack(self, node):
-        supersection = None
-        if self.stack:
-            supersection = self.stack[-1]
-        self.stack.append(node)
-    def path(self):
-        return ".".join( [ n.astext() for n in self.stack ] )
 
-    def visit_term(self, node):
-        self.push_stack(node)
-        print(self.path(), file=sys.stderr)
-    def depart_term(self, node):
-        assert self.stack.pop() == node
+class OutlineVisitor(nodes.NodeVisitor):
 
-    def visit_section(self, node):
-        self.push_stack(node)
-    def depart_section(self, node):
-        assert self.stack.pop() == node
+    """
+    Simplified Outline visitor. Iso. tracking context (state, paths), add
+    attributes.
 
+    Add node-for attribute to container for every term-type node found.
+
+    This assumes term-type nodes are exactly one level below their container.
+
+    NOTE: looked at lines, but need some other work to get at proper ranges,
+    see range transform
+    """
+
+    def __init__(self, doc, term_type):
+        nodes.NodeVisitor.__init__(self, doc)
+        self.term_type = term_type
+        self.terms = []
+
+    def unknown_visit(self, node):
+        self._mark_outline_node(node)
+
+    def unknown_departure(self, node): pass
+
+    def _mark_outline_node(self, node):
+        nt = node.__class__.__name__
+        if nt in self.term_type:
+            node_id = nodes.make_id(node.astext())
+            assert 'ids' in node.attributes, 'TOTEST'
+            if node_id not in node.attributes['ids']:
+                node.attributes['ids'].append(node_id)
+            self.terms.append(node)
+            node['outline-label'] = True
+            node.parent['node-for'] = node_id
