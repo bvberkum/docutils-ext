@@ -19,34 +19,23 @@ from dotmpe.du import frontend, comp
 import dotmpe.du.ext # register extensions
 
 
-class DuFrontend(object):
-
-    def run(self):
-        pass
-
-
-#name = sys.argv[0]
-#if os.sep in name:
-#    name = os.path.basename(name)
-#script_names = [name]
-#
-#assert '2' in name
-#source_format, target_format = name.split('2')
-#
-#reader_name = 'standalone'
-#if source_format == 'mime':
-#    parser = comp.get_parser_class('rst')(rfc2822=1)
-#else:
-#    parser = comp.get_parser_class(source_format)()
-#writer_name = target_format
+name = sys.argv[0]
+if os.sep in name:
+    name = os.path.basename(name)
 
 reader_name = 'standalone-mpe'
-parser = comp.get_parser_class('rst')()
-writer_name = 'rst'#pprint'
 
-#print 'Reader:', reader_name,
-#print 'Parser:', parser,
-#print 'Writer:', writer_name
+if '2' in name:
+    source_format, target_format = name.split('2')
+    writer_name = target_format
+else:
+    writer_name = 'pseudoxml'
+
+parser = comp.get_parser_class('rst')()
+
+if '--debug-du-fe' in sys.argv:
+    sys.argv.remove('--debug-du-fe')
+
 
 frontend.cli_du_publisher(
         reader_name=reader_name,

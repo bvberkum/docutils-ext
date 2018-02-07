@@ -157,7 +157,8 @@ if action == 'proc': #
 elif action == 'pub': # Render src to dest
     log.info("Starting Du publish")
     frontend.cli_render(
-            sys.argv[1:], builder_name=module_name)
+            sys.argv[1:],
+            builder_name=module_name)
 
 elif action == 'run': # Batch mode
     log.info("Starting Du command")

@@ -906,3 +906,23 @@ def get_log(
 
 class DatabaseConnectionError(Exception):
     pass
+
+
+def node_idspath(node, g):
+    p = []
+    while node.parent:
+        node = node.parent
+        if 'node-for' in node and node['node-for']:
+            p.insert(0, node['node-for'])
+    return p
+
+def node_nodepath(term):
+    p = []
+    while term.parent:
+        term = term.parent
+        if term.parent and len(term.parent.children) > 1:
+            idx = term.parent.children.index(term)+1
+            key = "%s[%i]" % ( term.__class__.__name__, idx )
+        else: key = term.__class__.__name__
+        p.insert(0, key)
+    return '/'.join(p)
