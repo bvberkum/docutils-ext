@@ -51,6 +51,8 @@ class DotmpeDuExtTransformReferenceRecordTest(DotmpeDuExtTransformTest):
             #    'test', None, reference.RecordReferences.settings_spec
             #),
             settings_overrides = {
+                'rfc_references': True,
+                'rfc_base_url': 'http://tools.ietf.org/html/',
                 'record_references': True,
                 'record_outgoing_refs': ['reference'],
                 'records': f
