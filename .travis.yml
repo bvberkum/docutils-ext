@@ -26,8 +26,8 @@ install:
 before_script: []
 
 script: 
-- echo "Testing modules: $M"
-- coverage run --source=dotmpe test/main.py $M || true
+- "echo Testing modules: $M"
+- "coverage run --source=dotmpe test/main.py $M || true"
 - ./vendor/behat/behat/bin/behat
 - bats test/*.bats
 
