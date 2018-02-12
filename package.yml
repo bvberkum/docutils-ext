@@ -51,6 +51,8 @@
     build: ""
     install: "sh:pip:install:."
 
+    log: DevLog.rst
+
     tasks:
       tags:
         - TODO # tasks:no-check
