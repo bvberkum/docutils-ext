@@ -26,16 +26,16 @@ install:
 before_script: []
 
 script: 
-- "echo Testing modules: $M"
-- "coverage run --source=dotmpe test/main.py $M || true"
-- ./vendor/behat/behat/bin/behat
-- bats test/*.bats
+- "coverage run --source=dotmpe test/main.py $M"
+- "./vendor/behat/behat/bin/behat || true"
+- "bats test/*.bats || true"
+- "./tools/atlassian2html --help"
 
 env:
   global:
     - DEP_PREFIX=$HOME/.local
     - PATH=$PATH:$DEP_PREFIX/bin:$PREFIX/bin
-    - PYTHONPATH=$PYTHONPATH:.
+    - PYTHONPATH=.:$PYTHONPATH
   matrix:
   - ENV= M="$(./test/main.sh)"
 
