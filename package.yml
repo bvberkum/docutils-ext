@@ -41,6 +41,9 @@
       #- ./tools/rst2xml-brx examples/main.rst
       - ./vendor/behat/behat/bin/behat
     build: make build
+    reset-pyvenv:
+      - rm -rf ~/.pyvenv/du-ext
+      - htd run init
 
   pd-meta:
     run:

@@ -42,7 +42,7 @@ sys.path.insert(0, os.path.join(PROJ_LIB, 'docutils-lossless', 'writers'))
 try:
     LOSSLESS_WRITER = __import__('rst')
 except ImportError, e:
-    print "test.init: Cannot find lossless-rst-writer:", e
+    print "test.init: Cannot find lossless-rst-writer (at %s):" % PROJ_LIB, e
     sys.exit(1)
 
 
