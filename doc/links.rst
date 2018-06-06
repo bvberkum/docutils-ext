@@ -302,5 +302,3 @@ Left undiscussed here:
 
 - The types of relation, wether it is symmetric and what labels are used to indicate an endpoint.
   and how the direction of the link and thus of the rel/rev semantics might be changed by an additional flag.
-
-.. include:: .defaults.rst
