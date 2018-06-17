@@ -74,8 +74,10 @@ try:
 except:
     pass
 
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
 from dotmpe.du import mpe_du_util as util, frontend, comp
-import dotmpe.du.ext # register extensions
 
 
 description = ('')
